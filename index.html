@@ -2525,6 +2525,7 @@ function resumeAt(){
   const r=S.run,at=r.at;if(!at)return showMap();
   if(at.kind==='combat'&&!at.gokDone&&!(r.flags&&r.flags.gokMet)&&(at.enemies||[]).some(f=>f.key==='interp'))return gokFirst(at);
   if(at.kind==='combat')return startCombat(JSON.parse(JSON.stringify(at.enemies||at.enemy)));
+  if(at.kind==='inn')return showInn();
   if(at.kind==='fall')return showFall();
   if(at.kind==='land')return showLand();
   if(at.kind==='dir')return showDirPick();
@@ -4305,6 +4306,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V37.25.23.10','11/6','여관 — 2장 상점 막에 들어가면 25%로 여관, 5단화에 체력 15% 회복, 쉴 때마다 8시간 경과, 반복 가능. 2장 상점 가격 50% 인하, 상점과 사건 비율 8 : 7'],
   ['V37.24.23.10','11/5','튜토리얼 설명 단계 자동 넘김(글 길이만큼 지나면 넘어가고, 창을 누르면 바로 넘어감), 이별 전투의 적을 정예 노르드교 이단심판관으로 변경'],
   ['V37.24.21.10','11/5','보관함 화면에서 튜토리얼 창을 아래로 옮겨 닫기 버튼을 누를 수 있게 함'],
   ['V37.24.20.10','11/5','초반 시나리오 — 꿈과 노크로 시작, 전투 사이 장면, 노르드교 동료(합류 · 전투 대사 · 11막 이별 전투 · 붉은 천), 2장 도입(하늘 · 멜헬름 · 주식 · 구출 · 비 · 구역 입장), 동료 구해진 청년(카드와 장비 건네기 · 추가타 · 퇴각). 상태이상을 캐릭터 밑으로, 눌러서 설명 창. 카드 앞면은 짧은 문장만, 뒷면에 수치. 시작 실링 6단화, 특성 다시 굴리기 제한 없음, 암시장 닫음, 덱 목록 겹침, 지도 화면 정리, 전투 버튼을 체력창 밑으로. 재사용 때 사용시 효과가 다시 발동하던 문제 수정, 은빛 기사를 눌러 대상으로 지정'],
@@ -5653,9 +5655,9 @@ function startDir(dir){const r=S.run;r.dir=dir;r.m2=genMap2(dir);r.hostile=r.mod
    원 안에 계단식 피라미드, 꼭짓점 넷에 공방(북 크리뷔스 · 동 스타인러 · 남 아쉬부티 · 서 레미), 꼭대기(가운데)에 중앙정부
    칸은 줄 맞춤 없이 흩뿌리고, 가까운 막끼리 겹치지 않게 길을 이은 뒤 일부를 지워 갈림길을 만듦 · 지역마다 15막
    중앙정부로 가는 길목은 45도 틀어진 북동·남동·남서·북서에 하나씩, 중앙정부는 이 넷과만 이어짐
-   숫자 주머니: 지역마다 0×5, 1×5, 2×3, 3×2 — 0 상점 · 1 전투 · 2 정예 · 3 사건
-   만약에: 그 지도에 전투가 없으면 0·1을 상점으로, 정예가 없으면 2·3을 사건으로 (니다벨리르는 둘 다 없음 → 지역마다 상점 10 · 사건 5) */
-const M2R=500,M2D=430,M2PER=15,M2BAG=[5,5,3,2];
+   숫자 주머니: 지역마다 0×4, 1×4, 2×4, 3×3 — 0 상점 · 1 전투 · 2 정예 · 3 사건
+   만약에: 그 지도에 전투가 없으면 0·1을 상점으로, 정예가 없으면 2·3을 사건으로 (니다벨리르는 둘 다 없음 → 지역마다 상점 8 · 사건 7) */
+const M2R=500,M2D=430,M2PER=15,M2BAG=[4,4,4,3];
 const A2RULE={combat:false,elite:false};
 const WS_POS={N:[0,-M2D],E:[M2D,0],S:[0,M2D],W:[-M2D,0]};
 const regionOf=(x,y)=>-y>=Math.abs(x)?'N':y>=Math.abs(x)?'S':x>0?'E':'W';
@@ -5787,7 +5789,7 @@ function enterNode2(id){
     if(first)r.quiet=(r.quiet||0)+1;
     if(t==='shop'){
       if(false){r.flags.mjolSeen=true;at={kind:'mjol',node:id}}
-      else at=rnd()<BLACK_P?{kind:'black',node:id}:{kind:'shop2',node:id}}
+      else{if(n.inn==null)n.inn=rnd()<.25;at=n.inn?{kind:'inn',node:id}:rnd()<BLACK_P?{kind:'black',node:id}:{kind:'shop2',node:id}}}
     else{const ev=pickEvent(n.reg);at=ev?{kind:'event',ev,node:id}:null}
     /* 특수 대장장이 — 노드에 들어갔을 때 1% */
     if(false){r.flags.smithSeen=true;at={kind:'smith',node:id,then:at}}
@@ -5797,7 +5799,7 @@ function enterNode2(id){
 /* 2장 상점 — 공방 상점 (영웅 등급 이하), 진열 카드 5 · 장비 5, 상점 오른쪽 아래 전투 선택지 */
 function shop2Price(base,kind){const r=S.run;let disc=0;if(eq('u_contract'))disc=Math.max(disc,.3);if(kind==='card'&&eq('u_plan'))disc=Math.max(disc,.4);if(kind==='food'&&eq('u_ticket'))disc=Math.max(disc,.5);
   if(r.flags.actF&&r.flags.actF.nextShop30&&S.run.shopDiscNow)disc=Math.max(disc,.3);
-  return Math.round(base*(1-disc)*(1+((r.flags.actF&&r.flags.actF.shopUp)||0)))}
+  return Math.round(base*.5*(1-disc)*(1+((r.flags.actF&&r.flags.actF.shopUp)||0)))}/* 2장 물가 50% 인하 */
 function genShop2(n){const r=S.run;if(n.shop)return n.shop;
   const ws=rnd()<.4?regWS(n.reg):pick(Object.keys(WS2));const W=WS2[ws];
   const nc=5+(eq('u_case')?1:0),ng=5+(eq('u_case')?1:0);
@@ -5805,13 +5807,13 @@ function genShop2(n){const r=S.run;if(n.shop)return n.shop;
   const gearPool=[...Object.keys(GEAR).filter(k=>GEAR[k].ws2===ws&&GEAR[k].nw).map(k=>({k,type:'gear'})),...Object.keys(EQUIP).filter(k=>EQUIP[k].ws2===ws&&EQUIP[k].nw&&!(r.equip||[]).includes(k)).map(k=>({k,type:'held'}))];
   const gear=shuffle(gearPool).slice(0,ng);
   r.shopN2=(r.shopN2||0)+1;
-  n.shop={ws,cards,gear,rer:0,removed:false,removeCost:eq('u_tool')?Math.round(50000*.7):50000+6000*(r.shopN2-1)};return n.shop}
+  n.shop={ws,cards,gear,rer:0,removed:false,removeCost:eq('u_tool')?Math.round(25000*.7):25000+3000*(r.shopN2-1)};return n.shop}
 const REMOVE2_TMP=true;/* 니다벨리르 카드 제거·새로고침 비용은 문서에 없어 1장 값의 100배로 임시 */
 function showShop2(){
   const r=S.run,n=m2Node(r.at.node),sh=genShop2(n),W=WS2[sh.ws];S.screen='shop';viewFor('shop');renderTop();
   if(r.flags.actF&&r.flags.actF.nextShop30&&!sh.disc30){sh.disc30=true;r.flags.actF.nextShop30=0}S.run.shopDiscNow=!!sh.disc30;
   const my=myth(),freeR=(eq('u_pass')&&!sh.rer)||(r.flags.actF&&r.flags.actF.freeRer>0);
-  const rerCost=freeR?0:Math.round(3000*(sh.rer+1)*(eq('u_key')?.7:1));
+  const rerCost=freeR?0:Math.round(1500*(sh.rer+1)*(eq('u_key')?.7:1));
   const gd=r.guild&&(r.guild===sh.ws||r.guild===regWS(n.reg))?.8:1;
   const cPrice=it=>Math.round(shop2Price(CARD_PRICE2[it.id],CARDS[it.id].food?'food':'card')*gd);
   const gPrice=it=>Math.round(shop2Price(it.type==='gear'?GEAR[it.k].p:EQUIP[it.k].p,'gear')*gd);
@@ -6290,6 +6292,14 @@ function stSheet(items,anchor){let b=$('#stsheet');if(!items){if(b)b.hidden=true
 stage.addEventListener('click',e=>{if(e.target.closest('#knightFig')&&S.C){e.stopPropagation();knightPick(true);return}if(e.target.closest('#eart')&&S.C&&S.C.E&&S.C.E.kn&&S.C.E.kn.hp>0&&S.C.kT){e.stopPropagation();knightPick(false);return}const sh=$('#stsheet');if(sh&&!sh.hidden&&!e.target.closest('#stsheet')){sh.hidden=true}
   const ch=e.target.closest('.chip');if(ch&&ch.closest('#echips,#ppanel,#foebar,#foefigs')){e.stopPropagation();const box=ch.parentElement,all=[...box.querySelectorAll('.chip')],sorted=[ch,...all.filter(x=>x!==ch)];stSheet(sorted.map(x=>[x.textContent.trim(),statusRule(x.textContent.trim())]),box);return}
   const it=e.target.closest('#intent');if(it&&S.C&&S.C.E&&ACT[S.C.E.intent]){e.stopPropagation();const E=S.C.E,g=gimOf(E),a=ACT[E.intent];stSheet([[E.intent,a.tag||(a.k==='atk'?'공격한다.':a.k==='def'?'방어도를 얻는다.':'효과를 발휘한다.')],...(g?[[GIM[g].n,GIM[g].t]]:[])],it)}},true);
+/* 여관 — 2장 상점 막에 들어가면 25%로 여관. 5단화로 최대 체력 15% 회복, 쉴 때마다 8시간이 지나 주가가 움직임 */
+const INN_COST=5000,INN_HEAL=.15,INN_HOURS=8;
+function showInn(){const r=S.run;S.screen='shop';viewFor('shop');renderTop();hideCombatUI();const amt=Math.round(r.maxHp*INN_HEAL),off=r.gold<INN_COST||r.hp>=r.maxHp;
+  const sc=openScreen('',{dim:true});sc.innerHTML=`<div class="panel evpanel" style="width:min(640px,100%)"><div><div class="psub">니다벨리르</div><div class="ptitle">여관</div></div><div class="ptext">상점인 줄 알았는데 침대가 놓여 있다. 주인이 값부터 부른다.</div>
+    <div class="lines"><div><span>체력</span><b>${r.hp} / ${r.maxHp}</b></div><div><span>보유</span><b>${money(r.gold)}</b></div></div>
+    <div class="choices"><button class="choice" id="iRest" ${off?'disabled':''}><b>쉰다</b><span>${money(INN_COST)} · 체력 +${amt} · ${INN_HOURS}시간이 지남${r.hp>=r.maxHp?' · 체력이 가득 찼다':r.gold<INN_COST?' · 돈이 모자란다':''}</span></button><button class="choice" id="iLeave"><b>떠난다</b></button></div></div>`;
+  $('#iRest').onclick=()=>{if(r.gold<INN_COST||r.hp>=r.maxHp)return;r.gold-=INN_COST;r.hp=Math.min(r.maxHp,r.hp+amt);for(let i=0;i<INN_HOURS;i++)stockTick();save();renderTop();showInn()};
+  $('#iLeave').onclick=()=>{r.at=null;save();showMap()}}
 /* 2장 승리 — 업데이트 대기 */
 function showAct2Victory(gold,lines,loot){S.screen='victory';renderTop();const r=S.run,sc=openScreen('',{dim:true});lines=lines||[];clearSave();
   sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center;max-width:720px"><div class="psub">2장 · 니다벨리르</div><div class="ptitle">기록하는 공무원을 쓰러뜨렸다</div>
