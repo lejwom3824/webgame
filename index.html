@@ -5,7 +5,7 @@
 #stage #prompt{top:calc(590px/var(--uiz,1))}
 #screen>.mappanel{zoom:var(--uim,1)}
 #stage.port #intent{zoom:1.1}
-.port .mappanel{padding-bottom:84px}#stage .m2mini{bottom:112px}#stage.port .m2mini{bottom:84px}#stage:not(.port)[data-ui] .m2mini{width:300px;height:300px}#stage .m2tag{bottom:502px}#stage.port .m2tag{bottom:694px}#stage:not(.port)[data-ui] .m2tag{bottom:422px}#stage.port[data-ui] .m2mini{width:480px;height:480px}#stage.port[data-ui] .m2tag{bottom:574px}
+.port .mappanel{padding-bottom:84px}#stage .m2mini{bottom:112px}#stage.port .m2mini{bottom:112px}#stage:not(.port)[data-ui] .m2mini{width:280px;height:280px}#stage .m2tag{bottom:462px}#stage.port .m2tag{bottom:502px}#stage:not(.port)[data-ui] .m2tag{bottom:402px}#stage.port[data-ui] .m2mini{width:340px;height:340px}#stage.port[data-ui] .m2tag{bottom:462px}
 #stage.port[data-ui] .pp-hp{flex:1 1 110px}#stage.port[data-ui] .pp-name{flex-direction:column;flex:0 0 auto}#stage.port[data-ui] #ppanel{flex-wrap:nowrap}#stage.port[data-ui] .shield{font-size:0}
 #hand .card{font-size:calc(11.5px*var(--uic,1))}#stage.port #hand .card{font-size:calc(12.5px*var(--uip,1))}
 #stage.port #ppanel{top:calc((808px - (var(--uiz,1) - 1)*60px)/var(--uiz,1))}
@@ -837,18 +837,33 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .port #foebar .foe{min-width:0;flex:1 1 30%}.port #foebar .foe b{font-size:20px}.port #foebar .foe small{font-size:15px}
 .plate-btn.danger{border-color:#b4473a;color:#f0b8ae}
 .m2stage{position:absolute;inset:0}
-.m2mid{position:absolute;left:50%;top:44%;translate:-50% -50%;width:min(760px,80%);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#0d0e10b8;border:1px solid #ffffff1f;border-radius:12px;padding:22px 26px}
+.m2mid{position:absolute;left:calc(50% - 190px);top:50%;translate:-50% -50%;width:min(780px,62%);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#0d0e10b8;border:1px solid #ffffff1f;border-radius:12px;padding:22px 26px}
 .m2where{font-family:'Song Myung',serif;font-size:36px;color:var(--brass-hi)}
 .m2what{color:var(--bone);font-size:17px}.m2what.bad{color:#ef9a8c}
-.port .m2mid{top:30%;width:calc(100% - 48px)}.port .m2where{font-size:42px}.port .m2what{font-size:21px}
-.m2mini{position:absolute;right:28px;bottom:28px;width:380px;height:380px;border-radius:50%;border:2px solid var(--brass);background:#1b1e21;box-shadow:0 0 0 4px #0008,0 8px 30px #000a;cursor:zoom-in;overflow:hidden}
-.port .m2mini{width:600px;height:600px;right:50%;translate:50% 0;bottom:40px}
+.port .m2mid{left:50%;top:34%;width:calc(100% - 48px)}.port .m2where{font-size:42px}.port .m2what{font-size:21px}
+.m2mini{position:absolute;right:28px;bottom:112px;width:340px;height:340px;border-radius:50%;border:2px solid var(--brass);background:#1b1e21;box-shadow:0 0 0 4px #0008,0 8px 30px #000a;cursor:zoom-in;overflow:hidden}
+.port .m2mini{width:380px;height:380px;right:50%;translate:50% 0;bottom:40px}
 .m2mini svg,.m2full svg{display:block;width:100%;height:100%}
-.m2tag{position:absolute;right:28px;bottom:418px;font-size:14px;letter-spacing:.08em;color:var(--bone-dim)}
+.m2tag{position:absolute;right:28px;bottom:460px;font-size:14px;letter-spacing:.08em;color:var(--bone-dim)}
 .port .m2tag{right:50%;translate:50% 0;bottom:650px;font-size:17px}
-.m2full{position:absolute;inset:0;z-index:3;background:#070809ee;display:flex;align-items:center;justify-content:center}
-.m2full svg{width:min(96%,860px);height:min(96%,860px)}
-.m2close{position:absolute;top:70px;right:28px}
+.m2full{position:absolute;inset:0;z-index:3;background:#070809f5}.m2full[hidden]{display:none}
+.m2full svg{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}.m2full svg:active{cursor:grabbing}
+.m2tools{position:absolute;top:66px;right:24px;display:flex;flex-direction:column;gap:8px;align-items:stretch}.m2tools button{min-width:96px}
+.m2legend{position:absolute;left:24px;top:66px;display:flex;flex-direction:column;gap:7px;padding:12px 14px;border-radius:10px;background:#0d0e10d9;border:1px solid #ffffff1f;font-size:15px;color:var(--bone)}
+.port .m2legend{flex-direction:row;flex-wrap:wrap;right:24px;top:auto;bottom:24px;font-size:20px;gap:8px 16px}.port .m2tools{top:96px}
+.m2legend .lg{display:flex;align-items:center;gap:8px}.m2legend i{width:16px;height:16px;border-radius:50%;border:2px solid #6b7178;background:#2a2e32;display:block}
+.m2legend .here i{background:none;border:3px solid var(--bone)}.m2legend .can i{background:none;border:2px dashed var(--brass-hi)}.m2legend .shop i{background:#3b3220;border-color:var(--brass)}.m2legend .event i{background:#22313a;border-color:#8fb4c9}.m2legend .combat i{background:#3a1f1c;border-color:#c2563f}.m2legend .elite i{background:#4a1616;border-color:#e06a55}.m2legend .ws i{background:#2b2a26;border-color:var(--brass-hi)}.m2legend .rush i{background:#3d1212;border-color:var(--brass-hi)}
+#stage:has(.m2full:not([hidden])) #dockL,#stage:has(.m2full:not([hidden])) #dockR{display:none}
+.m2guide{color:var(--bone);font-size:18px}.m2guide b{color:var(--brass-hi)}.port .m2guide{font-size:23px}
+.m2opts{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:6px;width:100%}
+.m2opt{flex:1 1 150px;max-width:220px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 10px;border-radius:10px;background:#22262a;border:2px solid #6b7178;color:var(--bone);font:inherit;cursor:pointer}.m2opt:hover{background:#2f353a;border-color:var(--brass-hi)}
+.m2opt svg{width:46px;height:46px}.m2opt b{font-size:20px}.m2opt small{font-size:14px;color:var(--bone-dim)}.m2opt.near{border-color:var(--brass)}.m2opt.near small{color:var(--brass-hi)}
+.m2opt.shop{background:#3b3220}.m2opt.event{background:#22313a}.m2opt.combat{background:#3a1f1c}.m2opt.elite{background:#4a1616}.m2opt.rush,.m2opt.boss{background:#3d1212}
+.port .m2opt{flex-basis:200px;max-width:300px;padding:16px 12px}.port .m2opt b{font-size:26px}.port .m2opt small{font-size:18px}.port .m2opt svg{width:58px;height:58px}
+.m2opt .ic{fill:none;stroke:var(--bone);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}.m2opt text.ic{fill:var(--bone);stroke:none;font:700 20px 'Gothic A1',sans-serif}
+.m2arrow path{fill:var(--brass-hi);stroke:#0008;stroke-width:2}
+.m2full .node:not(.here):not(.choice):not(.seen):not(.ws):not(.start):not(.rush):not(.boss):not(.gate){opacity:.5}.m2full .edge:not(.pick):not(.walked){opacity:.4}
+@keyframes m2here{50%{stroke-opacity:.35}}.m2stage .node.here circle.halo{animation:m2here 1.2s ease-in-out infinite}
 .m2stage .disc{fill:#16191c;stroke:var(--brass);stroke-width:3}
 .m2stage .tier{fill:none;stroke:#3a3f45;stroke-width:1.5}.m2stage .tier0{fill:#1d2125;stroke:#5a5f66;stroke-width:2.5}
 .m2stage .ridge{stroke:#3a3f45;stroke-width:1.5;stroke-dasharray:6 8}
@@ -1196,7 +1211,7 @@ const TUNE={startGold:99,
   gold2:{normal:[2000,5000],elite:[10000,50000],boss:[30000,100000]},
   restHeal:.25,restDelete:.15,humanHpCostPerCost:5,
   /* 전투 보정 (V27) — 장·등급별 적 체력 · 적 공격 피해 배율, 한 전투 경험치 상한(레벨업 필요 경험치의 배수, 0이면 없음) */
-  cb:{hp:{1:{normal:4,elite:3,boss:1.3},2:{normal:1,elite:.6,boss:.3}},dmg:{1:{normal:3.5,elite:1.6,boss:1.2},2:{normal:1,elite:.3,boss:.4}},expCap:0,ramp:8}};
+  cb:{hp:{1:{normal:4,elite:3,boss:1.3},2:{normal:1,elite:.6,boss:.3}},dmg:{1:{normal:3.5,elite:1.6,boss:1.2},2:{normal:1,elite:.3,boss:.4}},expCap:0,ramp:4}};
 
 /* ================= enemies & traits ================= */
 const TRAITS={
@@ -2346,6 +2361,8 @@ function newRun(hero){
 /* 이전 버전 저장 이어하기 — 20막 지도 → 30막 세 갈래 지도, 장비 칸 추가 */
 function migrateRun(r){
   if(!r)return r;r.store=r.store||[];ensureGear(r);r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
+  /* V36: 1장 30막 → 15막, 진행한 막은 절반으로 */
+  if(r.map&&r.map.v===2&&r.map.path){const m=r.map,row=Math.min(ROWS-1,Math.ceil(m.row/2));m.path=m.path.slice(-row);m.path=row?m.path:[];m.row=row;m.opts=[];m.v=3;if(!r.act||r.act===1)r.floor=row;m.shops=Math.min(m.shops||0,SHOP_MAX);delete r.mapUndo}
   if(!r.map||r.map.g){const old=r.map&&r.map.g,path=[];
     if(old)for(let rr=0;rr<old.length;rr++){const n=old[rr].find(x=>x&&x.v);if(n)path.push({t:n.t,i:1,n:1})}
     const row=Math.min(path.length,BOSS_ROW-1);r.map={v:2,row,path:path.slice(0,row),opts:[],shops:path.filter(p=>p.t==='shop').length,bossDone:false};
@@ -2396,9 +2413,9 @@ function nodeIcon(t,x,y,s){
 }
 /* 지도 (웹게임 문서: 런 진행 · 지도)
    전투·휴식·사건·상점은 하나로 묶고 갈래로 나뉨 · 갈래는 항상 3개, 고른 갈래만 남고 다시 3개로 나뉨
-   정예는 모든 갈래가 하나로 이어지는 10막째·20막째, 30막째는 보스 · 정예와 보스 바로 앞 막에는 휴식 갈래가 꼭 하나 이상 · 상점 막은 30막 중 최대 3번
+   정예는 모든 갈래가 하나로 이어지는 5막째·10막째, 15막째는 보스 · 정예와 보스 바로 앞 막에는 휴식 갈래가 꼭 하나 이상 · 상점 막은 15막 중 최대 3번
    다인모드에서는 모든 막이 전투 또는 정예 */
-const ROWS=30,ELITE_ROWS=[10,20],BOSS_ROW=30,SHOP_MAX=3;
+const ROWS=15,ELITE_ROWS=[5,10],BOSS_ROW=15,SHOP_MAX=3;
 function genOpts(r,row){
   if(row>BOSS_ROW)return[];
   if(row===BOSS_ROW)return['boss'];
@@ -2416,7 +2433,7 @@ function genOpts(r,row){
   if((row===BOSS_ROW-1||ELITE_ROWS.includes(row+1))&&!out.includes('rest'))out[ri(0,2)]='rest';
   return out;
 }
-function newMap(r){const m={v:2,row:0,path:[],opts:[],shops:0,bossDone:false};r.map=m;m.opts=genOpts(r,1);return m}
+function newMap(r){const m={v:3,row:0,path:[],opts:[],shops:0,bossDone:false};r.map=m;m.opts=genOpts(r,1);return m}
 function showMap(){if(S.run&&S.run.act===2)return showMap2();
   S.screen='map';viewFor('map');hideCombatUI();closeModal();if(S.run.at)S.run.at=null;renderTop();save();setTimeout(tutShow,0);
   const r=S.run,M=r.map;if(!M.opts||(!M.opts.length&&M.row<BOSS_ROW))M.opts=genOpts(r,M.row+1);
@@ -2458,7 +2475,7 @@ function enterNode(i){
   M.opts=genOpts(r,row+1);
   let at;
   if(t==='battle'&&r.tut&&row===1)at={kind:'combat',enemy:tutEnemy()};
-  else if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(row<9?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
+  else if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(row<5?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
   else if(t==='elite')at={kind:'combat',enemy:makeEnemy('inquisitor')};
   else if(t==='boss')at={kind:'combat',enemy:makeEnemy('bishop')};
   else if(t==='rest')at={kind:'rest'};
@@ -2695,7 +2712,7 @@ async function startPlayerTurn(){
   if(C.steinBlock){gainBlock(C.steinBlock,0,'스타인러 공방');C.steinBlock=0}
   if(C.drawN0&&C.turn===1)C.drawN+=C.drawN0;drawTurn();if(C.nextDraw){drawN(C.nextDraw);C.nextDraw=0}a2AfterDraw();
   /* 튜토리얼 둘째 턴: 합성·소멸·버림을 해 볼 수 있게 패를 정해 줌 (이 전투에만 있는 카드, 덱에는 들어가지 않음) */
-  if(C.E.tut&&C.turn===1&&tutOn()){C.draw.push(...C.hand);C.hand=(C.E.tutN===2?['slash','slash','hardtack','tidy','guard']:['slash']).map(id=>({uid:UID++,id,mods:[]}));C.energy=Math.max(C.energy,3);if(r.tutStep<TUT_REWARD)r.tutStep=C.E.tutN===2?TUT_F2:0}
+  if(C.E.tut&&C.turn===1&&tutOn()){const TH=TUT_HAND[C.E.tutN];if(TH){C.draw.push(...C.hand);C.hand=TH.map(id=>({uid:UID++,id,mods:[]}))}C.energy=Math.max(C.energy,3);if(r.tutStep<TUT_REWARD)r.tutStep=TUT_START[C.E.tutN-1]}
   if(C.E.tut)tutEvent('turn');
   if(pt('penDraw')&&C.turn>1&&C.hand.length){const c=pick(C.hand);C.hand.splice(C.hand.indexOf(c),1);C.disc.push(c);toast('패널티 드로우',`「${CARDS[c.id].name}」을(를) 버렸다`)}
   renderCombat();tutShow();
@@ -2899,7 +2916,7 @@ async function playCardRaw(uid,o={}){
 const MS_STEP=[10,20,30,40,50];
 const STANCE=[{id:'ms_kendo',k:'검도',q:'목덜미를 세우고 턱을 당기며, 어깨의 힘을 빼고 검을 잡는다'},{id:'ms_split',k:'갈라내기',q:'팔을 강하게 핀상태로 손잡이가 으스러질정도로 검을 강하게 잡는다'},{id:'ms_flash',k:'일섬',q:'자세를 당장이라도 뛰쳐나갈수있게 다리에 힘을 준상태로 검을 역수로 쥔다.'},{id:'ms_slash',k:'베기',q:'검을 비스듬히 하여 몸을 보호하게 검을 잡는다'}];
 const msOf=r=>r.ms||(r.ms={uses:0,step:0,got:[],stance:null});
-async function masteryUse(){const r=S.run;if(r.mode!=='human'||r.lvl!==1)return;const m=msOf(r);m.uses++;
+async function masteryUse(){const r=S.run;if(r.mode!=='human'||r.lvl!==1)return;if(tutOn()&&r.tutStep<TUT_MS)return;/* 튜토리얼: 자세는 셋째 전투에서 */const m=msOf(r);m.uses++;
   while(m.step<5&&m.uses>=MS_STEP[m.step]){m.step++;r.atk++;r.def++;const a=Math.round(r.base1*.01);r.maxHp+=a;r.hp+=a;save();
     if(m.step<=4)await stanceWindow(m.step);else await fuseOpenWindow();if(S.C&&!S.C.over)renderCombat()}}
 function swapStance(id){const r=S.run,m=msOf(r),from=m.stance||'slash';let n=0;const C=S.C;
@@ -2907,9 +2924,9 @@ function swapStance(id){const r=S.run,m=msOf(r),from=m.stance||'slash';let n=0;c
   for(const p of piles)for(const c of p||[])if(c.id===from&&!seen.has(c)){seen.add(c);c.id=id}
   n=r.deck.filter(c=>seen.has(c)).length;r.store=r.store||[];for(let i=0;i<n;i++)r.store.push({uid:UID++,id:from});
   m.stance=id;if(!m.got.includes(id))m.got.push(id);save()}
-function stanceWindow(step){const r=S.run,m=msOf(r),box=$('#modal');return new Promise(res=>{box.hidden=false;S.modalLock=true;
+function stanceWindow(step){const r=S.run,m=msOf(r),box=$('#modal');return new Promise(res=>{box.hidden=false;S.modalLock=true;$('#tut').hidden=true;
   const tag=o=>{const u=o.id==='ms_kendo'?['ms_kendo','ms_kendo2'].includes(m.stance):m.stance===o.id,g=m.got.includes(o.id)||(o.id==='ms_kendo'&&m.got.includes('ms_kendo2'));return u?'사용 중':g?'이전에 선택함':''};
-  const done=()=>{S.modalLock=false;closeModal();res()};
+  const done=()=>{S.modalLock=false;closeModal();tutEvent('stance');res()};
   box.innerHTML=`<div class="panel stance"><div class="st-h"><div class="psub">숙련도 ${step}단계</div><div class="ptitle">뭔가 새로운 자세가 떠올랐다...</div>${step===1?'<div class="psub">검 카드를 총 10, 20, 30, 40, 50회 쓰면 한 단계씩 오릅니다. 단계가 오르면 네 자세 중 하나를 고릅니다. 덱의 검 카드가 새 카드로 바뀌고, 쓰던 카드는 카드 보관함으로 갑니다. 한 번 고른 자세는 다시 고를 수 없습니다. 숙련도 카드는 주황색으로 빛납니다.</div>':''}</div>
     <div class="st-cross">${STANCE.map(o=>{const t=tag(o),c=CARDS[o.id];return`<button class="st-opt" data-st="${o.id}" ${t?'disabled':''}><b>${o.k}</b><span class="st-q">${o.q}</span><span class="st-c">코스트 ${c.cost} · ${c.text.replace('\n',', ')}</span>${t?`<em>${t}</em>`:''}</button>`}).join('')}<div class="st-hub">${step}단계</div></div></div>`;
   box.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{const id=b.dataset.st;
@@ -2918,7 +2935,7 @@ function stanceWindow(step){const r=S.run,m=msOf(r),box=$('#modal');return new P
       <div class="st-two">${['ms_kendo','ms_kendo2'].map(k=>`<button class="st-opt" data-kd="${k}"><b>${CARDS[k].name}</b><span class="st-c">코스트 ${CARDS[k].cost} · ${CARDS[k].text.replace('\n',', ')}</span></button>`).join('')}</div></div>`;
     box.querySelectorAll('[data-kd]').forEach(x=>x.onclick=()=>{swapStance(x.dataset.kd);if(!m.got.includes('ms_kendo'))m.got.push('ms_kendo');done()})})})}
 function fuseOpenWindow(){const box=$('#modal');return new Promise(res=>{box.hidden=false;S.modalLock=true;
-  box.innerHTML=`<div class="panel stance"><div class="st-h"><div class="psub">숙련도 5단계</div><div class="ptitle">합성</div></div><div class="ptext">같은 카드 3장이 패에 모이면 합성할 수 있습니다. 베기×3은 피륙, 갈라내기×3은 도려내기, 일섬×3은 대절단이 됩니다.<br>합성 카드는 패에서 1장으로 칩니다. 합성에 쓴 3장은 함께 소모됩니다.</div><div class="choices" style="flex-direction:row;justify-content:center"><button class="btn-main" id="fzOk">확인</button></div></div>`;
+  box.innerHTML=`<div class="panel stance"><div class="st-h"><div class="psub">숙련도 5단계</div><div class="ptitle">합성</div></div><div class="ptext">같은 카드 3장이 패에 모이면 합성할 수 있어요. 베기×3은 피륙, 갈라내기×3은 도려내기, 일섬×3은 대절단이 돼요.<br>합성 카드는 패에서 1장으로 쳐요. 패 자리는 아끼고 한 방은 커져요. 합성에 쓴 3장은 함께 사라지지만 슬퍼하지 마세요. 카드는 울지 않아요.</div><div class="choices" style="flex-direction:row;justify-content:center"><button class="btn-main" id="fzOk">확인</button></div></div>`;
   $('#fzOk').onclick=()=>{S.modalLock=false;closeModal();res()}})}
 /* 일반 몹이 쓰는 같은 카드를 10번 보면 그 카드를 훔침 — 정예·보스 제외, 공격·방어 행동만 */
 const stealId=n=>'st_'+n;
@@ -3242,7 +3259,7 @@ function winCombat(res){
   const chase=fled.length&&r.mode!=='dain'?JSON.parse(JSON.stringify(fled)):null;
   setTimeout(()=>{
     hideCombatUI();
-    if(top.tut&&top.tutN===1&&tutOn()){r.tutStep=TUT_F2;r.at={kind:'combat',enemy:tutEnemy(2)};save();return transition(resumeAt)}
+    if(top.tut&&top.tutN<4&&tutOn()){const nx=top.tutN+1;r.tutStep=TUT_START[nx-1];r.hp=r.maxHp;r.at={kind:'combat',enemy:tutEnemy(nx)};save();return transition(resumeAt)}
     if(then==='win2')return showAct2Victory(gold,lines,loot[0]);
     if(evb)runFx(evb,()=>{});r.at={kind:'reward',gold,lines,loot,then,rush:info.rush,chase,node:info.node,killEx,cards:evb?[]:rewardCards()};save();
     showReward(gold,lines,loot);
@@ -4201,7 +4218,7 @@ function eventDeath(text){
   const r=S.run;clearSave();S.screen='over';renderTop();
   const sc=openScreen('',{dim:true});
   sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center"><div class="psub">세계수 등반</div><div class="ptitle">쓰러졌다</div><div class="ptext">${text}</div>
-    <div class="lines" style="min-width:min(420px,100%)"><div><span>도달한 막</span><b>${r.floor} / 30</b></div><div><span>처치</span><b>${r.kills}</b></div><div><span>레벨</span><b>${r.lvl}</b></div></div>
+    <div class="lines" style="min-width:min(420px,100%)"><div><span>도달한 막</span><b>${r.floor} / ${ROWS}</b></div><div><span>처치</span><b>${r.kills}</b></div><div><span>레벨</span><b>${r.lvl}</b></div></div>
     <button class="btn-main" id="goT">처음으로</button></div>`;
   $('#goT').onclick=()=>showTitle({menu:true});
 }
@@ -4245,7 +4262,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
   const sc=openScreen(`<div class="ttl${menu?' menu':''}" id="ttl" ${menu?'':'tabindex="0" role="button" aria-label="시작"'}>
     ${menu?`<div class="ttl-menu" style="${o.animate&&!REDUCED?'animation-delay:.25s':''}">
       ${slotCount()?`<button class="mbtn" id="mCont">이어하기<small>저장 기록 ${slotCount()} / ${SLOT_MAX}</small></button>`:''}
-      ${false&&cs?`<button class="mbtn" id="mContC">이어하기 · 세계수 등반<small>${(CDIFF[cs.diff]||CDIFF.easy).n} · ${cs.act===2?`2장 니다벨리르 · ${cs.floor||0}막`:`${cs.floor} / 30막`} · ${cs.mode==='dain'?'다인모드':`Lv ${cs.lvl}`}</small></button>`:''}
+      ${false&&cs?`<button class="mbtn" id="mContC">이어하기 · 세계수 등반<small>${(CDIFF[cs.diff]||CDIFF.easy).n} · ${cs.act===2?`2장 니다벨리르 · ${cs.floor||0}막`:`${cs.floor} / ${ROWS}막`} · ${cs.mode==='dain'?'다인모드':`Lv ${cs.lvl}`}</small></button>`:''}
       ${false&&hs?`<button class="mbtn" id="mContH">이어하기 · 절멸전<small>${GODS[hs.god].god} · 처치 ${hs.kills}${hs.mode==='exterminate'?' / 2000':''}</small></button>`:''}
       <button class="mbtn" id="mClimb">세계수 등반<small>일반인으로 시작해 세계수를 오른다</small></button>
       <button class="mbtn" id="mSet">설정<small>${PATCH[0][0]} · 패치 내역은 설정에서</small></button></div>`:`<div class="ttl-tap" id="ttlTap">게임 시작</div>`}</div>`,{full:true});
@@ -4263,6 +4280,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V36.23.19.8','11/5','막 수 절반 — 1장 15막(5·10막 정예, 15막 보스), 2장 지역당 15막. 2장 지도 개편 — 갈 곳을 큰 버튼으로 고름, 중앙정부까지 남은 막과 방향 화살표, 전체 지도 확대·이동, 내 위치 중심, 범례. 튜토리얼 전투 4번으로 개편(카드와 주사위 · 행동 수치 · 성장 · 보관함), 다정한 나레이션, 니다벨리르와 공방별 안내'],
   ['V35.23.17.8','11/5','튜토리얼 40단계로 개편 — 카드 1장부터 한 번에 한 문장, 설명하는 곳만 누를 수 있음, 손가락 안내, 첫 공격을 멈춰서 보여 줌, 전투 2번으로 나눔'],
   ['V34.23.16.8','11/5','공방 업데이트 — 공방 카드 60종, 장비 24종과 소유 효과 장비 4종, 6칸 장비 보관함, 공방 사건 40개, 이벤트 전투, 친호도 · 입단 · 친우 / 버림 확인 버튼, 카드 보관함 분류와 겹침, 숙련도 총 10~50회와 주황색 카드, 정예 체력 +50%, 보스 · 튜토리얼 대사 제거, 작품 준비 5~20%, 열기는 증기로만'],
   ['V33.22.14.8','11/5','카드 수치 — 고유 카드 수치 변경, 일반·공방 카드를 고유 카드 기준으로 상향. 일섬 치명타, 검도-정석 방어도 유지, 검도-변화 재사용, 도려내기 코스트 회복, 대절단 재료 복귀와 다음 턴 보너스 / 덱·보관함 큰 버튼 / 튜토리얼 — 보관함에 카드를 넣고 꺼내 보기, 얻거나 산 카드는 바로 적용되지 않음 / 순수유물주의자 1페이즈 네 번째 행동에서 전투가 멈추던 버그 수정'],
@@ -4364,55 +4382,78 @@ function openSettings(){
   if($('#sSlots'))$('#sSlots').onclick=()=>openSlots('manage',openSettings);
 }
 /* ================= 튜토리얼 — 세계수 등반 첫 런의 첫 전투에서만 (설정에서 다시 보기) ================= */
-const TUT_KEY='ash-midgard-tutorial-v5';/* V17: 튜토리얼이 바뀌어 모두 한 번씩 다시 봄 */
+const TUT_KEY='ash-midgard-tutorial-v6';/* V36: 튜토리얼이 바뀌어 모두 한 번씩 다시 봄 */
 const tutDone=()=>{try{return localStorage.getItem(TUT_KEY)==='1'}catch(e){return false}};
 const setTutDone=v=>{try{v?localStorage.setItem(TUT_KEY,'1'):localStorage.removeItem(TUT_KEY);if(!v){Object.values(GUIDES).forEach(g=>localStorage.removeItem(g.key));localStorage.removeItem('ash-midgard-featguide-v1')}}catch(e){}};
 /* where: 보이는 화면 · wait: 다음으로 넘어가는 행동 (없으면 누르면 넘어감) · hl: 강조할 곳 */
 const TUT=[
-  {where:'combat',t:'카드',x:['이것이 카드입니다.'],hl:'hand'},
-  {where:'combat',t:'코스트',x:['왼쪽 위 숫자가 코스트입니다. 카드를 쓰려면 이만큼 필요합니다.'],hl:'ccost'},
-  {where:'combat',t:'공격 범위',x:['아래 숫자는 공격 범위입니다. 60~90 사이로 나옵니다.'],hl:'dice'},
-  {where:'combat',t:'뒤집어 보기',x:['카드를 한 번 눌러 보세요. 뒷면에 설명이 나옵니다.'],wait:'flip',hl:'hand'},
-  {where:'combat',t:'크게 보기',x:['카드를 길게 눌러 보세요. 크게 볼 수 있습니다.'],wait:'zoom',hl:'hand'},
-  {where:'combat',t:'내 코스트',x:['왼쪽 아래 구슬이 지금 쓸 수 있는 코스트입니다.'],hl:'orb'},
-  {where:'combat',t:'카드 쓰기',x:['손가락을 따라 카드를 적에게 끌어 놓으세요.'],wait:'strike',hl:'hand',finger:1,force:'hit',only:'slash'},
-  {where:'combat',t:'주사위',x:['주사위가 굴러 72가 나왔습니다.'],hold:1},
-  {where:'combat',t:'공격레벨',x:['내 공격레벨 덕분에 피해가 커집니다.'],hold:1},
-  {where:'combat',t:'적중',x:['적중률만큼 맞습니다. 이번에는 맞았습니다.'],hold:1},
-  {where:'combat',t:'피해',x:['적의 체력이 줄었습니다. 적의 체력을 0으로 만들면 이깁니다.'],hl:'foe'},
-  {where:'combat',t:'코스트 소모',x:['코스트 구슬이 3에서 2로 줄었습니다.'],hl:'orb'},
-  {where:'combat',t:'적의 행동',x:['적 머리 위 표시가 다음 행동입니다. 얼마나 맞을지 보입니다.'],hl:'intent'},
-  {where:'combat',t:'방어',x:['막기가 들어왔습니다. 위로 끌어 놓으세요.'],wait:'def',hl:'hand',finger:1,give:['guard'],only:'guard'},
-  {where:'combat',t:'방어도',x:['방어도가 생겼습니다. 받는 피해를 먼저 막아 줍니다.'],hl:'hp'},
+  /* 첫째 전투 — 카드와 주사위 */
+  {where:'combat',t:'카드',x:['이것이 카드예요. 오늘부터 당신의 전 재산이에요.'],hl:'hand'},
+  {where:'combat',t:'코스트',x:['왼쪽 위 숫자가 코스트예요. 카드를 쓰려면 이만큼 필요해요.'],hl:'ccost'},
+  {where:'combat',t:'공격 범위',x:['아래 숫자는 공격 범위예요. 60~90 사이로 나와요.'],hl:'dice'},
+  {where:'combat',t:'뒤집어 보기',x:['카드를 한 번 눌러 보세요. 뒷면에 설명이 있어요.'],wait:'flip',hl:'hand'},
+  {where:'combat',t:'크게 보기',x:['카드를 길게 눌러 보세요. 크게 볼 수 있어요.'],wait:'zoom',hl:'hand'},
+  {where:'combat',t:'내 코스트',x:['왼쪽 아래 구슬이 지금 쓸 수 있는 코스트예요. 턴마다 다시 채워지니 아끼지 마세요.'],hl:'orb'},
+  {where:'combat',t:'카드 쓰기',x:['손가락을 따라 카드를 적에게 끌어 놓으세요. 괜찮아요, 처음엔 다들 떨어요.'],wait:'strike',hl:'hand',finger:1,force:'hit',only:'slash'},
+  {where:'combat',t:'주사위',x:['주사위가 굴러 72가 나왔어요. 공격 범위 안에서 하나가 정해지는 거예요.'],hold:1},
+  {where:'combat',t:'공격레벨',x:['공격레벨이 높을수록 주사위 값보다 피해가 커져요.'],hold:1},
+  {where:'combat',t:'적중',x:['적중률만큼 맞아요. 이번에는 맞았어요. 축하해요. 저분은 아프겠지만요.'],hold:1},
+  {where:'combat',t:'피해',x:['적의 체력이 줄었어요. 체력을 0으로 만들면 이겨요.'],hl:'foe'},
+  {where:'combat',t:'코스트 소모',x:['코스트 구슬이 3에서 2로 줄었어요.'],hl:'orb'},
+  {where:'combat',t:'적의 행동',x:['적 머리 위 표시가 다음 행동이에요. 얼마나 맞을지 미리 알려 주다니, 참 친절하죠.'],hl:'intent'},
+  {where:'combat',t:'방어',x:['막기가 들어왔어요. 위로 끌어 놓으세요.'],wait:'def',hl:'hand',finger:1,give:['guard'],only:'guard'},
+  {where:'combat',t:'방어도',x:['방어도가 생겼어요. 피해를 먼저 대신 맞아 줘요. 남은 방어도는 다음 턴에 절반만 남아요.'],hl:'hp'},
   {where:'combat',t:'턴 종료',x:['턴 종료를 눌러 보세요.'],wait:'end',hl:'end'},
-  {where:'combat',t:'적의 턴',x:['적의 공격을 방어도가 막은 만큼 숫자로 보여 줍니다.'],wait:'turn'},
-  {where:'combat',t:'다음 턴',x:['다음 턴입니다. 코스트가 다시 채워지고 카드를 새로 뽑습니다.'],hl:'orb'},
-  {where:'combat',t:'체력',x:['왼쪽 아래 붉은 막대가 내 체력입니다. 체력은 전투가 끝나도 그대로 남습니다.'],hl:'hp'},
-  {where:'combat',t:'제압',x:['공격 카드로 적을 제압하세요. 제압하면 목숨을 빼앗지 않습니다.'],wait:'win',free:1},
-  {where:'combat',t:'빗나감',f2:1,x:['이번 공격은 빗나갑니다. 공격을 내 보세요.'],wait:'atk',force:'miss',only:'slash',hl:'hand',finger:1},
-  {where:'combat',t:'빗나감',x:['빗나가면 피해는 0이지만 카드와 코스트는 쓰입니다.']},
-  {where:'combat',t:'적중률',x:['적중률은 내 명중과 상대 회피로 정해집니다.'],hl:'pname'},
-  {where:'combat',t:'회피',x:['회피가 높을수록 적의 공격이 덜 맞습니다.'],hl:'pname'},
-  {where:'combat',t:'소멸',x:['레미 공방의 건빵을 써 보세요. 체력을 회복하고 소멸합니다.'],wait:'exh',only:'hardtack',hl:'hand',finger:1},
-  {where:'combat',t:'소멸',x:['소멸한 카드는 이번 전투에서 다시 나오지 않습니다. 소멸 버튼에서 볼 수 있습니다.'],hl:'exh'},
-  {where:'combat',t:'버림',x:['정리를 써 보세요. 버릴 카드를 고르고 확인을 누르면 그만큼 새로 뽑습니다.'],wait:'toss',only:'tidy',hl:'hand',finger:1},
-  {where:'combat',t:'버림',x:['버린 카드는 뽑을 카드가 떨어지면 다시 섞여 나옵니다.']},
-  {where:'combat',t:'행동 수치',x:['적 이름 아래 숫자가 행동 수치입니다. 카드를 쓰면 1 줄어듭니다.'],hl:'foe'},
-  {where:'combat',t:'행동 수치',x:['카드를 한 장 더 써 보세요. 행동 수치가 줄어듭니다.'],wait:'play',hl:'foe'},
-  {where:'combat',t:'행동 수치',x:['행동 수치가 0이 되면 적이 곧바로 움직입니다.'],hl:'foe'},
-  {where:'combat',t:'카드 뭉치',x:['같은 카드는 ×2처럼 겹쳐 보입니다. 쓰면 1장만 나갑니다.'],hl:'hand',give:['slash','slash']},
-  {where:'reward',t:'보상',x:['승리하면 카드와 실링을 받습니다. 카드를 골라 보세요.'],wait:'rwcard'},
-  {where:'reward',t:'카드 보관함',x:['얻은 카드는 바로 덱에 들어가지 않고 카드 보관함으로 갑니다.']},
-  {where:'map',t:'보관함',x:['왼쪽 아래 보관함 버튼을 눌러 보세요.'],wait:'prepOpen',hl:'prep'},
-  {where:'map',t:'보관함',x:['덱의 카드 1장을 보관함으로 옮겨 보세요.'],wait:'prepOut'},
-  {where:'map',t:'보관함',x:['보관함의 카드 1장을 덱으로 옮겨 보세요. 덱은 최소 5장입니다.'],wait:'prepIn'},
-  {where:'map',t:'지도',x:['세 갈래 중 하나를 골라 위로 오릅니다. 10막째와 20막째는 정예, 30막째는 보스입니다.'],wait:'node'},
-  {where:'rest',t:'휴식',x:['휴식은 최대 체력의 25%를 회복합니다.']},
-  {where:'shop',t:'상점',x:['상점에서 카드를 삽니다. 산 카드는 바로 적용되지 않고 카드 보관함으로 갑니다.'],last:true},
+  {where:'combat',t:'적의 턴',x:['방어도가 막아 준 만큼 숫자로 보여 드릴게요.'],wait:'turn'},
+  {where:'combat',t:'다음 턴',x:['다음 턴이에요. 코스트가 다시 채워지고 카드를 새로 뽑아요.'],hl:'orb'},
+  {where:'combat',t:'체력',x:['왼쪽 아래 붉은 막대가 내 체력이에요. 전투가 끝나도 그대로 남아요. 아껴 쓰세요. 하나뿐이니까요.'],hl:'hp'},
+  {where:'combat',t:'빗나감',x:['이번 공격은 빗나갈 거예요. 미안해요. 그래도 내 보세요.'],wait:'atk',force:'miss',only:'slash',give:['slash'],hl:'hand',finger:1},
+  {where:'combat',t:'빗나감',x:['빗나가면 피해는 0이지만 카드와 코스트는 쓰여요. 세상이 원래 그래요.']},
+  {where:'combat',t:'적중률',x:['적중률은 내 명중과 상대 회피로 정해져요.'],hl:'pname'},
+  {where:'combat',t:'회피',x:['회피가 높을수록 적의 공격이 덜 맞아요. 안 맞는 게 제일 좋아요.'],hl:'pname'},
+  {where:'combat',t:'제압',x:['이제 공격 카드로 적을 제압하세요. 제압하면 목숨은 빼앗지 않아요. 저분도 집에 가야 하니까요.'],wait:'win',free:1},
+  /* 둘째 전투 — 행동 수치 */
+  {where:'combat',t:'좋은 소식',f:2,x:['아까 입은 상처는 제가 몰래 치료해 드렸어요. 튜토리얼에서만 해 드리는 거예요.'],hl:'hp'},
+  {where:'combat',t:'행동 수치',x:['적 이름 아래 숫자가 행동 수치예요. 적이 움직일 때까지 남은 걸음이에요.'],hl:'foe'},
+  {where:'combat',t:'행동 수치',x:['카드를 쓰면 행동 수치가 1 줄어요. 한 장 써 보세요.'],wait:'play',hl:'foe'},
+  {where:'combat',t:'행동 수치',x:['행동 수치가 0이 되면 적이 바로 움직여요. 당신의 턴이어도요. 기다려 주지 않아요.'],hl:'foe'},
+  {where:'combat',t:'턴을 끝내면',x:['턴을 끝낼 때도 적은 한 번 움직여요.'],hl:'foe'},
+  {where:'combat',t:'왜 중요할까요',x:['카드를 많이 쓰면 강하지만, 적도 그만큼 자주 움직여요. 몇 장을 쓸지 고르는 것이 전투의 핵심이에요.'],hl:'foe'},
+  {where:'combat',t:'카드 뭉치',x:['같은 카드는 ×2처럼 겹쳐 보여요. 쓰면 1장씩 나가요.'],hl:'hand',give:['slash','slash']},
+  {where:'combat',t:'제압',x:['이 분도 제압해 주세요. 살살이요.'],wait:'win',free:1},
+  /* 셋째 전투 — 성장 */
+  {where:'combat',t:'소멸',f:3,x:['레미 공방의 건빵을 써 보세요. 체력을 회복하고 사라져요. 맛은 묻지 마세요.'],wait:'exh',only:'hardtack',hl:'hand',finger:1},
+  {where:'combat',t:'소멸',x:['소멸한 카드는 이번 전투에서 다시 나오지 않아요. 소멸 버튼에서 볼 수 있어요.'],hl:'exh'},
+  {where:'combat',t:'버림',x:['정리를 써 보세요. 버릴 카드를 고르고 확인을 누르면 그만큼 새로 뽑아요.'],wait:'toss',only:'tidy',hl:'hand',finger:1},
+  {where:'combat',t:'버림',x:['버린 카드는 뽑을 카드가 떨어지면 다시 섞여 나와요. 미련이 많은 친구들이에요.']},
+  {where:'combat',t:'숙련도',x:['이제 강해지는 법을 알려 드릴게요. 검 카드를 쓸수록 몸이 기억해요.']},
+  {where:'combat',t:'숙련도',x:['검 카드를 총 10번 쓰면 새로운 자세가 떠올라요. 마침 이번이 열 번째예요. 써 보세요.'],wait:'stance',ms:1,only:'slash',give:['slash'],hl:'hand',finger:1},
+  {where:'combat',t:'숙련도',x:['고른 카드가 덱의 검 카드를 대신해요. 쓰던 카드는 보관함으로 갔어요. 버리지 않았어요. 저는 다정하니까요.']},
+  {where:'combat',t:'숙련도',x:['숙련도 카드는 주황색으로 빛나요. 20, 30, 40번째에도 새로운 자세가 떠올라요.']},
+  {where:'combat',t:'합성',x:['50번째에는 같은 카드 3장을 1장으로 합칠 수 있어요. 패 자리는 아끼고 한 방은 커져요.']},
+  {where:'combat',t:'제압',x:['새 자세로 제압해 보세요. 적이 놀랄 거예요. 잠깐은요.'],wait:'win',free:1},
+  /* 넷째 전투 — 보관함 */
+  {where:'combat',t:'카드 보관함',f:4,x:['카드는 앞으로 계속 늘어나요. 얻은 카드는 전부 보관함으로 가요.']},
+  {where:'combat',t:'패 한도',x:['패는 12장까지예요. 넘치면 골라서 버려야 해요. 손은 두 개뿐이니까요.']},
+  {where:'combat',t:'빌드',x:['덱이 가벼울수록 좋은 카드를 자주 뽑아요. 무엇을 덱에 남길지 고르는 것, 그것이 이 게임의 빌드예요.']},
+  {where:'combat',t:'보관함',x:['왼쪽 아래 보관함 버튼을 눌러 보세요.'],wait:'prepOpen',hl:'prep'},
+  {where:'combat',t:'보관함',x:['덱의 카드 1장을 보관함으로 옮겨 보세요.'],wait:'prepOut'},
+  {where:'combat',t:'보관함',x:['보관함의 카드 1장을 덱으로 옮겨 보세요. 덱은 최소 5장이에요.'],wait:'prepIn'},
+  {where:'combat',t:'보관함',x:['닫기를 눌러 보세요. 전투 중에 카드를 바꾸면 그 턴은 끝나요. 적은 기다려 주지 않아요. 기억하시죠?'],wait:'turn',pe:1},
+  {where:'combat',t:'제압',x:['마지막이에요. 제압하고 나면 정말 시작이에요. 응원할게요. 멀리서요.'],wait:'win',free:1},
+  /* 전투가 끝나고 */
+  {where:'reward',t:'보상',x:['승리하면 카드와 실링을 받아요. 카드를 골라 보세요.'],wait:'rwcard'},
+  {where:'reward',t:'카드 보관함',x:['고른 카드는 보관함으로 갔어요. 덱에 넣는 건 당신 몫이에요.']},
+  {where:'map',t:'지도',x:['세 갈래 중 하나를 골라 위로 올라가요. 5막째와 10막째는 정예, 15막째는 보스예요. 보스는 저만큼 다정하지 않아요.'],wait:'node'},
+  {where:'rest',t:'휴식',x:['휴식은 최대 체력의 25%를 회복해요. 잠이 안 와도 눈은 감으세요.']},
+  {where:'shop',t:'상점',x:['상점에서 카드를 사요. 산 카드는 바로 적용되지 않고 보관함으로 가요. 그럼 이제 혼자서도 잘할 수 있죠? 그렇다고 해 주세요.'],last:true},
 ];
-const TUT_WAIT={flip:'카드를 누르면 다음으로',zoom:'카드를 길게 누르면 다음으로',strike:'카드를 끌어 놓으면 다음으로',atk:'공격 카드를 끌어 놓으면 다음으로',def:'막기를 끌어 놓으면 다음으로',end:'턴 종료를 누르면 다음으로',turn:'적의 턴이 끝나면 다음으로',exh:'건빵을 쓰면 다음으로',toss:'정리를 쓰면 다음으로',play:'카드를 쓰면 다음으로',win:'적을 제압하면 다음으로',rwcard:'카드를 고르면 다음으로',prepOpen:'보관함을 열면 다음으로',prepOut:'카드를 옮기면 다음으로',prepIn:'카드를 옮기면 다음으로',node:'막을 고르면 다음으로'};
+const TUT_WAIT={stance:'자세를 고르면 다음으로',flip:'카드를 누르면 다음으로',zoom:'카드를 길게 누르면 다음으로',strike:'카드를 끌어 놓으면 다음으로',atk:'공격 카드를 끌어 놓으면 다음으로',def:'막기를 끌어 놓으면 다음으로',end:'턴 종료를 누르면 다음으로',turn:'적의 턴이 끝나면 다음으로',exh:'건빵을 쓰면 다음으로',toss:'정리를 쓰면 다음으로',play:'카드를 쓰면 다음으로',win:'적을 제압하면 다음으로',rwcard:'카드를 고르면 다음으로',prepOpen:'보관함을 열면 다음으로',prepOut:'카드를 옮기면 다음으로',prepIn:'카드를 옮기면 다음으로',node:'막을 고르면 다음으로'};
 const tutOn=()=>!!(S.run&&S.run.tut&&S.run.tutStep<TUT.length);
-const TUT_REWARD=TUT.findIndex(t=>t.where==='reward'),TUT_MAP=TUT.findIndex(t=>t.where==='map'),TUT_F2=TUT.findIndex(t=>t.f2),TUT_F1K=TUT.findIndex(t=>t.free);
+const TUT_REWARD=TUT.findIndex(t=>t.where==='reward'),TUT_MAP=TUT.findIndex(t=>t.where==='map'),TUT_MS=TUT.findIndex(t=>t.ms);
+/* 튜토리얼 전투 4번 — 전투마다 첫 단계 · 끝까지 쓰러지지 않는 단계 · 첫 턴 패 (넷째는 덱에서 뽑음) */
+const TUT_START=[0,...TUT.flatMap((t,i)=>t.f?[i]:[])],TUT_KEEP=TUT.flatMap((t,i)=>t.free?[i]:[]);
+const TUT_HAND={1:['slash'],2:['slash','slash','guard','breath'],3:['slash','hardtack','tidy','guard','slash']};
 function tutShow(){
   const box=$('#tut');const r=S.run;
   if(!tutOn())return guideShow();
@@ -4432,7 +4473,7 @@ function tutShow(){
 function tutLocked(act,c){const r=S.run;if(!tutOn())return false;const st=TUT[r.tutStep];
   if(act==='node')return st.where==='map'&&st.wait!=='node';
   if(st.where!==S.screen||S.screen!=='combat'||st.free)return false;
-  if(act==='end')return st.wait!=='end';
+  if(act==='end')return st.wait!=='end'&&!st.pe;
   if(act==='drag')return st.wait==='flip'||st.wait==='zoom';
   if(!st.wait||st.wait==='end')return true;
   return !!(st.only&&c&&c.id!==st.only)}
@@ -4441,6 +4482,7 @@ function tutFinger(on){let f=$('#tutFinger');if(!f){f=document.createElement('di
 function tutEnter(){const r=S.run,st=TUT[r.tutStep],C=S.C;if(!st||!C||S.screen!=='combat')return;
   if(st.wait==='strike')handEls.forEach(x=>x.classList.remove('flipped'));
   if(st.only||st.wait==='play')C.energy=Math.max(C.energy,3);
+  if(st.ms){const m=msOf(r);m.uses=Math.max(m.uses,MS_STEP[0]-1)}
   if(st.give){for(const id of st.give){const i=C.draw.findIndex(x=>x.id===id);if(i>=0)C.hand.push(C.draw.splice(i,1)[0]);else C.hand.push({uid:UID++,id,mods:[]})}}renderCombat()}
 /* 첫 공격 — 주사위·공격레벨·적중을 멈춰서 한 단계씩 보여 줌 */
 function tutDf(st){const C=S.C;let el=$('#dfocus');if(!st.hold||!C||!C.tutV){if(el&&C&&C.tutV&&!S.tutRes)el.hidden=true;return}
@@ -4486,7 +4528,7 @@ function guideShow(){
   box.hidden=true;stage.removeAttribute('data-tut');
 }
 /* 튜토리얼 전투의 적: 노른교 성직자 (레벨 7 고정, 특성 없음, 첫 행동은 공격) */
-function tutEnemy(n=1){const r=S.run,E=makeEnemy('priest');E.traits=[];E.lv=7;E.atk=lvAB(7);E.def=lvAB(7);E.acc=ENEMY.priest.acc;E.eva=ENEMY.priest.eva;const f=formula(75+gapP(r.atk,E.def),0,r.atk,[],E.def).fin;E.maxHp=E.hp=Math.round(f*(n===2?2.5:3));E.tut=true;E.tutN=n;E.tutKeep=n===2?TUT_REWARD:TUT_F1K;if(n===2){E.apMax=4;E.ap=4}return E}
+function tutEnemy(n=1){const r=S.run,E=makeEnemy('priest');E.traits=[];E.lv=7;E.atk=lvAB(7);E.def=lvAB(7);E.acc=ENEMY.priest.acc;E.eva=ENEMY.priest.eva;const f=formula(75+gapP(r.atk,E.def),0,r.atk,[],E.def).fin;E.maxHp=E.hp=Math.round(f*(n===1?3:2.5));E.tut=true;E.tutN=n;E.tutKeep=TUT_KEEP[n-1];if(n===2){E.apMax=4;E.ap=4}return E}
 /* 4-1. 세계수 등반 준비 */
 function showClimbPrep(){
   S.screen='climbPrep';S.run=null;S.C=null;hideCombatUI();closeModal();renderTop();viewFor('title');
@@ -4597,7 +4639,7 @@ function gameOver(){
   setTimeout(()=>{hideCombatUI();S.screen='over';renderTop();
     const sc=openScreen('',{dim:true});
     sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center"><div class="psub">세계수 등반${dain?' · 다인모드':''}</div><div class="ptitle">${title}</div>
-      <div class="lines" style="min-width:min(420px,100%)"><div><span>도달한 막</span><b>${r.act===2?`2장 · ${r.floor||0}막`:`${r.floor} / 30`}</b></div><div><span>처치</span><b>${r.kills}</b></div><div><span>${r.mode==='dain'?'다인모드':'레벨'}</span><b>${r.mode==='dain'?`공 ${r.atk} · 방 ${r.def}`:r.lvl}</b></div></div>
+      <div class="lines" style="min-width:min(420px,100%)"><div><span>도달한 막</span><b>${r.act===2?`2장 · ${r.floor||0}막`:`${r.floor} / ${ROWS}`}</b></div><div><span>처치</span><b>${r.kills}</b></div><div><span>${r.mode==='dain'?'다인모드':'레벨'}</span><b>${r.mode==='dain'?`공 ${r.atk} · 방 ${r.def}`:r.lvl}</b></div></div>
       <button class="btn-main" id="goT">처음으로</button></div>`;
     $('#goT').onclick=()=>showTitle({menu:true});},REDUCED?100:dain?1900:700);
 }
@@ -4676,7 +4718,7 @@ function storeHTML(list){
   return['공격','방어','유틸'].map(k=>{const a=list.filter(c=>cat(c)===k);if(!a.length)return'';
     return`<div class="prep-c">${k} ${a.length}장</div>`+RK.map(g=>{const b=a.filter(c=>gr(c)===g);if(!b.length)return'';const m=new Map();for(const c of b){const q=c.id+'|'+(c.mods||[]).join(',');if(!m.has(q))m.set(q,[]);m.get(q).push(c)}
       return`<div class="prep-g">${GN[g]}</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${[...m.values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}<button class="plate-btn" data-in="${x[0].uid}">덱으로</button></div>`).join('')}</div>`}).join('')}).join('')}
-function openPrep(v,anchor){const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];if(fight&&tutOn())return;m.hidden=false;
+function openPrep(v,anchor){const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];if(fight&&tutOn()&&!/^prep/.test(TUT[r.tutStep].wait||'')&&!TUT[r.tutStep].pe)return;m.hidden=false;
   if(tutOn())S.prepTab='card';tutEvent('prepOpen');
   if(anchor&&tutOn()&&TUT[r.tutStep].wait==='node')return closeModal();
   if(S.prepTab==='gear')return openGearBag();
@@ -4686,8 +4728,8 @@ function openPrep(v,anchor){const r=S.run,m=$('#modal'),fight=S.screen==='combat
     <div id="prepScroll" style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">덱</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px">${dk.map(c=>row(c,'out','보관함으로',r.deck.length<=PREP_MIN)).join('')}</div>
     <div class="ap-h" id="prepStoreH">카드 보관함</div>${storeHTML(st)||'<div class="hint">비어 있음</div>'}</div></div>`;
   bindStatic(m);bindPrepTabs(m);$('#mClose').onclick=()=>prepClose(fight);
-  m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.deck.find(x=>x.uid===+b.dataset.out);if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}else tutEvent('prepOut');save();openPrep(view)});
-  m.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.store.find(x=>x.uid===+b.dataset.in);if(!c)return;r.store.splice(r.store.indexOf(c),1);r.deck.push(c);if(fight){prepSync(c,false);S.C.prepEdit=true}else tutEvent('prepIn');save();openPrep(view,true)});
+  m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.deck.find(x=>x.uid===+b.dataset.out);if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}tutEvent('prepOut');save();openPrep(view)});
+  m.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.store.find(x=>x.uid===+b.dataset.in);if(!c)return;r.store.splice(r.store.indexOf(c),1);r.deck.push(c);if(fight){prepSync(c,false);S.C.prepEdit=true}tutEvent('prepIn');save();openPrep(view,true)});
   if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
 function hideCombatUI(){if(S.screen!=='title')endTitleScene();{const kf=$('#knightFig');if(kf)kf.hidden=true}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
@@ -5568,14 +5610,14 @@ function showDirPick(sel){const r=S.run;r.at={kind:'dir'};save();S.screen='event
   sc.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>showDirPick(b.dataset.d));
   if(sel){$('#dGo').onclick=()=>startDir(sel);$('#dNo').onclick=()=>showDirPick()}}
 function startDir(dir){const r=S.run;r.dir=dir;r.m2=genMap2(dir);r.hostile=r.mode==='dain';r.contract=null;r.quiet=0;r.at=null;save();
-  toast('2장 · 니다벨리르',`${DIR2[dir].n} · ${WS2[DIR2[dir].ws].n}에서 시작`);transition(()=>{showMap();a2Guide(dir)})}
+  toast('2장 · 니다벨리르',`${DIR2[dir].n} · ${WS2[DIR2[dir].ws].n}에서 시작`);transition(()=>{showMap();a2Guide('enter',dir)})}
 /* 2장 지도 (웹게임 문서: 2장 니다벨리르 · 맵 항목 무작위 배치)
    원 안에 계단식 피라미드, 꼭짓점 넷에 공방(북 크리뷔스 · 동 스타인러 · 남 아쉬부티 · 서 레미), 꼭대기(가운데)에 중앙정부
-   칸은 줄 맞춤 없이 흩뿌리고, 가까운 막끼리 겹치지 않게 길을 이은 뒤 일부를 지워 갈림길을 만듦 · 지역마다 30막
+   칸은 줄 맞춤 없이 흩뿌리고, 가까운 막끼리 겹치지 않게 길을 이은 뒤 일부를 지워 갈림길을 만듦 · 지역마다 15막
    중앙정부로 가는 길목은 45도 틀어진 북동·남동·남서·북서에 하나씩, 중앙정부는 이 넷과만 이어짐
-   숫자 주머니: 지역마다 0×10, 1×10, 2×5, 3×5 — 0 상점 · 1 전투 · 2 정예 · 3 사건
+   숫자 주머니: 지역마다 0×5, 1×5, 2×3, 3×2 — 0 상점 · 1 전투 · 2 정예 · 3 사건
    만약에: 그 지도에 전투가 없으면 0·1을 상점으로, 정예가 없으면 2·3을 사건으로 (니다벨리르는 둘 다 없음 → 상점 20 · 사건 10) */
-const M2R=500,M2D=430,M2PER=30,M2BAG=[10,10,5,5];
+const M2R=500,M2D=430,M2PER=15,M2BAG=[5,5,3,2];
 const A2RULE={combat:false,elite:false};
 const WS_POS={N:[0,-M2D],E:[M2D,0],S:[0,M2D],W:[-M2D,0]};
 const regionOf=(x,y)=>-y>=Math.abs(x)?'N':y>=Math.abs(x)?'S':x>0?'E':'W';
@@ -5583,10 +5625,10 @@ function segCross(a,b,c,d){const o=(p,q,r)=>Math.sign((q.x-p.x)*(r.y-p.y)-(q.y-p
 function genMap2(dir){
   const nodes=[{id:0,kind:'center',reg:'C',x:0,y:0}];
   for(const k of'NESW')nodes.push({id:nodes.length,kind:'ws',reg:k,x:WS_POS[k][0],y:WS_POS[k][1]});
-  const cnt={N:0,E:0,S:0,W:0};let md=60,tries=0;const A=150/Math.SQRT2;
+  const cnt={N:0,E:0,S:0,W:0};let md=92,tries=0;const A=150/Math.SQRT2;
   for(const[dx,dy,g,dk]of[[1,-1,'N','NE'],[1,1,'E','SE'],[-1,1,'S','SW'],[-1,-1,'W','NW']]){nodes.push({id:nodes.length,kind:'room',reg:g,x:dx*A,y:dy*A,gate:dk});cnt[g]++}
   while(Object.values(cnt).some(c=>c<M2PER)){if(++tries%4000===0)md*=.93;
-    const x=(rnd()*2-1)*M2D,y=(rnd()*2-1)*M2D;if(Math.abs(x)+Math.abs(y)>M2D-22||Math.hypot(x,y)<95)continue;
+    const x=(rnd()*2-1)*M2D,y=(rnd()*2-1)*M2D;if(Math.abs(x)+Math.abs(y)>M2D-22||Math.hypot(x,y)<120)continue;
     const g=regionOf(x,y);if(cnt[g]>=M2PER)continue;if(nodes.some(n=>Math.hypot(n.x-x,n.y-y)<(n.kind==='room'?md:md*1.15)))continue;
     nodes.push({id:nodes.length,kind:'room',reg:g,x,y});cnt[g]++}
   const adj=nodes.map(()=>new Set()),E=[];
@@ -5635,36 +5677,67 @@ function m2Svg(mode){const r=S.run,M=r.m2,IN=M.inside;
   const cur=m2Node(M.cur),nb=new Set(cur.adj),walked=new Set(M.walked||[]),only=mode==='mini'?new Set([M.cur,...cur.adj]):null;
   for(const n of M.nodes)for(const j of n.adj){if(j<n.id)continue;const pk=(n.id===M.cur&&nb.has(j))||(j===M.cur&&nb.has(n.id));if(only&&!pk)continue;const m=M.nodes[j];
     h+=`<line class="edge${walked.has(n.id+'-'+j)?' walked':''}${pk?' pick':''}" x1="${n.x}" y1="${n.y}" x2="${m.x}" y2="${m.y}"/>`}
-  for(const n of M.nodes){if(only&&!only.has(n.id))continue;const t=m2Type(n),big=n.kind!=='room'?(n.kind==='center'?28:22):16,ch=nb.has(n.id),here=n.id===M.cur;
-    h+=`<g class="node ${t}${here?' here':''}${ch?' choice':''}${n.vis&&!here?' seen':''}" ${ch?`data-id="${n.id}"`:''} transform="translate(${n.x} ${n.y})"><circle class="halo" r="${big+7}"/><circle class="base" r="${big}"/>${M2IC[t]}${n.used&&t==='shop'?`<text class="used" y="${big+16}" text-anchor="middle">사용함</text>`:''}<title>${M2N[t]}</title></g>`;
-    if(mode==='mini'&&ch)h+=`<text class="lab small" x="${n.x}" y="${n.y+big+30}">${M2N[t]}</text>`}
-  if(mode==='full'){const off={N:-48,E:52,S:58,W:52};for(const k of'NESW')h+=`<text class="lab" x="${WS_POS[k][0]}" y="${WS_POS[k][1]+off[k]}">${WS_LAB[k]}</text>`;h+=`<text class="lab small" x="0" y="56">중앙정부</text>`}
+  for(const n of M.nodes){if(only&&!only.has(n.id))continue;const t=m2Type(n),big=n.kind!=='room'?(n.kind==='center'?36:32):26,ch=nb.has(n.id),here=n.id===M.cur;
+    h+=`<g class="node ${t}${here?' here':''}${ch?' choice':''}${n.vis&&!here?' seen':''}" ${ch?`data-id="${n.id}"`:''} transform="translate(${n.x} ${n.y})"><circle class="halo" r="${big+9}"/><circle class="base" r="${big}"/><g transform="scale(1.55)">${M2IC[t]}</g>${n.used&&t==='shop'?`<text class="used" y="${big+16}" text-anchor="middle">사용함</text>`:''}<title>${M2N[t]}</title></g>`;
+    }
+  if(mode==='full'){const off={N:-52,E:66,S:72,W:66};for(const k of'NESW')h+=`<text class="lab" x="${WS_POS[k][0]}" y="${WS_POS[k][1]+off[k]}">${WS_LAB[k]}</text>`;h+=`<text class="lab small" x="0" y="66">중앙정부</text>`}
+  if(mode==='mini'&&cur.kind!=='center'){const half=m2MiniHalf(),a=Math.atan2(-cur.y,-cur.x),x=cur.x+Math.cos(a)*half*.84,y=cur.y+Math.sin(a)*half*.84;h+=`<g class="m2arrow" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(a*180/Math.PI).toFixed(1)}) scale(${(half/170).toFixed(2)})"><path d="M-18 -13 L18 0 L-18 13 L-9 0Z"/></g>`}
   return h}
-function m2MiniBox(){const r=S.run,M=r.m2;let pts;
-  if(M.inside){const nd=innerNodes(M.inside.diag);pts=[nd[M.inside.cur],nd[Math.min(5,M.inside.cur+1)]]}else{const c=m2Node(M.cur);pts=[c,...c.adj.map(j=>M.nodes[j])]}
-  const c=pts[0];let m=60;for(const p of pts)m=Math.max(m,Math.hypot(p.x-c.x,p.y-c.y));const half=m+70;return`${c.x-half} ${c.y-half} ${half*2} ${half*2}`}
+/* 중앙정부까지 남은 막 수 (안 가 본 길도 셈) */
+function m2Dist(){const N=S.run.m2.nodes,d=N.map(()=>Infinity);d[0]=0;const q=[0];while(q.length){const a=q.shift();for(const b of N[a].adj)if(d[b]===Infinity){d[b]=d[a]+1;q.push(b)}}return d}
+function m2Bearing(n){const a=(Math.atan2(n.x,-n.y)*180/Math.PI+382.5)%360;return['북','북동','동','남동','남','남서','서','북서'][Math.floor(a/45)%8]}
+function m2MiniHalf(){const r=S.run,M=r.m2;let pts;if(M.inside){const nd=innerNodes(M.inside.diag);pts=[nd[M.inside.cur],nd[Math.min(5,M.inside.cur+1)]]}else{const c=m2Node(M.cur);pts=[c,...c.adj.map(j=>M.nodes[j])]}
+  const c=pts[0];let m=60;for(const p of pts)m=Math.max(m,Math.hypot(p.x-c.x,p.y-c.y));return m+85}
+function m2MiniBox(){const M=S.run.m2,half=m2MiniHalf(),c=M.inside?innerNodes(M.inside.diag)[M.inside.cur]:m2Node(M.cur);return`${c.x-half} ${c.y-half} ${half*2} ${half*2}`}
 function showMap2(full){if(S.run.pendJoin)return showJoin();if(S.run.pendFav){S.run.pendFav=false;setTimeout(()=>a2Guide('fav'),0)}
   const r=S.run;if(!r.m2||r.m2.v!==2)r.m2=genMap2(r.dir||'E');const M=r.m2;S.screen='map';viewFor('map');hideCombatUI();closeModal();r.at=null;renderTop();save();
   const IN=M.inside,cur=IN?null:m2Node(M.cur),t=IN?(IN.cur===0?'gate':IN.cur===5?'boss':'elite'):m2Type(cur);
   const where=IN?`중앙정부 안 · ${IN.cur===0?'입구':IN.cur>=5?'보스':'정예 '+IN.cur}`:`${cur.kind==='ws'?WS_LAB[cur.reg]:(cur.reg!=='C'?DIR2[cur.reg].n+' · ':'')+M2N[t]}`;
-  const what=IN?'앞으로만 간다 — 정예 1 → 2 → 3 → 4 → 보스, 사이에 회복 없음':r.mode==='dain'?'다인모드 — 모든 막이 전투 또는 정예':r.hostile?'모든 공방이 적대 — 모든 막이 전투':`갈 수 있는 막 ${cur.adj.length}곳 · 전투 없이 지난 막 ${r.quiet||0}${r.contract?` · 계약: ${WS2[r.contract].n}`:''}`;
+  const DIST=IN?null:m2Dist();
+  const what=IN?'앞으로만 간다 — 정예 1 → 2 → 3 → 4 → 보스, 사이에 회복 없음':r.mode==='dain'?'다인모드 — 모든 막이 전투 또는 정예':r.hostile?'모든 공방이 적대 — 모든 막이 전투':`전투 없이 지난 막 ${r.quiet||0}${r.contract?` · 계약: ${WS2[r.contract].n}`:''}`;
+  const guide=IN?'':`중앙정부까지 최소 <b>${DIST[M.cur]}막</b> · ${m2Bearing({x:-cur.x,y:-cur.y})}쪽 방향`;
+  const optBtn=(attr,type,name,note,cls)=>`<button class="m2opt ${type}${cls||''}" ${attr}><svg viewBox="-15 -15 30 30" aria-hidden="true">${M2IC[type]}</svg><b>${name}</b>${note?`<small>${note}</small>`:''}</button>`;
+  let opts;
+  if(IN){const nd=innerNodes(IN.diag),nx=nd[IN.cur+1];opts=nx?optBtn(`data-in="${nx.id}"`,nx.kind==='re'?'elite':nx.kind,nx.kind==='re'?'정예 '+nx.n:'보스','',''):''}
+  else opts=[...cur.adj].sort((a,b)=>DIST[a]-DIST[b]).map(j=>{const n=M.nodes[j],ty=m2Type(n),close=DIST[j]<DIST[M.cur];return optBtn(`data-id="${j}"`,ty,n.kind==='ws'?WS_LAB[n.reg]:M2N[ty],`${m2Bearing2(cur,n)}쪽${close?' · 중앙정부 방향':''}`,close?' near':'')}).join('');
+  const LEG=[['here','내 위치'],['can','갈 수 있는 곳'],['shop','상점'],['event','사건'],['combat','전투'],['elite','정예'],['ws','공방'],['rush','중앙정부']];
   const sc=openScreen('');
-  sc.innerHTML=`<div class="m2stage"><div class="m2mid"><div class="psub">세계수 등반 · 2장 니다벨리르 · ${DIR2[r.dir].n}에서 시작 · 목표는 중앙정부</div><div class="m2where">${where}</div><div class="m2what${r.hostile&&!IN?' bad':''}">${what}</div><div class="hint">원에서 갈 막을 누른다 · 원을 누르면 전체 지도</div></div>
+  sc.innerHTML=`<div class="m2stage"><div class="m2mid"><div class="psub">세계수 등반 · 2장 니다벨리르 · ${DIR2[r.dir].n}에서 시작 · 목표는 중앙정부</div><div class="m2where">${where}</div><div class="m2what${r.hostile&&!IN?' bad':''}">${what}</div>${guide?`<div class="m2guide">${guide}</div>`:''}<div class="m2opts">${opts}</div></div>
     <div class="m2tag">지도 · 눌러서 크게</div><div class="m2mini" id="m2mini" tabindex="0" role="button" aria-label="전체 지도 열기"><svg viewBox="${m2MiniBox()}">${m2Svg('mini')}</svg></div>
-    <div class="m2full" id="m2full" ${full?'':'hidden'}><svg viewBox="-520 -520 1040 1040">${m2Svg('full')}</svg><button class="btn-ghost m2close" id="m2close">작게 보기</button></div></div>`;
+    <div class="m2full" id="m2full" hidden><svg id="m2fsvg" viewBox="-520 -520 1040 1040">${m2Svg('full')}</svg>
+      <div class="m2legend">${LEG.map(([k,n])=>`<span class="lg ${k}"><i></i>${n}</span>`).join('')}</div>
+      <div class="m2tools"><button class="btn-ghost" id="m2in" aria-label="확대">＋</button><button class="btn-ghost" id="m2out" aria-label="축소">－</button><button class="btn-ghost" id="m2me">내 위치</button><button class="btn-ghost" id="m2all">전체</button><button class="btn-ghost" id="m2close">작게 보기</button></div></div></div>`;
   const pickNode=e=>{const g=e.target.closest('[data-id],[data-in]');if(!g)return false;e.stopPropagation();if(g.dataset.in!=null)innerGo(+g.dataset.in);else enterNode2(+g.dataset.id);return true};
-  $('#m2mini').addEventListener('click',e=>{if(!pickNode(e))$('#m2full').hidden=false});
-  $('#m2mini').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#m2full').hidden=false}});
-  $('#m2full').addEventListener('click',e=>{if(pickNode(e))return;if(e.target.id==='m2full')$('#m2full').hidden=true});
-  $('#m2close').onclick=()=>{$('#m2full').hidden=true};
+  sc.querySelectorAll('.m2opt').forEach(b=>b.onclick=pickNode);
+  /* 전체 지도 — 내 위치에서 크게 시작, 끌어서 이동 · 휠이나 두 손가락으로 확대 */
+  const fs=$('#m2fsvg'),box=$('#m2full'),me=IN?innerNodes(IN.diag)[IN.cur]:cur,V={x:me.x,y:me.y,w:620},MIN=320,MAX=1060;
+  const draw=()=>{const W=fs.clientWidth||1,H=fs.clientHeight||1,a=H/W;V.w=clamp(V.w,MIN,MAX);V.x=clamp(V.x,-M2R,M2R);V.y=clamp(V.y,-M2R,M2R);let w=V.w,h=V.w;if(a<1)w=V.w/a;else h=V.w*a;fs.setAttribute('viewBox',`${V.x-w/2} ${V.y-h/2} ${w} ${h}`)};
+  const unit=()=>{const W=fs.clientWidth||1,H=fs.clientHeight||1;return(H<W?V.w/H:V.w/W)};
+  const openFull=()=>{box.hidden=false;V.x=me.x;V.y=me.y;V.w=620;draw()};
+  const pts=new Map();let moved=false,last=null,pinch=0;
+  fs.addEventListener('pointerdown',e=>{pts.set(e.pointerId,[e.clientX,e.clientY]);moved=false;last=[e.clientX,e.clientY];pinch=0});
+  fs.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(pts.size>=2){const[a,b]=[...pts.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pinch){V.w*=pinch/d;draw()}pinch=d;moved=true;return}
+    const dx=e.clientX-last[0],dy=e.clientY-last[1];if(!moved&&Math.hypot(dx,dy)<8)return;moved=true;const u=unit()/(S.scale||1);V.x-=dx*u;V.y-=dy*u;last=[e.clientX,e.clientY];draw()});
+  const up=e=>{pts.delete(e.pointerId);pinch=0;if(pts.size)last=[...pts.values()][0]};
+  fs.addEventListener('pointerup',up);fs.addEventListener('pointercancel',up);fs.addEventListener('pointerleave',up);
+  fs.addEventListener('wheel',e=>{e.preventDefault();V.w*=e.deltaY>0?1.15:.87;draw()},{passive:false});
+  $('#m2mini').addEventListener('click',e=>{if(!pickNode(e))openFull()});
+  $('#m2mini').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFull()}});
+  fs.addEventListener('click',e=>{if(moved)return;pickNode(e)});
+  $('#m2in').onclick=()=>{V.w*=.75;draw()};$('#m2out').onclick=()=>{V.w*=1.33;draw()};
+  $('#m2me').onclick=()=>{V.x=me.x;V.y=me.y;V.w=620;draw()};$('#m2all').onclick=()=>{V.x=0;V.y=0;V.w=MAX;draw()};
+  $('#m2close').onclick=()=>{box.hidden=true};
+  if(full)openFull();
 }
+function m2Bearing2(a,b){return m2Bearing({x:b.x-a.x,y:b.y-a.y})}
 function a2Group(shopWs){const n=ri(1,3),o=[];for(let i=0;i<n;i++)o.push(pick(A2_NORMAL));const staff=shopWs&&SHOP_STAFF[shopWs];if(staff)o[0]=staff;return o.map(k=>makeEnemy(k))}
 /* 중앙정부 안에서 다음 막으로 */
 function innerGo(id){const r=S.run,IN=r.m2.inside;if(!IN||id!==IN.cur+1)return;stockTick();r.at={kind:'rush',i:id-1};save();transition(startRush)}
 function enterNode2(id){
   const r=S.run,M=r.m2,n=m2Node(id),from=M.cur;if(!m2Node(from).adj.includes(id))return;
   const a=Math.min(from,id),b=Math.max(from,id);M.walked=M.walked||[];if(!M.walked.includes(a+'-'+b))M.walked.push(a+'-'+b);
-  if(n.kind==='center'){const gate=m2Node(from).gate||'NE';return confirmBox('중앙정부','중앙정부 안으로 들어간다 — 정예 4명과 보스를 차례로 상대한다. 사이에 회복은 없고, 도망칠 수 없으며, 되돌아갈 수 없다.','들어간다',()=>{M.cur=id;n.vis=true;M.inside={diag:gate,cur:0};save();showMap()})}
+  if(n.kind==='center'){const gate=m2Node(from).gate||'NE';return confirmBox('중앙정부','중앙정부 안으로 들어간다 — 정예 4명과 보스를 차례로 상대한다. 사이에 회복은 없고, 도망칠 수 없으며, 되돌아갈 수 없다.','들어간다',()=>{M.cur=id;n.vis=true;M.inside={diag:gate,cur:0};save();showMap();a2Guide('gov','krim')})}
   M.cur=id;const first=!n.vis;n.vis=true;r.floor=(r.floor||0)+1;stockTick();
   a2GuideRegion(n.reg);
   const t=m2Type(n);let at=null;
@@ -5773,7 +5846,7 @@ const BET_STAKES=[1000,10000,100000];
 const FG_KEY='ash-midgard-featguide-v1';
 const FGUIDE={
   black:['암시장',['상점에 들어가면 10% 확률로 본래 상점 대신 암시장이 열립니다.','암시장의 물건은 장점과 단점이 모두 큽니다. 미드가르드에서는 희귀 등급, 니다벨리르에서는 전설 등급이 나옵니다. 장비를 누르면 효과를 전부 볼 수 있습니다.','묠니르의 파편과 궁니르의 조각도 팝니다. 같은 것을 9개 모으면 획득 사건이 일어납니다. 도박장은 암시장에서만 열립니다.']],
-  stock:['주식',['니다벨리르 5대 공방의 지분을 사고팔 수 있습니다. 지도에서 한 막 이동할 때마다 1시간이 지나고 주가가 움직입니다.','레미 공방은 잘 움직이지 않는 대신 조금씩 오르고, 크리밀라 공방은 크게 출렁이는 대신 잘 풀리면 많이 오릅니다. 가끔 급등하거나 급락합니다.','주식은 2장 니다벨리르에서만 거래합니다. 산 주식은 모든 공방 상점과 암시장에서 팔 수 있습니다. 팔 때 수수료 2%를 내므로, 평균가보다 2% 넘게 비싸게 팔아야 이득입니다. 그래프는 최근 48시간의 주가입니다.','시간 넘기기로 이동하지 않고 시간을 보낼 수 있습니다. 상점에 한 번 들를 때마다 24시간까지 넘길 수 있습니다. 공방이 일해야 오르기 때문에, 넘긴 시간에는 주가가 오르내리기만 하고 오름세는 없습니다.']],
+  stock:['주식',['공방에 투자할 수 있어요. 지도에서 한 막 이동할 때마다 1시간이 지나고 주가가 변해요. 다 잃어도 괜찮아요. 그러면 더 잃을 것도 없으니까요.','레미 공방은 잘 움직이지 않는 대신 조금씩 오르고, 크리밀라 공방은 크게 출렁이는 대신 잘 풀리면 많이 올라요. 가끔 급등하거나 급락해요.','주식은 2장 니다벨리르에서만 거래해요. 산 주식은 모든 공방 상점과 암시장에서 팔 수 있어요. 팔 때 수수료 2%를 내므로, 평균가보다 2% 넘게 비싸게 팔아야 이득이에요. 그래프는 최근 48시간의 주가예요.','시간 넘기기로 이동하지 않고 시간을 보낼 수 있어요. 상점에 한 번 들를 때마다 24시간까지 넘길 수 있어요. 공방이 일해야 오르기 때문에, 넘긴 시간에는 주가가 오르내리기만 하고 오름세는 없어요.']],
   bet:['도박장',['도박장은 암시장에서만 열립니다. 판돈을 1단화, 10단화, 100단화 중에서 고르고 게임을 고릅니다. 판돈은 게임을 시작할 때 냅니다.','게임은 원카드, 포카드, 블랙잭 세 가지입니다. 처음 하는 게임은 시작 전에 규칙을 알려 줍니다. 게임 화면의 규칙 버튼으로 다시 볼 수 있습니다.']],
   onecard:['원카드',['패의 카드를 끌어 가운데 카드 위에 놓으면 냅니다. 맨 위 카드와 문양이나 숫자가 같아야 합니다. 낼 카드가 없으면 한 장 받습니다. 먼저 손을 다 비우면 이기고, 판돈의 2배를 돌려받습니다.','2를 내면 상대가 2장, A를 내면 3장을 받습니다. 공격을 받으면 2나 A로 받아칠 수 있고, 받아치면 장수가 쌓입니다.','J · Q · K를 내면 한 번 더 냅니다. 7을 내면 문양을 바꿉니다. 손에 16장이 쌓이면 집니다.']],
   poker:['포카드',['카드 5장을 받습니다. 바꿀 카드를 끌어 교체 칸에 놓고 바꾸기를 누르면 한 번 바꿉니다. 교체 칸의 카드를 누르면 패로 돌아옵니다.','족보에 따라 판돈의 배수를 돌려받습니다. J 이상 원페어 1배 · 투페어 2배 · 트리플 3배 · 스트레이트 4배 · 플러시 6배 · 풀하우스 9배 · 포카드 25배 · 스트레이트 플러시 50배 · 로열 스트레이트 플러시 250배. 족보가 없으면 판돈을 잃습니다.']],
@@ -6052,20 +6125,23 @@ function startRush(){const r=S.run,i=r.at.i||0;let key=RUSH[i];
   const E=makeEnemy(key);r.at={kind:'combat',enemies:[E],rush:i};save();resumeAt()}
 /* 2장 튜토리얼 — 지점(방향)마다 다르게, 상점부터 키워드 설명 (문서: 튜토리얼 · 2장 튜토리얼) */
 const A2_GUIDE={
-  equip:['장비',['공방 상점에서는 장비를 살 수 있습니다. 산 장비는 바로 적용되지 않고 장비 보관함으로 들어갑니다.','장비 보관함에서 장비를 눌러 머리, 몸통, 다리, 오른손, 왼손, 발 칸에 착용합니다.','소유 효과 장비는 착용하지 않아도 보관함에 있으면 효과가 납니다. 전투 중 보관함을 열면 황금빛으로 빛나며 발동 중으로 표시됩니다.']],
-  fav:['공방 친호도',['공방 사건의 선택에 따라 그 공방의 친호도가 오릅니다.','친호도가 50이 되면 입단 제의가 옵니다. 입단은 한 곳만 할 수 있고, 그 지역 상점이 20% 싸집니다.','친호도가 100이 되면 친우가 됩니다.','공방 사건에서 벌어지는 전투는 적대로 이어지지 않습니다.']],
-  shop:['니다벨리르 상점',['니다벨리르는 미드가르드보다 물건값이 훨씬 비쌉니다. 같은 물건이라도 이곳에서는 비싸게 팝니다.','니다벨리르부터 일반 카드는 나오지 않습니다. 공방 상점에서는 희귀와 영웅 등급을 팝니다.','강화 비용은 그 카드·아이템 가격의 30%입니다.','범용 장비는 착용하지 않아도 보관함에 넣어 두기만 하면 효과가 적용됩니다. 같은 범용 장비는 하나만 가질 수 있고, 할인 효과는 서로 겹치지 않습니다.','상점에서 전투를 고르면 모든 공방이 적대하고 상점이 닫힙니다.']],
-  E:['동 · 스타인러 공방: 증기와 열기',['증기는 쌓일수록 받는 피해가 커지는 부정적 키워드입니다. 증기 1당 받는 피해 +10%입니다.','턴이 끝날 때 증기가 10 이상이면 증기 10을 소모해 열기 1로 바뀝니다.','열기 1당 공격 주사위가 1 커집니다. 열기는 턴마다 1씩 줄어듭니다. 열기는 증기 10으로만 얻습니다.']],
-  N:['북 · 크리뷔스 공방: 냉매, 냉동, 깨짐',['냉매 1당 행동 수치 +1, 코스트 -1입니다. 냉매가 3 이상이면 냉동이 됩니다.','냉동되면 1턴 동안 행동할 수 없고, 공격을 받으면 깨짐이 2단계 오릅니다.','깨짐 1단계당 받는 피해 +50%입니다. 냉매는 소각을 중화합니다.']],
-  S:['남 · 아쉬부티 공방: 예술적 감각과 작품',['같은 카드를 3번 연속으로, 또는 다른 카드를 3번 연속으로 쓰면 예술적 감각을 얻습니다. 1당 드로우 +1, 코스트 +1입니다.','예술적 감각이 3이 되면 작품 준비 카드가 생깁니다. 작품 준비는 턴이 지나도 사라지지 않고, 턴마다 5~20% 확률로 작품-완성이 됩니다.','작품-완성이 패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2입니다.']],
-  W:['서 · 레미 공방: 음식, 먹기, 배부름, 포화',['음식 카드를 쓰면 먹기를 얻습니다. 먹기 1당 최대 체력 +5%입니다.','먹기가 10이 되면 배부름이 되어 최대 체력 +50%가 더 붙습니다.','배부름이 3턴 이어지면 포화가 쌓여, 모든 카드에 최대 체력 비례 피해가 붙습니다.']],
+  enter:['니다벨리르',['어서 오세요. 먼 길 오느라 정말 고생 많으셨어요. 이곳은 공방들의 땅, 니다벨리르예요.','공방은 사업을 하며 무기와 장비를 만들어요. 공방마다 특별한 카드와 장비도 판답니다.','이곳은 기회의 땅이에요. 뒤처지면 아랫지형으로 내려가는데, 대부분 돌아오지 못해요. 그러니 끼니는 꼭 챙겨 드세요.']],
+  equip:['장비',['공방 상점에서는 장비를 살 수 있어요. 산 장비는 바로 적용되지 않고 장비 보관함으로 들어가요.','장비 보관함에서 장비를 눌러 머리, 몸통, 다리, 오른손, 왼손, 발 칸에 착용해요.','소유 효과 장비는 착용하지 않아도 보관함에 있으면 효과가 나요. 전투 중 보관함을 열면 황금빛으로 빛나며 발동 중으로 표시돼요.']],
+  fav:['공방 친호도',['공방 사건의 선택에 따라 그 공방의 친호도가 올라요.','친호도가 50이 되면 공방에서 입단을 제의해요. 입단은 한 곳만 할 수 있어요.','입단하면 그 지역 상점이 20% 싸져요. 거절해도 친호도는 그대로예요. 다들 괜찮다고 웃어 주실 거예요. 기억은 하시겠지만요.','친호도가 100이 되면 친우가 돼요.','공방 사건에서 벌어지는 전투는 적대로 이어지지 않아요.']],
+  shop:['니다벨리르 상점',['니다벨리르는 미드가르드보다 물건값이 훨씬 비싸요. 놀라지 마세요. 돈이 없는 건 게으르다는 증거라고들 하니까요.','니다벨리르부터 일반 카드는 나오지 않아요. 공방 상점에서는 희귀와 영웅 등급을 팔아요.','강화 비용은 그 카드·아이템 가격의 30%예요.','범용 장비는 착용하지 않아도 보관함에 넣어 두기만 하면 효과가 적용돼요. 같은 범용 장비는 하나만 가질 수 있고, 할인 효과는 서로 겹치지 않아요.','상점에서 전투를 고르면 모든 공방이 적대하고 상점이 닫혀요. 부디 그러지 마세요. 걱정돼서 그래요.']],
+  E:['스타인러 공방',['증기를 다루는 곳이에요. 모든 일을 손으로 하는 부지런한 분들이죠. 증기에 데었다면 손가락을 세어 보세요. 열 개면 괜찮은 거예요.','증기는 쌓일수록 받는 피해가 커지는 부정적 키워드예요. 증기 1당 받는 피해 +10%예요.','턴이 끝날 때 증기가 10 이상이면 증기 10을 소모해 열기 1로 바뀌어요.','열기 1당 공격 주사위가 1 커져요. 열기는 턴마다 1씩 줄어요. 열기는 증기 10으로만 얻어요.']],
+  N:['크리뷔스 공방',['냉매제를 다루는 곳이에요. 많이 춥죠? 사람들이 차가워도 너무 상처받지 마세요. 마음보다 손가락이 먼저 얼 거예요.','냉매 1당 행동 수치 +1, 코스트 -1이에요. 냉매가 3 이상이면 냉동이 돼요.','냉동되면 1턴 동안 행동할 수 없고, 공격을 받으면 깨짐이 2단계 올라요.','깨짐 1단계당 받는 피해 +50%예요. 냉매는 소각을 중화해요.']],
+  S:['아쉬부티 공방',['예술품과 교육을 내세우는 곳이에요. 작품을 보면 "오..."라고만 해도 충분해요. 그 뒤에 벌어지는 일은 제가 지켜 드릴 수 없지만, 마음으로 응원할게요.','같은 카드를 3번 연속으로, 또는 다른 카드를 3번 연속으로 쓰면 예술적 감각을 얻어요. 1당 드로우 +1, 코스트 +1이에요.','예술적 감각이 3이 되면 작품 준비 카드가 생겨요. 작품 준비는 턴이 지나도 사라지지 않고, 턴마다 5~20% 확률로 작품-완성이 돼요.','작품-완성이 패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2예요.']],
+  W:['레미 공방',['식품을 다루는 곳이에요. 배가 고프면 언제든 오세요. 재료가 어디서 왔는지만 묻지 않으면 다들 정말 친절하답니다.','음식 카드를 쓰면 먹기를 얻어요. 먹기 1당 최대 체력 +5%예요.','먹기가 10이 되면 배부름이 되어 최대 체력 +50%가 더 붙어요.','배부름이 3턴 이어지면 포화가 쌓여, 모든 카드에 최대 체력 비례 피해가 붙어요.']],
+  gov:['중앙정부',['이곳은 공방이 아니라 모든 것을 정의하는 곳이에요.','여기서 사망으로 기록되면, 맞든 틀리든 그날부터 돌아가신 분이에요. 서류는 꼭 확인하세요. 걱정돼서 그래요.']],
+  krim:['크리밀라 공방',['인간의 기술로 신의 능력을 따라 하는 곳이에요. 꿈이 있는 분들은 참 멋지죠. 옆자리 분이 사라져도 놀라지 마세요. 새로운 분이 금방 오시거든요.']],
 };
 const A2G_KEY='ash-midgard-a2guide-v1';
 function a2GuideSeen(){try{return JSON.parse(localStorage.getItem(A2G_KEY)||'{}')}catch(e){return{}}}
-function a2Guide(k){const g=A2_GUIDE[k];if(!g)return;const seen=a2GuideSeen();if(seen[k]&&tutDone())return;seen[k]=1;try{localStorage.setItem(A2G_KEY,JSON.stringify(seen))}catch(e){}
-  setTimeout(()=>{const m=$('#modal');if(!m.hidden)return;m.hidden=false;let i=0;const draw=()=>{m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div><div class="psub">2장 튜토리얼 · ${i+1} / ${g[1].length}</div><div class="ptitle">${g[0]}</div></div><button class="btn-ghost" id="gSkip">건너뛰기</button></div>
+function a2Guide(k,then){const g=A2_GUIDE[k];if(!g)return;const seen=a2GuideSeen();if(seen[k]&&tutDone())return then&&a2Guide(then);seen[k]=1;try{localStorage.setItem(A2G_KEY,JSON.stringify(seen))}catch(e){}
+  setTimeout(()=>{const m=$('#modal');if(!m.hidden)return;m.hidden=false;let i=0;const draw=()=>{m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div><div class="psub">니다벨리르 안내 · ${i+1} / ${g[1].length}</div><div class="ptitle">${g[0]}</div></div><button class="btn-ghost" id="gSkip">건너뛰기</button></div>
     <div class="ptext">${g[1][i]}</div><div class="choices"><button class="btn-main" id="gNext">${i<g[1].length-1?'다음':'알겠다'}</button></div></div>`;
-    $('#gSkip').onclick=closeModal;$('#gNext').onclick=()=>{if(i<g[1].length-1){i++;draw()}else closeModal()}};draw()},REDUCED?50:450)}
+    const end=()=>{closeModal();if(then)a2Guide(then)};$('#gSkip').onclick=end;$('#gNext').onclick=()=>{if(i<g[1].length-1){i++;draw()}else end()}};draw()},REDUCED?50:450)}
 function a2GuideRegion(reg){if(reg&&reg!=='C')a2Guide(reg)}
 /* 2장 승리 — 업데이트 대기 */
 function showAct2Victory(gold,lines,loot){S.screen='victory';renderTop();const r=S.run,sc=openScreen('',{dim:true});lines=lines||[];clearSave();
@@ -6201,7 +6277,7 @@ loadSave=function(){const r=S.run;if(r&&r.slot!=null){const x=slotRead(r.slot);r
 clearSave=function(){const r=S.run;if(r&&r.slot!=null){const x=slotRead(r.slot);if(x&&x.kind==='climb'&&!x.manual)slotDel(r.slot)}};
 function slotDesc(x){const d=x.data||{};
   if(x.kind==='hunt')return{n:'절멸전',s:`${(GODS[d.god]||{god:'?'}).god} · 처치 ${d.kills||0}${d.mode==='exterminate'?' / 2000':''}`};
-  return{n:'세계수 등반',s:`${(CDIFF[d.diff]||CDIFF.easy).n} · ${d.act===2?`2장 니다벨리르 · ${d.floor||0}막`:`1장 · ${d.floor||0} / 30막`} · ${d.mode==='dain'?'다인모드':`Lv ${d.lvl||1}`}`}}
+  return{n:'세계수 등반',s:`${(CDIFF[d.diff]||CDIFF.easy).n} · ${d.act===2?`2장 니다벨리르 · ${d.floor||0}막`:`1장 · ${d.floor||0} / ${ROWS}막`} · ${d.mode==='dain'?'다인모드':`Lv ${d.lvl||1}`}`}}
 function slotTime(t){if(!t)return'';const d=new Date(t),z=n=>String(n).padStart(2,'0');return`${d.getMonth()+1}/${d.getDate()} ${z(d.getHours())}:${z(d.getMinutes())}`}
 /* 새로 시작할 막 고르기 — 빈 칸이 있으면 바로, 10개가 다 찼으면 덮어쓸 기록을 고름 */
 function slotStart(go){S.pendingSlot=null;const i=slotFree();if(i!=null){S.pendingSlot=i;return go()}openSlots('over',null,go)}
