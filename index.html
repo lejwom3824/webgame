@@ -247,7 +247,7 @@ img{-webkit-user-drag:none;-webkit-touch-callout:none}
 canvas#bg{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 #prelude{position:absolute;left:50%;bottom:28px;translate:-50% 0;z-index:9;width:min(980px,92%);box-sizing:border-box;padding:22px 28px 18px;border-radius:12px;background:linear-gradient(#20262df2,#13171bf2);border:1px solid #5b5446;box-shadow:0 24px 60px #000c;display:flex;flex-direction:column;gap:12px}#prelude .pl-lines{display:flex;flex-direction:column;gap:8px;font-family:var(--f-serif);font-size:20px;line-height:1.7;word-break:keep-all}#prelude .pl-lines p{margin:0;animation:tin .35s ease-out}#prelude .pl-say{color:#f0a493;font-family:var(--f-display);font-size:24px}#prelude .btn-main{align-self:flex-end}.port #prelude{bottom:40px}.port #prelude .pl-lines{font-size:24px}
 .restscene{display:block;width:100%;height:auto;border-radius:10px;box-shadow:inset 0 0 0 1px #ffffff14}.rs-stand{display:none}.restscene.standing .rs-sit{display:none}.restscene.standing .rs-stand{display:inline}.rs-fire .f1{animation:rsf .5s ease-in-out infinite alternate;transform-origin:50% 100%;transform-box:fill-box}.rs-fire .f2{animation:rsf .37s ease-in-out infinite alternate-reverse;transform-origin:50% 100%;transform-box:fill-box}@keyframes rsf{to{transform:scaleY(.82) scaleX(1.06)}}.rs-glow{animation:rsg 1.4s ease-in-out infinite alternate}@keyframes rsg{to{opacity:.75}}.rs-smoke{opacity:0;transition:opacity 1.2s}.rs-fire,.rs-glow{transition:opacity 1s}.restscene.out .rs-fire,.restscene.out .rs-glow{opacity:0}.restscene.out .rs-smoke{opacity:.5}.restchat{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto;font-family:var(--f-serif);font-size:18px;line-height:1.65;word-break:keep-all}.restchat p{margin:0;animation:tin .35s ease-out}.restchat b{font-family:var(--f-ui);font-size:13px;color:var(--bone-dim);margin-right:10px;font-weight:700}.restchat .me b{color:var(--brass-hi)}.restchat .note{color:var(--bone-dim);font-style:italic}.port .restchat{font-size:22px;max-height:420px}@media (prefers-reduced-motion:reduce){.rs-fire .f1,.rs-fire .f2,.rs-glow{animation:none}}
-#knightFig{position:absolute;pointer-events:none;z-index:1}#knightFig .kn-art{position:absolute;inset:0;filter:grayscale(1) brightness(1.55) contrast(.95) drop-shadow(0 0 14px #dfe6ee55);transform-origin:50% 100%}#knightFig .kn-art svg{width:100%;height:100%;display:block}#knightFig.in .kn-art{animation:knIn .7s ease-out both}@keyframes knIn{from{opacity:0;transform:translateY(24px) scale(.94)}}#knightFig .kn-art.hit{animation:hit .3s}#knightFig.dead{opacity:.18;transition:opacity .8s}#knightFig .kn-plate{position:absolute;left:50%;bottom:100%;translate:-50% -6px;width:max(150px,90%);text-align:center}#knightFig .kn-plate b{display:block;font-family:var(--f-display);font-weight:400;font-size:18px;color:#dfe6ee;text-shadow:0 2px 6px #000}#knightFig .kn-bar{position:relative;display:block;height:12px;border-radius:3px;background:#0b0d10;box-shadow:inset 0 0 0 1px #ffffff1a;overflow:hidden;margin-top:3px}#knightFig .kn-bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#cfd8e2,#7c8792)}#knightFig .kn-bar em{position:relative;font-style:normal;font-size:10.5px;font-weight:700;line-height:12px;color:#0d1013}.port #knightFig .kn-plate b{font-size:21px}
+#dockL .plate-btn.big{font-size:21px;font-weight:700;padding:12px 24px;min-height:58px;border:2px solid var(--brass);color:var(--brass-hi)}.port #dockL .plate-btn.big{font-size:26px;padding:14px 28px;min-height:72px}[data-tut=prep] #prepBtn{box-shadow:0 0 0 3px var(--brass-hi),0 0 22px var(--brass-hi)}#knightFig .kn-art.act{animation:knAct .32s ease-out}@keyframes knAct{40%{transform:translateY(-10px) scale(1.07)}}#knightFig{position:absolute;pointer-events:none;z-index:1}#knightFig .kn-art{position:absolute;inset:0;filter:grayscale(1) brightness(1.55) contrast(.95) drop-shadow(0 0 14px #dfe6ee55);transform-origin:50% 100%}#knightFig .kn-art svg{width:100%;height:100%;display:block}#knightFig.in .kn-art{animation:knIn .7s ease-out both}@keyframes knIn{from{opacity:0;transform:translateY(24px) scale(.94)}}#knightFig .kn-art.hit{animation:hit .3s}#knightFig.dead{opacity:.18;transition:opacity .8s}#knightFig .kn-plate{position:absolute;left:50%;bottom:100%;translate:-50% -6px;width:max(150px,90%);text-align:center}#knightFig .kn-plate b{display:block;font-family:var(--f-display);font-weight:400;font-size:18px;color:#dfe6ee;text-shadow:0 2px 6px #000}#knightFig .kn-bar{position:relative;display:block;height:12px;border-radius:3px;background:#0b0d10;box-shadow:inset 0 0 0 1px #ffffff1a;overflow:hidden;margin-top:3px}#knightFig .kn-bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#cfd8e2,#7c8792)}#knightFig .kn-bar em{position:relative;font-style:normal;font-size:10.5px;font-weight:700;line-height:12px;color:#0d1013}.port #knightFig .kn-plate b{font-size:21px}
 #introFilm{position:absolute;inset:0;z-index:30;background:#08090a;display:grid;place-items:center;transition:opacity .5s}#introFilm canvas{display:block;width:100%;height:auto;max-height:100%}#introFilm.out{opacity:0}#ifSkip{position:absolute;right:24px;bottom:22px;z-index:2;font-size:15px;color:var(--bone-dim);padding:6px 14px;border-radius:6px;background:rgba(14,17,20,.6);border:1px solid #3b434d;pointer-events:none}.port #ifSkip{font-size:19px}
 
 button{font-family:var(--f-ui);color:var(--bone);cursor:pointer}
@@ -954,45 +954,45 @@ const EVA_DICE_CAP=30;      // 회피 주사위로 얻는 회피는 한 턴에 �
 
 /* ================= card data (웹게임 문서 기준) ================= */
 const CARDS={
-  slash:{name:'어설픈 베기',sword:1,cost:1,type:'atk',rar:'start',d:[A(12,18)],text:'공격 12~18',flavor:'누구나 처음엔 이렇게 휘두른다.'},
-  ms_slash:{name:'베기',sword:1,cost:1,type:'atk',rar:'special',d:[A(30,100)],text:'공격 30~100',flavor:'깔끔해 보이는 절단'},
-  ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'special',d:[A(50,150)],draw:1,text:'공격 50~150\n드로우 +1',flavor:'붙어 있는 것을 떨어지게 만드는 감각'},
-  ms_flash:{name:'일섬',sword:1,cost:0,type:'atk',rar:'special',d:[A(75,95)],draw:1,gainE:1,text:'공격 75~95\n드로우 +1, 코스트 +1',flavor:''},
-  ms_kendo:{name:'검도-정석',sword:1,cost:0,type:'atk',rar:'special',d:[A(100,150)],draw:1,gainE:1,text:'공격 100~150\n드로우 +1, 코스트 +1',flavor:''},
-  ms_kendo2:{name:'검도-변화',sword:1,cost:0,type:'atk',rar:'special',d:[A(50,150)],draw:1,gainE:1,text:'공격 50~150\n드로우 +1, 코스트 +1',flavor:''},
-  f_pi:{name:'피륙',sword:1,cost:2,type:'atk',rar:'fused',ap:3,d:[A(100,330)],text:'공격 100~330\n행동 수치 3 소모',flavor:'투박하지만, 정확히 끊어낸 절단'},
-  f_ryeo:{name:'도려내기',sword:1,cost:3,type:'atk',rar:'fused',ap:2,draw:2,d:[A(150,450)],text:'공격 150~450\n드로우 +2, 행동 수치 2 소모',flavor:''},
-  f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'fused',d:[A(500,750)],text:'공격 500~750',flavor:''},
-  guard:{name:'막기',cost:1,type:'def',rar:'start',d:[D(10,14)],text:'방어 10~14',flavor:'막아내는 것도 살아남는 방법이다.'},
+  slash:{name:'어설픈 베기',sword:1,cost:1,type:'atk',rar:'start',d:[A(60,90)],text:'공격 60~90',flavor:'누구나 처음엔 이렇게 휘두른다.'},
+  ms_slash:{name:'베기',sword:1,cost:1,type:'atk',rar:'special',d:[A(100,150)],text:'공격 100~150',flavor:'깔끔해 보이는 절단'},
+  ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'special',d:[A(150,200)],draw:1,text:'공격 150~200\n드로우 +1',flavor:'붙어 있는 것을 떨어지게 만드는 감각'},
+  ms_flash:{name:'일섬',sword:1,cost:0,type:'atk',rar:'special',d:[A(75,95)],draw:1,gainE:1,text:'공격 75~95\n드로우 +1, 코스트 +1\n치명타 시 드로우 +1',flavor:''},
+  ms_kendo:{name:'검도-정석',sword:1,cost:0,type:'atk',rar:'special',d:[A(100,150),D(50,75)],draw:1,gainE:1,hold:true,text:'공격 100~150, 방어 50~75\n드로우 +1, 코스트 +1\n방어도가 사라지지 않음',flavor:''},
+  ms_kendo2:{name:'검도-변화',sword:1,cost:0,type:'atk',rar:'special',d:[A(50,100)],draw:1,gainE:1,text:'공격 50~100\n드로우 +1, 코스트 +1\n같은 카드가 패에 있으면 행동 수치 없이 재사용 (재사용 시 코스트 +1, 드로우 +1, 최대 2)',flavor:''},
+  f_pi:{name:'피륙',sword:1,cost:2,type:'atk',rar:'fused',ap:2,d:[A(200,430)],text:'공격 200~430\n행동 수치 2 소모',flavor:'투박하지만, 정확히 끊어낸 절단'},
+  f_ryeo:{name:'도려내기',sword:1,cost:3,type:'atk',rar:'fused',ap:2,draw:2,d:[A(150,450)],text:'공격 150~450\n드로우 +2, 행동 수치 2 소모\n데미지 300 이상이면 코스트 +2',flavor:''},
+  f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'fused',d:[A(500,750)],text:'공격 500~750\n합성에 쓴 카드는 3턴 뒤 버린 패로 돌아옴\n데미지 1000당 다음 턴 코스트 +1, 드로우 +1 (최대 2)',flavor:''},
+  guard:{name:'막기',cost:1,type:'def',rar:'start',d:[D(35,50)],text:'방어 35~50',flavor:'막아내는 것도 살아남는 방법이다.'},
   breath:{name:'숨 고르기',cost:0,type:'skill',rar:'start',draw:1,text:'드로우 +1',flavor:'숨을 쉬는 순간도 허락받아야 한다.'},
-  stab:{name:'찌르기',cost:0,type:'atk',rar:'common',d:[A(7,11)],text:'공격 7~11',flavor:'작은 상처도 쌓이면 무너진다.'},
-  double:{name:'연속 베기',cost:1,type:'atk',rar:'common',d:[A(6,10),A(6,10)],text:'공격 6~10 × 2',flavor:'한 번에 안 되면 두 번.'},
-  smash:{name:'내려찍기',cost:2,type:'atk',rar:'common',d:[A(28,42)],text:'공격 28~42',flavor:'세계수 아래에서는 위에서 떨어지는 것이 가장 무섭다.'},
-  shield:{name:'방패 세우기',cost:2,type:'def',rar:'common',d:[D(24,36)],text:'방어 24~36',flavor:'위를 향해 몸을 움츠리는 자세'},
-  sling:{name:'돌팔매',cost:1,type:'atk',rar:'common',d:[A(10,14)],weak:1,text:'공격 10~14, 적중 시 약화 1부여',flavor:'미드가르드에서 가장 흔한 무기는 바닥에 굴러다닌다.'},
-  gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(8,12)],vuln:1,text:'공격 8~12, 적중 시 취약 1부여',flavor:'광신도도 숨을 쉰다.'},
+  stab:{name:'찌르기',cost:0,type:'atk',rar:'common',d:[A(30,50)],text:'공격 30~50',flavor:'작은 상처도 쌓이면 무너진다.'},
+  double:{name:'연속 베기',cost:1,type:'atk',rar:'common',d:[A(40,55),A(40,55)],text:'공격 40~55 × 2',flavor:'한 번에 안 되면 두 번.'},
+  smash:{name:'내려찍기',cost:2,type:'atk',rar:'common',d:[A(130,190)],text:'공격 130~190',flavor:'세계수 아래에서는 위에서 떨어지는 것이 가장 무섭다.'},
+  shield:{name:'방패 세우기',cost:2,type:'def',rar:'common',d:[D(90,130)],text:'방어 90~130',flavor:'위를 향해 몸을 움츠리는 자세'},
+  sling:{name:'돌팔매',cost:1,type:'atk',rar:'common',d:[A(55,75)],weak:1,text:'공격 55~75, 적중 시 약화 1부여',flavor:'미드가르드에서 가장 흔한 무기는 바닥에 굴러다닌다.'},
+  gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(50,70)],vuln:1,text:'공격 50~70, 적중 시 취약 1부여',flavor:'광신도도 숨을 쉰다.'},
   hardtack:{name:'레미 공방의 건빵',cost:0,type:'skill',rar:'common',heal:4,exhaust:true,text:'체력 4 회복, 소멸',flavor:'니다벨리르의 모든 식탁은 이 공방을 거친다.'},
-  prayer:{name:'노른교의 기도',cost:1,type:'def',rar:'common',d:[D(8,12)],draw:1,text:'방어 8~12, 드로우 +1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
+  prayer:{name:'노른교의 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45, 드로우 +1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
   // 임시 카드 — 문서 일반덱에 회피 주사위 카드가 없어 시험용으로 넣음
-  duck:{name:'몸 낮추기',cost:1,type:'def',rar:'common',tmp:true,d:[V(10,16),D(3,5)],text:'회피 10~16, 방어 3~5\n(임시 카드 · 문서에 없음)',flavor:''},
-  parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',tmp:true,d:[V(6,10),A(6,10)],text:'회피 6~10, 공격 6~10\n(임시 카드 · 문서에 없음)',flavor:''},
+  duck:{name:'몸 낮추기',cost:1,type:'def',rar:'common',tmp:true,d:[V(10,16),D(15,25)],text:'회피 10~16, 방어 15~25\n(임시 카드 · 문서에 없음)',flavor:''},
+  parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',tmp:true,d:[V(6,10),A(35,50)],text:'회피 6~10, 공격 35~50\n(임시 카드 · 문서에 없음)',flavor:''},
   // 임시 카드 — 버리기 계열 (문서에 없음)
   tidy:{name:'정리',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 카드를 최대 3장 골라 버린다\n버린 장수만큼 드로우',flavor:''},
-  toss:{name:'내던지기',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 1장 골라 버린다\n이번 턴 다음 공격 카드 피해 +10',flavor:''},
-  embers:{name:'쌓인 재',cost:1,type:'atk',rar:'common',tmp:true,d:[A(6,9)],text:'공격 6~9\n이번 전투에서 버린 카드 1장당 피해 +3',flavor:''},
-  ashwall:{name:'잿더미 방패',cost:1,type:'def',rar:'common',tmp:true,d:[D(4,6)],text:'방어 4~6\n이번 턴에 버린 카드 1장당 방어도 +5',flavor:''},
-  letgo:{name:'미련 없이',cost:1,type:'atk',rar:'uncommon',tmp:true,d:[A(5,8)],text:'패를 전부 버린다\n공격 5~8을 버린 장수 + 1번',flavor:''},
+  toss:{name:'내던지기',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 1장 골라 버린다\n이번 턴 다음 공격 카드 피해 +30',flavor:''},
+  embers:{name:'쌓인 재',cost:1,type:'atk',rar:'common',tmp:true,d:[A(40,55)],text:'공격 40~55\n이번 전투에서 버린 카드 1장당 피해 +10',flavor:''},
+  ashwall:{name:'잿더미 방패',cost:1,type:'def',rar:'common',tmp:true,d:[D(20,30)],text:'방어 20~30\n이번 턴에 버린 카드 1장당 방어도 +15',flavor:''},
+  letgo:{name:'미련 없이',cost:1,type:'atk',rar:'uncommon',tmp:true,d:[A(30,45)],text:'패를 전부 버린다\n공격 30~45를 버린 장수 + 1번',flavor:''},
   // 임시 카드 — 조합 (휴식에서 두 장을 합침, 문서에 없음)
   // 임시 카드 — 뭉치 합성 (같은 카드 3장이 패에 모이면 바뀜, 문서에 없음)
   steam:{name:'스타인러 공방의 증기 장치',cost:1,type:'skill',rar:'uncommon',exhaust:true,text:'다음 턴 코스트 +2, 소멸',flavor:'아직 드워프의 손길이 남아 있는 마지막 공방의 물건.'},
   frost:{name:'크리뷔스 공방의 냉매 주머니',cost:1,type:'skill',rar:'uncommon',weak:2,text:'약화 2부여, 대상의 다음 공격 명중 -20',flavor:'가장 힘들게 만들어지고, 가장 빨리 소모된다.'},
-  mimic:{name:'크리밀라 공방의 모조 무구',cost:2,type:'atk',rar:'uncommon',d:[A(20,30)],text:'공격 20~30, 덱에 있는 특수무기 카드 1장을 패로 가져옴',flavor:'인간의 손으로 신을 흉내 낸 것. 흉내는 때로 진짜를 부른다.'},
+  mimic:{name:'크리밀라 공방의 모조 무구',cost:2,type:'atk',rar:'uncommon',d:[A(140,190)],text:'공격 140~190, 덱에 있는 특수무기 카드 1장을 패로 가져옴',flavor:'인간의 손으로 신을 흉내 낸 것. 흉내는 때로 진짜를 부른다.'},
   ornament:{name:'아쉬부티 공방의 파편 장식',cost:0,type:'skill',rar:'uncommon',text:'이번 턴 다음에 사용하는 카드의 코스트 -1',flavor:'유물의 조각은 이제 예술품이 되었다.'},
-  hook:{name:'등반가의 갈고리',cost:1,type:'atk',rar:'uncommon',d:[A(14,22)],text:'공격 14~22, 이번 턴 방어 카드로 방어도를 얻었으면 피해 2배',flavor:'니플헤임에서 돌아온 사람은 없었다. 거의.'},
-  temper:{name:'단련',cost:1,type:'power',rar:'uncommon',text:'지속\n이번 전투 동안 모든 공격 카드 피해 +5',flavor:'신들은 완성된 채로 태어났다. 인간은 매일 조금씩 만들어진다.'},
+  hook:{name:'등반가의 갈고리',cost:1,type:'atk',rar:'uncommon',d:[A(70,105)],text:'공격 70~105, 이번 턴 방어 카드로 방어도를 얻었으면 피해 2배',flavor:'니플헤임에서 돌아온 사람은 없었다. 거의.'},
+  temper:{name:'단련',cost:1,type:'power',rar:'uncommon',text:'지속\n이번 전투 동안 모든 공격 카드 피해 +25',flavor:'신들은 완성된 채로 태어났다. 인간은 매일 조금씩 만들어진다.'},
   gleipnir:{name:'글레이프니르의 실',cost:2,type:'skill',rar:'rare',exhaust:true,text:'대상의 다음 행동 1회를 취소함, 소멸',flavor:'이름이 생기기 전까지, 구속이라는 말에는 힘이 없었다.'},
   draupnir:{name:'드라우프니르의 파편',cost:1,type:'skill',rar:'rare',exhaust:true,text:'패의 카드 1장을 이번 전투 동안 복제함, 소멸',flavor:'감싸지 않으면 세상을 가득 채운다.'},
-  barrier:{name:'결계의 기억',cost:2,type:'power',rar:'rare',text:'지속\n매 턴 시작 시 방어 8~12',flavor:'지금까지 누군가에게 보호받고 있었음을, 막을 잃고서야 알았다.'},
+  barrier:{name:'결계의 기억',cost:2,type:'power',rar:'rare',text:'지속\n매 턴 시작 시 방어 30~45',flavor:'지금까지 누군가에게 보호받고 있었음을, 막을 잃고서야 알았다.'},
   mimir:{name:'미미르의 한 모금',cost:0,type:'skill',rar:'rare',exhaust:true,text:'드로우 +3, 최대 체력 -3 (영구), 소멸',flavor:'대가는 후불이다.'},
   // 다인슬레이프 (특수무기)
   d_dirty:{name:'더러운 참격',type:'atk',rar:'special',hpCost:5,d:[A(11,17)],text:'공격 11~17\nhp소모 5%',flavor:'날이 나가도, 베인 상처는 돌아오지 않는다.'},
@@ -1316,6 +1316,23 @@ async function bossPhaseCut(){
     enterPhase2('cut');
   }else if(p===3){enterPhase3()}
   renderCombat();await wait(300);
+}
+/* 은빛 기사 행동: 에인헤랴르 이단심문관의 행동을 보스가 행동할 때마다 순서대로 한 번씩 함 (공격레벨·명중은 이단심문관 기준, 전투 보정은 이 전투 값) */
+const KN_ORDER=['낙인','고해 강요','처단'];
+const knNext=k=>KN_ORDER[(k.idx||0)%KN_ORDER.length];
+async function knightAct(){
+  const C=S.C,E=C.E,r=S.run,k=E&&E.kn;if(!k||k.hp<=0||E.phase>=3||C.over||r.hp<=0)return;
+  const name=knNext(k),a=ACT[name];k.idx=(k.idx||0)+1;
+  toast('은빛 기사',name);clog(`은빛 기사 · ${name}`,'e');
+  const art=$('#knightFig .kn-art');if(art&&!REDUCED){art.classList.remove('act');void art.offsetWidth;art.classList.add('act')}
+  await wait(260);
+  if(a.pend){C.pend.push(a.pend);fxAt('player',name,'info');renderCombat();await wait(260);return}
+  const sv={name:E.name,atk:E.atk,acc:E.acc,revenge:E.revenge,actFlat:E.actFlat};let hit=false;
+  Object.assign(E,{name:'은빛 기사',atk:Math.round(lvAB(25)*diffEm()),acc:ENEMY.inquisitor.acc+(E.human||0)*5,revenge:0,actFlat:0});
+  try{for(const x of a.d){if(await enemyStrike(x,{gim:a.gim})!==false)hit=true;if(C.over||r.hp<=0)return}}
+  finally{Object.assign(E,sv)}
+  if(a.vuln){if(hit){C.pVuln+=a.vuln;fxAt('player',`취약 ${a.vuln}`,'info');clog(`적중 · 취약 ${a.vuln}`,'e')}else clog('빗나가 취약이 붙지 않음','e')}
+  renderCombat();await wait(200);
 }
 function knightCheck(){return;
   const E=S.C&&S.C.E;if(!E||!E.knightMax)return;
@@ -2698,13 +2715,14 @@ async function startPlayerTurn(){
   if(pt('elBack')&&r.mode!=='thor'){C.pEl+=3;clog(`${PTRAIT.elBack.n}: 자신에게 전격 3`)}
   if(r.mode==='dain'){const loss=Math.floor(r.hp*.1);if(loss>0){r.hp-=loss;fxAt('player',`허기 -${loss}`,'self');clog(`허기: 체력 10% 소모 -${loss}`)}}
   if(C.yu){C.yuT++;if(C.yuT>=2){C.yuT=0;C.yu--}}
-  for(let i=0;i<C.barrier;i++)gainBlock(rollDie(D(8,12)),0,'결계의 기억 방어 주사위');
+  for(let i=0;i<C.barrier;i++)gainBlock(rollDie(D(30,45)),0,'결계의 기억 방어 주사위');
   {const gb=gs('blockTurn')+(C.turn===1?gs('block0')+gs('blockFirst'):0);if(gb>0){C.block+=gb;clog(`장비 방어도 +${gb} (현재 ${C.block})`);fxAt('player',`+${gb} 방어도`,'block')}}
+  if(C.lockDisc&&C.lockDisc.length){C.disc.push(...C.lockDisc.filter(x=>x.t<=C.turn).map(x=>x.c));C.lockDisc=C.lockDisc.filter(x=>x.t>C.turn)}
   C.energy=Math.max(0,C.maxE+C.nextEnergy+(C.costMod||0)+(C.turn===1?(C.cost1||0)+gs('cost1'):0)+a2EnergyMod());C.nextEnergy=0;
   if(C.flaskDebt){const p=Math.min(C.energy,C.flaskDebt);C.energy-=p;clog(`미미르의 물병: 코스트 ${C.flaskDebt} 지불${p<C.flaskDebt?` (남은 코스트가 모자라 ${p}만 지불)`:''}`);C.flaskDebt=0}
   if(C.flaskHp){r.hp=Math.max(1,r.hp-C.flaskHp);fxAt('player',`물병 -${C.flaskHp}`,'self');clog(`미미르의 물병: 체력 ${C.flaskHp} 지불`);C.flaskHp=0}
   if(C.steinBlock){gainBlock(C.steinBlock,0,'스타인러 공방');C.steinBlock=0}
-  drawTurn();a2AfterDraw();
+  drawTurn();if(C.nextDraw){drawN(C.nextDraw);C.nextDraw=0}a2AfterDraw();
   /* 튜토리얼 둘째 턴: 합성·소멸·버림을 해 볼 수 있게 패를 정해 줌 (이 전투에만 있는 카드, 덱에는 들어가지 않음) */
   if(C.E.tut&&C.turn===2&&tutOn()&&r.tutStep>=TUT_T2&&r.tutStep<TUT_KEEP){C.draw.push(...C.hand);C.hand=['slash','hardtack','tidy','guard'].map(id=>({uid:UID++,id,mods:[]}));C.energy=Math.max(C.energy,3)}
   if(pt('penDraw')&&C.turn>1&&C.hand.length){const c=pick(C.hand);C.hand.splice(C.hand.indexOf(c),1);C.disc.push(c);toast('패널티 드로우',`「${CARDS[c.id].name}」을(를) 버렸다`)}
@@ -2784,7 +2802,7 @@ function removeHandEl(uid){const el=stackOf(uid);if(!el)return;el._uids=el._uids
 /* 카드 한 장의 공격 주사위에 공통으로 붙는 값 */
 function cardStrikeOpts(c){
   const C=S.C,E=C.E,r=S.run,d=CARDS[c.id],M=m=>hasM(c,m);
-  const flat=C.temper*5+(pt('sharp')?3:0)+(M('sharp')?5:0)+(d.type==='atk'?(C.ashBonus||0)+(C.tossBonus||0):0)+(c.id==='embers'?(C.tossed||0)*3:0)
+  const flat=C.temper*25+(pt('sharp')?3:0)+(M('sharp')?5:0)+(d.type==='atk'?(C.ashBonus||0)+(C.tossBonus||0):0)+(c.id==='embers'?(C.tossed||0)*10:0)
     +(c.id==='d_cannibal'?Math.floor(Math.max(0,E.hp)*.1):0)+(c.id==='d_hungry'?C.eat*5:0)+(d.type==='atk'?gs('flat')+((r.flags.actF&&r.flags.actF.atkFlat)||0):0)+(C.sat?Math.round(E.maxHp*.02*C.sat):0);
   return{flat,atk:pAtk(),pierce:M('pierce')||!!d.pierce||r.mode==='odin',leech:M('leech'),x:(c.id==='hook'&&C.blockGot)?2:1,giant:c.id==='d_giant'&&E.hp>r.hp,scale:M('multi')?.6:1};
 }
@@ -2821,7 +2839,7 @@ async function playCardRaw(uid,o={}){
   if(first&&d.type==='atk'){if(pt('extra'))dice.push({...first,lb:PTRAIT.extra.n,sc:.5});if(pt('combo'))dice.push({...first,lb:PTRAIT.combo.n,sc:.25})}
   if(c.id==='letgo'){const n=C.hand.length;tossCards(C.hand.slice());const x=dice[0];for(let i=0;i<n;i++)dice.push({...x,lb:'재사용'});clog(`미련 없이: 패 ${n}장을 버림 → 공격 ${n+1}번`)}
   if(c.id==='c_whirl'){const n=await pickToss(3,'잿빛 회오리');const x=dice[0];for(let i=0;i<n;i++)dice.push({...x,lb:'재사용'})}
-  let hadAtk=false,hitAny=false,gained=0;
+  let hadAtk=false,hitAny=false,gained=0;C.cardDmg=0;
   const onHit=c.id==='d_glutton'?(l=>heal(l*.3)):c.id==='d_cannibal'?(()=>{C.eat++;fxAt('enemy','섭취','info')}):null;
   for(const x of dice){
     if(C.over)break;
@@ -2830,7 +2848,7 @@ async function playCardRaw(uid,o={}){
         if(await pStrike(x,{...so,scale:(so.scale||1)*(x.sc||1),label:x.lb,onHit:oh,wb:W.wb,nul,sure:!!d.sure}))hitAny=true;
         if(f.dead||f.hp<=0){ctx.killed=true;if(r.mode==='thor'){C.yu=Math.min(5,C.yu+1);toast('전투 중독','유희 +1')}}
         if(!C.over&&alive(prev))C.E=prev}}
-    else if(x.t==='def')gained+=gainBlock(nul?0:rollDie(x)+(c.id==='ashwall'?(C.tossTurn||0)*5:0),0,c.id==='ashwall'&&C.tossTurn?`방어 주사위 + 버린 카드 ${C.tossTurn}장`:'방어 주사위');
+    else if(x.t==='def')gained+=gainBlock(nul?0:rollDie(x)+(c.id==='ashwall'?(C.tossTurn||0)*15:0),0,c.id==='ashwall'&&C.tossTurn?`방어 주사위 + 버린 카드 ${C.tossTurn}장`:'방어 주사위');
     else{const v=nul?0:rollDie(x),add=Math.min(v,Math.max(0,EVA_DICE_CAP-C.evaB));C.evaB+=add;
       clog(`회피 주사위 ${v} → 회피 +${add}${add<v?' (한 턴 최대 +30)':''} · 적의 적중률 ${hitChance(enemyAcc(),pEva())}%`);fxAt('player',`회피 +${add}`,'info');renderCombat()}
   }
@@ -2844,7 +2862,7 @@ async function playCardRaw(uid,o={}){
     if(hitAny&&pt('refund')){C.energy++;fxAt('player','코스트 +1','info');clog(`${PTRAIT.refund.n}: 코스트 +1`)}
     if(M('pad'))gained+=gainBlock(4,0,'덧댐');
     if(M('push')&&gained>0)fixedDmg(gained,'방패 밀기');
-    if(!C.over&&M('bash'))await pStrike(A(8,12),{flat:C.temper*5,atk:pAtk()+pDef(),label:'방패 찍기'});
+    if(!C.over&&M('bash'))await pStrike(A(8,12),{flat:C.temper*25,atk:pAtk()+pDef(),label:'방패 찍기'});
     if(M('recoil'))C.recoil+=5;
     if(M('hold')||d.hold)C.hold=true;
     if(M('chain'))drawN(1);
@@ -2853,7 +2871,11 @@ async function playCardRaw(uid,o={}){
     if(c.id==='m2_bolt'&&hitAny)a2Hit('el',6);
     if(c.id==='k2_break'&&hitAny&&!C.over){const T=C.E;if(T.frozen||T.frozeSkip||T.crack){T.crack=Math.min(3,(T.crack||0)+2);T.crackT=C.turn}}
     if(d.type==='curse'&&dainCurse()){clog('저주 (다인 패시브): 체력 50 회복');heal(50)}
-    if(d.draw)drawN(Math.max(0,d.draw-(pt('drawDown')?1:0)));if(d.gainE)C.energy+=d.gainE;
+    if(!(o.reuse>2)){if(d.draw)drawN(Math.max(0,d.draw-(pt('drawDown')?1:0)));if(d.gainE)C.energy+=d.gainE}
+    /* 일섬 치명타: 명중 확률의 50% — 적중하면 절반 확률로 추가 드로우 */
+    if(c.id==='ms_flash'&&hitAny&&rnd()<.5){drawN(1);fxAt('enemy','치명타','info');clog('치명타: 드로우 +1')}
+    if(c.id==='f_ryeo'&&C.cardDmg>=300){C.energy+=2;fxAt('player','코스트 +2','info');clog(`도려내기: 데미지 ${C.cardDmg} — 코스트 +2`)}
+    if(c.id==='f_dae'){const n=Math.min(2,Math.floor(C.cardDmg/1000));if(n){C.nextEnergy+=n;C.nextDraw=(C.nextDraw||0)+n;clog(`대절단: 데미지 ${C.cardDmg} — 다음 턴 코스트 +${n}, 드로우 +${n}`)}}
     switch(c.id){
       case'steam':C.nextEnergy+=2;break;
       case'frost':E.frost=true;applyEnemyStatus('weak',2);break;
@@ -2870,7 +2892,7 @@ async function playCardRaw(uid,o={}){
     }
     await a2CardFx(c,ctx);
     switch(c.id){
-      case'toss':{const n=await pickToss(1,'내던지기');if(n){C.tossBonus=(C.tossBonus||0)+10;fxAt('player','다음 공격 +10','info')}break}
+      case'toss':{const n=await pickToss(1,'내던지기');if(n){C.tossBonus=(C.tossBonus||0)+30;fxAt('player','다음 공격 +30','info')}break}
     }
     if(pt('drawUp'))drawN(1);
     if(pt('curseGen')){const cu={uid:UID++,id:pick(['lack','lonely','void']),temp:true};C.disc.push(cu);clog(`${PTRAIT.curseGen.n}: 「${CARDS[cu.id].name}」이(가) 버린 카드 더미에 들어감`)}
@@ -2895,6 +2917,8 @@ async function playCardRaw(uid,o={}){
   if((d.d||[]).some(x=>x.t==='def'))tutEvent('def');
   if(!C.over){renderCombat();if(r.hp<=0)gameOver()}
   if(d.sword&&!C.over&&!C.dead&&r.hp>0)await masteryUse();
+  /* 검도-변화: 같은 카드가 패에 있으면 행동 수치 없이 재사용, 재사용 코스트·드로우는 최대 2 */
+  if(c.id==='ms_kendo2'&&!o.reuse){for(let n=1;;n++){if(C.over||C.dead||r.hp<=0)break;const dup=C.hand.find(x=>x.id==='ms_kendo2'&&!canPlay(x));if(!dup)break;clog('검도-변화 재사용','h');await playCardRaw(dup.uid,{noTick:true,reuse:n})}}
   if(!o.noTick&&!C.over&&!C.dead&&r.hp>0)await apTick(1);
 }
 /* 숙련도: 레벨 1일 때만, 검 계열 사용 횟수를 합쳐서 셈 — 단계마다 별도의 공방렙 +1, 체력 값 +1% (히든 보너스, 알림 없음) */
@@ -2970,7 +2994,7 @@ async function pStrike(die,o={}){
   {const rg=pDieRange(die);await diceFocus({lb:`${lb} 주사위 → ${E.name}`,a:rg[0],b:rg[1],r0,pow:v,hit,ch,dmg:loss,bl})}
   if(C.over)return false;
   if(!hit){fxAt('enemy','빗나감','miss');sfx('miss');dainP3('miss');clog(`${lb} 주사위 ${vs} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss');renderCombat();await wait(170);return false}
-  E.block-=bl;E.hp-=loss;E.dmgTurn=(E.dmgTurn||0)+loss;hurtFace(loss);if(bl)knightCheck();dainP3('hit',loss);
+  E.block-=bl;E.hp-=loss;E.dmgTurn=(E.dmgTurn||0)+loss;C.cardDmg=(C.cardDmg||0)+loss;hurtFace(loss);if(bl)knightCheck();dainP3('hit',loss);
   clog(`${lb} 주사위 ${vs}: ${f.text} · 적중률 ${ch}% · 판정 ${roll} → 적중${o.pierce?' · 관통':''}${bl?` · 방어도 ${bl} 흡수`:''} · 피해 ${loss}`);
   const tier=impactEnemy(loss,bl);
   fxAt('enemy',bl&&!loss?`막힘 ${bl}`:String(loss),bl&&!loss?'block':(tier>=2?'t'+tier:''));
@@ -3075,6 +3099,7 @@ async function enemyTurn(){
     if(E.phase===2){E.p2turns++;if(E.p2turns%3===0)C.pend.push('steal')}
     if(E.phase===3){E.p3turns++;if(E.p3turns>=5){toast('번제화','백색의 불꽃이 다 타서 스스로 쓰러졌다');await wait(600);E.hp=0;winCombat({});return}}
   }
+  await knightAct();if(C.over||r.hp<=0)return;
   a2EnemyTurnEnd(E);
   chooseIntent();
   renderCombat();
@@ -3161,8 +3186,8 @@ function bossIntent(){
   if(E.mercyCD===0&&r.hp<=r.maxHp*.25){E.intent='안 아프게 빨리';E.mercyCD=4;say(BOSS_LINES.mercy);E.idx--;return}
   if(E.phase===1){
     const ord=['미스틸테인','백색의 불꽃','공양의 칼'];
-    let a=ord[((E.idx%4)+4)%4];
-    if(a==='백색의 불꽃'&&E.noSpecial){E.wfSkip=!E.wfSkip;if(E.wfSkip){E.idx++;a=ord[E.idx%4]}}
+    let a=ord[((E.idx%3)+3)%3];
+    if(a==='백색의 불꽃'&&E.noSpecial){E.wfSkip=!E.wfSkip;if(E.wfSkip){E.idx++;a=ord[E.idx%3]}}
     E.intent=a;return;
   }
   const ord=['공양의 칼','공양의 칼','은빛 소환','미스틸테인'];E.intent=ord[((E.idx%4)+4)%4];
@@ -3571,14 +3596,14 @@ const GEV={
 /* ================= V19 · 2장 니다벨리르 — 데이터 (웹게임 문서: 2장 니다벨리르 · 공방 카드 · 공방 장비 · 보유 효과 장비 · 니다벨리르 사건) ================= */
 /* 공방 카드 (니다벨리르) — 희귀(고급)·영웅(희귀) 등급. ws: 어느 공방의 카드인지 (계약 파기 전투에서 사용 금지 판정) */
 Object.assign(CARDS,{
-  s2_vent:{name:'압력 배출',cost:1,type:'skill',rar:'uncommon',ws2:'stein',text:'자신의 증기를 전부 없애고, 없앤 증기 1당 방어 6, 열기 +1',flavor:''},
+  s2_vent:{name:'압력 배출',cost:1,type:'skill',rar:'uncommon',ws2:'stein',text:'자신의 증기를 전부 없애고, 없앤 증기 1당 방어 20, 열기 +1',flavor:''},
   s2_over:{name:'과열 가동',cost:0,type:'skill',rar:'uncommon',ws2:'stein',draw:1,text:'자신에게 증기 5, 열기 +2, 드로우 +1',flavor:''},
   s2_valve:{name:'냉각수 밸브',cost:1,type:'skill',rar:'rare',ws2:'stein',text:'대상에게 냉매 3, 자신의 증기 -10, 코스트 +1',flavor:''},
-  s2_piston:{name:'수동 피스톤',cost:2,type:'atk',rar:'rare',ws2:'stein',d:[A(14,22),A(14,22),A(14,22)],text:'공격 14~22 × 3, 자신에게 열기가 있으면 × 5',flavor:''},
+  s2_piston:{name:'수동 피스톤',cost:2,type:'atk',rar:'rare',ws2:'stein',d:[A(45,65),A(45,65),A(45,65)],text:'공격 45~65 × 3, 자신에게 열기가 있으면 × 5',flavor:''},
   k2_spray:{name:'냉기 분사',cost:1,type:'skill',rar:'uncommon',ws2:'kriv',draw:1,text:'대상에게 냉매 3, 드로우 +1',flavor:''},
   k2_warm:{name:'온기 주머니',cost:0,type:'skill',rar:'uncommon',ws2:'kriv',draw:2,exhaust:true,text:'자신의 냉매·냉동을 모두 없앰, 드로우 +2, 코스트 +1, 소멸',flavor:''},
-  k2_keep:{name:'체온 유지',cost:1,type:'power',rar:'rare',ws2:'kriv',text:'지속\n매 턴 시작 시 자신의 냉매 -1, 방어 10~14',flavor:''},
-  k2_break:{name:'얼음 깨기',cost:2,type:'atk',rar:'rare',ws2:'kriv',d:[A(28,42)],text:'공격 28~42, 대상이 냉동이면 깨짐 +2단계',flavor:''},
+  k2_keep:{name:'체온 유지',cost:1,type:'power',rar:'rare',ws2:'kriv',text:'지속\n매 턴 시작 시 자신의 냉매 -1, 방어 35~50',flavor:''},
+  k2_break:{name:'얼음 깨기',cost:2,type:'atk',rar:'rare',ws2:'kriv',d:[A(140,190)],text:'공격 140~190, 대상이 냉동이면 깨짐 +2단계',flavor:''},
   a2_stand:{name:'진열대',cost:0,type:'skill',rar:'uncommon',ws2:'ash',draw:2,exhaust:true,text:'예술적 감각 +1, 드로우 +2, 소멸',flavor:''},
   a2_talk:{name:'해설',cost:1,type:'skill',rar:'uncommon',ws2:'ash',draw:2,text:'다음 카드 2장 코스트 -1, 드로우 +2',flavor:''},
   a2_cert:{name:'감정서',cost:1,type:'skill',rar:'rare',ws2:'ash',exhaust:true,text:'패의 카드 1장에 무작위 특수능력 1개 영구 부여 (최대 2개 규칙 따름), 소멸',flavor:''},
@@ -3587,10 +3612,10 @@ Object.assign(CARDS,{
   r2_tea:{name:'진한 차',cost:0,type:'skill',rar:'uncommon',ws2:'remi',food:1,exhaust:true,text:'음식\n코스트 +2, 먹기 +1, 소멸',flavor:''},
   r2_ration:{name:'보존식',cost:1,type:'skill',rar:'rare',ws2:'remi',food:3,heal:15,keep:true,text:'음식 · 보존\n체력 15 회복, 먹기 +3',flavor:''},
   r2_meal:{name:'레미 정식',cost:2,type:'skill',rar:'rare',ws2:'remi',food:5,exhaust:true,text:'음식\n먹기 +5, 이번 전투 동안 공격레벨 +15, 방어레벨 +15, 소멸',flavor:''},
-  m2_bolt:{name:'모조 전격',cost:1,type:'atk',rar:'uncommon',ws2:'krim',d:[A(12,18)],text:'공격 12~18, 대상에게 전격 6',flavor:''},
+  m2_bolt:{name:'모조 전격',cost:1,type:'atk',rar:'uncommon',ws2:'krim',d:[A(70,100)],text:'공격 70~100, 대상에게 전격 6',flavor:''},
   m2_burn:{name:'모조 소각',cost:1,type:'skill',rar:'uncommon',ws2:'krim',text:'대상에게 소각 30',flavor:''},
   m2_proto:{name:'시제품',cost:1,type:'skill',rar:'rare',ws2:'krim',text:'대상에게 무작위 부정적 키워드 3개 (약화, 취약, 전격, 소각, 냉매, 증기 중)',flavor:''},
-  m2_sure:{name:'모조 필중',cost:2,type:'atk',rar:'rare',ws2:'krim',pierce:true,sure:true,d:[A(24,36)],text:'공격 24~36, 이 공격은 반드시 적중, 방어도 무시',flavor:''},
+  m2_sure:{name:'모조 필중',cost:2,type:'atk',rar:'rare',ws2:'krim',pierce:true,sure:true,d:[A(120,170)],text:'공격 120~170, 이 공격은 반드시 적중, 방어도 무시',flavor:''},
   /* 아쉬부티 고유 키워드로 생기는 카드 (전투 안에서만) */
   art_wip:{name:'작품 제작',type:'skill',rar:'common',unplayable:true,gen:true,text:'사용 불가\n턴이 지날 때마다 10% 확률로 소멸하고 작품-완성 카드를 패에 추가, 전투가 끝나면 사라짐',flavor:''},
   art_done:{name:'작품-완성',type:'skill',rar:'common',unplayable:true,gen:true,keep:true,text:'사용 불가 · 보존\n패에 있으면 공격 위력 +200%, 공격 위력 최대치, 드로우 +3, 코스트 +2\n예술적 감각이 다시 쌓이거나 전투가 끝나면 사라짐',flavor:''},
@@ -4104,6 +4129,8 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V33.22.14.8','11/5','카드 수치 — 고유 카드 수치 변경, 일반·공방 카드를 고유 카드 기준으로 상향. 일섬 치명타, 검도-정석 방어도 유지, 검도-변화 재사용, 도려내기 코스트 회복, 대절단 재료 복귀와 다음 턴 보너스 / 덱·보관함 큰 버튼 / 튜토리얼 — 보관함에 카드를 넣고 꺼내 보기, 얻거나 산 카드는 바로 적용되지 않음 / 순수유물주의자 1페이즈 네 번째 행동에서 전투가 멈추던 버그 수정'],
+  ['V33.21.12.7','11/5','은빛 기사 — 소환되면 서 있기만 하던 버그 수정, 보스가 행동할 때마다 낙인 · 고해 강요 · 처단을 차례로 함 / 카드 보관함 — 카드를 덱으로 옮길 때 화면이 위로 올라가던 버그 수정'],
   ['V33.21.12.6','11/5','미드가르드 지도 — 정예 바로 앞 막(9막 · 19막)에 휴식 갈래가 꼭 하나 이상 나옴'],
   ['V33.21.11.6','11/5','UI 크기 설정 — 설정에서 작게(기본) · 크게 · 매우 크게 선택, 패널 · 버튼 · 패 카드가 함께 커짐'],
   ['V33.21.10.6','11/5','버튼 위치 — 오른쪽 아래 특성·AUTO, 왼쪽 아래 정비·덱'],
@@ -4201,7 +4228,7 @@ function openSettings(){
   if($('#sSlots'))$('#sSlots').onclick=()=>openSlots('manage',openSettings);
 }
 /* ================= 튜토리얼 — 세계수 등반 첫 런의 첫 전투에서만 (설정에서 다시 보기) ================= */
-const TUT_KEY='ash-midgard-tutorial-v3';/* V17: 튜토리얼이 바뀌어 모두 한 번씩 다시 봄 */
+const TUT_KEY='ash-midgard-tutorial-v4';/* V17: 튜토리얼이 바뀌어 모두 한 번씩 다시 봄 */
 const tutDone=()=>{try{return localStorage.getItem(TUT_KEY)==='1'}catch(e){return false}};
 const setTutDone=v=>{try{v?localStorage.setItem(TUT_KEY,'1'):localStorage.removeItem(TUT_KEY);if(!v){Object.values(GUIDES).forEach(g=>localStorage.removeItem(g.key));localStorage.removeItem('ash-midgard-featguide-v1')}}catch(e){}};
 /* where: 보이는 화면 · wait: 다음으로 넘어가는 행동 (없으면 누르면 넘어감) · hl: 강조할 곳 */
@@ -4219,12 +4246,12 @@ const TUT=[
   {where:'combat',t:'버림',t2:1,x:['버림은 패에서 카드를 골라 버리는 것입니다. 버린 카드는 버린 카드 더미로 가고, 뽑을 카드가 떨어지면 다시 섞여 나옵니다.','패가 12장을 넘어도 넘은 만큼 직접 골라 버립니다.','정리를 써 보세요. 버릴 카드를 고르면 버린 장수만큼 새로 뽑습니다.'],wait:'toss',hl:'hand'},
   {where:'combat',t:'행동 수치',keep:1,x:['적 이름 아래의 숫자가 행동 수치입니다. 카드를 한 장 쓸 때마다 1씩 줄고, 0이 되면 적이 곧바로 움직입니다.','움직인 뒤에는 다시 채워지므로, 카드를 많이 쓸수록 적도 더 자주 움직입니다.','턴을 끝낼 때 행동 수치가 남아 있으면 적이 다음 행동을 한 번 하고, 행동 수치는 처음으로 돌아갑니다.','행동 수치가 작은 적일수록 빠릅니다.'],hl:'foe'},
   {where:'combat',t:'카드 뭉치',x:['같은 카드는 「어설픈 베기 ×2」처럼 한 뭉치로 겹쳐 보입니다. 뭉치를 끌어 놓으면 1장만 나가고 나머지는 패에 남습니다.','패는 최대 12장이고, 뭉치도 장수대로 셉니다.','이제 적을 제압해 보세요.'],hl:'hand'},
-  {where:'reward',t:'제압과 보상',x:['1장에서는 적의 목숨을 빼앗지 않고 제압합니다. 제압하면 시체가 남지 않고, 경험치 없이 카드와 실링을 받습니다.','보상 카드는 골라서 얻고, 얻은 카드는 카드 보관함으로 들어갑니다.']},
+  {where:'reward',t:'제압과 보상',x:['1장에서는 적의 목숨을 빼앗지 않고 제압합니다. 제압하면 시체가 남지 않고, 경험치 없이 카드와 실링을 받습니다.','보상 카드는 골라서 얻고, 얻은 카드는 바로 덱에 들어가지 않고 카드 보관함으로 들어갑니다.']},
   {where:'map',t:'숙련도와 자세',x:['검 카드를 쓴 횟수가 쌓이면 숙련도 단계가 오릅니다. 10, 30, 60, 100, 150회에 한 단계씩 오릅니다.','단계가 오르면 "뭔가 새로운 자세가 떠올랐다..." 창이 뜹니다. 네 자세 중 하나를 고르면 덱의 검 카드가 새 카드로 바뀌고, 쓰던 카드는 카드 보관함으로 갑니다.','한 번 고른 자세는 다시 고를 수 없습니다.']},
-  {where:'map',t:'정비 시간과 카드 보관함',x:['노드가 끝나면 다음 노드로 가기 전에 지도 화면에서 정비 시간을 가집니다. 위쪽의 정비를 누르면 열립니다.','카드 보관함에서 카드를 꺼내 덱에 넣고, 쓰지 않을 카드는 보관함에 넣습니다. 덱은 최소 5장입니다.','손에 들 수 있는 카드는 한정되어 있으니, 보관함으로 덱을 덜어 내며 빌드를 만듭니다.']},
+  {where:'map',t:'정비 시간과 카드 보관함',x:['노드가 끝나면 다음 노드로 가기 전에 지도 화면에서 정비 시간을 가집니다. 왼쪽 아래 보관함 버튼을 누르면 열립니다.','카드 보관함에서 카드를 꺼내 덱에 넣고, 쓰지 않을 카드는 보관함에 넣습니다. 덱은 최소 5장입니다.','손에 들 수 있는 카드는 한정되어 있으니, 보관함으로 덱을 덜어 내며 빌드를 만듭니다.','카드를 얻거나 산다고 바로 적용되는 것이 아닙니다. 보관함에서 덱으로 넣어야 전투에 나옵니다.','보관함 버튼을 눌러 덱의 카드 1장을 보관함에 넣고, 보관함의 카드 1장을 덱으로 꺼내 보세요.'],wait:'prep',hl:'prep'},
   {where:'map',t:'지도',x:['세 갈래 중 하나를 골라 위로 오릅니다. 고른 길만 남고 다시 세 갈래로 나뉩니다.','막은 전투, 정예, 휴식, 상점이 있습니다. 10막째와 20막째는 정예, 30막째는 보스입니다.','이번에는 휴식과 상점에 한 번씩 들러 봅니다. 막에 들어설 때마다 자동으로 저장됩니다.']},
   {where:'rest',t:'휴식',x:['휴식은 쉬어 가는 막입니다. 최대 체력의 25%를 회복합니다. 휴식에서는 회복만 합니다.']},
-  {where:'shop',t:'상점',x:['상점에서는 실링으로 카드를 삽니다. 얻은 카드는 카드 보관함으로 들어갑니다.','새로고침을 하면 카드 목록이 바뀝니다. 상점마다 파는 등급이 다르고, 30막 중 최대 3번 나옵니다.'],last:true},
+  {where:'shop',t:'상점',x:['상점에서는 실링으로 카드를 삽니다. 산 카드는 바로 적용되지 않고 카드 보관함으로 들어가니, 덱으로 넣어야 쓸 수 있습니다.','새로고침을 하면 카드 목록이 바뀝니다. 상점마다 파는 등급이 다르고, 30막 중 최대 3번 나옵니다.'],last:true},
 ];
 /* V32 튜토리얼 성직자 대사 (웹게임 문서 튜토리얼 4·8·9단계) */
 TUT.find(t=>t.t==='공격').pl='왜 그런 잘못된 길을...';TUT.find(t=>t.t==='적의 행동과 방어').pl='정말로 이단이 되기로 한 거냐';TUT.find(t=>t.t==='턴 종료').pl='노르드교가 도대체 무슨 말을 했길래';
@@ -4240,11 +4267,12 @@ function tutShow(){
   box.hidden=false;box.className='tut '+st.where;stage.dataset.tut=st.hl||'';
   box.innerHTML=`<div class="tut-h"><span>튜토리얼 · ${r.tutStep+1} / ${TUT.length}</span><button class="tut-skip" id="tutSkip">건너뛰기</button></div>
     <div class="tut-t">${st.t}</div>${st.x.map(l=>`<p>${l}</p>`).join('')}
-    ${st.wait?`<div class="tut-wait">${{atk:'공격 카드를 적에게 끌어 놓으면 다음으로',def:'방어 카드를 사용하면 다음으로',end:'턴 종료를 누르면 다음으로',fuse:'일섬을 적에게 끌어 놓으면 다음으로',exh:'레미 공방의 건빵을 쓰면 다음으로',toss:'정리를 쓰면 다음으로'}[st.wait]}</div>${st.t2?'<button class="tut-skip" id="tutNext" style="align-self:flex-end">이 단계 넘기기</button>':''}`:`<button class="btn-main tut-next" id="tutNext">${st.last?'튜토리얼 끝':'다음'}</button>`}`;
+    ${st.wait?`<div class="tut-wait">${{atk:'공격 카드를 적에게 끌어 놓으면 다음으로',def:'방어 카드를 사용하면 다음으로',end:'턴 종료를 누르면 다음으로',fuse:'일섬을 적에게 끌어 놓으면 다음으로',exh:'레미 공방의 건빵을 쓰면 다음으로',toss:'정리를 쓰면 다음으로',prep:'카드를 넣고 꺼내면 다음으로'}[st.wait]}</div>${st.t2?'<button class="tut-skip" id="tutNext" style="align-self:flex-end">이 단계 넘기기</button>':''}`:`<button class="btn-main tut-next" id="tutNext">${st.last?'튜토리얼 끝':'다음'}</button>`}`;
   $('#tutSkip').onclick=tutFinish;
   if($('#tutNext'))$('#tutNext').onclick=tutNext;
   if(st.pl&&S.screen==='combat'&&r.plSaid!==r.tutStep&&!$('#prelude')){r.plSaid=r.tutStep;say(st.pl)}
 }
+function tutPrep(b){const r=S.run;r.tutP=(r.tutP||0)|b;if(r.tutP===3)tutEvent('prep')}
 function tutNext(){const r=S.run;if(!tutOn())return;if(TUT[r.tutStep].last)return tutFinish();r.tutStep++;save();tutShow()}
 function tutFinish(){const r=S.run;if(r){r.tut=false;save()}setTutDone(true);tutShow()}
 function tutEvent(ev){
@@ -4435,7 +4463,7 @@ function renderTop(){
    ${['over','victory'].includes(S.screen)?'':'<button class="plate-btn" id="menuBtn" aria-label="메뉴">메뉴</button>'}</div>`;
   {const fight=S.screen==='combat',dl=dockEl('dockL'),dr=dockEl('dockR'),show=!['over','victory'].includes(S.screen);
     dl.className=dr.className=fight?'dock fight':'dock';dl.hidden=false;
-    dl.innerHTML=`${S.screen==='map'||fight?'<button class="plate-btn" id="prepBtn">정비</button>':''}<button class="plate-btn" id="deckBtn">덱 ${r.deck.length}</button>`;
+    dl.innerHTML=`<button class="plate-btn big" id="deckBtn">덱 ${r.deck.length}</button>${S.screen==='map'||fight?`<button class="plate-btn big" id="prepBtn">보관함 ${(r.store||[]).length}</button>`:''}`;
     dr.hidden=!show;dr.innerHTML=`${r.traits&&r.traits.length?`<button class="plate-btn" id="trBtn">특성 ${r.traits.length}</button>`:''}${show?`<button class="plate-btn auto${SET.auto?' on':''}" id="autoBtn" title="자동 전투 — 오른쪽 카드부터 쓸 수 있는 카드를 전부 쓰고 턴을 끝낸다" aria-pressed="${!!SET.auto}">AUTO${SET.auto?' · 켬':''}</button>`:''}`}
   $('#deckBtn').onclick=()=>openList('덱',[...r.deck].sort(deckSort));if($('#menuBtn'))$('#menuBtn').onclick=openGameMenu;if($('#autoBtn'))$('#autoBtn').onclick=autoToggle;if($('#prepBtn'))$('#prepBtn').onclick=openPrep;
   if($('#trBtn'))$('#trBtn').onclick=()=>{const m=$('#modal');m.hidden=false;
@@ -4446,15 +4474,18 @@ function renderTop(){
 const PREP_MIN=5;
 /* 전투 중에도 정비를 열어 카드를 빼고 넣을 수 있음 — 바꾸면 이번 턴을 소모함 */
 function prepSync(c,out){const C=S.C;if(!C||C.over)return;if(out){for(const p of[C.draw,C.disc,C.hand,C.exh]){const i=(p||[]).findIndex(x=>x.uid===c.uid);if(i>=0)p.splice(i,1)}}else C.disc.push(c)}
-function openPrep(){const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];m.hidden=false;
+/* 카드를 옮겨 다시 그려도 스크롤 위치 유지 — 보관함→덱은 덱이 늘어난 만큼 보관함 제목 기준으로 맞춤 */
+const prepView=()=>{const a=$('#prepScroll'),h=$('#prepStoreH');return a&&h?{top:a.scrollTop,h:h.offsetTop}:null};
+function openPrep(v,anchor){const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];m.hidden=false;
   const row=(c,act,lb,off)=>`<div class="cardpick">${staticCard(c.id,false,c)}<button class="plate-btn" data-${act}="${c.uid}" ${off?'disabled':''}>${lb}</button></div>`;
   const dk=[...r.deck].sort(deckSort),st=[...r.store].sort(deckSort);
   m.innerHTML=`<div class="panel" style="width:min(1300px,100%);height:100%"><div class="maphead"><div><div class="psub">${fight?'전투 중 정비 · 카드를 바꾸면 이번 턴이 끝난다':'정비 시간'} · 덱은 최소 ${PREP_MIN}장</div><div class="ptitle">덱 ${r.deck.length}장 · 카드 보관함 ${r.store.length}장</div></div><button class="btn-ghost" id="mClose">닫기</button></div>
-    <div style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">덱</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px">${dk.map(c=>row(c,'out','보관함으로',r.deck.length<=PREP_MIN)).join('')}</div>
-    <div class="ap-h">카드 보관함</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${st.map(c=>row(c,'in','덱으로')).join('')||'<div class="hint">비어 있음</div>'}</div></div></div>`;
+    <div id="prepScroll" style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">덱</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px">${dk.map(c=>row(c,'out','보관함으로',r.deck.length<=PREP_MIN)).join('')}</div>
+    <div class="ap-h" id="prepStoreH">카드 보관함</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${st.map(c=>row(c,'in','덱으로')).join('')||'<div class="hint">비어 있음</div>'}</div></div></div>`;
   bindStatic(m);$('#mClose').onclick=()=>{closeModal();renderTop();if(fight){if(S.C.prepEdit){S.C.prepEdit=false;clog('전투 중 정비 — 이번 턴을 소모했다','h');renderCombat();endTurn()}else renderCombat()}};
-  m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const c=r.deck.find(x=>x.uid===+b.dataset.out);if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}save();openPrep()});
-  m.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{const c=r.store.find(x=>x.uid===+b.dataset.in);if(!c)return;r.store.splice(r.store.indexOf(c),1);r.deck.push(c);if(fight){prepSync(c,false);S.C.prepEdit=true}save();openPrep()})}
+  m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.deck.find(x=>x.uid===+b.dataset.out);if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}else tutPrep(1);save();openPrep(view)});
+  m.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.store.find(x=>x.uid===+b.dataset.in);if(!c)return;r.store.splice(r.store.indexOf(c),1);r.deck.push(c);if(fight){prepSync(c,false);S.C.prepEdit=true}else tutPrep(2);save();openPrep(view,true)});
+  if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
 function hideCombatUI(){if(S.screen!=='title')endTitleScene();{const kf=$('#knightFig');if(kf)kf.hidden=true}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
 const EFEET0={land:L.land.efeet,port:L.port.efeet};
@@ -4527,7 +4558,7 @@ function renderEnemy(){
   if(E.key==='clerk'&&E.defined)chips.push(`<span class="chip brass">페이즈 2 · 정의</span>`);
   if(E.boss){chips.push(`<span class="chip brass">페이즈 ${E.phase} · ${['','정화','단죄','번제화'][E.phase]}</span>`);
     if(E.phase<3)chips.push(`<span class="chip brass">분노 ${E.anger}</span>`);
-    if(E.kn&&E.kn.hp>0)chips.push(`<span class="chip good">은빛 기사 ${E.kn.hp} / ${E.kn.max} · 대신 피해</span>`);
+    if(E.kn&&E.kn.hp>0)chips.push(`<span class="chip good">은빛 기사 ${E.kn.hp} / ${E.kn.max} · 대신 피해 · 다음 행동 ${knNext(E.kn)}</span>`);
     if(E.pendPhase)chips.push(`<span class="chip bad">턴이 끝나면 페이즈 ${E.pendPhase}</span>`);
     if(E.human)chips.push(`<span class="chip">인간의 몸 명중 -${E.human*5}</span>`);
     if(E.phase===3)chips.push(`<span class="chip">남은 불꽃 ${5-E.p3turns}턴</span>`);}
@@ -4548,12 +4579,12 @@ function renderPlayer(){
   if(C.pEl)chips.push(`<span class="chip bad">전격 ${C.pEl}</span>`);
   if(C.pBurn)chips.push(`<span class="chip bad">소각 ${C.pBurn}</span>`);
   if(C.yu)chips.push(`<span class="chip good">유희 ${C.yu} · +${C.yu*20}%</span>`);
-  if(C.temper)chips.push(`<span class="chip good">단련 +${C.temper*5}</span>`);
+  if(C.temper)chips.push(`<span class="chip good">단련 +${C.temper*25}</span>`);
   if(C.recoil)chips.push(`<span class="chip good">반동 ${C.recoil}</span>`);
   if(C.hold)chips.push(`<span class="chip good">버팀</span>`);
   if(C.ashBonus)chips.push(`<span class="chip good">재의 흔적 · 다음 카드 +${C.ashBonus}</span>`);
-  if(C.barrier)chips.push(`<span class="chip good">결계 방어 8~12${C.barrier>1?` ×${C.barrier}`:''}/턴</span>`);
-  if(C.nextEnergy)chips.push(`<span class="chip good">다음 턴 코스트 +${C.nextEnergy}</span>`);
+  if(C.barrier)chips.push(`<span class="chip good">결계 방어 30~45${C.barrier>1?` ×${C.barrier}`:''}/턴</span>`);
+  if(C.nextEnergy)chips.push(`<span class="chip good">다음 턴 코스트 +${C.nextEnergy}</span>`);if(C.nextDraw)chips.push(`<span class="chip good">다음 턴 드로우 +${C.nextDraw}</span>`);if(C.lockDisc&&C.lockDisc.length)chips.push(`<span class="chip">대절단 재료 ${C.lockDisc[0].t-C.turn}턴 뒤 복귀</span>`);
   if(C.discount)chips.push(`<span class="chip good">파편 장식 · 다음 카드 -1</span>`);
   if(C.blockDebt)chips.push(`<span class="chip bad">방어도 감소 -${C.blockDebt}</span>`);
   if(C.pSteam)chips.push(`<span class="chip bad">증기 ${C.pSteam}</span>`);if(C.heat)chips.push(`<span class="chip good">열기 ${C.heat}</span>`);
@@ -4715,7 +4746,8 @@ async function playStack(uids){return playCard(uids[0])}
 async function playFused(uids,into){
   const C=S.C;if(!fuseCanPlay(into)||S.busy)return;
   const cards=uids.map(u=>C.hand.find(x=>x.uid===u)).filter(Boolean);if(cards.length<uids.length)return;
-  for(const c of cards){C.hand.splice(C.hand.indexOf(c),1);C.disc.push(c)}
+  /* 대절단: 합성에 쓴 카드는 3턴 뒤에 버린 패로 돌아옴 */
+  for(const c of cards){C.hand.splice(C.hand.indexOf(c),1);if(into==='f_dae')(C.lockDisc=C.lockDisc||[]).push({c,t:C.turn+3});else C.disc.push(c)}
   const f={uid:UID++,id:into,mods:[],fusedTmp:true};C.hand.push(f);
   clog(`합성: ${CARDS[cards[0].id].name} ${cards.length}장 → 「${CARDS[into].name}」`,'h');toast('합성',`「${CARDS[into].name}」`);
   try{await playCardRaw(f.uid,{noTick:true})}catch(e){console.error(e);clog('오류: '+e.message,'e')}finally{S.busy=false}
@@ -5118,7 +5150,7 @@ function a2AfterDraw(){const C=S.C,r=S.run;
   if(C.drawMinus){const n=Math.min(C.drawMinus,C.hand.length);for(let i=0;i<n;i++){const c=C.hand.pop();if(c)C.draw.push(c)}clog(`해설: 드로우 -${n}`);C.drawMinus=0}
   if(C.pFrozen&&C.turn>=C.pFrozenTurn){toast('냉동','이번 턴에는 행동할 수 없다 — 턴을 끝낸다');clog('냉동: 이번 턴 행동 불가')}
   /* 체온 유지 (지속) */
-  for(let i=0;i<(C.keepWarm||0);i++){if(C.pCool>0)C.pCool--;gainBlock(rollDie(D(10,14)),0,'체온 유지')}
+  for(let i=0;i<(C.keepWarm||0);i++){if(C.pCool>0)C.pCool--;gainBlock(rollDie(D(35,50)),0,'체온 유지')}
   /* 냉각 코일 */
   if(gs('coil')&&(C.pSteam||0)>=10){C.pSteam-=10;a2Hit('cool',2);clog('냉각 코일: 증기 -10, 대상에게 냉매 2')}
   if(liveFoes().some(f=>f.key==='guard'))redefine(2+(C.redefMore||0)),C.redefMore=0;
@@ -5217,7 +5249,7 @@ function a2AfterPlay(c,d){const C=S.C,r=S.run;C.lastCardId=c.id;
 /* 카드 효과 (2장 공방 카드 · 토르 카드) — playCardRaw의 switch에서 부름 */
 async function a2CardFx(c,ctx){const C=S.C,r=S.run,E=C.E;
   switch(c.id){
-    case's2_vent':{const n=C.pSteam||0;C.pSteam=0;if(n)gainBlock(n*6,0,`압력 배출 (증기 ${n} × 6)`);C.heat=Math.min(heatCap(true),(C.heat||0)+1);C.heatGain=(C.heatGain||0)+1;break}
+    case's2_vent':{const n=C.pSteam||0;C.pSteam=0;if(n)gainBlock(n*20,0,`압력 배출 (증기 ${n} × 20)`);C.heat=Math.min(heatCap(true),(C.heat||0)+1);C.heatGain=(C.heatGain||0)+1;break}
     case's2_over':C.pSteam=(C.pSteam||0)+5;C.heat=Math.min(heatCap(true),(C.heat||0)+2);C.heatGain=(C.heatGain||0)+2;fxAt('player','증기 +5 · 열기 +2','info');break;
     case's2_valve':a2Hit('cool',3);C.pSteam=Math.max(0,(C.pSteam||0)-10);C.energy+=1;break;
     case'k2_spray':a2Hit('cool',3);break;
