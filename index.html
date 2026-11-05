@@ -860,6 +860,7 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 #echips{position:absolute;left:50%;top:100%;translate:-50% 6px;width:min(420px,120%);justify-content:center;pointer-events:auto;z-index:4}.port #echips{top:calc(100% - 66px)}#echips:empty{display:none}.chip{font-size:15px;padding:4px 10px;cursor:help;pointer-events:auto}.port .chip{font-size:19px}.uchips .chip{font-size:12px;padding:2px 6px}.chip.pulse,#intent.pulse{animation:tutpulse 1.2s ease-in-out infinite;outline:2px solid var(--brass-hi);border-radius:10px}
 #knightFig{pointer-events:auto;cursor:pointer;z-index:4}#knightFig.tgt .kn-art{filter:drop-shadow(0 0 10px #ffd34d)}#knightFig.tgt .kn-plate b{color:#ffd34d}#knightFig.tgt .kn-plate b::before{content:'▶ '}
 #stage:has(#modal:not([hidden])) #tut{top:auto;bottom:14px;left:50%;right:auto;translate:-50% 0;width:min(560px,calc(100% - 32px))}#stage:has(#tut:not([hidden])) #prepScroll{padding-bottom:210px}.port #stage:has(#tut:not([hidden])) #prepScroll,#stage.port:has(#tut:not([hidden])) #prepScroll{padding-bottom:280px}
+.tut-auto{height:3px;border-radius:2px;background:#ffffff1f;overflow:hidden;margin-top:4px}.tut-auto i{display:block;height:100%;background:var(--brass-hi);width:100%;transform-origin:left;animation:tutbar linear forwards}@keyframes tutbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 #stsheet{position:absolute;z-index:11;max-height:260px;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:10px 14px;border-radius:10px;background:linear-gradient(#262c33fa,#171b20fa);border:1px solid var(--brass);box-shadow:0 12px 34px #000c;display:flex;flex-direction:column;gap:8px}#stsheet[hidden]{display:none}#stsheet div{display:flex;flex-direction:column;gap:2px}#stsheet b{color:var(--brass-hi);font-size:16px}#stsheet span{color:var(--bone);font-size:15px;line-height:1.45}.port #stsheet b{font-size:20px}.port #stsheet span{font-size:19px}
 .restpal{display:flex;align-items:center;gap:8px;justify-content:center;color:var(--bone-dim);font-size:14px}.restpal svg{width:30px;height:40px}.gb-c.keep{border-color:#a5362b}
 .port #dockL.fight,.port #dockR.fight{left:auto}.port #dockL.fight{left:24px}.port #dockR.fight{right:24px;left:auto}
@@ -2489,7 +2490,7 @@ function enterNode(i){
   let at;
   if(t==='battle'&&r.tut&&row===1)at={kind:'combat',enemy:tutEnemy()};
   else if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(r.pal&&r.pal.k==='nord'?'priest':row<5?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
-  else if(t==='rift'){const e=makeEnemy('cultist');e.rift=true;at={kind:'combat',enemy:e}}
+  else if(t==='rift'){const e=makeEnemy('nordJudge');e.rift=true;at={kind:'combat',enemy:e}}
   else if(t==='elite')at={kind:'combat',enemy:makeEnemy('inquisitor')};
   else if(t==='boss')at={kind:'combat',enemy:makeEnemy('bishop')};
   else if(t==='rest')at={kind:'rest'};
@@ -4304,6 +4305,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V37.24.23.10','11/5','튜토리얼 설명 단계 자동 넘김(글 길이만큼 지나면 넘어가고, 창을 누르면 바로 넘어감), 이별 전투의 적을 정예 노르드교 이단심판관으로 변경'],
   ['V37.24.21.10','11/5','보관함 화면에서 튜토리얼 창을 아래로 옮겨 닫기 버튼을 누를 수 있게 함'],
   ['V37.24.20.10','11/5','초반 시나리오 — 꿈과 노크로 시작, 전투 사이 장면, 노르드교 동료(합류 · 전투 대사 · 11막 이별 전투 · 붉은 천), 2장 도입(하늘 · 멜헬름 · 주식 · 구출 · 비 · 구역 입장), 동료 구해진 청년(카드와 장비 건네기 · 추가타 · 퇴각). 상태이상을 캐릭터 밑으로, 눌러서 설명 창. 카드 앞면은 짧은 문장만, 뒷면에 수치. 시작 실링 6단화, 특성 다시 굴리기 제한 없음, 암시장 닫음, 덱 목록 겹침, 지도 화면 정리, 전투 버튼을 체력창 밑으로. 재사용 때 사용시 효과가 다시 발동하던 문제 수정, 은빛 기사를 눌러 대상으로 지정'],
   ['V36.23.19.9','11/5','막 수 절반 — 1장 15막(5·10막 정예, 15막 보스), 2장 지역당 15막. 2장 지도 개편 — 갈 곳을 큰 버튼으로 고름, 중앙정부까지 남은 막과 방향 화살표, 전체 지도 확대·이동, 내 위치 중심, 범례. 튜토리얼 전투 4번으로 개편(카드와 주사위 · 행동 수치 · 성장 · 보관함), 다정한 나레이션, 니다벨리르와 공방별 안내. 2장 상점과 사건 비율이 문서(2 : 1)와 다르게 나오던 버그 수정'],
@@ -4490,9 +4492,12 @@ function tutShow(){
   box.hidden=false;box.className='tut '+st.where;stage.dataset.tut=st.hl||'';
   box.innerHTML=`<div class="tut-h"><span>튜토리얼 · ${r.tutStep+1} / ${TUT.length}</span><button class="tut-skip" id="tutSkip">건너뛰기</button></div>
     <div class="tut-t">${st.t}</div>${st.x.map(l=>`<p>${l}</p>`).join('')}
-    ${st.wait?`<div class="tut-wait">${TUT_WAIT[st.wait]||''}</div>`:`<button class="btn-main tut-next" id="tutNext">${st.last?'튜토리얼 끝':'다음'}</button>`}`;
-  $('#tutSkip').onclick=tutFinish;
-  if($('#tutNext'))$('#tutNext').onclick=tutNext;
+    ${st.wait?`<div class="tut-wait">${TUT_WAIT[st.wait]||''}</div>`:`<div class="tut-auto"><i></i></div>`}`;
+  $('#tutSkip').onclick=e=>{e.stopPropagation();tutFinish()};
+  box.onclick=st.wait?null:()=>{if(TUT[r.tutStep]===st)tutNext()};box.style.cursor=st.wait?'':'pointer';
+  /* 설명 단계: 글 길이만큼 읽을 시간을 주고 자동으로 넘어감, 창을 누르면 바로 넘어감 */
+  if(S.tutAuto!==st){clearTimeout(S.tutAutoT);S.tutAuto=st;if(!st.wait){const ms=Math.max(2600,st.x.join('').length*85);S.tutMs=ms;S.tutAutoT=setTimeout(()=>{if(tutOn()&&TUT[r.tutStep]===st)tutNext()},ms)}}
+  {const bar=box.querySelector('.tut-auto i');if(bar&&S.tutMs)bar.style.animationDuration=S.tutMs+'ms'}
   tutFinger(!!st.finger&&S.screen==='combat');tutDf(st);
 }
 /* 튜토리얼: 설명하는 곳만 누를 수 있음 */
@@ -4517,7 +4522,7 @@ function tutDf(st){const C=S.C;let el=$('#dfocus');if(!st.hold||!C||!C.tutV){if(
 function tutHold(v){const C=S.C;C.tutV=v;tutEvent('strike');return new Promise(res=>{S.tutRes=res})}
 function tutRelease(){if(S.tutRes){const f=S.tutRes;S.tutRes=null;const el=$('#dfocus');if(el)el.hidden=true;f()}}
 function tutNext(){const r=S.run;if(!tutOn())return;if(TUT[r.tutStep].last)return tutFinish();r.tutStep++;if(!TUT[r.tutStep].hold)tutRelease();if(S.screen==='combat')handEls.forEach(x=>{if(x.classList.contains('zoom'))zoomCard(x,false)});tutEnter();save();tutShow()}
-function tutFinish(){const r=S.run;if(r){r.tut=false;save()}setTutDone(true);tutRelease();tutFinger(false);tutShow()}
+function tutFinish(){clearTimeout(S.tutAutoT);S.tutAuto=null;const r=S.run;if(r){r.tut=false;save()}setTutDone(true);tutRelease();tutFinger(false);tutShow()}
 function tutEvent(ev){
   const r=S.run;if(!tutOn())return;const st=TUT[r.tutStep];
   if(st.wait===ev){r.tutStep++;tutEnter();save();tutShow()}
@@ -6191,7 +6196,8 @@ const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','그는 살던
 const S_NORD=['벽에 기대앉은 남자가 숨을 고른다. 붉은 천을 두른 다리에서 피가 배어 나온다.',['부상당한 노르드교 단원','그 검... 우리 쪽 물건이군. 형제여, 이런 곳에서 만나다니.'],'그는 대답하지 않았다.',['부상당한 노르드교 단원','이 몸으로는 이제 칼을 못 쥐네. 나도 한때는 이 지역에서 제일이었는데 말일세.'],['부상당한 노르드교 단원','자네도 세계수로 가는 길인가? 좋군. 뜻이 같으니 길도 같은 게지.'],['부상당한 노르드교 단원','말이 없군. 좋네, 뜻이 같으면 말은 필요 없지.']];
 const S_TREE=['세계수를 감싼 바벨탑 모양의 교단이 가까워진다.','의심이 확신으로 바뀌고, 심장이 빠르게 뛴다.',['부상당한 노르드교 단원','저걸 태우면 말일세, 형제여. 무엇이 남을지 궁금하지 않나?'],'그는 세계수를 올려다보았다. 그가 보고 싶은 것은 재가 아니었다.'];
 const S_RUMOR=[['부상당한 노르드교 단원','이상한 말이 돌더군. 형제를 판 놈이 있다고. 헛소리지.'],['부상당한 노르드교 단원','자네는 듣지 말게. 내가 자네를 아니까.']];
-const S_RIFT=['그가 떠나온 지역의 노르드교 단원들이 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람들이다.',['노르드교 단원','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 단원','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
+ENEMY.nordJudge={...ENEMY.inquisitor,name:'노르드교 이단심판관',sub:'노르드교',art:'cultist'};
+const S_RIFT=['그가 떠나온 지역의 이단심판관이 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이단심판관','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이단심판관','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
 const S_VOW=[['순수유물주의자','제가 막겠습니다. 그리고 회개시키겠습니다.'],'교황은 별다른 말 없이 일어섰다.','그녀는 그 침묵을 긍정의 뜻으로 받아들였다.'];
 const S_BOSS=['은빛 기사들이 길을 메운다. 그 앞에 붉은 휘장의 주교가 서 있다.','그녀는 기사의 어깨를 거칠게 밀어내면서도, 그 은빛 갑주의 흠집을 손끝으로 쓸었다.'];
 const S_FREE=['상점 문이 열려 있다. 안에는 아무도 없다.','주인은 물건도 두고 도망친 모양이다.',['부상당한 노르드교 단원','주인이 없군. 양심껏 챙기게나, 형제여.']];
