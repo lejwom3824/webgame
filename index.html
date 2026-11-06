@@ -915,6 +915,29 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .d99{font-size:64px;font-family:'Song Myung',serif;color:var(--bone)}.d99.ok{color:#a9d6a0}.d99.ng{color:#ef9a8c}
 .patchlist .achno{opacity:.55}
 .cprep .fatebar{display:flex;gap:8px;flex-wrap:wrap}
+
+#modal.scn-sky{background:linear-gradient(#4f93d6,#9fcdf0 70%,#d7ecfa)!important}
+#modal.scn-sky .scn-t{color:#14212e;text-shadow:0 1px 0 #fff6}#modal.scn-sky .scn-who{color:#3a2c12}
+#modal.scn-sky .btn-ghost{color:#14212e!important;border-color:#14212e66!important;background:#ffffff70!important}
+#modal.scn,#modal.scn-dark{transition:background 1.8s}
+#modal.scn-dark{background:#05060a!important}
+#modal.scn-lite{background:#07090bb8!important}
+.panel.scene.tug{animation:tug 2.1s ease-in forwards}
+@keyframes tug{0%{transform:none;opacity:1}16%{transform:translateX(-14px)}32%{transform:translateX(10px)}100%{transform:translateX(140px) scale(.96);opacity:0}}
+#mbark{position:absolute;left:50%;top:74px;transform:translateX(-50%);z-index:40;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(760px,90%)}
+#mbark .mb{background:linear-gradient(#2a2620f4,#1a1814f4);border:1px solid #8a7550;border-radius:12px;padding:10px 16px;color:var(--bone);font-size:18px;line-height:1.5;box-shadow:0 10px 30px #000a;display:flex;gap:10px;align-items:baseline;animation:mbin .25s ease-out;transition:opacity .4s}
+#mbark .mb b{color:var(--brass-hi);white-space:nowrap;font-family:'Song Myung',serif}
+#mbark .mb.rt{border-color:#6c8a6a}#mbark .mb.rt b{color:#a9d6a0}
+#mbark .mb.out{opacity:0}
+@keyframes mbin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.plate-btn.dis,.svc.dis{opacity:.45;filter:grayscale(.6)}
+.dghost{position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-70%);background:#2a2620f0;border:1px solid var(--brass-hi);color:var(--bone);padding:8px 14px;border-radius:10px;font-size:15px;box-shadow:0 10px 30px #000b;white-space:nowrap}
+[data-dz]{outline:2px dashed transparent;outline-offset:4px;border-radius:10px;transition:outline-color .15s,background .15s}
+[data-dz].dzon{outline-color:var(--brass-hi);background:#c9a35c18}
+.dsrc{opacity:.4}.darm{outline:2px solid var(--brass-hi);border-radius:10px}
+[data-duid]{cursor:grab;-webkit-touch-callout:none;user-select:none}
+.rtag{display:inline-block;font-size:12px;color:#a9d6a0;border:1px solid #6c8a6a;border-radius:6px;padding:1px 6px;margin-top:4px}
+.dzhint{font-size:13px;color:var(--brass-hi);opacity:.8;margin-left:8px;font-weight:400}
 </style>
 
 <div id="wrap"><div id="box"><div id="stage" class="land">
@@ -995,7 +1018,7 @@ const CARDS={
   double:{name:'연속 베기',cost:1,type:'atk',rar:'common',d:[A(40,55),A(40,55)],text:'공격 40~55 × 2',flavor:'한 번에 안 되면 두 번.'},
   smash:{name:'내려찍기',cost:2,type:'atk',rar:'common',d:[A(130,190)],text:'공격 130~190',flavor:'세계수 아래에서는 위에서 떨어지는 것이 가장 무섭다.'},
   shield:{name:'방패 세우기',cost:2,type:'def',rar:'common',d:[D(90,130)],text:'방어 90~130',flavor:'위를 향해 몸을 움츠리는 자세'},
-  sling:{name:'돌팔매',cost:1,type:'atk',rar:'common',d:[A(55,75)],weak:1,text:'공격 55~75, 적중 시 약화 1부여',flavor:'미드가르드에서 가장 흔한 무기는 바닥에 굴러다닌다.'},
+  sling:{name:'돌팔매',ranged:1,cost:1,type:'atk',rar:'common',d:[A(55,75)],weak:1,text:'공격 55~75, 적중 시 약화 1부여',flavor:'미드가르드에서 가장 흔한 무기는 바닥에 굴러다닌다.'},
   gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(50,70)],vuln:1,text:'공격 50~70, 적중 시 취약 1부여',flavor:'광신도도 숨을 쉰다.'},
   hardtack:{name:'레미 공방의 건빵',cost:0,type:'skill',rar:'common',heal:4,exhaust:true,text:'체력 4 회복, 소멸',flavor:'니다벨리르의 모든 식탁은 이 공방을 거친다.'},
   prayer:{name:'노른교의 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45, 드로우 +1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
@@ -2526,6 +2549,7 @@ function resumeAt(){
   if(at.kind==='combat'&&!at.gokDone&&!(r.flags&&r.flags.gokMet)&&(at.enemies||[]).some(f=>f.key==='interp'))return gokFirst(at);
   if(at.kind==='combat')return startCombat(JSON.parse(JSON.stringify(at.enemies||at.enemy)));
   if(at.kind==='inn')return showInn();
+  if(at.kind==='a2first')return showA2First();
   if(at.kind==='fall')return showFall();
   if(at.kind==='land')return showLand();
   if(at.kind==='dir')return showDirPick();
@@ -2585,7 +2609,7 @@ function startCombat(E0){
     evaMod:(r.next&&r.next.eva)||0,costMod:(r.next&&r.next.cost)||0,cost1:(r.next&&r.next.cost1)||0};
   if(C.E.tut){C.E.intent=null}
   for(const f of C.foes){if(f.apMax==null){f.apMax=f.boss?10:f.tier==='elite'?6:5}f.ap=f.apMax;f.early=false}
-  C.atInfo={rush:r.at&&r.at.rush!=null?r.at.rush:null,laev:!!(r.at&&r.at.laev),node:r.at?r.at.node:null,evb:r.at&&r.at.evb?r.at.evb:null};C.rush=C.atInfo.rush;C.noFlee=!!(r.at&&r.at.noFlee);palStart();C.noWs=C.rush===2&&r.rushWs?r.rushWs:null;
+  C.atInfo={rush:r.at&&r.at.rush!=null?r.at.rush:null,laev:!!(r.at&&r.at.laev),node:r.at?r.at.node:null,evb:r.at&&r.at.evb?r.at.evb:null,shopFight:!!(r.at&&r.at.shopFight)};C.rush=C.atInfo.rush;C.noFlee=!!(r.at&&r.at.noFlee);palStart();C.noWs=C.rush===2&&r.rushWs?r.rushWs:null;
   C.eqUsed={};C.wsUse={};
   if(eqW('km_b')){const pool=EQ_ALL.filter(k=>!EQUIP[k].ws&&!EQUIP[k].held&&!(r.equip||[]).includes(k));if(pool.length)C.tempEq=pick(pool)}
   S.C=C;S.screen='combat';viewFor('combat');
@@ -3243,6 +3267,7 @@ function winCombat(res){
   if(C.select){C.select=null;$('#prompt').hidden=true}
   const all=foes(),killed=all.filter(f=>(f.dead||f.hp<=0)&&!f.fled),fled=all.filter(f=>f.fled&&!f.spared),spared=all.filter(f=>f.spared);
   const top=all.find(f=>f.tier==='boss')||all.find(f=>f.tier==='elite')||all[0];
+  if(r.act===2&&killed.length&&!(C.atInfo&&C.atInfo.evb))r.flags.a2Felled=1;
   for(const E of killed){
     r.kills++;
     if(r.mode==='dain'){
@@ -3410,7 +3435,7 @@ const SPECIAL_EV_DUMMY={
   getGungnir:{place:'nidavellir',title:'궁니르',trigger:'솜씨 좋은 대장장이(특수 대장장이)를 만났을 때 확정 발동',text:'(사건 글은 작성 예정)',choices:[]},
   getLaevateinn:{place:'yggdrasil',title:'레바테인',trigger:'보스를 처치한 뒤, 가지를 타고 다른 지역으로 이동할 때(지역 이동 로딩) 1% 확률로 발동',
     text:'세계수 안쪽이 열리며 뜨거운 열기가 머릿결을 스쳐 간다. 눈앞에 보이는 것은 세계수를 태우고 있는 수르트의 무구, 레바테인이다.',choices:[
-    {b:'멸망이 된다',s:'레바테인 획득(해제불가), 수르트모드(수르트 1레벨 기준 스탯으로 절멸전 시작 · 레벨은 이어 감)'},
+    {b:'멸망이 된다',s:'레바테인 획득(해제불가), 수르트모드(레벨 1500 고정, 절멸전 수르트 1500레벨 스탯으로 절멸전 시작)'},
     {b:'처분한다',s:'약화된 수르트와 전투(공격레벨 -100, 방어레벨 -100), 승리 시 최종 보스 수르트 공격레벨 -50, 방어레벨 -50'}]}
 };
 /* 장 구성 — 1장 미드가르드(튜토리얼), 2장 니다벨리르, 3장 미드가르드, 4장 아스가르드, 최종 보스 수르트 (장소 추가 예정으로 확정 아님) · 2장부터 재화 단위가 훨씬 높아짐 */
@@ -4306,6 +4331,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V37.26.26.10','11/6','2장 진입 — 돔 선택지 문구, 하늘을 보는 장면(한 글자씩 나오는 줄)과 페이드 아웃, 멜헬름과 대화, 선택 없이 손에 이끌려 상점으로, 멜헬름이 상점을 설명하고 첫 종목을 줌. 구출은 2장 첫 사건 막에서(그 전에 적을 쓰러뜨리면 없음), 동료 이름 리테, 리테가 없으면 구역 안내는 멜헬름. 상점 반응(비싼 물건 · 싼 물건 · 그냥 나감 · 돈 부족 · 새로고침 · 주식). 상점 전투에서 지면 체력 1 · 5000실링을 잃고 쫓겨남. 카드 · 장비 보관함에서 끌어서 덱 · 리테 · 장비 칸에 편성. 1장 · 2장 나레이션을 주인공 시점으로. 수르트모드 레벨 1500, 돌팔매는 원거리 · 리테에게'],
   ['V37.25.23.10','11/6','여관 — 2장 상점 막에 들어가면 25%로 여관, 5단화에 체력 15% 회복, 쉴 때마다 8시간 경과, 반복 가능. 2장 상점 가격 50% 인하, 상점과 사건 비율 8 : 7'],
   ['V37.24.23.10','11/5','튜토리얼 설명 단계 자동 넘김(글 길이만큼 지나면 넘어가고, 창을 누르면 바로 넘어감), 이별 전투의 적을 정예 노르드교 이단심판관으로 변경'],
   ['V37.24.21.10','11/5','보관함 화면에서 튜토리얼 창을 아래로 옮겨 닫기 버튼을 누를 수 있게 함'],
@@ -4663,6 +4689,7 @@ function dainCheck(){const r=S.run,C=S.C;if(!r||!C||C.over||C.dead||r.mode!=='da
 function redout(){const el=$('#redout');el.className='';void el.offsetWidth;el.className=REDUCED?'stay':'on';sfx('gore',1,true)}
 function gameOver(){
   const C=S.C;if(C&&C.dead)return;
+  if(C&&C.atInfo&&C.atInfo.shopFight&&!C.over){C.over=true;C.phase='over';S.busy=false;const r=S.run;r.hp=1;const lost=Math.min(r.gold,5000);r.gold-=lost;a2CombatEnd(C);hideCombatUI();toast('패배',lost>=5000?'체력 1 · 5000실링을 잃고 상점에서 쫓겨났다':'체력 1 · 가진 돈을 전부 잃고 상점에서 쫓겨났다');r.at=null;r.next=null;save();showMap();setTimeout(()=>shopBark('kick'),500);return}
   if(C&&C.atInfo&&C.atInfo.evb){C.over=true;C.phase='over';S.busy=false;const r=S.run;r.hp=1;a2CombatEnd(C);hideCombatUI();toast('패배','체력 1로 쫓겨났다');r.at=null;r.next=null;save();return showMap()}
  if(C){C.dead=true;C.over=true}S.busy=false;clearSave();
   const r=S.run,dain=r.mode==='dain',killer=C&&C.E?C.E.key:null;
@@ -4726,43 +4753,76 @@ function prepSync(c,out){const C=S.C;if(!C||C.over)return;if(out){for(const p of
 /* 카드를 옮겨 다시 그려도 스크롤 위치 유지 — 보관함→덱은 덱이 늘어난 만큼 보관함 제목 기준으로 맞춤 */
 const prepView=()=>{const a=$('#prepScroll'),h=$('#prepStoreH');return a&&h?{top:a.scrollTop,h:h.offsetTop}:null};
 /* 장비 보관함 — 왼쪽 사람 그림과 6칸, 오른쪽 빽빽한 칸. 전투 중에는 확인만, 소유 효과는 발동 중(황금빛) */
-const prepTabs=(r,on)=>`<div class="gb-tabs"><button class="gb-tab${on==='card'?' on':''}" data-ptab="card">카드 보관함 ${(r.store||[]).length}</button><button class="gb-tab${on==='gear'?' on':''}" data-ptab="gear">장비 보관함 ${(r.bag||[]).length+(r.equip||[]).length+wornGear(r).length}</button>${r.pal&&r.pal.k==='girl'?`<button class="gb-tab${on==='pal'?' on':''}" data-ptab="pal">구해진 청년</button>`:''}</div>`;
+const prepTabs=(r,on)=>`<div class="gb-tabs"><button class="gb-tab${on==='card'?' on':''}" data-ptab="card">카드 보관함 ${(r.store||[]).length}</button><button class="gb-tab${on==='gear'?' on':''}" data-ptab="gear">장비 보관함 ${(r.bag||[]).length+(r.equip||[]).length+wornGear(r).length}</button>${r.pal&&r.pal.k==='girl'?`<button class="gb-tab${on==='pal'?' on':''}" data-ptab="pal">리테</button>`:''}</div>`;
 const GB_FIG='<svg viewBox="0 0 150 430"><circle cx="75" cy="38" r="36"/><rect x="26" y="84" width="98" height="166" rx="26"/><rect x="0" y="92" width="24" height="154" rx="12"/><rect x="126" y="92" width="24" height="154" rx="12"/><rect x="34" y="230" width="38" height="196" rx="14"/><rect x="78" y="230" width="38" height="196" rx="14"/></svg>';
 function openGearBag(){const r=ensureGear(S.run),m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;m.hidden=false;S.prepTab='gear';S.gearF=S.gearF||'all';
-  const sel=S.gearSel,slot=(s,x)=>{const k=r.gear[s][0];return`<button class="gb-slot${k?' on':''}${sel&&sel.s===s?' sel':''}" data-gs="${s}" style="${x}"><i>${GSLOT[s].n}</i><em>${k?GEAR[k].n:'비어 있음'}</em></button>`};
+  const pal=r.pal&&r.pal.k==='girl'?r.pal:null;
+  const sel=S.gearSel,slot=(s,x)=>{const k=r.gear[s][0];return`<button class="gb-slot${k?' on':''}${sel&&sel.s===s?' sel':''}" data-gs="${s}" style="${x}"${k&&!fight?` data-duid="s:${s}" data-dsrc="wear" data-dname="${GEAR[k].n}"`:''}><i>${GSLOT[s].n}</i><em>${k?GEAR[k].n:'비어 있음'}</em></button>`};
   const F=S.gearF,bag=r.bag.map((k,i)=>({k,i})).filter(x=>GEAR[x.k]&&(F==='all'||(F==='wp'?['rh','lh'].includes(GEAR[x.k].s):F==='ar'?!['rh','lh'].includes(GEAR[x.k].s):false))),own=(F==='all'||F==='own')?(r.equip||[]).filter(k=>EQUIP[k]):[];
-  const cells=bag.map(x=>`<button class="gb-c${sel&&sel.i===x.i?' sel':''}" data-gi="${x.i}"><b>${GSLOT[GEAR[x.k].s].n}</b><span>${GEAR[x.k].n}</span></button>`).join('')+own.map(k=>`<button class="gb-c own${fight?' live':''}${sel&&sel.o===k?' sel':''}" data-go="${k}"><b>${fight?'발동 중':'소유'}</b><span>${EQUIP[k].n}</span></button>`).join('')+'<div class="gb-c e"></div>'.repeat(Math.max(0,32-bag.length-own.length));
+  const cells=bag.map(x=>`<button class="gb-c${sel&&sel.i===x.i?' sel':''}" data-gi="${x.i}"${fight?'':` data-duid="b:${x.i}" data-dsrc="bag" data-dname="${GEAR[x.k].n}"`}><b>${GSLOT[GEAR[x.k].s].n}</b><span>${GEAR[x.k].n}</span></button>`).join('')+own.map(k=>`<button class="gb-c own${fight?' live':''}${sel&&sel.o===k?' sel':''}" data-go="${k}"><b>${fight?'발동 중':'소유'}</b><span>${EQUIP[k].n}</span></button>`).join('')+'<div class="gb-c e"></div>'.repeat(Math.max(0,32-bag.length-own.length));
   let tip='';if(sel){const k=sel.s?r.gear[sel.s][0]:sel.o||r.bag[sel.i],e=sel.o?EQUIP[k]:GEAR[k];if(e)tip=`<div class="gb-tip"><h4>${e.n}</h4><p>${e.t}</p>${sel.o?`<small>소유 효과 · 착용하지 않아도 효과가 남</small>`:fight?'<small>전투 중에는 확인만 할 수 있다</small>':`<button class="plate-btn" id="gbAct">${sel.s?'벗기':'착용'}</button>`}</div>`}
   m.innerHTML=`<div class="panel" style="width:min(1300px,100%);height:100%"><div class="maphead">${prepTabs(r,'gear')}<button class="btn-ghost" id="mClose">닫기</button></div>
-   <div class="gb-m"><div class="gb-fig">${GB_FIG}${slot('head','left:3%;top:4%')}${slot('body','left:3%;top:36%')}${slot('leg','left:3%;top:68%')}${slot('rh','right:3%;top:4%')}${slot('lh','right:3%;top:36%')}${slot('foot','right:3%;top:68%')}</div>
-   <div class="gb-r"><div class="gb-fl">${[['all','전체'],['wp','무기'],['ar','방어구'],['own','소유 효과']].map(([k,n])=>`<button class="${F===k?'on':''}" data-gf="${k}">${n}</button>`).join('')}</div><div class="gb-g">${cells}${(r.keep||[]).includes('nred')?'<button class="gb-c keep" id="gbRed"><b>귀속</b><span>노르드교의 붉은 천</span></button>':''}</div>${tip}</div></div></div>`;if($('#gbRed'))$('#gbRed').onclick=()=>toast('노르드교의 붉은 천','동료를 아낀 자의 최후');
+   <div class="gb-m"><div class="gb-fig" data-dz="wear">${GB_FIG}${slot('head','left:3%;top:4%')}${slot('body','left:3%;top:36%')}${slot('leg','left:3%;top:68%')}${slot('rh','right:3%;top:4%')}${slot('lh','right:3%;top:36%')}${slot('foot','right:3%;top:68%')}</div>
+   <div class="gb-r"><div class="gb-fl">${[['all','전체'],['wp','무기'],['ar','방어구'],['own','소유 효과']].map(([k,n])=>`<button class="${F===k?'on':''}" data-gf="${k}">${n}</button>`).join('')}</div><div class="gb-g" data-dz="bag">${cells}${(r.keep||[]).includes('nred')?'<button class="gb-c keep" id="gbRed"><b>귀속</b><span>노르드교의 붉은 천</span></button>':''}</div>${tip}
+   ${pal?`<div class="ap-h" style="margin-top:12px">리테의 장비<span class="dzhint">${fight?'전투 중에는 확인만 할 수 있다':'끌어다 놓으면 건네준다'}</span></div><div class="gb-g" data-dz="palgear" style="min-height:64px">${(pal.gear||[]).map((k,i)=>GEAR[k]?`<button class="gb-c"${fight?'':` data-duid="p:${i}" data-dsrc="palgear" data-dname="${GEAR[k].n}"`}><b>리테</b><span>${GEAR[k].n}</span></button>`:'').join('')||'<div class="hint">비어 있음</div>'}</div>`:''}</div></div></div>`;if($('#gbRed'))$('#gbRed').onclick=()=>toast('노르드교의 붉은 천','동료를 아낀 자의 최후');
   bindPrepTabs(m);$('#mClose').onclick=()=>{S.gearSel=null;prepClose(fight)};
   m.querySelectorAll('[data-gf]').forEach(b=>b.onclick=()=>{S.gearF=b.dataset.gf;S.gearSel=null;openGearBag()});
   m.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{S.gearSel=r.gear[b.dataset.gs][0]?{s:b.dataset.gs}:null;openGearBag()});
   m.querySelectorAll('[data-gi]').forEach(b=>b.onclick=()=>{S.gearSel={i:+b.dataset.gi};openGearBag()});
   m.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{S.gearSel={o:b.dataset.go};openGearBag()});
+  if(!fight)bindDrag(m,(from,to,id)=>{const v=id.split(':')[1];
+    if(from==='bag'&&to==='wear'){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}
+    else if(from==='wear'&&to==='bag'){const old=takeOff(r,v,0);if(old)r.bag.push(old)}
+    else if(from==='bag'&&to==='palgear'&&pal){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);pal.gear.push(k);pal.first=pal.first||k;toast('리테',`「${GEAR[k].n}」 건넴`)}
+    else if(from==='wear'&&to==='palgear'&&pal){const old=takeOff(r,v,0);if(!old)return;pal.gear.push(old);pal.first=pal.first||old;toast('리테',`「${GEAR[old].n}」 건넴`)}
+    else if(from==='palgear'&&(to==='bag'||to==='wear')&&pal){const i=+v,k=pal.gear[i];if(!k)return;pal.gear.splice(i,1);if(to==='wear'){const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}else r.bag.push(k)}
+    else return;S.gearSel=null;save();renderTop();openGearBag()});
   if($('#gbAct'))$('#gbAct').onclick=()=>{if(sel.s){const old=takeOff(r,sel.s,0);if(old)r.bag.push(old)}else{const k=r.bag[sel.i],s=GEAR[k].s;r.bag.splice(sel.i,1);const old=wearAt(r,k,s,0);if(old)r.bag.push(old)}S.gearSel=null;save();renderTop();openGearBag()};
 }
 function bindPrepTabs(m){m.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{S.gearSel=null;S.prepTab=b.dataset.ptab;openPrep()})}
 function prepClose(fight){closeModal();renderTop();if(fight){if(S.C.prepEdit){S.C.prepEdit=false;clog('전투 중 정비 — 이번 턴을 소모했다','h');renderCombat();endTurn()}else renderCombat()}}
 /* 카드 보관함: 공격 · 방어 · 유틸로 나누고 그 안에서 희귀도로 나눔, 같은 카드는 패처럼 ×N으로 겹침 */
+/* 보관함 끌어서 편성 (V37.26) — 마우스는 바로, 손가락은 잠깐 누른 뒤 끌기 */
+function bindDrag(root,onDrop){root.querySelectorAll('[data-duid]').forEach(el=>{el.addEventListener('contextmenu',e=>e.preventDefault());
+  el.addEventListener('pointerdown',e=>{if(e.button>0)return;const btn=e.target.closest('button');if(btn&&btn!==el&&el.contains(btn))return;
+    const touch=e.pointerType!=='mouse',sx=e.clientX,sy=e.clientY;let g=null,over=null,armed=!touch,dead=false,ly=sy,scT=0;
+    const scr=root.querySelector('#prepScroll');/* 끄는 중 위아래 끝에 가면 저절로 스크롤 */
+    const auto=()=>{if(!g||!scr)return;const rr=scr.getBoundingClientRect();if(ly>rr.bottom-70)scr.scrollTop+=16;else if(ly<rr.top+70)scr.scrollTop-=16};
+    const holdT=touch?setTimeout(()=>{if(!dead){armed=true;el.classList.add('darm')}},220):0;
+    const tm=ev=>{if(g&&ev.cancelable)ev.preventDefault()};el.addEventListener('touchmove',tm,{passive:false});
+    const mv=ev=>{if(dead)return;const d=Math.hypot(ev.clientX-sx,ev.clientY-sy);
+      if(!g){if(!armed){if(d>8){dead=true;clearTimeout(holdT)}return}if(d<10)return;g=document.createElement('div');g.className='dghost';g.textContent=el.dataset.dname||'';document.body.appendChild(g);el.classList.add('dsrc');el.classList.remove('darm');scT=setInterval(auto,30)}
+      ly=ev.clientY;
+      if(ev.cancelable)ev.preventDefault();g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';const tg=document.elementFromPoint(ev.clientX,ev.clientY),z=tg&&tg.closest('[data-dz]');if(over&&over!==z)over.classList.remove('dzon');over=z&&root.contains(z)?z:null;if(over)over.classList.add('dzon')};
+    const up=()=>{clearTimeout(holdT);clearInterval(scT);el.classList.remove('darm');removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);el.removeEventListener('touchmove',tm);if(!g)return;g.remove();el.classList.remove('dsrc');if(over)over.classList.remove('dzon');
+      const sw=e2=>{e2.stopPropagation();e2.preventDefault()};el.addEventListener('click',sw,{capture:true,once:true});setTimeout(()=>el.removeEventListener('click',sw,{capture:true}),80);
+      if(over&&over.dataset.dz!==el.dataset.dsrc)onDrop(el.dataset.dsrc,over.dataset.dz,el.dataset.duid)};
+    addEventListener('pointermove',mv,{passive:false});addEventListener('pointerup',up);addEventListener('pointercancel',up)})})}
 function storeHTML(list){
   const cat=c=>{const t=CARDS[c.id].type;return t==='atk'?'공격':t==='def'?'방어':'유틸'},gr=c=>cardGrade(c.id)||'unique',RK=['common','rare','hero','legend','myth','unique'],GN={common:'일반',rare:'희귀',hero:'영웅',legend:'전설',myth:'신화',unique:'고유'};
   return['공격','방어','유틸'].map(k=>{const a=list.filter(c=>cat(c)===k);if(!a.length)return'';
     return`<div class="prep-c">${k} ${a.length}장</div>`+RK.map(g=>{const b=a.filter(c=>gr(c)===g);if(!b.length)return'';const m=new Map();for(const c of b){const q=c.id+'|'+(c.mods||[]).join(',');if(!m.has(q))m.set(q,[]);m.get(q).push(c)}
-      return`<div class="prep-g">${GN[g]}</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${[...m.values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}<button class="plate-btn" data-in="${x[0].uid}">덱으로</button></div>`).join('')}</div>`}).join('')}).join('')}
+      return`<div class="prep-g">${GN[g]}</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${[...m.values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}" data-duid="${x[0].uid}" data-dsrc="store" data-dname="${CARDS[x[0].id].name}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}${CARDS[x[0].id].ranged?'<span class="rtag">원거리 · 리테에게</span>':''}<button class="plate-btn" data-in="${x[0].uid}">덱으로</button></div>`).join('')}</div>`}).join('')}).join('')}
 function openPrep(v,anchor){if(S.prepTab==='pal'&&S.run.pal)return openPalTab();const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];if(fight&&tutOn()&&!/^prep/.test(TUT[r.tutStep].wait||'')&&!TUT[r.tutStep].pe)return;m.hidden=false;
   if(tutOn())S.prepTab='card';tutEvent('prepOpen');
   if(anchor&&tutOn()&&TUT[r.tutStep].wait==='node')return closeModal();
   if(S.prepTab==='gear')return openGearBag();
   const row=(c,act,lb,off)=>`<div class="cardpick">${staticCard(c.id,false,c)}<button class="plate-btn" data-${act}="${c.uid}" ${off?'disabled':''}>${lb}</button></div>`;
-  const dk=[...r.deck].sort(deckSort),st=[...r.store].sort(deckSort);
+  const dk=[...r.deck].sort(deckSort),st=[...r.store].sort(deckSort),palC=r.pal&&r.pal.k==='girl'?r.pal:null;
   m.innerHTML=`<div class="panel" style="width:min(1300px,100%);height:100%"><div class="maphead"><div>${prepTabs(r,'card')}<div class="psub">${fight?'전투 중 정비 · 카드를 바꾸면 이번 턴이 끝난다':'정비 시간'} · 덱 ${r.deck.length}장 · 덱은 최소 ${PREP_MIN}장</div></div><button class="btn-ghost" id="mClose">닫기</button></div>
-    <div id="prepScroll" style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">덱</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px">${[...dk.reduce((m,c)=>{const q=c.id+'|'+(c.mods||[]).join(',');if(!m.has(q))m.set(q,[]);m.get(q).push(c);return m},new Map()).values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}<button class="plate-btn" data-out="${x[0].uid}" ${r.deck.length<=PREP_MIN?'disabled':''}>보관함으로</button></div>`).join('')}</div>
-    <div class="ap-h" id="prepStoreH">카드 보관함</div>${storeHTML(st)||'<div class="hint">비어 있음</div>'}</div></div>`;
+    <div id="prepScroll" style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">덱<span class="dzhint">끌어서 옮길 수 있다</span></div><div class="cardgrid" data-dz="deck" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px;min-height:120px">${[...dk.reduce((m,c)=>{const q=c.id+'|'+(c.mods||[]).join(',');if(!m.has(q))m.set(q,[]);m.get(q).push(c);return m},new Map()).values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}" data-duid="${x[0].uid}" data-dsrc="deck" data-dname="${CARDS[x[0].id].name}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}<button class="plate-btn" data-out="${x[0].uid}" ${r.deck.length<=PREP_MIN?'disabled':''}>보관함으로</button></div>`).join('')}</div>
+    ${palC?`<div class="ap-h">리테에게 준 카드 ${palC.cards.length}장<span class="dzhint">끌어다 놓으면 건네준다</span></div><div class="cardgrid" data-dz="pal" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px;min-height:120px">${palC.cards.map(c=>`<div class="cardpick" data-duid="${c.uid}" data-dsrc="pal" data-dname="${CARDS[c.id].name}">${staticCard(c.id,false,c)}<button class="plate-btn" data-pback2="${c.uid}">돌려받기</button></div>`).join('')||'<div class="hint">아직 없음 · 공격 카드를 주면 함께 공격한다</div>'}</div>`:''}
+    <div data-dz="store" style="min-height:160px"><div class="ap-h" id="prepStoreH">카드 보관함</div>${storeHTML(st)||'<div class="hint">비어 있음</div>'}</div></div></div>`;
   bindStatic(m);bindPrepTabs(m);$('#mClose').onclick=()=>prepClose(fight);
   m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.deck.find(x=>x.uid===+b.dataset.out);if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}tutEvent('prepOut');save();openPrep(view)});
   m.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.store.find(x=>x.uid===+b.dataset.in);if(!c)return;r.store.splice(r.store.indexOf(c),1);r.deck.push(c);if(fight){prepSync(c,false);S.C.prepEdit=true}tutEvent('prepIn');save();openPrep(view,true)});
+  m.querySelectorAll('[data-pback2]').forEach(b=>b.onclick=()=>{const view=prepView(),c=palC.cards.find(x=>x.uid===+b.dataset.pback2);if(!c)return;palC.cards.splice(palC.cards.indexOf(c),1);r.store.push(c);save();openPrep(view)});
+  bindDrag(m,(from,to,uid)=>{uid=+uid;const view=prepView(),L={deck:r.deck,store:r.store,pal:palC?palC.cards:null},a=L[from],b=L[to];if(!a||!b)return;const c=a.find(x=>x.uid===uid);if(!c)return;
+    if(from==='deck'&&r.deck.length<=PREP_MIN){toast('덱',`덱은 최소 ${PREP_MIN}장이어야 한다`);return}
+    a.splice(a.indexOf(c),1);b.push(c);if(fight&&(from==='deck'||to==='deck')){prepSync(c,from==='deck');S.C.prepEdit=true}
+    if(from==='deck'&&to==='store')tutEvent('prepOut');if(from==='store'&&to==='deck')tutEvent('prepIn');
+    if(to==='pal'){S.palLine='저 주시는 거에요? 진짜요? 와.. 진짜 감사해요! 은인님!';toast('리테',`「${CARDS[c.id].name}」 건넴`)}
+    save();openPrep(view,to==='deck')});
   if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
 function hideCombatUI(){stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{const kf=$('#knightFig');if(kf)kf.hidden=true}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
@@ -5164,7 +5224,7 @@ function openList(title,cards,note){
     <div class="cardgrid">${cards.length?cards.map(c=>staticCard(c.id,false,c)).join(''):'<div class="hint">비어 있습니다</div>'}</div></div>`;
   bindStatic(m);$('#mClose').onclick=closeModal;$('#mClose').focus();
 }
-function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';m.classList.remove('scn');S.modalLock=false}
+function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';m.classList.remove('scn','scn-sky','scn-dark','scn-lite');S.modalLock=false}
 function openEnemyInfo(){
   const C=S.C;if(!C||drag)return;const E=C.E,d=ENEMY[E.key],r=S.run;
   const m=$('#modal');m.hidden=false;
@@ -5627,8 +5687,8 @@ function landDome(){const r=S.run;
   r.act=2;r.floor=0;r.next=null;r.flags.actF={};r.at={kind:'land'};save();showLand()}
 function showLand(){const r=S.run;S.screen='event';renderTop();viewFor('map');
   eventPanel('철제 돔','2장 · 니다벨리르',`철제 돔의 허술한 부분에 떨어졌다. 현재 체력의 40%가 깎였다 (−${r.flags.fallLoss||0}).`,[
-    {b:'위로 올라간다',s:`d99 판정 · 무조건 실패 — 낙하, 현재 체력의 20% 소모, 무작위 방향으로 튕겨 나감`,f:()=>d99('up')},
-    {b:'아래로 내려간다',s:`d99 판정 · 무조건 실패 — 접지름, 현재 체력의 5% 소모`,f:()=>d99('down')}])}
+    {b:'미드가르드로 돌아가려 세계수를 타고 올라간다',s:`d99 판정 · 무조건 실패 — 낙하, 현재 체력의 20% 소모, 무작위 방향으로 튕겨 나감`,f:()=>d99('up')},
+    {b:'이 돔 밑으로 내려갈 방법을 찾는다',s:`d99 판정 · 무조건 실패 — 접지름, 현재 체력의 5% 소모`,f:()=>d99('down')}])}
 function d99(way){const r=S.run,roll=ri(1,99),ok=false;
   const sc=openScreen('',{dim:true});
   sc.innerHTML=`<div class="panel evpanel" style="width:min(640px,100%);align-items:center;text-align:center"><div><div class="psub">${way==='up'?'위로 올라간다':'아래로 내려간다'}</div><div class="ptitle">d99</div></div>
@@ -5650,7 +5710,7 @@ function showDirPick(sel){const r=S.run;r.at={kind:'dir'};save();S.screen='event
   sc.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>showDirPick(b.dataset.d));
   if(sel){$('#dGo').onclick=()=>startDir(sel);$('#dNo').onclick=()=>showDirPick()}}
 function startDir(dir){const r=S.run;r.dir=dir;r.m2=genMap2(dir);r.hostile=r.mode==='dain';r.contract=null;r.quiet=0;r.at=null;save();
-  toast('2장 · 니다벨리르',`${DIR2[dir].n} · ${WS2[DIR2[dir].ws].n}에서 시작`);if(r.mode==='human'&&!r.flags.sA2){r.flags.sA2=1;save();return showScene(sceneA2(dir),()=>transition(()=>showMap()))}transition(()=>showMap())}
+  toast('2장 · 니다벨리르',`${DIR2[dir].n} · ${WS2[DIR2[dir].ws].n}에서 시작`);if(r.mode==='human'&&!r.flags.sA2){r.flags.sA2=1;r.flags.a2New=1;r.at={kind:'shop2',node:r.m2.cur,intro:1};save();return showScene(sceneA2(dir),()=>transition(resumeAt),{sky:true})}transition(()=>showMap())}
 /* 2장 지도 (웹게임 문서: 2장 니다벨리르 · 맵 항목 무작위 배치)
    원 안에 계단식 피라미드, 꼭짓점 넷에 공방(북 크리뷔스 · 동 스타인러 · 남 아쉬부티 · 서 레미), 꼭대기(가운데)에 중앙정부
    칸은 줄 맞춤 없이 흩뿌리고, 가까운 막끼리 겹치지 않게 길을 이은 뒤 일부를 지워 갈림길을 만듦 · 지역마다 15막
@@ -5790,6 +5850,7 @@ function enterNode2(id){
     if(t==='shop'){
       if(false){r.flags.mjolSeen=true;at={kind:'mjol',node:id}}
       else{if(n.inn==null)n.inn=rnd()<.25;at=n.inn?{kind:'inn',node:id}:rnd()<BLACK_P?{kind:'black',node:id}:{kind:'shop2',node:id}}}
+    else if(r.mode==='human'&&r.flags.a2New&&!r.flags.a2Ev1){r.flags.a2Ev1=1;at={kind:'a2first',node:id}}
     else{const ev=pickEvent(n.reg);at=ev?{kind:'event',ev,node:id}:null}
     /* 특수 대장장이 — 노드에 들어갔을 때 1% */
     if(false){r.flags.smithSeen=true;at={kind:'smith',node:id,then:at}}
@@ -5809,6 +5870,21 @@ function genShop2(n){const r=S.run;if(n.shop)return n.shop;
   r.shopN2=(r.shopN2||0)+1;
   n.shop={ws,cards,gear,rer:0,removed:false,removeCost:eq('u_tool')?Math.round(25000*.7):25000+3000*(r.shopN2-1)};return n.shop}
 const REMOVE2_TMP=true;/* 니다벨리르 카드 제거·새로고침 비용은 문서에 없어 1장 값의 100배로 임시 */
+/* ================= 상점 반응 (V37.26) — 2장 상점 주인 멜헬름, 리테가 있으면 리테도 ================= */
+const MEL_BARK={rich:['허허, 통 크구먼! 그거 들고 오래 살아남아야 본전 뽑는 거여.','그걸 사네? 자네 오늘부터 단골이여.','잘 샀어. 환불은 없고.'],cheap:['소박하구먼. 그런 게 오래 가.','그거 하나면 되겠어? 아이고, 알았어.'],
+  quit:['에이, 보기만 하는 건 공짜여. 근데 너무 오래 보진 말고. 여기선 그거 갖고도 맞는 수가 있거든.','다음에 와. 그때까지 안 팔리면 자네 거여.'],poor:['주머니가 가볍구먼. 주식이라도 좀 굴려 봐.','외상은 안 돼. 미안혀.'],
+  rer:['창고 좀 뒤져 보지. 잠깐만.','또? 허허, 돈 내는 사람 맘이지.'],sbuy:['좋아, 인정 한 장 샀구먼.','오를 거여. 아마도.'],swin:['거 봐, 내 말 듣길 잘했지?','이야, 오늘 저녁은 자네가 사.'],sloss:['흠… 수업료 낸 셈 쳐.','원래 오르락내리락하는 거여. 아마도.'],
+  sup:['자네 갖고 있는 거 올랐더라? 지금 팔든 더 기다리든, 난 몰러.'],sdown:['자네 종목, 오늘 좀 안 좋더라. 기송관 문서 보다가 내가 다 놀랐어.'],fight:['진심이여? 그럼 도망은 못 가.'],kick:['목숨은 붙여서 내보내 주는 거여. 수업료로 5000실링은 받아 가고. 다신 그러지 마.']};
+const RIT_BARK={rich:['은인님, 멋있어요! 저도 저거 쳐다보다가 맞았었는데.'],quit:['은인님, 그건 다음에 사요. 다음이 있으면요.'],poor:['제가 주운 나사라도 드릴까요? 다섯 개 있어요.'],sdown:['은인님, 종이가 싸졌대요. 그럼 더 많이 살 수 있는 거죠?']};
+const mpick=a=>a[Math.floor(Math.random()*a.length)];
+function showBark(who,tx){let b=$('#mbark');if(!b){b=document.createElement('div');b.id='mbark';$('#stage').appendChild(b)}const e=document.createElement('div');e.className='mb'+(who==='리테'?' rt':'');e.innerHTML=`<b>${who}</b><span>${tx}</span>`;b.appendChild(e);while(b.children.length>2)b.firstChild.remove();setTimeout(()=>{e.classList.add('out');setTimeout(()=>e.remove(),400)},3800)}
+function shopBark(k,line){const r=S.run;if(!r||r.act!==2||r.mode!=='human')return;const l=line||(k&&MEL_BARK[k]?mpick(MEL_BARK[k]):'');if(!l)return;showBark('멜헬름',l);const p=r.pal;if(k&&p&&p.k==='girl'&&!p.away&&RIT_BARK[k]&&Math.random()<.6)setTimeout(()=>showBark('리테',mpick(RIT_BARK[k])),1300)}
+function melRegion(n,delay){const r=S.run,F=r.flags,reg=n&&n.reg;if(!reg||reg==='C'||(r.pal&&r.pal.k==='girl')||!F.melIntro)return;F.melReg=F.melReg||{};F.reg=F.reg||{};
+  if(F.melReg[reg]===1||!F.reg[reg]){F.melReg[reg]=2;F.reg[reg]=1;save();setTimeout(()=>shopBark(null,MEL_REGION[reg]),delay||1800)}}
+function shopOnEnter(n){const r=S.run,key=(r.at&&r.at.node)+'|'+(r.floor||0);if(S.shopVisit===key)return;S.shopVisit=key;S.shopLook=false;S.shopBought=false;if(r.mode!=='human')return;
+  const st=r.stock;if(st&&st.own){st.seen=st.seen||{};let best=0;for(const k in st.own){const p=st.p[k],s0=st.seen[k];if(s0){const ch=(p-s0)/s0;if(Math.abs(ch)>Math.abs(best))best=ch}}for(const k in st.own)st.seen[k]=st.p[k];
+    if(best>=.15)setTimeout(()=>shopBark('sup'),600);else if(best<=-.15)setTimeout(()=>shopBark('sdown'),600)}
+  melRegion(n)}
 function showShop2(){
   const r=S.run,n=m2Node(r.at.node),sh=genShop2(n),W=WS2[sh.ws];S.screen='shop';viewFor('shop');renderTop();
   if(r.flags.actF&&r.flags.actF.nextShop30&&!sh.disc30){sh.disc30=true;r.flags.actF.nextShop30=0}S.run.shopDiscNow=!!sh.disc30;
@@ -5822,26 +5898,30 @@ function showShop2(){
   sc.innerHTML=`<div class="panel shoppanel" style="width:min(1320px,100%)">
     <div class="maphead"><div><div class="psub">공방 상점 · 영웅 등급 이하${(r.flags.actF&&r.flags.actF.shopUp)?` · 가격 +${Math.round(r.flags.actF.shopUp*100)}%`:''}${sh.disc30?' · 영업부서 계약 -30%':''}${FAV_WS.includes(sh.ws)?` · 친호도 ${favOf(sh.ws)}${isFriend(sh.ws)?' · 친우':''}`:''}${gd<1?' · 입단 -20%':''}</div><div class="ptitle">${W.n}</div></div><div class="purse">보유 <b>${money(r.gold)}</b></div></div>
     <div class="shoplay"><div class="shopmain"><div class="ap-h">카드</div>
-    ${my?'<div class="hint">신화덱은 고정되어 있어 카드를 사지 않는다</div>':`<div class="cardrow shoprow">${sh.cards.map((it,i)=>{const p=cPrice(it);return`<div class="cardpick">${staticCard(it.id,false)}<span class="eqtag">${GRADE[cardGrade(it.id)]}</span>${it.sold?'<span class="hint">판매됨</span>':`<button class="plate-btn" data-bc="${i}" ${r.gold<p?'disabled':''}>구매 <span class="price">${money(p)}</span></button>`}</div>`}).join('')}</div>`}
-    ${my?'':`<div class="ap-h">장비</div><div class="eqgrid shopgear">${sh.gear.map((it,i)=>{const p=gPrice(it),act=`<div class="eqact">${it.sold?'<span class="hint">판매됨</span>':`<button class="plate-btn" data-bg="${i}" ${r.gold<p?'disabled':''}>구매 ${money(p)}</button>`}</div>`;return it.type==='gear'?gearCardHTML(it.k,act):`<div class="eqcard g-hero"><span class="eqtag">소유 효과</span><b>${EQUIP[it.k].n}</b><div class="eqt">${EQUIP[it.k].t}</div>${act}</div>`}).join('')}</div>`}
+    ${my?'<div class="hint">신화덱은 고정되어 있어 카드를 사지 않는다</div>':`<div class="cardrow shoprow">${sh.cards.map((it,i)=>{const p=cPrice(it);return`<div class="cardpick">${staticCard(it.id,false)}<span class="eqtag">${GRADE[cardGrade(it.id)]}</span>${it.sold?'<span class="hint">판매됨</span>':`<button class="plate-btn${r.gold<p?' dis':''}" data-bc="${i}">구매 <span class="price">${money(p)}</span></button>`}</div>`}).join('')}</div>`}
+    ${my?'':`<div class="ap-h">장비</div><div class="eqgrid shopgear">${sh.gear.map((it,i)=>{const p=gPrice(it),act=`<div class="eqact">${it.sold?'<span class="hint">판매됨</span>':`<button class="plate-btn${r.gold<p?' dis':''}" data-bg="${i}">구매 ${money(p)}</button>`}</div>`;return it.type==='gear'?gearCardHTML(it.k,act):`<div class="eqcard g-hero"><span class="eqtag">소유 효과</span><b>${EQUIP[it.k].n}</b><div class="eqt">${EQUIP[it.k].t}</div>${act}</div>`}).join('')}</div>`}
     </div><div class="shopside">
       <div class="ap-h">상점</div>
-      <button class="svc" id="sRer" ${r.gold<rerCost?'disabled':''} title="카드"><b>새로고침</b><span class="price">${rerCost?money(rerCost):'무료'}</span></button>
+      <button class="svc${r.gold<rerCost?' dis':''}" id="sRer" title="카드"><b>새로고침</b><span class="price">${rerCost?money(rerCost):'무료'}</span></button>
       <div class="ap-h">거래</div>
       <button class="svc trade" id="sStock"><b>주식</b><span>${stockLine(r)}</span></button>
       <button class="svc main" id="sLeave"><b>떠난다</b></button>
       <button class="svc danger" id="sFight" title="모든 공방이 적대한다"><b>전투</b></button></div></div></div>`;
   eqToggle(sc);$('#sStock').onclick=()=>featGuide('stock',()=>openStock(showShop2));
   bindStatic(sc);
-  sc.querySelectorAll('[data-bc]').forEach(b=>b.onclick=()=>{const it=sh.cards[+b.dataset.bc],p=cPrice(it);if(r.gold<p||it.sold)return;r.gold-=p;it.sold=true;n.used=true;addToDeck(it.id);toast('카드',`「${CARDS[it.id].name}」 — 카드 보관함으로`);save();showShop2()});
-  sc.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{const it=sh.gear[+b.dataset.bg],p=gPrice(it);if(r.gold<p||it.sold)return;r.gold-=p;it.sold=true;n.used=true;save();
+  sc.querySelectorAll('.shoprow .cardpick,.shopgear .eqcard').forEach(e=>e.addEventListener('click',ev=>{if(!ev.target.closest('button'))S.shopLook=true}));
+  const bought=(p,g0)=>{S.shopBought=true;shopBark(p>=g0*.5?'rich':Math.random()<.5?'cheap':null)};
+  sc.querySelectorAll('[data-bc]').forEach(b=>b.onclick=()=>{const it=sh.cards[+b.dataset.bc],p=cPrice(it);if(it.sold)return;if(r.gold<p)return shopBark('poor');const g0=r.gold;r.gold-=p;it.sold=true;n.used=true;addToDeck(it.id);toast('카드',`「${CARDS[it.id].name}」 — 카드 보관함으로`);save();showShop2();bought(p,g0)});
+  sc.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{const it=sh.gear[+b.dataset.bg],p=gPrice(it);if(it.sold)return;if(r.gold<p)return shopBark('poor');const g0=r.gold;r.gold-=p;it.sold=true;n.used=true;save();setTimeout(()=>bought(p,g0),50);
     if(it.type==='held'){r.equip=r.equip||[];if(!r.equip.includes(it.k))r.equip.push(it.k);toast('소유 효과 장비',`「${EQUIP[it.k].n}」 — 장비 보관함에 있으면 효과가 난다`);save();showShop2()}else gainGear(it.k,showShop2)});
-  $('#sRer').onclick=()=>{if(r.gold<rerCost)return;r.gold-=rerCost;if(freeR&&!(eq('u_pass')&&!sh.rer)&&r.flags.actF.freeRer>0)r.flags.actF.freeRer--;sh.rer++;n.shop=null;const keep={rer:sh.rer,removed:sh.removed,removeCost:sh.removeCost,disc30:sh.disc30,ws:sh.ws};
+  $('#sRer').onclick=()=>{if(r.gold<rerCost)return shopBark('poor');r.gold-=rerCost;if(freeR&&!(eq('u_pass')&&!sh.rer)&&r.flags.actF.freeRer>0)r.flags.actF.freeRer--;sh.rer++;n.shop=null;const keep={rer:sh.rer,removed:sh.removed,removeCost:sh.removeCost,disc30:sh.disc30,ws:sh.ws};
     r.shopN2--;const ns=genShop2(n);Object.assign(ns,keep);n.shop=ns;
-    const W2c=WS2[ns.ws];ns.cards=shuffle(W2c.cards.slice()).slice(0,5+(eq('u_case')?1:0)).map(id=>({id}));save();showShop2()};
-  $('#sLeave').onclick=showMap;
-  $('#sFight').onclick=()=>confirmBox('전투','이 버튼을 누르면 전투가 시작됩니다. 모든 공방이 적대하고 상점이 닫힙니다.','전투한다',()=>{favHit(sh.ws);r.hostile=true;toast('적대','모든 공방이 플레이어를 적대한다');r.at={kind:'combat',enemies:a2Group(sh.ws),node:n.id,noFlee:true};save();transition(resumeAt)});
-  a2Guide('shop');a2Guide('equip');
+    const W2c=WS2[ns.ws];ns.cards=shuffle(W2c.cards.slice()).slice(0,5+(eq('u_case')?1:0)).map(id=>({id}));save();showShop2();if(Math.random()<.5)shopBark('rer')};
+  $('#sLeave').onclick=()=>{const q=S.shopLook&&!S.shopBought;showMap();if(q)shopBark('quit')};
+  $('#sFight').onclick=()=>confirmBox('전투','이 버튼을 누르면 전투가 시작됩니다. 모든 공방이 적대하고 상점이 닫힙니다.','전투한다',()=>{favHit(sh.ws);r.hostile=true;toast('적대','모든 공방이 플레이어를 적대한다');shopBark('fight');r.at={kind:'combat',enemies:a2Group(sh.ws),node:n.id,noFlee:true,shopFight:true};save();transition(resumeAt)});
+  shopOnEnter(n);
+  if(r.at&&r.at.intro&&!r.flags.melIntro){r.flags.melIntro=1;r.at.intro=0;save();return showScene(sceneMelShop(),()=>{save();renderTop();showShop2();melRegion(n,900)},{lite:true})}
+  if(!r.flags.melIntro){a2Guide('shop');a2Guide('equip')}
 }
 /* 주식 (V22) — 모의 주식 투자. 니다벨리르 5대 공방 5종목
    지도에서 한 막 이동할 때마다 1시간이 지나고 주가가 움직임 · 1장·2장 모든 상점에서 매수·매도
@@ -5877,9 +5957,9 @@ function openStock(back){
   m.querySelectorAll('[data-skip]').forEach(b=>b.onclick=()=>{const n=Math.min(+b.dataset.skip,st.skipLeft);if(n<1)return;st.skipLeft-=n;for(let i=0;i<n;i++)stockTick(true);save();openStock(back)});
   $('#mClose').onclick=()=>{closeModal();back()};
   m.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy,p=st.p[k],n=b.dataset.n==='max'?Math.floor(r.gold/p):+b.dataset.n;if(n<1||r.gold<p*n)return;
-    r.gold-=p*n;const o=st.own[k]=st.own[k]||{n:0,cost:0};o.n+=n;o.cost+=p*n;save();renderTop();openStock(back)});
+    r.gold-=p*n;const o=st.own[k]=st.own[k]||{n:0,cost:0};o.n+=n;o.cost+=p*n;st.seen=st.seen||{};st.seen[k]=p;save();renderTop();openStock(back);if(Math.random()<.6)shopBark('sbuy')});
   m.querySelectorAll('[data-sell]').forEach(b=>b.onclick=()=>{const k=b.dataset.sell,o=st.own[k];if(!o||!o.n)return;const n=b.dataset.n==='all'?o.n:Math.min(o.n,+b.dataset.n),p=st.p[k];
-    const avg=o.cost/o.n;r.gold+=stockNet(p,n);o.cost-=avg*n;o.n-=n;if(!o.n)delete st.own[k];save();renderTop();openStock(back)});
+    const avg=o.cost/o.n,gain=stockNet(p,n)-avg*n;r.gold+=stockNet(p,n);o.cost-=avg*n;o.n-=n;if(!o.n)delete st.own[k];save();renderTop();openStock(back);shopBark(gain>=0?'swin':'sloss')});
 }
 /* 도박장 (V23) — 2장 공방 상점 · 판돈 1단화 · 10단화 · 100단화 · 원카드 · 포카드 · 블랙잭
    판돈은 게임을 시작할 때 내고, 결과에 따라 돌려받음 (원카드 승리 2배 · 블랙잭 승리 2배 / 블랙잭 2.5배 / 무승부 1배 · 포카드는 족보 배당) */
@@ -6154,8 +6234,8 @@ function becomeOdin(){const r=S.run;const ratio=r.hp/r.maxHp;
 /* 레바테인 (획득) — 보스를 처치한 뒤, 가지를 타고 다른 지역으로 이동할 때 1% */
 function showLaev(){const r=S.run;r.at={kind:'laev'};save();S.screen='event';renderTop();
   eventPanel('레바테인','특수무기 사건 · 세계수 중심','세계수 안쪽이 열리며 뜨거운 열기가 머릿결을 스쳐 간다. 눈앞에 보이는 것은 세계수를 태우고 있는 수르트의 무구, 레바테인이다.',[
-    {b:'멸망이 된다',s:'레바테인 획득(해제불가), 수르트모드(수르트 1레벨 기준 스탯으로 절멸전 시작 · 레벨은 이어 감)',f:()=>{clearSave();S.run=null;
-      const H=newHunt('surt','exterminate'),Lv=r.lvl||1,mc=mythCarry(r,11+(Lv-1),11+(Lv-1),hpAt(300,Lv));const hp0=mc.maxHp-gs('hp');H.P={lvl:Lv,hp:hp0,maxHp:hp0,atk:Math.round(mc.atk*1.5),def:Math.round(mc.def*1.5),acc:50,eva:70};H.fromLaev=true;S.H=H;transition(()=>hStartBattle(genGroup('advance')))}},
+    {b:'멸망이 된다',s:'레바테인 획득(해제불가), 수르트모드(레벨 1500 고정, 절멸전 수르트 1500레벨 스탯으로 절멸전 시작)',f:()=>{clearSave();S.run=null;
+      const H=newHunt('surt','exterminate');H.P={lvl:1500,hp:456961,maxHp:456961,atk:1510,def:1510,acc:70,eva:50};H.fromLaev=true;S.H=H;transition(()=>hStartBattle(genGroup('advance')))}},
     {b:'처분한다',s:'약화된 수르트와 전투(공격레벨 -100, 방어레벨 -100), 승리 시 최종 보스 수르트 공격레벨 -50, 방어레벨 -50 · 수르트 수치는 임시',f:()=>{r.at={kind:'combat',enemies:[makeEnemy('surtW')],laev:true};save();transition(resumeAt)}}])}
 /* 정예 러시 — 정예 → 정예 → 정예 → 정예 → 보스, 정예 사이에 회복 없음 */
 for(const k in GEAR)if(GEAR[k].s==='arm')GEAR[k].s='rh';
@@ -6168,58 +6248,84 @@ function startRush(){const r=S.run,i=r.at.i||0;let key=RUSH[i];
 const A2_GUIDE={
   equip:['장비',['공방 상점에서는 장비를 살 수 있어요. 산 장비는 바로 적용되지 않고 장비 보관함으로 들어가요.','장비 보관함에서 장비를 눌러 머리, 몸통, 다리, 오른손, 왼손, 발 칸에 착용해요.','소유 효과 장비는 착용하지 않아도 보관함에 있으면 효과가 나요. 전투 중 보관함을 열면 황금빛으로 빛나며 발동 중으로 표시돼요.']],
   fav:['공방 친호도',['공방 사건의 선택에 따라 그 공방의 친호도가 올라요.','친호도가 50이 되면 공방에서 입단을 제의해요. 입단은 한 곳만 할 수 있어요.','입단하면 그 지역 상점이 20% 싸져요. 거절해도 친호도는 그대로예요. 다들 괜찮다고 웃어 주실 거예요. 기억은 하시겠지만요.','친호도가 100이 되면 친우가 돼요.','공방 사건에서 벌어지는 전투는 적대로 이어지지 않아요.']],
-  shop:['니다벨리르 상점',['니다벨리르는 미드가르드보다 물건값이 훨씬 비싸요. 놀라지 마세요. 돈이 없는 건 게으르다는 증거라고들 하니까요.','니다벨리르부터 일반 카드는 나오지 않아요. 공방 상점에서는 희귀와 영웅 등급을 팔아요.','강화 비용은 그 카드·아이템 가격의 30%예요.','범용 장비는 착용하지 않아도 보관함에 넣어 두기만 하면 효과가 적용돼요. 같은 범용 장비는 하나만 가질 수 있고, 할인 효과는 서로 겹치지 않아요.','상점에서 전투를 고르면 모든 공방이 적대하고 상점이 닫혀요. 부디 그러지 마세요. 걱정돼서 그래요.']],
+  shop:['니다벨리르 상점',['니다벨리르는 미드가르드보다 물건값이 훨씬 비싸요. 놀라지 마세요. 돈이 없는 건 게으르다는 증거라고들 하니까요.','니다벨리르부터 일반 카드는 나오지 않아요. 공방 상점에서는 희귀와 영웅 등급을 팔아요.','범용 장비는 착용하지 않아도 보관함에 넣어 두기만 하면 효과가 적용돼요. 같은 범용 장비는 하나만 가질 수 있고, 할인 효과는 서로 겹치지 않아요.','상점에서 전투를 고르면 모든 공방이 적대하고 상점이 닫혀요. 부디 그러지 마세요. 걱정돼서 그래요.']],
   gov:['중앙정부',['이곳은 공방이 아니라 모든 것을 정의하는 곳이에요.','여기서 사망으로 기록되면, 맞든 틀리든 그날부터 돌아가신 분이에요. 서류는 꼭 확인하세요. 걱정돼서 그래요.']],
   krim:['크리밀라 공방',['인간의 기술로 신의 능력을 따라 하는 곳이에요. 꿈이 있는 분들은 참 멋지죠. 옆자리 분이 사라져도 놀라지 마세요. 새로운 분이 금방 오시거든요.']],
 };
 const A2G_KEY='ash-midgard-a2guide-v1';
 function a2GuideSeen(){try{return JSON.parse(localStorage.getItem(A2G_KEY)||'{}')}catch(e){return{}}}
 function a2Guide(k,then){const g=A2_GUIDE[k];if(!g)return;const seen=a2GuideSeen();if(seen[k]&&tutDone())return then&&a2Guide(then);seen[k]=1;try{localStorage.setItem(A2G_KEY,JSON.stringify(seen))}catch(e){}
-  setTimeout(()=>{const m=$('#modal');if(!m.hidden)return;m.hidden=false;let i=0;const draw=()=>{m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div><div class="psub">${S.run&&S.run.pal&&S.run.pal.k==='girl'?'구해진 청년':'니다벨리르 안내'} · ${i+1} / ${g[1].length}</div><div class="ptitle">${g[0]}</div></div><button class="btn-ghost" id="gSkip">건너뛰기</button></div>
+  setTimeout(()=>{const m=$('#modal');if(!m.hidden)return;m.hidden=false;let i=0;const draw=()=>{m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div><div class="psub">${S.run&&S.run.pal&&S.run.pal.k==='girl'?'리테':'니다벨리르 안내'} · ${i+1} / ${g[1].length}</div><div class="ptitle">${g[0]}</div></div><button class="btn-ghost" id="gSkip">건너뛰기</button></div>
     <div class="ptext">${g[1][i]}</div><div class="choices"><button class="btn-main" id="gNext">${i<g[1].length-1?'다음':'알겠다'}</button></div></div>`;
     const end=()=>{closeModal();if(then)a2Guide(then)};$('#gSkip').onclick=end;$('#gNext').onclick=()=>{if(i<g[1].length-1){i++;draw()}else end()}};draw()},REDUCED?50:450)}
-function a2GuideRegion(reg){const r=S.run;if(!reg||reg==='C')return;r.flags.reg=r.flags.reg||{};if(!r.flags.reg[reg]){r.flags.reg[reg]=1;if(r.pal&&r.pal.k==='girl')palSay(PAL_REGION[reg],true)}if(r.floor>=10&&r.mode==='human'&&!r.flags['zn'+reg]){r.flags['zn'+reg]=1;r.pendZone=reg}}
+function a2GuideRegion(reg){const r=S.run;if(!reg||reg==='C')return;r.flags.reg=r.flags.reg||{};if(!r.flags.reg[reg]){r.flags.reg[reg]=1;if(r.pal&&r.pal.k==='girl')palSay(PAL_REGION[reg],true);else{r.flags.melReg=r.flags.melReg||{};r.flags.melReg[reg]=r.flags.melReg[reg]||1}}if(r.floor>=10&&r.mode==='human'&&!r.flags['zn'+reg]){r.flags['zn'+reg]=1;r.pendZone=reg}}
 /* ================= 이야기 장면 · 동료 · 상태이상 설명 (V37) ================= */
 /* 장면: '글' | ['이름','대사'] | {c:[{b:'선택지',f:함수,then:[이어지는 장면]}]} */
-function showScene(list,done){
-  const m=$('#modal');list=list.slice();$('#tut').hidden=true;stage.removeAttribute('data-tut');palRender(false);m.hidden=false;m.classList.add('scn');S.modalLock=true;let i=0;
-  const end=()=>{S.modalLock=false;closeModal();if(done)done()};
-  const draw=()=>{const it=list[i];if(it==null)return end();
+function showScene(list,done,opt){opt=opt||{};
+  const m=$('#modal');list=list.slice();$('#tut').hidden=true;stage.removeAttribute('data-tut');palRender(false);m.hidden=false;m.classList.add('scn');m.classList.remove('scn-sky','scn-dark','scn-lite');if(opt.sky)m.classList.add('scn-sky');if(opt.lite)m.classList.add('scn-lite');S.modalLock=true;let i=0,tmr=0;
+  const end=()=>{clearTimeout(tmr);S.modalLock=false;closeModal();if(done)done()};
+  const dark=()=>{m.classList.add('scn-dark');m.classList.remove('scn-sky')};
+  const draw=()=>{clearTimeout(tmr);const it=list[i];if(it==null)return end();
+    if(it.fx==='fade'){dark();i++;return draw()}
     if(it.c){m.innerHTML=`<div class="panel scene"><div class="choices">${it.c.map((x,j)=>`<button class="choice" data-sc="${j}"><b>${x.b}</b></button>`).join('')}</div></div>`;
       m.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{const x=it.c[+b.dataset.sc];if(x.f)x.f();if(x.then)list.splice(i+1,0,...x.then);i++;draw()});return}
-    const who=Array.isArray(it)?it[0]:'',tx=Array.isArray(it)?it[1]:it;
+    /* 타이핑 — 한 글자씩, 건너뛸 수 없음, 다 나온 뒤 1초 후 다음 */
+    if(it.ty==='typing'){m.innerHTML=`<div class="panel scene"><div class="scn-t" id="scT"></div><div class="scn-b"><span></span><button class="btn-main" id="scNext" style="visibility:hidden">다음</button></div></div>`;
+      const el=$('#scT'),tx=it.t;let k=0;const step=()=>{if(!el.isConnected)return;k++;el.textContent=tx.slice(0,k);
+        if(k<tx.length)tmr=setTimeout(step,80);else tmr=setTimeout(()=>{const b=$('#scNext');if(b&&b.isConnected){b.style.visibility='';b.onclick=()=>{i++;draw()}}},1000)};tmr=setTimeout(step,300);return}
+    const who=Array.isArray(it)?it[0]:(it.who||''),tx=Array.isArray(it)?it[1]:(typeof it==='string'?it:it.t);
+    /* 자동 진행 — 누를 것 없이 넘어감 (손에 이끌림) */
+    if(it.auto){m.innerHTML=`<div class="panel scene ${it.cls||''}">${who?`<div class="scn-who">${who}</div>`:''}<div class="scn-t">${tx}</div></div>`;tmr=setTimeout(()=>{i++;draw()},it.auto);return}
     m.innerHTML=`<div class="panel scene">${who?`<div class="scn-who">${who}</div>`:''}<div class="scn-t">${tx}</div><div class="scn-b"><button class="btn-ghost" id="scSkip">건너뛰기</button><button class="btn-main" id="scNext">다음</button></div></div>`;
-    $('#scNext').onclick=()=>{i++;draw()};$('#scSkip').onclick=()=>{let j=i+1;while(j<list.length&&!list[j].c)j++;i=j;draw()}};
+    $('#scNext').onclick=()=>{i++;draw()};$('#scSkip').onclick=()=>{let j=i+1;while(j<list.length&&!list[j].c&&!list[j].ty&&!list[j].auto){if(list[j].fx==='fade')dark();j++}i=j;draw()}};
   draw()}
-const S_OPEN=['그는 꿈에서 하늘이 되었다.','푸르디푸른 하늘이 되어, 전에 겪어 본 적 없는 더없이 자유로운 감각.','하지만 그 감각은 일어나는 순간 없어졌다.','창밖은 오늘도 붉었다.','노크가 울린다.','문을 열자 사제가 서 있다.',['사제','얼마 전, 부모님께서 사상하셨습니다. 그 노고에 진심으로 감사드립니다.'],'사제가 봉투를 내민다. 기억 속 부모의 전부였던, 묵직한 봉투.',['사제','이것이 마지막 번제비입니다.'],'그는 봉투를 받아 들었다. 이번에도 만나지 못하고 끝나 버렸다.','사제의 시선이 그의 허리춤에 멈춘다. 조잡한 철제검.',['사제','그 검은... 이단의 길을 걷는 겁니까?'],'그는 오해를 풀고 싶지도 않았다. 어차피 맞닥뜨려야 할 문제였다.','그는 말없이 검을 쥐었다.'];
-const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','그는 살던 집을 떠나, 세계수를 중심축으로 잡고 나아가기 시작했다.','골목에서 성직자가 그를 불러 세운다.',['성직자','통보하러 간 사제가 돌아오지 않았습니다. 혹시 보셨습니까?'],'성직자의 눈이 철제검으로 내려간다.'],
-  3:['길목의 벽보에 새 글이 붙어 있다.','이단. 그의 이름이었다.'],
+const S_OPEN=['나는 꿈에서 하늘이 되었다.','푸르디푸른 하늘이 되어, 전에 겪어 본 적 없는 더없이 자유로운 감각.','하지만 그 감각은 일어나는 순간 없어졌다.','창밖은 오늘도 붉었다.','노크가 울린다.','문을 열자 사제가 서 있다.',['사제','얼마 전, 부모님께서 사상하셨습니다. 그 노고에 진심으로 감사드립니다.'],'사제가 봉투를 내민다. 기억 속 부모의 전부였던, 묵직한 봉투.',['사제','이것이 마지막 번제비입니다.'],'나는 봉투를 받아 들었다. 이번에도 만나지 못하고 끝나 버렸다.','사제의 시선이 내 허리춤에 멈춘다. 조잡한 철제검.',['사제','그 검은... 이단의 길을 걷는 겁니까?'],'나는 오해를 풀고 싶지도 않았다. 어차피 맞닥뜨려야 할 문제였다.','나는 말없이 검을 쥐었다.'];
+const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','나는 살던 집을 떠나, 세계수를 중심축으로 잡고 나아가기 시작했다.','골목에서 성직자가 나를 불러 세운다.',['성직자','통보하러 간 사제가 돌아오지 않았습니다. 혹시 보셨습니까?'],'성직자의 눈이 철제검으로 내려간다.'],
+  3:['길목의 벽보에 새 글이 붙어 있다.','이단, 그들은 나를 그렇게 불렀다.'],
   4:['좁은 길 끝에서 성직자가 다리를 끄는 사람을 몰아붙이고 있다.','성직자가 고개를 돌린다.',['성직자','너도 한패구나.']]};
-const S_NORD=['벽에 기대앉은 남자가 숨을 고른다. 붉은 천을 두른 다리에서 피가 배어 나온다.',['부상당한 노르드교 단원','그 검... 우리 쪽 물건이군. 형제여, 이런 곳에서 만나다니.'],'그는 대답하지 않았다.',['부상당한 노르드교 단원','이 몸으로는 이제 칼을 못 쥐네. 나도 한때는 이 지역에서 제일이었는데 말일세.'],['부상당한 노르드교 단원','자네도 세계수로 가는 길인가? 좋군. 뜻이 같으니 길도 같은 게지.'],['부상당한 노르드교 단원','말이 없군. 좋네, 뜻이 같으면 말은 필요 없지.']];
-const S_TREE=['세계수를 감싼 바벨탑 모양의 교단이 가까워진다.','의심이 확신으로 바뀌고, 심장이 빠르게 뛴다.',['부상당한 노르드교 단원','저걸 태우면 말일세, 형제여. 무엇이 남을지 궁금하지 않나?'],'그는 세계수를 올려다보았다. 그가 보고 싶은 것은 재가 아니었다.'];
+const S_NORD=['벽에 기대앉은 남자가 숨을 고른다. 붉은 천을 두른 다리에서 피가 배어 나온다.',['부상당한 노르드교 단원','그 검... 우리 쪽 물건이군. 형제여, 이런 곳에서 만나다니.'],'나는 그의 말에 아무것도 답하지 않았다.',['부상당한 노르드교 단원','이 몸으로는 이제 칼을 못 쥐네. 나도 한때는 이 지역에서 제일이었는데 말일세.'],['부상당한 노르드교 단원','자네도 세계수로 가는 길인가? 좋군. 뜻이 같으니 길도 같은 게지.'],['부상당한 노르드교 단원','말이 없군. 좋네, 뜻이 같으면 말은 필요 없지.']];
+const S_TREE=['세계수를 감싼 바벨탑 모양의 교단이 가까워진다.','의심이 확신으로 바뀌고, 심장이 빠르게 뛴다.',['부상당한 노르드교 단원','저걸 태우면 말일세, 형제여. 무엇이 남을지 궁금하지 않나?'],'나는 고개를 들어 세계수를 올려다보았다. 그저 순수한 열망으로.'];
 const S_RUMOR=[['부상당한 노르드교 단원','이상한 말이 돌더군. 형제를 판 놈이 있다고. 헛소리지.'],['부상당한 노르드교 단원','자네는 듣지 말게. 내가 자네를 아니까.']];
 ENEMY.nordJudge={...ENEMY.inquisitor,name:'노르드교 이단심판관',sub:'노르드교',art:'cultist'};
-const S_RIFT=['그가 떠나온 지역의 이단심판관이 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이단심판관','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이단심판관','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
+const S_RIFT=['내가 떠나온 지역의 이단심판관이 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이단심판관','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이단심판관','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
 const S_VOW=[['순수유물주의자','제가 막겠습니다. 그리고 회개시키겠습니다.'],'교황은 별다른 말 없이 일어섰다.','그녀는 그 침묵을 긍정의 뜻으로 받아들였다.'];
 const S_BOSS=['은빛 기사들이 길을 메운다. 그 앞에 붉은 휘장의 주교가 서 있다.','그녀는 기사의 어깨를 거칠게 밀어내면서도, 그 은빛 갑주의 흠집을 손끝으로 쓸었다.'];
 const S_FREE=['상점 문이 열려 있다. 안에는 아무도 없다.','주인은 물건도 두고 도망친 모양이다.',['부상당한 노르드교 단원','주인이 없군. 양심껏 챙기게나, 형제여.']];
 const ZONE_TXT={N:'이전에 느껴본 적 없는 종류의 추위가 살결을 얼린다. 이번 거대 공방은 멈춤의 공방인 것 같다.',E:'매캐한 연기와 습한 분위기, 익숙한 분위기가 나를 반긴다. 이번 공방은 압력의 공방인 것 같다.',W:'역겨우면서도 달콤한 냄새가 코를 강타한다. 이번 공방은 배부름의 공방인 것 같다.',S:'이해할 수 없는 알 수 없는 무언가들이 나를 환영한다. 이번 공방은 교육과 예술의 공방인 것 같다.'};
 const DIR_VIRTUE={N:'본능',E:'욕구',S:'갈망',W:'허기'};
 const PAL_REGION={N:'차가워요... 들은 얘긴데, 여기선 마음보다 손가락이 먼저 언대요.',E:'여기 사람들은 전부 손으로 한대요. 증기에 데면 손가락부터 세어 보래요.',S:'여기선 작품을 보면 \'오...\'라고만 하래요. 왜인지는 저도 몰라요.',W:'재료만 안 물어보면 다들 친절하대요. 뭔가 엄청난 냄새!'};
-function sceneA2(dir){const r=S.run;const v=DIR_VIRTUE[dir]||'갈망',M='멜헬름',G='구해진 청년';
+const MEL_REGION={N:'여기 춥지? 사람들도 딱 날씨만큼 차가워. 말 걸 땐 손부터 녹이고 혀.',E:'여긴 전부 손으로 만드는 동네여. 증기 조심혀, 데면 손가락부터 세어 봐야 혀.',S:'작품 보면 그냥 \'오...\' 하고 지나가. 뭐냐고 물었다간 해설만 반나절 듣는 거여.',W:'밥은 맛있어. 뭘로 만들었는지만 묻지 마. 그럼 다들 친절혀.'};
+const josaUl=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return w+(c>=0&&c%28?'을':'를')};
+/* 2장 진입 — 하늘을 보고(하늘 배경) 페이드 아웃, 멜헬름과 대화, 선택 없이 손에 이끌려 상점으로 */
+function sceneA2(dir){const M='멜헬름';
+  return['뚫린 공간에 몸을 던졌다.','그곳에서 나는 내가 바라던 하늘을 보았다. 모든 게 밝고, 환하며, 푸르렀다.',{ty:'typing',t:'나는 한동안 멍하니 그 광경을 바라보았다.'},{fx:'fade'},
+   [M,'허허, 또 하나 떨어졌구먼. 주기적으로 내려오는 그 자살 집단 생존자여?'],[M,'여긴 니다벨리르여. 꿈이랑 기술의 동네지. 공방 다섯 개가 동서남북이랑 가운데에 하나씩 있고.'],'나는 위를 가리켰다.',[M,'저거? 하늘이여.'],
+   {c:[{b:'하늘이 무엇입니까?'}]},[M,'하늘이니까 하늘이지 뭐. 그렇게 정해진 거여. 이미 정해진 거에 꼭 뜻이 있어야 하나?'],'그렇다면, 왜 나는 당연한 걸 갈망한 것인가.','그렇다면, 그 꿈은 이곳에 오라고 나를 불렀던 것인가.','고개를 내리지 못하고 멍하니 하늘을 바라보는 나를, 상점 주인이 훑는다. 꾀죄죄한 몰골, 이가 나간 칼날, 해진 옷.',
+   [M,'나는 멜헬름이여. 행색 보아하니 주머니가 텅 비었구먼.'],
+   {auto:2200,t:'멜헬름이 대답도 듣지 않고 내 손목을 덥석 잡는다.'},{auto:2000,who:M,t:'일단 들어와. 밖에서 하늘만 보다간 목 꺾여.'},{auto:2100,cls:'tug',t:'나는 이끌리는 대로 상점 안으로 들어갔다.'}]}
+/* 첫 상점 — 멜헬름이 털털하게 설명하고 첫 종목을 줌 */
+function sceneMelShop(){const r=S.run,M='멜헬름';
   const stk=k=>()=>{const st=ensureStock(r),o=st.own[k]=st.own[k]||{n:0,cost:0};o.n+=1;toast('주식',`${WS2[k].n} 1주`)};
-  const join=()=>{r.pal={k:'girl',cards:[],gear:[],away:false,first:null,ind:0,hp:0};save()};
-  return['뚫린 공간에 몸을 던졌다.','그곳에서 그는 자신이 바라던 하늘을 보았다. 모든 게 밝고, 환하며, 푸르렀다.','그는 한동안 멍하니 그 광경을 바라보았다.',
-   [M,'또 주기적으로 내려오는 자살 집단의 생존자인가?'],[M,'여기는 니다벨리르, 꿈과 기술의 공간일세. 공방 다섯 개가 동서남북과 중앙에 있지.'],'그가 위를 가리킨다.',[M,'저건 하늘이야.'],
-   {c:[{b:'하늘이 무엇입니까?'}]},[M,'저건 하늘이라고 정해져 있는 거다. 이미 정해진 것에 의미가 꼭 있어야 하는 건 아니지.'],'그렇다면, 왜 자신은 당연한 걸 갈망한 것인가.','그렇다면, 그 꿈은 이곳에 오라고 자신을 불렀던 것인가.','고개를 내리지 못하고 멍하니 하늘을 바라보는 그를, 상점 주인이 훑는다. 꾀죄죄한 몰골, 이가 나간 칼날, 해진 옷.',
-   [M,'나는 멜헬름일세. 돈이 없어 보이는데, 버는 법을 알려 주지.'],[M,'주식이라는 걸세. 물질적으로 만들어낸, 기업에 대한 인정이지.'],[M,'그 인정의 가치는 얼마나 많이 소유하는지에 따라 1시간 간격으로 바뀌네.'],'전자음과 함께 기송관에서 문서 하나가 내려온다.',[M,'첫 종목은 내 호의일세.'],
-   {c:['stein','kriv','ash','remi'].map(k=>({b:WS2[k].n,f:stk(k)}))},
-   '이곳에선 들려서는 안 될, 살이 터지는 피육음이 들린다.','상점 주인들이 사람 하나를 둘러싸고 있다.','그는 검을 뽑으려다, 이곳에선 그러면 안 된다고 생각해 다시 집어넣었다.',
-   ['상점 주인','훔쳐볼 눈빛으로 가판대를 쳐다봤다네.'],[G,'그냥... 멋있어서요. 돈이 없어서 못 샀어요.'],['상점 주인','생김새부터 직위, 재화, 목표까지 하급인 부랑아일세. 가판대를 쳐다볼 자격이 없지.'],['상점 주인',`자네도 곧 같아질 걸세. 이곳에선 ${v}을 따르는 사람만 존중받아. 변화가 멈추면 그 자리에서 벗어날 수 없거든.`],
-   {c:[{b:'죽일 생각이라면 이 검으로 확실히 죽여라',then:['멜헬름이 검을 쥐고 망설인다.',['주인공','이곳에선 그런 모습은 어울리지 않는다고 하지 않았나.'],['주인공','당신도 상점 주인이라는 현실에 만족하고 살면서, 왜 자신에겐 그 인식이 없지?']]},{b:'이곳의 법칙대로 하고 있으니 존중해 달라',then:['상점 주인들이 물러나고, 멜헬름이 다른 주인들을 몰아 해산시킨다.']}]},
-   [G,'저, 살았어요? 와... 은인님이세요! 생명의 은인이에요!'],[G,'저 따라가도 돼요? 주신 걸로 충분해요! 아, 아직 아무것도 안 주셨구나.'],{c:[{b:'고개를 끄덕인다',f:join}]},
-   '철제 돔 위쪽에서 묽고 투명한 액체가 떨어진다.','이것은 물이다. 미드가르드에서의 물은 구원에 가까운 생명력이었다.','그는 손을 모으고 입을 벌렸다. 곧 통을 꺼내 물을 받았다.',[G,'은인님, 그거 곧 소리 나요.'],'지직거리는 소리와 함께, 태엽을 감은 듯한 이질적인 목소리가 들려온다.',['음성','스타인러 공방의 온도 급상승으로, 비 행위를 10분간 지속합니다.'],'이것은 물인데. 떨어진다는 이유만으로 비라는 행위가 되었다.','떨어지든, 올라가든, 엎어지든 물은 물이었다.','나는, 나도 모른 채 나만의 하늘을 뺏겨 버린 건 아닐까.',
-   {c:[{b:'비를 모은 양동이를 샘물이라 하고 판다',then:['사람들은 처음 듣는 샘물이라는 말에 관심을 보였고, 양동이는 금방 동났다.']},{b:'이것을 누가 정했는지 묻는다',then:[[G,'저 목소리요? 가운데 있는 크리밀라에서 나온대요. 왜 그런지는 저도 몰라요.']]}]}]}
+  return[[M,'자, 여기가 내 가게여. 미드가르드보다 값이 좀 셀 거여. 놀라지 말고.'],[M,'여기선 돈 없는 걸 게으르다고들 혀. 나 말고 딴 사람들이.'],[M,'니다벨리르부터는 흔해 빠진 카드는 안 팔아. 희귀랑 영웅 등급만 갖다 놓지.'],
+   [M,'산 카드랑 장비는 바로 손에 안 붙어. 보관함에 들어가니까 정비할 때 꺼내 써.'],[M,'장비는 머리, 몸통, 다리, 오른손, 왼손, 발에 차는 거여. 소유 효과 장비는 안 차도 보관함에 넣어만 두면 효과가 나고, 같은 건 하나만 가질 수 있어.'],
+   [M,'물건이 맘에 안 들면 새로고침 눌러. 그것도 돈이여.'],[M,'돈 버는 법 하나 알려 줄까. 주식이라는 거여. 물질적으로 만들어 낸, 기업에 대한 인정이지.'],[M,'그 인정의 값은 사람들이 얼마나 갖고 있냐에 따라 한 시간마다 바뀌어.'],
+   '전자음과 함께 기송관에서 문서 하나가 내려온다.',[M,'마침 시세표 왔구먼. 첫 종목은 내가 쏘는 거여. 골라 봐.'],{c:['stein','kriv','ash','remi'].map(k=>({b:WS2[k].n,f:stk(k)}))},
+   [M,'아, 그리고 내 가게에서 칼 뽑을 생각은 하지 마. 공방들이 전부 등 돌리고 가게도 문 닫아. 그래도 덤비면 도망은 못 가는 거여.']]}
+/* 2장 첫 사건 막 — 그 전에 아무도 쓰러뜨리지 않았으면 구출(리테 합류), 비는 언제나 */
+function sceneRescue(dir){const v=DIR_VIRTUE[dir]||'갈망',M='멜헬름',G='피투성이 청년',R='리테';
+  const join=()=>{S.run.pal={k:'girl',cards:[],gear:[],away:false,first:null,ind:0,hp:0};save()};
+  return['이곳에선 들려서는 안 될, 살이 터지는 피육음이 들린다.','상점 주인들이 사람 하나를 둘러싸고 있다.','나는 검을 뽑으려다, 이곳에선 그러면 안 된다고 생각해 다시 집어넣었다.',
+   ['상점 주인','훔쳐볼 눈빛으로 가판대를 쳐다봤다네.'],[G,'그냥... 멋있어서요. 돈이 없어서 못 샀어요.'],['상점 주인','생김새부터 직위, 재화, 목표까지 하급인 부랑아일세. 가판대를 쳐다볼 자격이 없지.'],['상점 주인',`자네도 곧 같아질 걸세. 이곳에선 ${josaUl(v)} 따르는 사람만 존중받아. 변화가 멈추면 그 자리에서 벗어날 수 없거든.`],
+   {c:[{b:'죽일 생각이라면 이 검으로 확실히 죽여라',then:['멜헬름이 검을 쥐고 망설인다.',['주인공','이곳에선 그런 모습은 어울리지 않는다고 하지 않았나.'],['주인공','당신도 상점 주인이라는 현실에 만족하고 살면서, 왜 자신에겐 그 인식이 없지?']]},{b:'이곳의 법칙대로 하고 있으니 존중해 달라',then:['상점 주인들이 물러나고, 멜헬름이 다른 주인들을 몰아 해산시킨다.',[M,'자자, 구경 끝났어! 다들 장사들 하러 가!']]}]},
+   '나는 피투성이가 된 청년을 일으켜 세웠다.',{c:[{b:'이름을 묻는다'}]},
+   [R,'리테예요. 저, 살았어요? 와... 은인님이세요! 생명의 은인이에요!'],[R,'저 따라가도 돼요? 주신 걸로 충분해요! 아, 아직 아무것도 안 주셨구나.'],{c:[{b:'고개를 끄덕인다',f:join}]}]}
+function sceneRain(pal){const R='리테',M='멜헬름';
+  return['철제 돔 위쪽에서 묽고 투명한 액체가 떨어진다.','이것은 물이다. 미드가르드에서의 물은 구원에 가까운 생명력이었다.','나는 손을 모으고 입을 벌렸다. 곧 통을 꺼내 물을 받았다.',...(pal?[[R,'은인님, 그거 곧 소리 나요.']]:[]),
+   '지직거리는 소리와 함께, 태엽을 감은 듯한 이질적인 목소리가 들려온다.',['음성','스타인러 공방의 온도 급상승으로, 비 행위를 10분간 지속합니다.'],'이것은 물인데. 떨어진다는 이유만으로 비라는 행위가 되었다.','떨어지든, 올라가든, 엎어지든 물은 물이었다.','나는, 나도 모른 채 나만의 하늘을 뺏겨 버린 건 아닐까.',
+   {c:[{b:'비를 모은 양동이를 샘물이라 하고 판다',then:['사람들은 처음 듣는 샘물이라는 말에 관심을 보였고, 양동이는 금방 동났다.']},{b:'이것을 누가 정했는지 묻는다',then:[pal?[R,'저 목소리요? 가운데 있는 크리밀라에서 나온대요. 왜 그런지는 저도 몰라요.']:[M,'저 소리? 가운데 크리밀라에서 나오는 거여. 왜냐고는 묻지 마. 다들 모르니께.']]}]}]}
+function showA2First(){const r=S.run,at=r.at;if(at.node!=null&&r.m2){const n=r.m2.nodes[at.node];if(n)n.cleared=true}S.screen='event';renderTop();
+  const list=r.flags.a2Felled?sceneRain(false):[...sceneRescue(r.dir),{fx:'none'},...sceneRain(true)];
+  showScene(list.filter(x=>!(x&&x.fx==='none')),()=>{r.at=null;save();transition(()=>showMap())})}
 function storyMap(){const r=S.run,M=r.map,F=r.flags;if(r.mode!=='human'||!M)return false;
   const go=l=>{save();showScene(l,()=>showMap());return true};
   if(!F.sOpen&&M.row===0){F.sOpen=1;save();showScene(S_OPEN,()=>enterNode(0));return true}F.sOpen=1;
@@ -6232,7 +6338,7 @@ function storyMap(){const r=S.run,M=r.map,F=r.flags;if(r.mode!=='human'||!M)retu
 const PAL_FIG='<svg viewBox="0 0 48 64" aria-hidden="true"><circle cx="24" cy="15" r="10" fill="#14171b" stroke="#6b7178" stroke-width="1.5"/><path d="M6 62 C6 40 14 28 24 28 C34 28 42 40 42 62Z" fill="#14171b" stroke="#6b7178" stroke-width="1.5"/></svg>';
 const PAL_LINES={nord:{hurt:'형제여 칼을 왜 피하지 않는겐가? 그렇다면 맞을것인데?',dodge:'형제여 잘했다 이번엔 멋지게 피했군',hit:'멋진 공격이다!',big:'감탄스러운 실력이군',stance:'자네한테 맞는 자세를 찾았나 보군',block:'잘 막았네. 살아 있어야 태울 수도 있지 않겠나.',miss:'허공을 베었군. 괜찮네, 나무는 도망가지 않으니.',low:'형제여, 뒤로 물러나는 것도 칼질일세.',sub:'죽이지 않는 겐가? 자네도 참 다정하군.',rest:'오늘도 불빛이 붉군. 곧 전부 재가 될 걸세.'},
   girl:{rest:'편하네요~'}};
-const PAL_NAME={nord:'부상당한 노르드교 단원',girl:'구해진 청년'};
+const PAL_NAME={nord:'부상당한 노르드교 단원',girl:'리테'};
 const palUp=()=>{const r=S.run;return!!(r&&r.pal&&r.pal.k==='girl'&&!r.pal.away&&S.C&&!S.C.over)};
 function palStats(){const r=S.run,p=r.pal;let atk=Math.round(r.atk*.6),def=Math.round(r.def*.6),acc=r.acc,hp=Math.round(r.maxHp*.5);for(const k of p.gear||[]){const e=GEAR[k];if(!e||!e.fx)continue;atk+=e.fx.atk||0;def+=e.fx.def||0;acc+=e.fx.acc||0;hp+=e.fx.hp||0}return{atk,def,acc,maxHp:hp}}
 function palStart(){const r=S.run,p=r.pal;if(!p||p.k!=='girl')return;const back=p.away;p.away=false;p.hp=palStats().maxHp;if(back)setTimeout(()=>palSay('다시 도와드릴게요!',true),400)}
@@ -6257,10 +6363,10 @@ async function palHit(){const r=S.run,C=S.C,p=r.pal;if(!palUp())return;const E=C
   const atkC=(p.cards||[]).filter(c=>(CARDS[c.id].d||[]).some(x=>x.t==='atk'));if(!atkC.length)return;
   const c=pick(atkC),die=CARDS[c.id].d.find(x=>x.t==='atk'),st=palStats();palSay('거들게요!',true);await wait(220);
   const v=rollDie(die)+gapP(st.atk,E.def),ch=hitChance(st.acc,E.eva+E.evaB),hit=ri(1,100)<=ch;
-  if(!hit){fxAt('enemy','빗나감','miss');clog(`구해진 청년 · ${CARDS[c.id].name} → 빗나감`);return}
-  const f=formula(v,0,st.atk,[],E.def),bl=Math.min(E.block,f.fin),loss=f.fin-bl;E.block-=bl;E.hp-=loss;E.dmgTurn=(E.dmgTurn||0)+loss;clog(`구해진 청년 · ${CARDS[c.id].name} 주사위 ${v} → 피해 ${loss}`);fxAt('enemy',String(loss),'');sfx('hit');renderCombat();
+  if(!hit){fxAt('enemy','빗나감','miss');clog(`리테 · ${CARDS[c.id].name} → 빗나감`);return}
+  const f=formula(v,0,st.atk,[],E.def),bl=Math.min(E.block,f.fin),loss=f.fin-bl;E.block-=bl;E.hp-=loss;E.dmgTurn=(E.dmgTurn||0)+loss;clog(`리테 · ${CARDS[c.id].name} 주사위 ${v} → 피해 ${loss}`);fxAt('enemy',String(loss),'');sfx('hit');renderCombat();
   if(E.hp<=0&&!E.boss)E.dotKill=true;checkEnemy();await wait(160)}
-async function palHurt(die){const C=S.C,E=C.E,r=S.run,p=r.pal,st=palStats();const v=eAdj(rollDie(die)),f=formula(v,0,E.atk,eTraits(),st.def),dmg=Math.round(f.fin*(E.dmgMul||1));await wait(240);p.hp-=dmg;clog(`${E.name}의 공격이 구해진 청년에게 — 피해 ${dmg}`,'e');toast('구해진 청년',`-${dmg}`);const box=$('#palbox');if(box){box.classList.remove('hit');void box.offsetWidth;box.classList.add('hit')}
+async function palHurt(die){const C=S.C,E=C.E,r=S.run,p=r.pal,st=palStats();const v=eAdj(rollDie(die)),f=formula(v,0,E.atk,eTraits(),st.def),dmg=Math.round(f.fin*(E.dmgMul||1));await wait(240);p.hp-=dmg;clog(`${E.name}의 공격이 리테에게 — 피해 ${dmg}`,'e');toast('리테',`-${dmg}`);const box=$('#palbox');if(box){box.classList.remove('hit');void box.offsetWidth;box.classList.add('hit')}
   if(p.hp<=st.maxHp*.5){p.away=true;palSay('죄송해요 조금만 쉴게요..',true)}renderCombat();await wait(200);return 0}
 let palIdleT=0;
 const PAL_SOLO=['길가의 가판대를 들여다보고 있다.','주워 온 나사를 닦고 있다.','받은 물건을 이리저리 돌려 보고 있다.','할 일을 찾아 두리번거린다.'];
@@ -6272,9 +6378,9 @@ function openPalTab(){const r=S.run,p=r.pal,m=$('#modal'),fight=S.screen==='comb
   const say=S.palLine||'주신 걸로 충분해요!';const row=(c,attr,lb)=>`<div class="cardpick">${staticCard(c.id,false,c)}<button class="plate-btn" ${attr}="${c.uid}">${lb}</button></div>`;
   m.innerHTML=`<div class="panel" style="width:min(1300px,100%);height:100%"><div class="maphead">${prepTabs(r,'pal')}<button class="btn-ghost" id="mClose">닫기</button></div>
     <div class="psub">공 ${st.atk} · 방 ${st.def} · 명중 ${st.acc} · 체력 ${st.maxHp}${p.first?` · 처음 받은 장비: ${GEAR[p.first]?GEAR[p.first].n:''}`:''} — "${say}"</div>
-    <div style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">청년에게 준 카드 ${p.cards.length}장</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${p.cards.map(c=>row(c,'data-pback','돌려받기')).join('')||'<div class="hint">아직 없음 · 공격 카드를 주면 함께 공격한다</div>'}</div>
+    <div style="overflow:auto;flex:1;min-height:0;display:block"><div class="ap-h">리테에게 준 카드 ${p.cards.length}장</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${p.cards.map(c=>row(c,'data-pback','돌려받기')).join('')||'<div class="hint">아직 없음 · 공격 카드를 주면 함께 공격한다</div>'}</div>
     <div class="ap-h">카드 보관함</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${(r.store||[]).map(c=>row(c,'data-pgive','건네기')).join('')||'<div class="hint">비어 있음</div>'}</div>
-    <div class="ap-h">청년의 장비</div><div class="gb-g">${(p.gear||[]).map((k,i)=>`<button class="gb-c" data-pgb="${i}"><b>돌려받기</b><span>${GEAR[k].n}</span></button>`).join('')||'<div class="hint">없음</div>'}</div>
+    <div class="ap-h">리테의 장비</div><div class="gb-g">${(p.gear||[]).map((k,i)=>`<button class="gb-c" data-pgb="${i}"><b>돌려받기</b><span>${GEAR[k].n}</span></button>`).join('')||'<div class="hint">없음</div>'}</div>
     <div class="ap-h">장비 보관함</div><div class="gb-g">${(r.bag||[]).map((k,i)=>GEAR[k]?`<button class="gb-c" data-pgg="${i}"><b>건네기</b><span>${GEAR[k].n}</span></button>`:'').join('')||'<div class="hint">비어 있음</div>'}</div></div></div>`;
   bindPrepTabs(m);bindStatic(m);$('#mClose').onclick=()=>{S.palLine=null;S.prepTab='card';prepClose(fight)};
   m.querySelectorAll('[data-pgive]').forEach(b=>b.onclick=()=>{const c=r.store.find(x=>x.uid===+b.dataset.pgive);if(!c)return;r.store.splice(r.store.indexOf(c),1);p.cards.push(c);S.palLine='저 주시는 거에요? 진짜요? 와.. 진짜 감사해요! 은인님!';save();openPalTab()});
