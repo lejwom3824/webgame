@@ -4342,6 +4342,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.28.46.11','11/7','설정 정리 — UI 크기 · 효과음 · 화면 흔들림 · 주사위 연출 · 전환 팁 · 튜토리얼 다시 보기를 설정 안의 환경 설정 창으로 옮김'],
   ['V2.28.45.11','11/7','설정의 2장으로 건너뛰기(임시) 버튼이 화면 아래로 밀려 보이지 않던 문제 — 설정 맨 위로 옮김'],
   ['V2.28.45.10','11/7','동료 대사 — 확률 없이 매번, 상황마다 여러 줄(전투 시작 · 턴 · 방어 · 회피 · 적중 · 큰 피해 · 빗나감 · 피격 · 위기 · 막음 · 피함 · 처치 · 승리 · 추가타 · 퇴각 · 복귀 · 지도 이동 · 상점 · 구매 · 나감 · 사건 · 휴식 · 보관함 · 건네기 · 지역 필드 · 영입 막 · 가만히 있을 때), 리테 · 제바르크 · 오토 · 견습생 · 부상당한 노르드교 단원. 말풍선을 모든 화면 맨 앞에 띄우고, 떠 있는 동안 조작을 막으며 누르면 사라짐. 구출 장면에 여기가 어딥니까?(떨어진 지역의 공방과 미덕), 비 사건은 리테를 만난 다음 사건 막에서. 붉은 천을 누르면 보관함 안에서 설명이 펼쳐짐. 설정에 2장으로 건너뛰기(임시)'],
   ['V2.27.44.9','11/6','지역 필드 — 크리뷔스 냉기 필드(구역 안에서 막을 옮길 때마다 최대 체력 5% 감소, 이것으로 쓰러질 수 있음), 아쉬부티 예술 필드(어느 막이든 10% 확률로 이벤트가 먼저 · 납치 70% · 실 30%), 스타인러 열기 필드(이동마다 증기 +1 · 최대 10 · 다음 전투에 적용). 2장 시작이 낙하한 방향의 중앙 근처 막으로 바뀌고, 그 방향 공방에 다녀와야 중앙정부에 들어갈 수 있음. 공방 동료 — 제바르크(스타인러 · 제바르크의 작업장), 오토(크리뷔스 · 오토의 냉각 작업장), 아쉬부티 공방 견습생(아카데미 앞 · 설득하기 · 의견제시로 영입, 졸업작품과 작품 던지기), 정비의 동료 탭에서 함께 갈 동료를 바꿈. 아쉬부티 공방 옆 가판대에 곡해파 예술가. 패치 내역을 새 번호로 바꾸고 버전을 누르면 펼쳐지게 함'],
@@ -4430,30 +4431,39 @@ function openPatch(back){
 }
 /* 설정 */
 function openSettings(){
-  const m=$('#modal');m.hidden=false;const sv=loadSave(),hv=loadHunt();
+  const m=$('#modal');m.hidden=false;
   m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div class="ptitle">설정</div><button class="btn-ghost" id="mClose">${S.setBack?'메뉴로':'닫기'}</button></div>
     <div class="choices">
       <button class="choice" id="sSkip2" style="border-color:#c9a45c"><b>2장으로 건너뛰기 (임시)</b><span>1장 진행 중이면 지금 캐릭터로, 없으면 새 캐릭터로 2장 낙하 장면부터 시작</span></button>
+      <button class="choice" id="sEnv"><b>환경 설정</b><span>UI 크기 · 효과음 · 화면 흔들림 · 주사위 연출 · 전환 팁 · 튜토리얼 다시 보기</span></button>
+      <button class="choice" id="sPatch"><b>패치 내역 · ${PATCH[0][0]}</b><span>버전별로 바뀐 점</span></button>
+      ${S.setBack?'':`<button class="choice" id="sSlots"><b>저장 기록 · ${slotCount()} / ${SLOT_MAX}</b><span>세계수 등반·절멸전 저장 기록을 보고 이어하거나 지움 (최대 10개)</span></button>`}
+    </div></div>`;
+  $('#mClose').onclick=()=>{const b=S.setBack;S.setBack=null;if(b)b();else closeModal()};
+  $('#sEnv').onclick=openEnvSettings;
+  $('#sPatch').onclick=()=>openPatch(openSettings);
+  $('#sSkip2').onclick=skipToA2;
+  if($('#sSlots'))$('#sSlots').onclick=()=>openSlots('manage',openSettings);
+}
+/* 환경 설정 (V2.28.46) — 설정 안의 설정창 */
+function openEnvSettings(){
+  const m=$('#modal');m.hidden=false;
+  m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div class="ptitle">환경 설정</div><button class="btn-ghost" id="mClose">설정으로</button></div>
+    <div class="choices">
       <button class="choice" id="sUi"><b>UI 크기 · ${(UI_SIZE[SET.ui]||UI_SIZE.s).n}</b><span>누를 때마다 작게 → 크게 → 매우 크게로 바뀜</span></button>
       <button class="choice" id="sSound"><b>효과음 · ${SET.sound?'켬':'끔'}</b><span>타격음 · 피격음 · 막기 소리</span></button>
       <button class="choice" id="sShake"><b>화면 흔들림 · ${SET.shake?'켬':'끔'}</b><span>큰 피해를 주고받을 때 화면이 흔들림</span></button>
       <button class="choice" id="sDfocus"><b>주사위 연출 · ${SET.dfocus===false?'끔':'켬'}</b><span>공격 전에 주사위 · 위력 · 피해를 가운데에 보여 줌</span></button>
       <button class="choice" id="sTips"><b>전환 팁 · ${SET.tips?'켬':'끔'}</b><span>화면이 바뀔 때 게임 팁과 세계관 한 줄을 보여줌</span></button>
       <button class="choice" id="sTut"><b>튜토리얼 다시 보기 · ${tutDone()?'끔':'켬'}</b><span>${tutDone()?'켜면 다음에 새로 오를 때 첫 전투에서 튜토리얼이 다시 나옴':'다음에 새로 오를 때 첫 전투에서 튜토리얼이 나옴'}</span></button>
-      <button class="choice" id="sPatch"><b>패치 내역 · ${PATCH[0][0]}</b><span>버전별로 바뀐 점</span></button>
-      ${S.setBack?'':`<button class="choice" id="sSlots"><b>저장 기록 · ${slotCount()} / ${SLOT_MAX}</b><span>세계수 등반·절멸전 저장 기록을 보고 이어하거나 지움 (최대 10개)</span></button>`}
     </div></div>`;
-  $('#mClose').onclick=()=>{const b=S.setBack;S.setBack=null;if(b)b();else closeModal()};
-  $('#sUi').onclick=()=>{SET.ui=UI_NEXT[SET.ui]||'l';saveSet();applyUI();openSettings()};
-  $('#sDfocus').onclick=()=>{SET.dfocus=SET.dfocus===false;saveSet();openSettings()};
-  $('#sSound').onclick=()=>{SET.sound=!SET.sound;saveSet();if(SET.sound)sfx('hit');openSettings()};
-  $('#sShake').onclick=()=>{SET.shake=!SET.shake;saveSet();openSettings()};
-  $('#sTips').onclick=()=>{SET.tips=!SET.tips;saveSet();openSettings()};
-  $('#sTut').onclick=()=>{setTutDone(!tutDone());openSettings()};
-  $('#sPatch').onclick=()=>openPatch(openSettings);
-  $('#sSkip2').onclick=skipToA2;
-  const arm=(el,fn)=>{let a=false;el.onclick=()=>{if(!a){a=true;el.querySelector('b').textContent='한 번 더 누르면 지웁니다';return}fn();openSettings();if(S.screen==='title')showTitle({menu:true})}};
-  if($('#sSlots'))$('#sSlots').onclick=()=>openSlots('manage',openSettings);
+  $('#mClose').onclick=openSettings;
+  $('#sUi').onclick=()=>{SET.ui=UI_NEXT[SET.ui]||'l';saveSet();applyUI();openEnvSettings()};
+  $('#sDfocus').onclick=()=>{SET.dfocus=SET.dfocus===false;saveSet();openEnvSettings()};
+  $('#sSound').onclick=()=>{SET.sound=!SET.sound;saveSet();if(SET.sound)sfx('hit');openEnvSettings()};
+  $('#sShake').onclick=()=>{SET.shake=!SET.shake;saveSet();openEnvSettings()};
+  $('#sTips').onclick=()=>{SET.tips=!SET.tips;saveSet();openEnvSettings()};
+  $('#sTut').onclick=()=>{setTutDone(!tutDone());openEnvSettings()};
 }
 /* ================= 튜토리얼 — 세계수 등반 첫 런의 첫 전투에서만 (설정에서 다시 보기) ================= */
 const TUT_KEY='ash-midgard-tutorial-v6';/* V36: 튜토리얼이 바뀌어 모두 한 번씩 다시 봄 */
