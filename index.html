@@ -488,7 +488,18 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .recipe:hover:not(:disabled){border-color:#7fae8f}.recipe:disabled{opacity:.45;cursor:default}
 .recipe span{font-size:14px;color:var(--bone-dim)}.recipe b{font-family:var(--f-display);font-weight:400;font-size:21px;color:#a9d6b6}.recipe i{font-style:normal;font-size:13px;color:var(--bone)}.recipe em{font-style:normal;font-size:12px;color:#e0a090}
 .port .recipes{grid-template-columns:1fr}.port .recipe b{font-size:26px}.port .recipe span,.port .recipe i{font-size:17px}
-.m2fld{color:#9fc7e0;font-size:14px}.port .m2fld{font-size:17px}
+.m2fld{color:#9fc7e0;font-size:14px}
+#saylayer{position:absolute;inset:0;z-index:55;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 150px;background:#00000014;cursor:default}
+#saylayer[hidden]{display:none}
+#saylayer .sb{display:flex;gap:14px;align-items:flex-start;max-width:min(760px,94%);padding:16px 22px 12px;border-radius:14px;background:#f0e7d6;color:#1c140a;box-shadow:0 10px 34px #000d;cursor:pointer;animation:sbIn .18s ease-out}
+#saylayer .sb i{width:42px;height:56px;flex:0 0 auto;display:block}#saylayer .sb i svg{width:100%;height:100%}
+#saylayer .sb b{display:block;font-size:16px;color:#7a4a1c;margin-bottom:3px}
+#saylayer .sb span{display:block;font-size:24px;line-height:1.4;word-break:keep-all}
+#saylayer .sb small{display:block;font-size:12px;color:#7d6a52;margin-top:6px}
+.port #saylayer{padding-bottom:280px}.port #saylayer .sb span{font-size:28px}
+@keyframes sbIn{from{transform:translateY(14px) scale(.96);opacity:0}}
+#stage #toast{z-index:60}
+.gb-c.keep em{display:block;font-style:normal;font-size:13px;color:#ef9a8c;margin-top:4px}.port .m2fld{font-size:17px}
 .patchlist{display:flex;flex-direction:column;gap:10px;overflow:auto;min-height:0}
 .patchlist details{border-bottom:1px solid #ffffff12;padding-bottom:9px}.patchlist summary{display:flex;gap:14px;align-items:baseline;cursor:pointer;list-style:none}.patchlist summary::-webkit-details-marker{display:none}.patchlist summary::before{content:'▸';color:var(--bone-dim);font-size:13px}.patchlist details[open] summary::before{content:'▾'}.patchlist details span{display:block;margin-top:6px}
 .patchlist b{font-family:var(--f-display);font-weight:400;font-size:20px;color:var(--brass-hi)}
@@ -2498,7 +2509,7 @@ function showMap(){if(S.run&&S.run.act===2)return showMap2();
 function enterNode(i){
   const r=S.run,M=r.map,t=M.opts[i];if(!t||tutLocked('node'))return;
   tutEvent('node');
-  if(r.pal&&r.pal.k==='nord'&&t!=='rift'&&t!=='boss')palSay(pick(['이쪽으로 가세나','이쪽이 더 빠를 거네','마땅한 선택이네']));
+  if(r.pal&&t!=='rift'&&t!=='boss')palEv('map');
   stockTick();const row=M.row+1;M._prevOpts=M.opts.slice();M.path.push({t,i,n:M.opts.length});M.row=row;r.floor=row;if(t==='shop')M.shops++;
   M.opts=genOpts(r,row+1);
   let at;
@@ -2541,6 +2552,7 @@ function resumeAt(){
   if(at.kind==='combat')return startCombat(JSON.parse(JSON.stringify(at.enemies||at.enemy)));
   if(at.kind==='inn')return showInn();
   if(at.kind==='a2first')return showA2First();
+  if(at.kind==='a2rain')return showA2Rain();
   if(at.kind==='fall')return showFall();
   if(at.kind==='land')return showLand();
   if(at.kind==='dir')return showDirPick();
@@ -2745,7 +2757,7 @@ async function startPlayerTurn(){
   if(C.flaskDebt){const p=Math.min(C.energy,C.flaskDebt);C.energy-=p;clog(`미미르의 물병: 코스트 ${C.flaskDebt} 지불${p<C.flaskDebt?` (남은 코스트가 모자라 ${p}만 지불)`:''}`);C.flaskDebt=0}
   if(C.flaskHp){r.hp=Math.max(1,r.hp-C.flaskHp);fxAt('player',`물병 -${C.flaskHp}`,'self');clog(`미미르의 물병: 체력 ${C.flaskHp} 지불`);C.flaskHp=0}
   if(C.steinBlock){gainBlock(C.steinBlock,0,'스타인러 공방');C.steinBlock=0}
-  if(C.drawN0&&C.turn===1)C.drawN+=C.drawN0;drawTurn();if(C.nextDraw){drawN(C.nextDraw);C.nextDraw=0}a2AfterDraw();
+  if(C.drawN0&&C.turn===1)C.drawN+=C.drawN0;drawTurn();if(C.nextDraw){drawN(C.nextDraw);C.nextDraw=0}a2AfterDraw();if(C.turn>1)setTimeout(()=>palEv('turn'),300);
   /* 튜토리얼 둘째 턴: 합성·소멸·버림을 해 볼 수 있게 패를 정해 줌 (이 전투에만 있는 카드, 덱에는 들어가지 않음) */
   if(C.E.tut&&C.turn===1&&tutOn()){const TH=TUT_HAND[C.E.tutN];if(TH){C.draw.push(...C.hand);C.hand=TH.map(id=>({uid:UID++,id,mods:[]}))}C.energy=Math.max(C.energy,3);if(r.tutStep<TUT_REWARD)r.tutStep=TUT_START[C.E.tutN-1]}
   if(C.E.tut)tutEvent('turn');
@@ -2941,6 +2953,7 @@ async function playCardRaw(uid,o={}){
   S.busy=false;
   if(d.type==='atk'||(d.d||[]).some(x=>x.t==='atk'))tutEvent('atk');
   if((d.d||[]).some(x=>x.t==='def'))tutEvent('def');
+  {const ty=(d.d||[]).map(x=>x.t);if(!ty.includes('atk')){if(ty.includes('eva'))palEv('eva');else if(ty.includes('def'))palEv('def')}}
   if(!C.over){renderCombat();if(r.hp<=0)gameOver()}
   if(U&&hadAtk&&!C.over&&!C.dead&&r.hp>0)await palHit();
   if(U&&d.sword&&!C.over&&!C.dead&&r.hp>0)await masteryUse();
@@ -3071,7 +3084,7 @@ function checkEnemy(){
   if(E.boss&&(E.phase===1||(E.phase===2&&destroyBuild()))&&E.hp<=0){E.hp=1;if(!E.pendPhase){E.pendPhase=E.phase+1;clog(E.phase===1?'체력 0 — 즉시 턴 종료, 페이즈 2':'체력 0 — 즉시 턴 종료, 페이즈 3','e')}renderCombat();return false}
   if(E.key==='clerk')clerkCheck(E);
   if(E.hp<=0&&E.tut&&tutOn()&&S.run.tutStep<(E.tutKeep||0)){E.hp=1;fxAt('enemy','튜토리얼 중','info');return false}/* 튜토리얼 설명이 끝날 때까지 쓰러지지 않음 */
-  if(E.hp<=0){E.hp=0;return foeDown(E)}
+  if(E.hp<=0){E.hp=0;if(liveFoes().length)palEv('kill');return foeDown(E)}
   return false;
 }
 async function endTurn(){
@@ -3253,7 +3266,7 @@ function enterPhase3(){
 /* ================= combat end ================= */
 function winCombat(res){
   const C=S.C,r=S.run;if(C.over)return;C.over=true;C.phase='over';
-  S.busy=false;a2CombatEnd(C);
+  S.busy=false;a2CombatEnd(C);setTimeout(()=>palEv('win'),500);
   const lines=[];r.next=null;
   $('#enemy').classList.add('dead');$('#foebar').hidden=true;
   if(C.select){C.select=null;$('#prompt').hidden=true}
@@ -3454,7 +3467,7 @@ function genShop(){
   r.shop={at:r.floor,type,...shopStock(type),rer:0,removed:false,removeCost:500+60*(r.shopN-1)};
 }
 function showShop(){
-  S.screen='shop';viewFor('shop');
+  S.screen='shop';viewFor('shop');setTimeout(()=>palEv('shop'),350);
   const r=S.run;genShop();renderTop();
   const sh=r.shop,T=SHOPS[sh.type],dain=myth(),rerCost=30*(sh.rer+1);
   if(sh.free){for(const it of[...(sh.cards||[]),...(sh.gear||[])])it.price=0}
@@ -4204,7 +4217,7 @@ function runFx(list,done,notes=[]){
 }
 function showEventKey(k){
   const r=S.run;if(!GEV[k]){k=pickEvent();r.at={kind:'event',ev:k};save()}
-  S.screen='event';renderTop();viewFor('map');const ev=GEV[k];ev._rr=0;
+  S.screen='event';renderTop();viewFor('map');const ev=GEV[k];ev._rr=0;setTimeout(()=>palEv('event'),350);
   const sc=openScreen('',{dim:true});
   sc.innerHTML=`<div class="panel evpanel" style="width:min(800px,100%)"><div><div class="psub">사건 · ${PLACE[ev.place]}${ev.zone?` · ${ev.zone==='C'?'공통':DIR2[ev.zone].n}`:''}</div><div class="ptitle">${ev.title}</div></div>
     <div class="ptext">${ev.text}</div><div class="choices">${ev.choices.map((c,i)=>{const L=c.chk&&luck(c.chk),poor=c.cost&&r.gold<c.cost;
@@ -4329,6 +4342,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.28.45.10','11/7','동료 대사 — 확률 없이 매번, 상황마다 여러 줄(전투 시작 · 턴 · 방어 · 회피 · 적중 · 큰 피해 · 빗나감 · 피격 · 위기 · 막음 · 피함 · 처치 · 승리 · 추가타 · 퇴각 · 복귀 · 지도 이동 · 상점 · 구매 · 나감 · 사건 · 휴식 · 보관함 · 건네기 · 지역 필드 · 영입 막 · 가만히 있을 때), 리테 · 제바르크 · 오토 · 견습생 · 부상당한 노르드교 단원. 말풍선을 모든 화면 맨 앞에 띄우고, 떠 있는 동안 조작을 막으며 누르면 사라짐. 구출 장면에 여기가 어딥니까?(떨어진 지역의 공방과 미덕), 비 사건은 리테를 만난 다음 사건 막에서. 붉은 천을 누르면 보관함 안에서 설명이 펼쳐짐. 설정에 2장으로 건너뛰기(임시)'],
   ['V2.27.44.9','11/6','지역 필드 — 크리뷔스 냉기 필드(구역 안에서 막을 옮길 때마다 최대 체력 5% 감소, 이것으로 쓰러질 수 있음), 아쉬부티 예술 필드(어느 막이든 10% 확률로 이벤트가 먼저 · 납치 70% · 실 30%), 스타인러 열기 필드(이동마다 증기 +1 · 최대 10 · 다음 전투에 적용). 2장 시작이 낙하한 방향의 중앙 근처 막으로 바뀌고, 그 방향 공방에 다녀와야 중앙정부에 들어갈 수 있음. 공방 동료 — 제바르크(스타인러 · 제바르크의 작업장), 오토(크리뷔스 · 오토의 냉각 작업장), 아쉬부티 공방 견습생(아카데미 앞 · 설득하기 · 의견제시로 영입, 졸업작품과 작품 던지기), 정비의 동료 탭에서 함께 갈 동료를 바꿈. 아쉬부티 공방 옆 가판대에 곡해파 예술가. 패치 내역을 새 번호로 바꾸고 버전을 누르면 펼쳐지게 함'],
   ['V2.26.44.9','11/6','순수유물주의자 2페이즈 — 은빛 기사 2명(대상 지정 불가, 체력 462~633, 명령-보호: 무작위 1명이 피해를 50%는 전부 · 50%는 75% 대신 맞고 다음 턴 행동 없음, 행동은 보호 위주), 12막 장로들의 대화'],
   ['V2.26.43.8','11/6','이별 전투의 적을 노르드교 이행자로 변경(레벨 35, 체력 3000~4500), 그 전투의 동료 대사는 ... · 아군일세! · 더는 그만! · 그만하게나만 반복'],
@@ -4425,6 +4439,7 @@ function openSettings(){
       <button class="choice" id="sTips"><b>전환 팁 · ${SET.tips?'켬':'끔'}</b><span>화면이 바뀔 때 게임 팁과 세계관 한 줄을 보여줌</span></button>
       <button class="choice" id="sTut"><b>튜토리얼 다시 보기 · ${tutDone()?'끔':'켬'}</b><span>${tutDone()?'켜면 다음에 새로 오를 때 첫 전투에서 튜토리얼이 다시 나옴':'다음에 새로 오를 때 첫 전투에서 튜토리얼이 나옴'}</span></button>
       <button class="choice" id="sPatch"><b>패치 내역 · ${PATCH[0][0]}</b><span>버전별로 바뀐 점</span></button>
+      <button class="choice" id="sSkip2"><b>2장으로 건너뛰기 (임시)</b><span>1장 진행 중이면 지금 캐릭터로, 없으면 새 캐릭터로 2장 낙하 장면부터 시작</span></button>
       ${S.setBack?'':`<button class="choice" id="sSlots"><b>저장 기록 · ${slotCount()} / ${SLOT_MAX}</b><span>세계수 등반·절멸전 저장 기록을 보고 이어하거나 지움 (최대 10개)</span></button>`}
     </div></div>`;
   $('#mClose').onclick=()=>{const b=S.setBack;S.setBack=null;if(b)b();else closeModal()};
@@ -4435,6 +4450,7 @@ function openSettings(){
   $('#sTips').onclick=()=>{SET.tips=!SET.tips;saveSet();openSettings()};
   $('#sTut').onclick=()=>{setTutDone(!tutDone());openSettings()};
   $('#sPatch').onclick=()=>openPatch(openSettings);
+  $('#sSkip2').onclick=skipToA2;
   const arm=(el,fn)=>{let a=false;el.onclick=()=>{if(!a){a=true;el.querySelector('b').textContent='한 번 더 누르면 지웁니다';return}fn();openSettings();if(S.screen==='title')showTitle({menu:true})}};
   if($('#sSlots'))$('#sSlots').onclick=()=>openSlots('manage',openSettings);
 }
@@ -4756,7 +4772,7 @@ const prepView=()=>{const a=$('#prepScroll'),h=$('#prepStoreH');return a&&h?{top
 /* 장비 보관함 — 왼쪽 사람 그림과 6칸, 오른쪽 빽빽한 칸. 전투 중에는 확인만, 소유 효과는 발동 중(황금빛) */
 const prepTabs=(r,on)=>`<div class="gb-tabs"><button class="gb-tab${on==='card'?' on':''}" data-ptab="card">카드 보관함 ${(r.store||[]).length}</button><button class="gb-tab${on==='gear'?' on':''}" data-ptab="gear">장비 보관함 ${(r.bag||[]).length+(r.equip||[]).length+wornGear(r).length}</button>${isMate(r.pal)?`<button class="gb-tab${on==='pal'?' on':''}" data-ptab="pal">${MATE[r.pal.k].n}</button>`:''}</div>`;
 const GB_FIG='<svg viewBox="0 0 150 430"><circle cx="75" cy="38" r="36"/><rect x="26" y="84" width="98" height="166" rx="26"/><rect x="0" y="92" width="24" height="154" rx="12"/><rect x="126" y="92" width="24" height="154" rx="12"/><rect x="34" y="230" width="38" height="196" rx="14"/><rect x="78" y="230" width="38" height="196" rx="14"/></svg>';
-function openGearBag(){const r=ensureGear(S.run),m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;m.hidden=false;S.prepTab='gear';S.gearF=S.gearF||'all';
+function openGearBag(){bagTalk();const r=ensureGear(S.run),m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;m.hidden=false;S.prepTab='gear';S.gearF=S.gearF||'all';
   const pal=isMate(r.pal)?r.pal:null;
   const sel=S.gearSel,slot=(s,x)=>{const k=r.gear[s][0];return`<button class="gb-slot${k?' on':''}${sel&&sel.s===s?' sel':''}" data-gs="${s}" style="${x}"${k&&!fight?` data-duid="s:${s}" data-dsrc="wear" data-dname="${GEAR[k].n}"`:''}><i>${GSLOT[s].n}</i><em>${k?GEAR[k].n:'비어 있음'}</em></button>`};
   const F=S.gearF,bag=r.bag.map((k,i)=>({k,i})).filter(x=>GEAR[x.k]&&(F==='all'||(F==='wp'?['rh','lh'].includes(GEAR[x.k].s):F==='ar'?!['rh','lh'].includes(GEAR[x.k].s):false))),own=(F==='all'||F==='own')?(r.equip||[]).filter(k=>EQUIP[k]):[];
@@ -4765,7 +4781,7 @@ function openGearBag(){const r=ensureGear(S.run),m=$('#modal'),fight=S.screen===
   m.innerHTML=`<div class="panel" style="width:min(1300px,100%);height:100%"><div class="maphead">${prepTabs(r,'gear')}<button class="btn-ghost" id="mClose">닫기</button></div>
    <div class="gb-m"><div class="gb-fig" data-dz="wear">${GB_FIG}${slot('head','left:3%;top:4%')}${slot('body','left:3%;top:36%')}${slot('leg','left:3%;top:68%')}${slot('rh','right:3%;top:4%')}${slot('lh','right:3%;top:36%')}${slot('foot','right:3%;top:68%')}</div>
    <div class="gb-r"><div class="gb-fl">${[['all','전체'],['wp','무기'],['ar','방어구'],['own','소유 효과']].map(([k,n])=>`<button class="${F===k?'on':''}" data-gf="${k}">${n}</button>`).join('')}</div><div class="gb-g" data-dz="bag">${cells}${(r.keep||[]).includes('nred')?'<button class="gb-c keep" id="gbRed"><b>귀속</b><span>노르드교의 붉은 천</span></button>':''}</div>${tip}
-   ${pal?`<div class="ap-h" style="margin-top:12px">${MATE[pal.k].n}의 장비<span class="dzhint">${fight?'전투 중에는 확인만 할 수 있다':'끌어다 놓으면 건네준다'}</span></div><div class="gb-g" data-dz="palgear" style="min-height:64px">${(pal.gear||[]).map((k,i)=>GEAR[k]?`<button class="gb-c"${fight?'':` data-duid="p:${i}" data-dsrc="palgear" data-dname="${GEAR[k].n}"`}><b>${MATE[pal.k].n}</b><span>${GEAR[k].n}</span></button>`:'').join('')||'<div class="hint">비어 있음</div>'}</div>`:''}</div></div></div>`;if($('#gbRed'))$('#gbRed').onclick=()=>toast('노르드교의 붉은 천','동료를 아낀 자의 최후');
+   ${pal?`<div class="ap-h" style="margin-top:12px">${MATE[pal.k].n}의 장비<span class="dzhint">${fight?'전투 중에는 확인만 할 수 있다':'끌어다 놓으면 건네준다'}</span></div><div class="gb-g" data-dz="palgear" style="min-height:64px">${(pal.gear||[]).map((k,i)=>GEAR[k]?`<button class="gb-c"${fight?'':` data-duid="p:${i}" data-dsrc="palgear" data-dname="${GEAR[k].n}"`}><b>${MATE[pal.k].n}</b><span>${GEAR[k].n}</span></button>`:'').join('')||'<div class="hint">비어 있음</div>'}</div>`:''}</div></div></div>`;if($('#gbRed'))$('#gbRed').onclick=e=>{const b=e.currentTarget;b.classList.toggle('open');b.innerHTML=b.classList.contains('open')?'<b>귀속 · 버릴 수 없음</b><span>노르드교의 붉은 천</span><em>동료를 아낀 자의 최후</em>':'<b>귀속</b><span>노르드교의 붉은 천</span>'};
   bindPrepTabs(m);$('#mClose').onclick=()=>{S.gearSel=null;prepClose(fight)};
   m.querySelectorAll('[data-gf]').forEach(b=>b.onclick=()=>{S.gearF=b.dataset.gf;S.gearSel=null;openGearBag()});
   m.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{S.gearSel=r.gear[b.dataset.gs][0]?{s:b.dataset.gs}:null;openGearBag()});
@@ -4774,8 +4790,8 @@ function openGearBag(){const r=ensureGear(S.run),m=$('#modal'),fight=S.screen===
   if(!fight)bindDrag(m,(from,to,id)=>{const v=id.split(':')[1];
     if(from==='bag'&&to==='wear'){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}
     else if(from==='wear'&&to==='bag'){const old=takeOff(r,v,0);if(old)r.bag.push(old)}
-    else if(from==='bag'&&to==='palgear'&&pal){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);pal.gear.push(k);pal.first=pal.first||k;toast(MATE[pal.k].n,`「${GEAR[k].n}」 건넴`)}
-    else if(from==='wear'&&to==='palgear'&&pal){const old=takeOff(r,v,0);if(!old)return;pal.gear.push(old);pal.first=pal.first||old;toast(MATE[pal.k].n,`「${GEAR[old].n}」 건넴`)}
+    else if(from==='bag'&&to==='palgear'&&pal){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);pal.gear.push(k);pal.first=pal.first||k;toast(MATE[pal.k].n,`「${GEAR[k].n}」 건넴`);palEv('give')}
+    else if(from==='wear'&&to==='palgear'&&pal){const old=takeOff(r,v,0);if(!old)return;pal.gear.push(old);pal.first=pal.first||old;toast(MATE[pal.k].n,`「${GEAR[old].n}」 건넴`);palEv('give')}
     else if(from==='palgear'&&(to==='bag'||to==='wear')&&pal){const i=+v,k=pal.gear[i];if(!k)return;pal.gear.splice(i,1);if(to==='wear'){const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}else r.bag.push(k)}
     else return;S.gearSel=null;save();renderTop();openGearBag()});
   if($('#gbAct'))$('#gbAct').onclick=()=>{if(sel.s){const old=takeOff(r,sel.s,0);if(old)r.bag.push(old)}else{const k=r.bag[sel.i],s=GEAR[k].s;r.bag.splice(sel.i,1);const old=wearAt(r,k,s,0);if(old)r.bag.push(old)}S.gearSel=null;save();renderTop();openGearBag()};
@@ -4804,7 +4820,7 @@ function storeHTML(list){
   return['공격','방어','유틸'].map(k=>{const a=list.filter(c=>cat(c)===k);if(!a.length)return'';
     return`<div class="prep-c">${k} ${a.length}장</div>`+RK.map(g=>{const b=a.filter(c=>gr(c)===g);if(!b.length)return'';const m=new Map();for(const c of b){const q=c.id+'|'+(c.mods||[]).join(',');if(!m.has(q))m.set(q,[]);m.get(q).push(c)}
       return`<div class="prep-g">${GN[g]}</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${[...m.values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}" data-duid="${x[0].uid}" data-dsrc="store" data-dname="${CARDS[x[0].id].name}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}${CARDS[x[0].id].ranged?'<span class="rtag">원거리 · 동료에게</span>':''}<button class="plate-btn" data-in="${x[0].uid}">덱으로</button></div>`).join('')}</div>`}).join('')}).join('')}
-function openPrep(v,anchor){if(S.prepTab==='pal'&&S.run.pal)return openPalTab();const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];if(fight&&tutOn()&&!/^prep/.test(TUT[r.tutStep].wait||'')&&!TUT[r.tutStep].pe)return;m.hidden=false;
+function openPrep(v,anchor){if(!S.prepOpenT||Date.now()-S.prepOpenT>1500)bagTalk();S.prepOpenT=Date.now();if(S.prepTab==='pal'&&S.run.pal)return openPalTab();const r=S.run,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;if(fight&&(S.busy||S.C.phase!=='player'||S.C.select))return;r.store=r.store||[];if(fight&&tutOn()&&!/^prep/.test(TUT[r.tutStep].wait||'')&&!TUT[r.tutStep].pe)return;m.hidden=false;
   if(tutOn())S.prepTab='card';tutEvent('prepOpen');
   if(anchor&&tutOn()&&TUT[r.tutStep].wait==='node')return closeModal();
   if(S.prepTab==='gear')return openGearBag();
@@ -4822,7 +4838,7 @@ function openPrep(v,anchor){if(S.prepTab==='pal'&&S.run.pal)return openPalTab();
     if(from==='deck'&&r.deck.length<=PREP_MIN){toast('덱',`덱은 최소 ${PREP_MIN}장이어야 한다`);return}
     a.splice(a.indexOf(c),1);b.push(c);if(fight&&(from==='deck'||to==='deck')){prepSync(c,from==='deck');S.C.prepEdit=true}
     if(from==='deck'&&to==='store')tutEvent('prepOut');if(from==='store'&&to==='deck')tutEvent('prepIn');
-    if(to==='pal'){const pk=S.run.pal.k;S.palLine=MATE_GIVE[pk]||'';toast(MATE[pk]?MATE[pk].n:'동료',`「${CARDS[c.id].name}」 건넴`)}
+    if(to==='pal'){const pk=S.run.pal.k;S.palLine=MATE_GIVE[pk]||'';palEv('give');toast(MATE[pk]?MATE[pk].n:'동료',`「${CARDS[c.id].name}」 건넴`)}
     save();openPrep(view,to==='deck')});
   if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
@@ -5474,6 +5490,7 @@ function nulled(c){const C=S.C;if(!C||!C.nullKinds||!C.nullKinds.length)return f
 function a2CombatStart(C){
   const r=S.run;C.baseMax=r.maxHp;
   if(r.fSteam){const v=r.fSteam;r.fSteam=0;a2Give('steam',v);clog(`열기 필드: 쌓인 증기 ${v}`,'h')}
+  setTimeout(()=>palEv('start'),650);
   C.artOn=r.deck.some(c=>CARDS[c.id].ws2==='ash')||!!(r.next&&r.next.art);
   if(eq('own_st'))a2Give('steam',5);if(eq('own_as')){C.artOn=true;artAdd(1)}if(r.next&&r.next.draw0)C.drawN0=r.next.draw0;
   if(r.next){if(r.next.steam)a2Give('steam',r.next.steam);if(r.next.cool)a2Give('cool',r.next.cool);if(r.next.heat){C.heat=Math.min(heatCap(true),r.next.heat);C.heatGain=C.heat}
@@ -5665,6 +5682,12 @@ const DIR_ORDER=['E','S','W','N'];
 const DIR_DESC={E:'스타인러 공방 — 증기 중심, 전부 수동, 장인과 드워프의 손길이 남은 곳',N:'크리뷔스 공방 — 냉매제 중심, 생산이 가장 힘들고 소모가 크며 대부분의 공방이 협업하는 곳',
   S:'아쉬부티 공방 — 유물 중심, 지금은 예술품과 교육을 내세우는 곳',W:'레미 공방 — 식품 중심, 모든 식품업체가 이곳을 통해 물자를 받는 곳'};
 const D99_OK=100;/* 위로 올라간다·아래로 내려간다는 둘 다 무조건 실패 판정 (사용자 확정) */
+/* 임시 (V2.28) — 설정에서 2장으로 건너뛰기 */
+function skipToA2(){let r=S.run;if(r&&r.act===2&&r.m2){closeModal();return toast('2장','이미 2장이다')}
+  closeModal();try{endTitleScene()}catch(e){}sayHide();if(S.C){S.C.over=true}S.C=null;try{hideCombatUI()}catch(e){}
+  if(!r||!r.deck||r.mode==='hunt'){S.run=newRun(rollHero('easy'));r=S.run}
+  r.tut=false;r.tutStep=999;r.pal=null;r.flags.sOpen=1;r.flags.sNord=1;r.flags.riftDone=r.flags.riftDone||'left';r.flags.sRift=1;r.at=null;save();
+  toast('임시','2장으로 건너뛴다');transition(a2Begin)}
 function a2Begin(){const r=S.run;r.at={kind:'fall'};save();showFall()}
 function showFall(){
   const r=S.run;S.screen='fall';renderTop();hideCombatUI();
@@ -5836,6 +5859,7 @@ function showMap2(full){const r0=S.run;if(r0.m2&&r0.m2.v===2&&!r0.m2.fixDone)m2A
   $('#m2close').onclick=()=>{box.hidden=true};
   if(full)openFull();
   palRender();palIdle();
+  if(!IN&&cur.adj.some(j=>{const x=M.nodes[j];return x.fix&&!x.fixDone&&!hasMate(x.fix)})){r.flags.fixSaid=r.flags.fixSaid||{};if(!r.flags.fixSaid[cur.id]){r.flags.fixSaid[cur.id]=1;setTimeout(()=>palEv('fix'),600)}}
 }
 function m2Bearing2(a,b){return m2Bearing({x:b.x-a.x,y:b.y-a.y})}
 function a2Group(shopWs){const n=ri(1,3),o=[];for(let i=0;i<n;i++)o.push(pick(A2_NORMAL));const staff=shopWs&&SHOP_STAFF[shopWs];if(staff)o[0]=staff;return o.map(k=>makeEnemy(k))}
@@ -5846,7 +5870,7 @@ function enterNode2(id){
   if(n.kind==='center'&&M.wsNeed!=null&&!M.wsDone)return toast('중앙정부',`${WS_LAB[r.dir]}에 먼저 다녀와야 한다`);
   const a=Math.min(from,id),b=Math.max(from,id);M.walked=M.walked||[];if(!M.walked.includes(a+'-'+b))M.walked.push(a+'-'+b);
   if(n.kind==='center'){const gate=m2Node(from).gate||'NE';return confirmBox('중앙정부','중앙정부 안으로 들어간다 — 정예 4명과 보스를 차례로 상대한다. 사이에 회복은 없고, 도망칠 수 없으며, 되돌아갈 수 없다.','들어간다',()=>{M.cur=id;n.vis=true;M.inside={diag:gate,cur:0};save();showMap();a2Guide('gov','krim')})}
-  M.cur=id;const first=!n.vis;n.vis=true;r.floor=(r.floor||0)+1;stockTick();
+  M.cur=id;const first=!n.vis;n.vis=true;r.floor=(r.floor||0)+1;stockTick();palEv('map');
   if(fieldStep(n,id,first))return;
   m2Arrive(id,first)}
 function m2Arrive(id,first){const r=S.run,M=r.m2,n=m2Node(id);
@@ -5864,6 +5888,7 @@ function m2Arrive(id,first){const r=S.run,M=r.m2,n=m2Node(id);
       if(false){r.flags.mjolSeen=true;at={kind:'mjol',node:id}}
       else{if(n.inn==null)n.inn=rnd()<.25;at=n.inn?{kind:'inn',node:id}:rnd()<BLACK_P?{kind:'black',node:id}:{kind:'shop2',node:id}}}
     else if(r.mode==='human'&&r.flags.a2New&&!r.flags.a2Ev1){r.flags.a2Ev1=1;at={kind:'a2first',node:id}}
+    else if(r.mode==='human'&&r.flags.pendRain){r.flags.pendRain=0;at={kind:'a2rain',node:id}}
     else{const ev=pickEvent(n.reg);at=ev?{kind:'event',ev,node:id}:null}
     /* 특수 대장장이 — 노드에 들어갔을 때 1% */
     if(false){r.flags.smithSeen=true;at={kind:'smith',node:id,then:at}}
@@ -5907,9 +5932,9 @@ const FIELD={N:{n:'냉기 필드',t:'움직일 때마다 최대 체력의 5%씩 
 function artEvent(){const ks=Object.keys(GEV).filter(k=>GEV[k].zone==='S'),kid=ks.filter(k=>/납치/.test(GEV[k].title)),thr=ks.filter(k=>/(^|\s)실(\s|$)/.test(GEV[k].title));const pool=rnd()<.7?kid:thr;return pool.length?pick(pool):(kid[0]||thr[0]||null)}
 function fieldStep(n,id,first){const r=S.run,F=FIELD[n.reg];if(!F||n.kind==='center')return false;
   r.flags.fld=r.flags.fld||{};if(!r.flags.fld[n.reg]){r.flags.fld[n.reg]=1;toast(F.n,F.t)}
-  if(n.reg==='N'){const d=Math.max(1,Math.round(r.maxHp*.05));r.hp-=d;renderTop();toast('냉기 필드',`체력 -${d}`);if(r.hp<=0){r.hp=0;r.at=null;save();gameOver();return true}}
-  if(n.reg==='E'){const v=Math.min(10,(r.fSteam||0)+1);if(v!==(r.fSteam||0)){r.fSteam=v;toast('열기 필드',`증기 ${v} / 10`)}}
-  if(n.reg==='S'&&rnd()<.1){const ev=artEvent();if(ev){r.artNext={id,first};r.at={kind:'event',ev,node:null};save();toast('예술 필드','막에 들어서기 전에 무언가가 먼저 다가온다');transition(resumeAt);return true}}
+  if(n.reg==='N'){const d=Math.max(1,Math.round(r.maxHp*.05));r.hp-=d;renderTop();toast('냉기 필드',`체력 -${d}`);palEv('fN');if(r.hp<=0){r.hp=0;r.at=null;save();gameOver();return true}}
+  if(n.reg==='E'){const v=Math.min(10,(r.fSteam||0)+1);if(v!==(r.fSteam||0)){r.fSteam=v;toast('열기 필드',`증기 ${v} / 10`)}palEv('fE');}
+  if(n.reg==='S'&&rnd()<.1){const ev=artEvent();if(ev){r.artNext={id,first};r.at={kind:'event',ev,node:null};save();toast('예술 필드','막에 들어서기 전에 무언가가 먼저 다가온다');palEv('fS');transition(resumeAt);return true}}
   save();return false}
 /* 2장 상점 — 공방 상점 (영웅 등급 이하), 진열 카드 5 · 장비 5, 상점 오른쪽 아래 전투 선택지 */
 function shop2Price(base,kind){const r=S.run;let disc=0;if(eq('u_contract'))disc=Math.max(disc,.3);if(kind==='card'&&eq('u_plan'))disc=Math.max(disc,.4);if(kind==='food'&&eq('u_ticket'))disc=Math.max(disc,.5);
@@ -5932,7 +5957,7 @@ const MEL_BARK={rich:['허허, 통 크구먼! 그거 들고 오래 살아남아�
 const RIT_BARK={rich:['은인님, 멋있어요! 저도 저거 쳐다보다가 맞았었는데.'],quit:['은인님, 그건 다음에 사요. 다음이 있으면요.'],poor:['제가 주운 나사라도 드릴까요? 다섯 개 있어요.'],sdown:['은인님, 종이가 싸졌대요. 그럼 더 많이 살 수 있는 거죠?']};
 const mpick=a=>a[Math.floor(Math.random()*a.length)];
 function showBark(who,tx){let b=$('#mbark');if(!b){b=document.createElement('div');b.id='mbark';$('#stage').appendChild(b)}const e=document.createElement('div');e.className='mb'+(who==='리테'?' rt':'');e.innerHTML=`<b>${who}</b><span>${tx}</span>`;b.appendChild(e);while(b.children.length>2)b.firstChild.remove();setTimeout(()=>{e.classList.add('out');setTimeout(()=>e.remove(),400)},3800)}
-function shopBark(k,line){const r=S.run;if(!r||r.act!==2||r.mode!=='human')return;const l=line||(k&&MEL_BARK[k]?mpick(MEL_BARK[k]):'');if(!l)return;showBark('멜헬름',l);const p=r.pal;if(k&&p&&p.k==='girl'&&!p.away&&RIT_BARK[k]&&Math.random()<.6)setTimeout(()=>showBark('리테',mpick(RIT_BARK[k])),1300)}
+function shopBark(k,line){const r=S.run;if(k==='rich'||k==='cheap')palEv('buy');else if(k==='quit')palEv('leave');if(!r||r.act!==2||r.mode!=='human')return;const l=line||(k&&MEL_BARK[k]?mpick(MEL_BARK[k]):'');if(!l)return;showBark('멜헬름',l);const p=r.pal;if(k&&p&&p.k==='girl'&&!p.away&&RIT_BARK[k]&&Math.random()<.6)setTimeout(()=>showBark('리테',mpick(RIT_BARK[k])),1300)}
 function melRegion(n,delay){const r=S.run,F=r.flags,reg=n&&n.reg;if(!reg||reg==='C'||(r.pal&&r.pal.k==='girl')||!F.melIntro)return;F.melReg=F.melReg||{};F.reg=F.reg||{};
   if(F.melReg[reg]===1||!F.reg[reg]){F.melReg[reg]=2;F.reg[reg]=1;save();setTimeout(()=>shopBark(null,MEL_REGION[reg]),delay||1800)}}
 function shopOnEnter(n){const r=S.run,key=(r.at&&r.at.node)+'|'+(r.floor||0);if(S.shopVisit===key)return;S.shopVisit=key;S.shopLook=false;S.shopBought=false;if(r.mode!=='human')return;
@@ -5941,7 +5966,7 @@ function shopOnEnter(n){const r=S.run,key=(r.at&&r.at.node)+'|'+(r.floor||0);if(
   melRegion(n)}
 function showShop2(){
   const r=S.run,n=m2Node(r.at.node),sh=genShop2(n),W=WS2[sh.ws];S.screen='shop';viewFor('shop');renderTop();
-  if(r.pal&&r.pal.k==='smith'&&!r.pal.away&&rnd()<.5)setTimeout(()=>showBark('제바르크','그거 사지 마. 내 게 더 좋아.'),900);
+  setTimeout(()=>palEv('shop'),350);
   if(r.flags.actF&&r.flags.actF.nextShop30&&!sh.disc30){sh.disc30=true;r.flags.actF.nextShop30=0}S.run.shopDiscNow=!!sh.disc30;
   const my=myth(),freeR=(eq('u_pass')&&!sh.rer)||(r.flags.actF&&r.flags.actF.freeRer>0);
   const rerCost=freeR?0:Math.round(1500*(sh.rer+1)*(eq('u_key')?.7:1));
@@ -6371,7 +6396,7 @@ function sceneMelShop(){const r=S.run,M='멜헬름';
 function sceneRescue(dir){const v=DIR_VIRTUE[dir]||'갈망',M='멜헬름',G='피투성이 청년',R='리테';
   const join=()=>{S.run.pal={k:'girl',cards:[],gear:[],away:false,first:null,ind:0,hp:0};save()};
   return['이곳에선 들려서는 안 될, 살이 터지는 피육음이 들린다.','상점 주인들이 사람 하나를 둘러싸고 있다.','나는 검을 뽑으려다, 이곳에선 그러면 안 된다고 생각해 다시 집어넣었다.',
-   ['상점 주인','훔쳐볼 눈빛으로 가판대를 쳐다봤다네.'],[G,'그냥... 멋있어서요. 돈이 없어서 못 샀어요.'],['상점 주인','생김새부터 직위, 재화, 목표까지 하급인 부랑아일세. 가판대를 쳐다볼 자격이 없지.'],['상점 주인',`자네도 곧 같아질 걸세. 이곳에선 ${josaUl(v)} 따르는 사람만 존중받아. 변화가 멈추면 그 자리에서 벗어날 수 없거든.`],
+   ['상점 주인','훔쳐볼 눈빛으로 가판대를 쳐다봤다네.'],[G,'그냥... 멋있어서요. 돈이 없어서 못 샀어요.'],['상점 주인','생김새부터 직위, 재화, 목표까지 하급인 부랑아일세. 가판대를 쳐다볼 자격이 없지.'],['상점 주인','자네도 곧 같아질 걸세.'],{c:[{b:'여기가 어딥니까?'}]},['상점 주인',`여긴 ${WS_LAB[dir]||'니다벨리르'} 구역일세. 이곳에선 ${josaUl(v)} 따르는 사람만 존중받아.`],['상점 주인','변화가 멈추면 그 자리에서 벗어날 수 없거든. 현실에 안주한 사람은 더 나아갈 수도, 그 자리를 지킬 수도 없는 하급품이 되지.'],
    {c:[{b:'죽일 생각이라면 이 검으로 확실히 죽여라',then:['멜헬름이 검을 쥐고 망설인다.',['주인공','이곳에선 그런 모습은 어울리지 않는다고 하지 않았나.'],['주인공','당신도 상점 주인이라는 현실에 만족하고 살면서, 왜 자신에겐 그 인식이 없지?']]},{b:'이곳의 법칙대로 하고 있으니 존중해 달라',then:['상점 주인들이 물러나고, 멜헬름이 다른 주인들을 몰아 해산시킨다.',[M,'자자, 구경 끝났어! 다들 장사들 하러 가!']]}]},
    '나는 피투성이가 된 청년을 일으켜 세웠다.',{c:[{b:'이름을 묻는다'}]},
    [R,'리테예요. 저, 살았어요? 와... 은인님이세요! 생명의 은인이에요!'],[R,'저 따라가도 돼요? 주신 걸로 충분해요! 아, 아직 아무것도 안 주셨구나.'],{c:[{b:'고개를 끄덕인다',f:join}]}]}
@@ -6380,8 +6405,10 @@ function sceneRain(pal){const R='리테',M='멜헬름';
    '지직거리는 소리와 함께, 태엽을 감은 듯한 이질적인 목소리가 들려온다.',['음성','스타인러 공방의 온도 급상승으로, 비 행위를 10분간 지속합니다.'],'이것은 물인데. 떨어진다는 이유만으로 비라는 행위가 되었다.','떨어지든, 올라가든, 엎어지든 물은 물이었다.','나는, 나도 모른 채 나만의 하늘을 뺏겨 버린 건 아닐까.',
    {c:[{b:'비를 모은 양동이를 샘물이라 하고 판다',then:['사람들은 처음 듣는 샘물이라는 말에 관심을 보였고, 양동이는 금방 동났다.']},{b:'이것을 누가 정했는지 묻는다',then:[pal?[R,'저 목소리요? 가운데 있는 크리밀라에서 나온대요. 왜 그런지는 저도 몰라요.']:[M,'저 소리? 가운데 크리밀라에서 나오는 거여. 왜냐고는 묻지 마. 다들 모르니께.']]}]}]}
 function showA2First(){const r=S.run,at=r.at;if(at.node!=null&&r.m2){const n=r.m2.nodes[at.node];if(n)n.cleared=true}S.screen='event';renderTop();
-  const list=r.flags.a2Felled?sceneRain(false):[...sceneRescue(r.dir),{fx:'none'},...sceneRain(true)];
+  const resc=!r.flags.a2Felled,list=resc?sceneRescue(r.dir):sceneRain(false);if(resc)r.flags.pendRain=1;
   showScene(list.filter(x=>!(x&&x.fx==='none')),()=>{r.at=null;save();transition(()=>showMap())})}
+function showA2Rain(){const r=S.run,at=r.at;if(at&&at.node!=null&&r.m2){const n=r.m2.nodes[at.node];if(n)n.cleared=true}S.screen='event';renderTop();
+  showScene(sceneRain(!!(r.pal&&r.pal.k==='girl')),()=>{r.at=null;save();transition(()=>showMap())})}
 function storyMap(){const r=S.run,M=r.map,F=r.flags;if(r.mode!=='human'||!M)return false;
   const go=l=>{save();showScene(l,()=>showMap());return true};
   if(!F.sOpen&&M.row===0){F.sOpen=1;save();showScene(S_OPEN,()=>enterNode(0));return true}F.sOpen=1;
@@ -6394,6 +6421,150 @@ function storyMap(){const r=S.run,M=r.map,F=r.flags;if(r.mode!=='human'||!M)retu
 const PAL_FIG='<svg viewBox="0 0 48 64" aria-hidden="true"><circle cx="24" cy="15" r="10" fill="#14171b" stroke="#6b7178" stroke-width="1.5"/><path d="M6 62 C6 40 14 28 24 28 C34 28 42 40 42 62Z" fill="#14171b" stroke="#6b7178" stroke-width="1.5"/></svg>';
 const PAL_LINES={nord:{hurt:'형제여 칼을 왜 피하지 않는겐가? 그렇다면 맞을것인데?',dodge:'형제여 잘했다 이번엔 멋지게 피했군',hit:'멋진 공격이다!',big:'감탄스러운 실력이군',stance:'자네한테 맞는 자세를 찾았나 보군',block:'잘 막았네. 살아 있어야 태울 수도 있지 않겠나.',miss:'허공을 베었군. 괜찮네, 나무는 도망가지 않으니.',low:'형제여, 뒤로 물러나는 것도 칼질일세.',sub:'죽이지 않는 겐가? 자네도 참 다정하군.',rest:'오늘도 불빛이 붉군. 곧 전부 재가 될 걸세.'},
   girl:{rest:'편하네요~'},smith:{rest:'망치는 쉬어도 손은 안 쉰다.'},otto:{rest:'불 쬐어라. 얼기 전에.'},cadet:{rest:'잠깐 스케치 좀 할게요.'}};
+/* ================= 동료 대사 (V2.28) — 상황마다 확률 없이 매번, 여러 줄 중 하나 ================= */
+const PAL_TALK={
+ girl:{
+  start:['은인님, 저 뒤에 있을게요! 아, 앞이 나은가?','싸워요? 지금요? 네, 네! 준비됐어요!','저 사람 눈빛이 무서워요... 그래도 은인님이 계시니까요!','들은 얘긴데, 먼저 때리는 쪽이 이긴대요. 아마도요.','심호흡... 심호흡... 좋아요, 가요!','은인님, 다치시면 안 돼요. 제가 다치는 건 괜찮아요!'],
+  turn:['다음은 뭐 하실 거예요?','은인님 차례예요! 아, 알고 계시죠?','저 사람이 뭔가 준비하는 것 같아요.','손에 든 카드 많네요! 다 좋은 거죠?','천천히 하셔도 돼요. 저 사람은 안 기다려 주겠지만요.'],
+  def:['막아요, 막아요!','그거 단단해 보여요!','좋아요, 이제 안 아프겠죠?','방패... 저도 하나 갖고 싶어요.','잘 막으셨어요! 아직 안 맞았지만요!'],
+  eva:['피하는 거죠? 저도 따라 해 볼게요!','휙휙! 멋있어요!','몸 낮추는 거, 저도 맞을 때 많이 했어요.','바람처럼요!','오, 안 맞을 것 같아요!'],
+  hit:['맞았어요! 맞았어요!','와, 아프겠다... 저 사람이요!','은인님 최고예요!','방금 소리 들으셨어요? 퍽!','그렇게 치는 거구나... 외워 둘게요!'],
+  big:['우와아! 저게 사람이 낼 수 있는 힘이에요?','엄청나요! 저 사람 휘청거려요!','방금 거 한 번 더요! 한 번 더!','은인님 진짜 은인님이세요!','저 바닥 금 간 거 아니에요?'],
+  miss:['아깝다! 진짜 아깝다!','괜찮아요, 다음엔 맞을 거예요!','저 사람 너무 잘 피해요... 반칙 아니에요?','공기를 베셨어요! 공기도 아팠을 거예요!','아앗, 조금만 더 왼쪽이었으면!'],
+  hurt:['은인님!! 괜찮으세요?!','피 나요, 피!','저 사람 나빠요! 은인님을 때렸어요!','아파 보여요... 제가 대신 맞을걸.','조심하세요! 저 사람 또 와요!'],
+  low:['은인님, 숨 쉬고 계신 거죠? 그렇죠?','안 돼요, 쓰러지시면 안 돼요!','물러나도 돼요! 제가 시간 벌게요!','제발요... 저 혼자 남기 싫어요.','피가 너무 많이 나요...!'],
+  block:['막았어요! 하나도 안 들어갔어요!','쾅! 그런데 멀쩡하세요!','방어도 최고예요!','저 사람 손 아프겠다.','그렇게 막는 거구나!'],
+  dodge:['안 맞았어요! 휙!','저 사람 헛손질했어요!','은인님 너무 빨라요!','방금 봤어요? 머리카락만 스쳤어요!','피했다! 피했다!'],
+  kill:['한 명 쓰러졌어요!','남은 사람도 금방이에요!','잘하셨어요! 아직 끝은 아니에요!','휴... 한 명 줄었어요.','다음 사람이요!'],
+  win:['이겼어요! 이겼어요!','은인님 다치신 데 없죠? 다행이다...','역시 은인님이에요!','끝났어요... 다리가 후들거려요.','이긴 거 맞죠? 그렇죠?','저도 조금은 도움이 됐죠? 그렇다고 해 주세요!'],
+  follow:['거들게요!','저도요! 저도 칠게요!','에잇!','은인님이 주신 걸로요!','제 차례예요!'],
+  out:['죄송해요 조금만 쉴게요..','더는 못 버티겠어요... 금방 올게요!','잠깐만요, 숨 좀...','은인님, 저 빼고 이기셔야 해요!'],
+  back:['다시 도와드릴게요!','저 왔어요! 많이 기다리셨죠?','다 나았어요! 거의요!','이번엔 안 쓰러질게요!'],
+  map:['이쪽이에요? 좋아요!','어디로 가든 따라갈게요!','저기 가판대 반짝거려요...','발 아파요. 아, 아니에요! 괜찮아요!','니다벨리르는 길이 너무 꼬불꼬불해요.','은인님 발걸음 빠르시다...'],
+  shop:['우와, 다 비싸 보여요!','구경만 해도 되죠?','저거, 저거 멋있어요! 아니에요, 그냥 본 거예요.','여기 주인 아저씨 무서워요...','돈은 있으세요? 저는 없어요!'],
+  buy:['샀어요! 좋은 거예요?','와, 그거 진짜 멋있어요!','돈 쓰는 거 처음 봐요. 아니, 처음은 아니지만요.','그거 저도 만져 봐도 돼요?'],
+  leave:['안 사요? 그럼 저도 안 볼게요.','다음에 또 와요!','저 주인 아저씨가 쳐다봐요... 빨리 가요!'],
+  event:['무슨 일이에요?','저 사람들 뭐 하는 거예요?','조심하세요, 니다벨리르 사람들은 웃으면서 찔러요.','뭔가 재밌는 일이에요? 무서운 일이에요?','저 여기 가 본 적 있어요! 아마도요.'],
+  rest:['편하네요~','은인님도 좀 주무세요. 제가 지킬게요!','불 따뜻하다...','이런 거 처음이에요. 누구랑 같이 쉬는 거.','내일은 어디 가요?'],
+  bag:['보관함이다! 저 뭐 주실 거예요?','이거 다 은인님 거예요? 부자다...','저기 저거 빛나요!','정리 잘하시네요. 저는 다 바닥에 둬요.'],
+  give:['저 주시는 거에요? 진짜요? 와.. 진짜 감사해요! 은인님!','소중히 쓸게요! 진짜로요!','이걸로 은인님 지켜 드릴게요!','받아도 돼요? 진짜로요?'],
+  fN:['차가워요... 손가락이 안 움직여요.','숨 쉴 때마다 코가 아파요!','여기 사람들은 어떻게 사는 거예요?','은인님, 체온 괜찮으세요?'],
+  fE:['숨이 막혀요... 몸이 눅눅해져요.','여기 연기 냄새 너무 나요!','증기가 자꾸 몸에 붙어요.','덥다... 아니 축축하다...'],
+  fS:['저기 누가 우리 쪽으로 와요!','도망쳐요! 아, 늦었다.','여기 사람들은 왜 다 손을 잡고 끌고 가요?'],
+  fix:['저기 누가 있어요. 말 걸어 볼까요?','저 사람, 우리 같이 갈 수 있을까요?','저기 혼자 있는 사람이요, 왠지 신경 쓰여요.'],
+  idle:['은인님... 아, 바쁘시구나.','돌멩이를 세고 있어요. 다섯 개예요.','심심해요... 아니에요, 괜찮아요.','저 지금 말 걸어도 돼요? 걸었네요.','은인님, 자요? 아, 눈 뜨고 계시네.','저기 비둘기... 아니 기계 새다.']},
+ smith:{
+  start:['그거 소중한 거야? 아니면 내 거 써.','부술 거 많네. 좋아.','망치 데워졌다. 가자.','저놈 무기 좋아 보이네. 부숴도 되지?','물러서 있어. 파편 튄다.','실패하면 다시 두드리면 돼. 넌 실패하지 마.'],
+  turn:['뭐 해. 휘둘러.','손이 놀잖아.','다음 거. 빨리.','생각하지 말고 쳐. 생각은 부서진 다음에.','그 카드 날 무뎌 보인다. 그래도 써.'],
+  def:['막는 건 내 취향 아닌데.','방패도 결국 맞으면 깨져.','그거 누가 만든 거야? 이음새가 엉망이네.','막을 거면 단단히 막아.','쳇, 방어냐.'],
+  eva:['피해? 맞고 고치면 되잖아. 아, 난 안 고치지.','잘 빠지네.','도망치는 건 망치질이 아니야.','움직임은 괜찮다.'],
+  hit:['좋은 소리.','방금 그거, 손목 잘 썼다.','더 세게.','그래, 그렇게 내려치는 거야.','갈라졌다. 좋아.'],
+  big:['하! 그게 망치질이지!','방금 거 내 작업장에서 해 볼래?','저거 다시 붙일 수도 없겠다.','좋아, 아주 좋아. 박살이다.','그 소리 오랜만이다.'],
+  miss:['허공을 쳤네.','빗나간 망치는 손목만 상해.','다시. 실패는 다시 하라는 뜻이야.','하, 나도 그렇게 빗나간 적 많다.','눈 감고 휘둘렀냐?'],
+  hurt:['맞았냐? 어디 부서졌어?','부서지면 말해. 새로 만들어 줄게. 사람은 못 만들지만.','이 자식이.','피 닦아. 손 미끄러진다.','아프면 소리 질러. 그게 낫다.'],
+  low:['야. 아직 서 있냐.','그거 소중한 거야? 네 목숨 말이야.','물러나. 부서진 건 못 고쳐.','쓰러지지 마. 난 고치는 거 안 한다고.','...젠장, 버텨.'],
+  block:['막았네. 방패가 버텼다.','쾅. 멀쩡하냐? 방패 말고 너.','좋은 막음이다.','저놈 손목 나갔겠다.'],
+  dodge:['빠지네.','맞을 뻔했다.','운 좋은 줄 알아.','눈은 좋네.'],
+  kill:['하나.','부서졌다.','다음 거.','잘 깨졌다.'],
+  win:['끝. 무기는 멀쩡하냐?','부술 거 다 부쉈다.','실패 없이 끝났네. 재미없게.','다친 데 있으면 말해. 고치진 않지만.','좋아, 망치 식히자.'],
+  follow:['부서지면 말해!','비켜!','내리친다!','두드린다!','이건 내 거다!'],
+  out:['망치 좀 식히고 온다.','손목 나갔다. 잠깐.','젠장, 쉬었다 간다.','부서진 건 나였네.'],
+  back:['다시 두드린다.','식었다. 간다.','손목 돌아왔다.','나 없어서 심심했냐.'],
+  map:['길 좁네.','저 집 기둥 금 갔다. 부숴 주고 싶다.','어디 가. 빨리 가.','저기 대장간이다. 들르지 마. 내 거 써.','걷는 것도 망치질이랑 같아. 박자.'],
+  shop:['그거 사지 마. 내 게 더 좋아.','이 가게 물건 이음새 다 엉망이야.','돈 아까워. 내 거 써.','저 망치 누가 만든 거야. 부숴 버리고 싶네.','구경만 해. 사는 건 나한테서.'],
+  buy:['그걸 샀다고?','...뭐, 부서지면 가져와. 내 거 줄게.','남이 만든 걸. 흥.','돈 많네.'],
+  leave:['잘했어. 아무것도 사지 마.','그래, 나가자.','내 거 써.'],
+  event:['또 무슨 일이야.','부술 거면 불러.','말로 하는 건 네가 해.','시끄럽네.'],
+  rest:['망치는 쉬어도 손은 안 쉰다.','불 좋다. 쇠 달구기 딱이네.','자. 나는 좀 두드릴게.','...가끔 꿈에 펜던트가 나와. 아무것도 아니야.'],
+  bag:['잡동사니 많네.','저거 다 부숴도 돼?','이건 소중한 거야? 이건? 이건?','정리 좀 해. 망치 찾기 힘들다.'],
+  give:['남이 만든 거네. …뭐, 써 보지.','이거 이음새 다시 해야겠다. 아, 고치는 건 안 하지.','받아 둔다. 부서지면 말할게.','내 게 더 좋은데.'],
+  fN:['쇠가 얼어. 망치질 못 하겠다.','이 동네는 화로가 없냐.','손가락 감각 없다.','추운 데선 쇠가 쉽게 깨져. 사람도.'],
+  fE:['아, 익숙한 냄새.','여긴 내 동네다.','증기 조심해. 데면 손가락부터 세.','망치 소리 들리지? 고향이다.'],
+  fS:['저놈들 또 납치하냐.','예술가들은 부수는 맛을 몰라.','뭐 하는 놈들이야.'],
+  fix:['저기 누가 있네. 말 걸든지.','저 사람 무기 좋아 보인다. 부숴도 돼?','동료 늘리게? 그래, 부서질 사람 많을수록 좋지.'],
+  idle:['안 가?','망치 근질근질하다.','뭐 부술 거 없냐.','...','저기 저 문 경첩 삐걱거린다. 신경 쓰여.','빨리 가자.']},
+ otto:{
+  start:['어이, 신입. 뒤에 서.','...또 싸우나.','몸 굳기 전에 끝내라.','자네는 내 뒤다. 알겠나.','추운 데서 싸우는 법은 하나다. 빨리.','이번엔 아무도 안 얼어.'],
+  turn:['서두르지 마라. 그렇다고 늦지도 말고.','손 녹았나.','다음.','숨 고르고.','...보고 있다.'],
+  def:['그래, 막아라.','막는 건 잘하는군.','버텨라. 버티는 놈이 산다.','좋다.'],
+  eva:['피하는 것도 기술이다.','발 미끄러지지 마라.','...잘 빠지는군.','그렇게 살아남는 거다.'],
+  hit:['됐다.','좋다.','...나쁘지 않군.','한 번 더.','그렇지.'],
+  big:['허, 신입치고는.','...잘했다.','저건 오래 남겠군.','힘 조절은 나중에 가르쳐 주지.'],
+  miss:['빗나갔다.','괜찮다. 다시.','눈이 얼었나.','서두르니까 그렇다.'],
+  hurt:['...또 이러는군.','어이, 신입.','피 멈추게 눌러라.','움직여라. 서 있으면 언다.','내 앞에 서지 말라고 했지.'],
+  low:['...또 이러는군.','물러나라. 지금.','넷째도 그렇게 서 있다가 갔다.','쓰러지지 마라. 부탁이다.','어이. 대답해.'],
+  block:['잘 막았다.','...그래.','버텼군.','좋다. 그렇게만 해라.'],
+  dodge:['잘 피했다.','...휴.','다음엔 맞는다. 조심해.','좋은 발이다.'],
+  kill:['하나 갔다.','...다음.','끝까지 봐라.','쓰러졌다.'],
+  win:['끝났다. 불 쬐어라.','...살았군. 다행이다.','다친 데 보여 봐라. 아니, 됐다.','오늘도 아무도 안 얼었다.','가자. 해 지기 전에.'],
+  follow:['뒤에 서라.','비켜.','...간다.','내가 하마.'],
+  out:['…잠깐 몸 좀 녹이마.','다리가 굳었다. 잠깐.','늙은이는 쉬어야지.','먼저 가라. 따라가마.'],
+  back:['아직 안 얼었다.','왔다.','...쉬었다.','괜찮다. 가자.'],
+  map:['발밑 조심해라.','길이 미끄럽다.','...이쪽인가.','천천히 가도 된다. 얼지만 않으면.','나는 뒤에서 가마.'],
+  shop:['필요한 것만 사라.','장갑은 있나.','...비싸군.','따뜻한 거 사라.'],
+  buy:['...그래.','잘 샀다.','그거 오래 쓸 수 있겠군.'],
+  leave:['그래, 가자.','돈은 아껴라.','...잘했다.'],
+  event:['조심해라.','...무슨 일이지.','남의 일에 끼면 언다.','말은 자네가 해라.'],
+  rest:['불 쬐어라. 얼기 전에.','자라. 내가 보고 있으마.','...녀석들도 이렇게 같이 앉곤 했지.','손 내밀어 봐라. 차군. 더 가까이 앉아.','내일도 걸어야 한다. 자라.'],
+  bag:['정리 잘해라. 급할 때 못 찾는다.','장갑 어디 있나.','...잡동사니가 많군.'],
+  give:['…받아 두마.','이건 자네가 써라. ...알았다, 받으마.','고맙다는 말은 안 한다.','...따뜻하군.'],
+  fN:['고향이다.','손 비벼라. 계속.','여기선 멈추면 언다. 걸어라.','...녀석들이 여기서 얼었지.','숨은 코로 쉬어라.'],
+  fE:['덥군.','증기 냄새는 싫다.','...얼지는 않겠군.'],
+  fS:['저놈들 조심해라. 끌고 간다.','...예술은 모르겠다.','따라가지 마라.'],
+  fix:['누가 있군.','...말 걸어 봐라.','혼자 두면 얼 놈 같은데.'],
+  idle:['...','어이, 신입. 안 가나.','손 녹이고 있다.','...녀석들 이름을 세고 있었다.','가자.']},
+ cadet:{
+  start:['오늘은 뭔가 보일 것 같아요.','전투도 작품이에요! 아마도요.','선배들이 그러는데 첫 획이 중요하대요!','저 사람 구도가 좋아요. 아, 지금 그럴 때가 아니죠.','붓 준비됐어요!'],
+  turn:['다음 획은 뭐예요?','이번엔 어느 파벌 방식으로 하실 거예요?','손이 근질근질해요!','보고 배울게요!','방금 거 스케치해 둘게요.'],
+  def:['보존파 선배라면 박수 쳤을 거예요!','단단한 구도네요.','막는 것도 하나의 표현이에요!','정석이에요, 정석!'],
+  eva:['방직파 같아요! 실 위를 걷는 것처럼!','우아해요!','휙, 선 하나가 지나갔어요!','저도 저렇게 움직이고 싶어요.'],
+  hit:['좋은 선이에요!','획이 살아 있어요!','방금 거 그려도 돼요?','이게 해석이구나!','명중! 붓이 아니라 칼로요!'],
+  big:['걸작이에요! 걸작!','곡해파 선배가 봤으면 울었을 거예요!','저 균열 모양 좀 보세요!','이건 전시해야 해요!'],
+  miss:['괜찮아요, 습작이에요!','선이 빗나갔어요! 지울 수 있어요!','실패도 작품이래요. 선배가 그랬어요.','아깝다, 구도는 완벽했는데!'],
+  hurt:['물감이... 아니 피예요!','괜찮으세요? 색이 안 좋아요!','저 사람 해석이 너무 거칠어요!','아파 보여요...!'],
+  low:['안 돼요, 이 작품 아직 미완성이에요!','물러나세요! 지금 구도가 안 좋아요!','은... 아니 이방인님! 버티세요!','끝까지 그려야 해요, 제발요!'],
+  block:['완벽한 방어예요!','보존파 정석!','막아냈어요!'],
+  dodge:['피했다! 선이 흔들렸어요!','우아한 회피예요!','저도 저렇게 피하고 싶어요!'],
+  kill:['한 작품 끝났어요!','다음 작품이요!','쓰러졌어요... 마무리 획이네요.'],
+  win:['다 끝났어요! 이건 전시감이에요!','방금 전투, 그림으로 남겨도 돼요?','이방인님 덕분에 또 배웠어요!','제 방향이 조금 보인 것 같아요!'],
+  follow:['제 차례예요!','습작이지만요!','에잇, 표현!','해석해 볼게요!'],
+  out:['물감이… 다 떨어졌어요.','붓이 부러졌어요... 잠깐만요!','영감이 바닥났어요...'],
+  back:['다시 그려 볼게요!','새 붓 챙겼어요!','영감 돌아왔어요!'],
+  map:['저 건물 선이 예뻐요!','여기 풍경 스케치하고 싶어요.','어디 가요? 아카데미보다 재밌는 데요?','길도 하나의 선이래요.','저 그림자 좀 보세요!'],
+  shop:['물감 파는 데는 없나요?','이 진열 구도 좋다...','저거 곡해파 작품 같은데요?','다 사고 싶어요!'],
+  buy:['그거 보관함에 넣으실 거죠? 제 방향이 바뀔지도!','좋은 선택이에요!','어느 파벌 거예요?'],
+  leave:['다음에 또 와요!','구경만 해도 영감 받았어요!'],
+  event:['무슨 일이에요? 스케치감이에요?','아, 이거 선배들한테 들은 거예요!','재밌겠다!'],
+  rest:['잠깐 스케치 좀 할게요.','불빛 색이 좋아요.','오늘 그린 거 보실래요? 아직 미완성이에요.','이방인님 자는 얼굴 그려도 돼요? 농담이에요.'],
+  bag:['보관함을 보면 제 방향이 보여요!','곡해파 카드 많네요... 저 곡해파 가요?','방직파 실이다!','보존파 교재다!'],
+  give:['와, 이걸로 뭘 그려 볼까요?','소중히 쓸게요!','이거 어느 파벌 거예요?','영감이 와요!'],
+  fN:['물감이 얼어요!','손이 굳어서 선이 떨려요...','추운 색이네요, 여기.'],
+  fE:['연기가 붓에 묻어요.','증기도 하나의 질감이에요!','습해서 종이가 울어요...'],
+  fS:['고향이다! 아, 선배들 조심하세요. 끌고 가요.','저 납치하는 선배들 다 아는 사람이에요...','여기선 정중하게 거절하면 안 돼요!'],
+  fix:['저 사람 그려 봐도 될까요?','누가 있어요! 동료 될까요?'],
+  idle:['스케치 중이에요.','이방인님, 이 선 어때요?','아직 방향을 모르겠어요...','붓 씻고 있어요.','저기 저 구름, 아니 돔 무늬 좋다.']},
+ nord:{
+  start:['형제여, 칼을 들게나.','저들도 결국 재가 될 걸세.','자네 등 뒤는 내가 보겠네. 이 몸으로라도.','노른교 놈들이로군.','불이 붙기 전에 끝내세나.'],
+  turn:['형제여, 다음은?','서두르지 말게나.','보고 있네.','자네 차례일세.'],
+  def:['잘 막았네. 살아 있어야 태울 수도 있지 않겠나.','막는 것도 싸움일세.','단단하군.'],
+  eva:['그렇지, 피하게나.','몸이 가볍군.','칼은 피하면 그만일세.'],
+  hit:['멋진 공격이다!','그렇지!','타올라라!','좋네, 형제여!'],
+  big:['감탄스러운 실력이군','자네는 우리 사람이야!','저건 재도 안 남겠군!'],
+  miss:['허공을 베었군. 괜찮네, 나무는 도망가지 않으니.','다음엔 맞을 걸세.','서두르지 말게.'],
+  hurt:['형제여 칼을 왜 피하지 않는겐가? 그렇다면 맞을것인데?','괜찮은가!','피가 나는군. 닦게나.'],
+  low:['형제여, 뒤로 물러나는 것도 칼질일세.','쓰러지지 말게!','자네가 쓰러지면 누가 태우나.'],
+  block:['잘 막았네. 살아 있어야 태울 수도 있지 않겠나.','단단하군!'],
+  dodge:['형제여 잘했다 이번엔 멋지게 피했군','잘 피했네!'],
+  kill:['하나 쓰러졌군.','재가 되어라.'],
+  win:['형제여, 살아남았군.','오늘도 불빛이 붉군.','잘했네.'],
+  map:['이쪽으로 가세나','이쪽이 더 빠를 거네','마땅한 선택이네','다리가 무겁군. 그래도 가세.'],
+  shop:['양심껏 챙기게나.','필요한 것만 사게.','돈은 재가 되면 쓸모없네.'],
+  event:['조심하게, 형제여.','무슨 일인가.'],
+  rest:['오늘도 불빛이 붉군. 곧 전부 재가 될 걸세.','자게나, 형제여. 내가 보겠네.','이 불도 언젠가 꺼지겠지.'],
+  bag:['짐이 많군.','필요 없는 건 태우게나.'],
+  idle:['형제여, 가지 않는가?','...다리가 쑤시는군.','저 불빛 보이나.']}};
+for(const k in PAL_TALK){const o=PAL_LINES[k]||(PAL_LINES[k]={});for(const s in PAL_TALK[k])o[s]=PAL_TALK[k][s]}
+
 const PAL_NAME={nord:'부상당한 노르드교 단원',girl:'리테',smith:'제바르크',otto:'오토',cadet:'견습생'};
 /* 2장 공방 동료 (11/6) — 스타인러 단조 · 크리뷔스 물질 · 아쉬부티 예술 · 크리밀라 자유(리테), 레미는 미정 */
 const MATE={girl:{n:'리테',a:.6,d:.6,h:.5},
@@ -6417,7 +6588,7 @@ function cadetWork(v,nm){const C=S.C,E=liveFoes().find(f=>f.key==='cadet');if(!E
   if(E.work>=100){E.fled=true;E.spared=true;S.run.flags.cadetJoin=1;toast('작품 완성','견습생이 붓을 내려놓았다 — 처치하지 않고 끝남');if(!liveFoes().length)winCombat({});else{C.E=liveFoes()[0];renderCombat()}}else renderCombat()}
 const palUp=()=>{const r=S.run;return!!(r&&isMate(r.pal)&&!r.pal.away&&S.C&&!S.C.over)};
 function palStats(){const r=S.run,p=r.pal,Q=MATE[p.k]||MATE.girl,rb=p.k==='cadet'?.1*(p.rank||0):0;let atk=Math.round(r.atk*(Q.a+rb)),def=Math.round(r.def*Q.d),acc=r.acc,hp=Math.round(r.maxHp*Q.h);for(const k of p.gear||[]){const e=GEAR[k];if(!e||!e.fx)continue;atk+=e.fx.atk||0;def+=e.fx.def||0;acc+=e.fx.acc||0;hp+=e.fx.hp||0}return{atk,def,acc,maxHp:hp}}
-function palStart(){const r=S.run,p=r.pal;if(!isMate(p))return;const back=p.away,Q=MATE[p.k];p.away=false;p.lowSaid=false;p.hp=palStats().maxHp;if(back)setTimeout(()=>palSay(Q.back||'다시 도와드릴게요!',true),400);else if(Q.start&&rnd()<.4)setTimeout(()=>palSay(Q.start,true),500)}
+function palStart(){const r=S.run,p=r.pal;if(!isMate(p))return;const back=p.away,Q=MATE[p.k];p.away=false;p.lowSaid=false;p.hp=palStats().maxHp;if(back)setTimeout(()=>palEv('back'),400)}
 let palT=0,palHide=0;
 function palRender(on){let b=$('#palbox');const r=S.run,show=on!==false&&r&&r.pal&&(S.screen==='combat'||S.screen==='map');
   if(!show){if(b)b.hidden=true;return}
@@ -6426,10 +6597,17 @@ function palRender(on){let b=$('#palbox');const r=S.run,show=on!==false&&r&&r.pa
   const st=isMate(p)?palStats():null,pct=st?clamp(p.hp/st.maxHp*100,0,100):0;
   b.querySelector('.pinfo').innerHTML=`<b>${mateN(p)}</b>${st&&S.screen==='combat'?`<div class="pbar"><i style="width:${pct}%"></i><u></u><span>${Math.max(0,p.hp)} / ${st.maxHp}</span></div>`:''}${p.away?'<em>퇴각</em>':''}`;
   if(S.screen==='combat'){const pp=$('#ppanel');if(pp){const a=pp.getBoundingClientRect(),o=stage.getBoundingClientRect(),sc=S.scale||1;b.style.left=(a.left-o.left)/sc+'px';b.style.top=((a.top-o.top)/sc-(S.orient==='port'?150:112))+'px';b.style.bottom='auto'}}else{b.style.left='28px';b.style.top='auto';b.style.bottom=(S.orient==='port'?108:104)+'px'}}
-function palSay(t,force){const now=Date.now();if(!force&&now-palT<3200)return;palT=now;if(!S.run||!S.run.pal)return;palRender();const b=$('#palbox');if(!b||b.hidden)return;const e=b.querySelector('.psay');e.textContent=t;e.hidden=false;clearTimeout(palHide);palHide=setTimeout(()=>{e.hidden=true},2800)}
-function palEv(k,force){const r=S.run;if(!r||!r.pal)return;if(S.C&&S.C.E&&S.C.E.rift&&!S.C.over){if(!r.flags.riftDone)palSay(pick(RIFT_LINES),true);return}const L=PAL_LINES[r.pal.k];if(!L||!L[k])return;if(!force&&rnd()>.45)return;palSay(L[k],force)}
+function palSay(t){const r=S.run;if(!r||!r.pal||!t)return;sayShow(r.pal.k==='nord'?PAL_NAME.nord:mateN(r.pal),t)}
+/* 말풍선 (V2.28) — 모든 화면 맨 앞, 떠 있는 동안 아래 조작을 막음, 말풍선을 누르면 사라짐, 안 누르면 몇 초 뒤 사라짐 */
+function sayShow(who,t){let L=$('#saylayer');if(!L){L=document.createElement('div');L.id='saylayer';L.hidden=true;stage.appendChild(L);
+    const stop=e=>{e.stopPropagation();e.preventDefault()};['pointerdown','pointerup','mousedown','touchstart','wheel','contextmenu'].forEach(ev=>L.addEventListener(ev,stop,{passive:false}));
+    L.addEventListener('click',e=>{stop(e);if(e.target.closest('.sb'))sayHide()})}
+  L.innerHTML=`<div class="sb" role="button" tabindex="0"><i>${PAL_FIG}</i><div><b>${who}</b><span>${t}</span><small>눌러서 닫기</small></div></div>`;L.hidden=false;clearTimeout(palHide);palHide=setTimeout(sayHide,Math.min(6500,2400+t.length*55))}
+function sayHide(){clearTimeout(palHide);const L=$('#saylayer');if(L)L.hidden=true}
+function palEv(k){const r=S.run;if(!r||!r.pal)return;if(S.C&&S.C.E&&S.C.E.rift&&!S.C.over){if(!r.flags.riftDone)palSay(pick(RIFT_LINES));return}if(r.pal.away&&S.C&&!S.C.over&&k!=='back'&&k!=='out')return;const L=PAL_LINES[r.pal.k],v=L&&L[k];if(!v)return;palSay(Array.isArray(v)?pick(v):v)}
+function bagTalk(){const n=Date.now();if(n-(S.bagT||0)>10000){S.bagT=n;palEv('bag')}}
 function palBark(key,line,kw){const r=S.run;if(!r||!r.pal||r.pal.k!=='girl')return;r.flags.barks=r.flags.barks||{};if(r.flags.barks[key])return;r.flags.barks[key]=1;palSay(line,true);if(kw)setTimeout(()=>{document.querySelectorAll('.chip').forEach(c=>{if(c.textContent.includes(kw)){c.classList.add('pulse');setTimeout(()=>c.classList.remove('pulse'),2600)}});if(kw==='행동'){const i=$('#intent');i.classList.add('pulse');setTimeout(()=>i.classList.remove('pulse'),2600)}},60)}
-function palWatch(){const C=S.C,r=S.run;if(!C||!r||!r.pal||C.over)return;if(isMate(r.pal)&&r.pal.k!=='girl'){const Q=MATE[r.pal.k];if(Q.low&&!r.pal.lowSaid&&!r.pal.away&&r.hp<=r.maxHp*.3){r.pal.lowSaid=true;palSay(Q.low,true)}return}if(r.pal.k!=='girl')return;const E=C.E;
+function palWatch(){const C=S.C,r=S.run;if(!C||!r||!r.pal||C.over)return;if(isMate(r.pal)&&r.pal.k!=='girl')return;if(r.pal.k!=='girl')return;const E=C.E;
   if(C.pSteam)palBark('steam','숨이 막혀요... 몸이 눅눅해지는 것 같아요.','증기');if(C.heat)palBark('heat','뜨거워요! 뭔가 힘이 나는데요? 금방 식을 것 같아요.','열기');
   if(C.pCool)palBark('cool','차가워요... 몸이 잘 안 움직여요.','냉매');if(C.pFrozen)palBark('frozen','얼었어요! 움직일 수가 없어요!','냉동');if(C.pCrack)palBark('crack','언 부분을 맞았더니 엄청 아파요..!','깨짐');
   if(C.art)palBark('art','방금 그거, 왠지 멋있었어요. 왜인지는 모르겠어요.','예술적');if(C.hand.some(c=>c.id==='art_wip'))palBark('wip','뭔가 만들어지고 있어요.');if(typeof masterOn==='function'&&masterOn())palBark('done','다 됐어요! 잘은 모르겠는데 대단해요!','작품');
@@ -6443,7 +6621,7 @@ async function palHit(){const r=S.run,C=S.C,p=r.pal;if(!palUp())return;const E=C
   if(p.k==='cadet'&&(p.rank||0)<3){const f=rnd()<.1?cadetFac():null;
     if(f){p.rank=(p.rank||0)+1;p.fac=f;p.title=FAC_T[f][p.rank-1];toast('졸업작품',`견습생이 ${FAC_N[f]} ${p.title}(으)로 승급했다`);clog(`졸업작품 성공 — ${FAC_N[f]} ${p.title}`,'h');palSay('됐어요! 제 방향이 보여요!',true);palRender()}
     else{mul=1.5;accD=-30;palSay('작품 던질게요!',true)}}
-  else palSay(p.k==='girl'?'거들게요!':Q.hit,true);
+  else palEv('follow');
   await wait(220);
   const v=rollDie(die)+gapP(st.atk,E.def),ch=Math.max(5,hitChance(st.acc,E.eva+E.evaB)+accD),hit=ri(1,100)<=ch;
   if(!hit){fxAt('enemy','빗나감','miss');clog(`${nm} · ${cn}${mul>1?' (작품 던지기)':''} → 빗나감`);return}
@@ -6452,13 +6630,12 @@ async function palHit(){const r=S.run,C=S.C,p=r.pal;if(!palUp())return;const E=C
   renderCombat();
   if(E.hp<=0&&!E.boss)E.dotKill=true;checkEnemy();await wait(160)}
 async function palHurt(die){const C=S.C,E=C.E,r=S.run,p=r.pal,st=palStats();const v=eAdj(rollDie(die)),f=formula(v,0,E.atk,eTraits(),st.def),dmg=Math.round(f.fin*(E.dmgMul||1));await wait(240);p.hp-=dmg;clog(`${E.name}의 공격이 ${mateN(p)}에게 — 피해 ${dmg}`,'e');toast(mateN(p),`-${dmg}`);const box=$('#palbox');if(box){box.classList.remove('hit');void box.offsetWidth;box.classList.add('hit')}
-  if(p.hp<=st.maxHp*.5){p.away=true;palSay(p.k==='girl'||!MATE[p.k]?'죄송해요 조금만 쉴게요..':MATE[p.k].out,true)}renderCombat();await wait(200);return 0}
+  if(p.hp<=st.maxHp*.5){p.away=true;palEv('out')}renderCombat();await wait(200);return 0}
 let palIdleT=0;
 const PAL_SOLO=['길가의 가판대를 들여다보고 있다.','주워 온 나사를 닦고 있다.','받은 물건을 이리저리 돌려 보고 있다.','할 일을 찾아 두리번거린다.'];
 const PAL_BORED=['은인님... 아, 바쁘시구나.','돌멩이를 세고 있다. 다섯 개다.','심심해요... 아니에요, 괜찮아요.'];
-function palIdle(){clearTimeout(palIdleT);const r=S.run;if(!r||!r.pal||r.pal.k!=='girl')return;const scr=S.screen;let n=0;
-  if(rnd()<.5)setTimeout(()=>{if(S.screen==='map')palSay(pick(PAL_SOLO))},900);
-  const tick=()=>{if(S.screen!==scr||!S.run||!S.run.pal)return;palSay(pick(PAL_BORED),true);if(++n<4)palIdleT=setTimeout(tick,30000)};palIdleT=setTimeout(tick,20000)}
+function palIdle(){clearTimeout(palIdleT);const r=S.run;if(!r||!r.pal)return;const scr=S.screen;let n=0;
+  const tick=()=>{if(S.screen!==scr||!S.run||!S.run.pal)return;palEv('idle');if(++n<6)palIdleT=setTimeout(tick,15000)};palIdleT=setTimeout(tick,12000)}
 function openPalTab(){const r=S.run,p=r.pal,m=$('#modal'),fight=S.screen==='combat'&&S.C&&!S.C.over;m.hidden=false;S.prepTab='pal';const st=palStats();
   const say=S.palLine||MATE_SAY[p.k]||'주신 걸로 충분해요!';const row=(c,attr,lb)=>`<div class="cardpick">${staticCard(c.id,false,c)}<button class="plate-btn" ${attr}="${c.uid}">${lb}</button></div>`;
   m.innerHTML=`<div class="panel" style="width:min(1300px,100%);height:100%"><div class="maphead">${prepTabs(r,'pal')}<button class="btn-ghost" id="mClose">닫기</button></div>
@@ -6470,7 +6647,7 @@ function openPalTab(){const r=S.run,p=r.pal,m=$('#modal'),fight=S.screen==='comb
     ${!fight&&r.mates&&Object.keys(r.mates).length?`<div class="ap-h">함께 갈 동료 바꾸기</div><div class="gb-g">${Object.keys(r.mates).map(k=>`<button class="gb-c" data-mswap="${k}"><b>함께 간다</b><span>${mateN(r.mates[k])}</span></button>`).join('')}</div>`:''}</div></div>`;
   bindPrepTabs(m);bindStatic(m);$('#mClose').onclick=()=>{S.palLine=null;S.prepTab='card';prepClose(fight)};
   m.querySelectorAll('[data-mswap]').forEach(b=>b.onclick=()=>{mateSwap(b.dataset.mswap);S.palLine=null;openPalTab()});
-  m.querySelectorAll('[data-pgive]').forEach(b=>b.onclick=()=>{const c=r.store.find(x=>x.uid===+b.dataset.pgive);if(!c)return;r.store.splice(r.store.indexOf(c),1);p.cards.push(c);S.palLine=MATE_GIVE[p.k]||'';save();openPalTab()});
+  m.querySelectorAll('[data-pgive]').forEach(b=>b.onclick=()=>{const c=r.store.find(x=>x.uid===+b.dataset.pgive);if(!c)return;r.store.splice(r.store.indexOf(c),1);p.cards.push(c);S.palLine=MATE_GIVE[p.k]||'';palEv('give');save();openPalTab()});
   m.querySelectorAll('[data-pback]').forEach(b=>b.onclick=()=>{const c=p.cards.find(x=>x.uid===+b.dataset.pback);if(!c)return;p.cards.splice(p.cards.indexOf(c),1);r.store.push(c);save();openPalTab()});
   m.querySelectorAll('[data-pgg]').forEach(b=>b.onclick=()=>{const i=+b.dataset.pgg,k=r.bag[i];r.bag.splice(i,1);p.gear.push(k);S.palLine=p.k!=='girl'?MATE_GIVE[p.k]:p.first?`주신 걸로 충분해요! ${GEAR[p.first].n}도 아직 잘 있어요.`:'주신 걸로 충분해요!';p.first=p.first||k;save();openPalTab()});
   m.querySelectorAll('[data-pgb]').forEach(b=>b.onclick=()=>{const i=+b.dataset.pgb,k=p.gear[i];p.gear.splice(i,1);r.bag.push(k);save();openPalTab()})}
