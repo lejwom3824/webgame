@@ -247,7 +247,7 @@ img{-webkit-user-drag:none;-webkit-touch-callout:none}
 canvas#bg{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 #prelude{position:absolute;left:50%;bottom:28px;translate:-50% 0;z-index:9;width:min(980px,92%);box-sizing:border-box;padding:22px 28px 18px;border-radius:12px;background:linear-gradient(#20262df2,#13171bf2);border:1px solid #5b5446;box-shadow:0 24px 60px #000c;display:flex;flex-direction:column;gap:12px}#prelude .pl-lines{display:flex;flex-direction:column;gap:8px;font-family:var(--f-serif);font-size:20px;line-height:1.7;word-break:keep-all}#prelude .pl-lines p{margin:0;animation:tin .35s ease-out}#prelude .pl-say{color:#f0a493;font-family:var(--f-display);font-size:24px}#prelude .btn-main{align-self:flex-end}.port #prelude{bottom:40px}.port #prelude .pl-lines{font-size:24px}
 .restscene{display:block;width:100%;height:auto;border-radius:10px;box-shadow:inset 0 0 0 1px #ffffff14}.rs-stand{display:none}.restscene.standing .rs-sit{display:none}.restscene.standing .rs-stand{display:inline}.rs-fire .f1{animation:rsf .5s ease-in-out infinite alternate;transform-origin:50% 100%;transform-box:fill-box}.rs-fire .f2{animation:rsf .37s ease-in-out infinite alternate-reverse;transform-origin:50% 100%;transform-box:fill-box}@keyframes rsf{to{transform:scaleY(.82) scaleX(1.06)}}.rs-glow{animation:rsg 1.4s ease-in-out infinite alternate}@keyframes rsg{to{opacity:.75}}.rs-smoke{opacity:0;transition:opacity 1.2s}.rs-fire,.rs-glow{transition:opacity 1s}.restscene.out .rs-fire,.restscene.out .rs-glow{opacity:0}.restscene.out .rs-smoke{opacity:.5}.restchat{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto;font-family:var(--f-serif);font-size:18px;line-height:1.65;word-break:keep-all}.restchat p{margin:0;animation:tin .35s ease-out}.restchat b{font-family:var(--f-ui);font-size:13px;color:var(--bone-dim);margin-right:10px;font-weight:700}.restchat .me b{color:var(--brass-hi)}.restchat .note{color:var(--bone-dim);font-style:italic}.port .restchat{font-size:22px;max-height:420px}@media (prefers-reduced-motion:reduce){.rs-fire .f1,.rs-fire .f2,.rs-glow{animation:none}}
-#dockL .plate-btn.big{font-size:21px;font-weight:700;padding:12px 24px;min-height:58px;border:2px solid var(--brass);color:var(--brass-hi)}.port #dockL .plate-btn.big{font-size:26px;padding:14px 28px;min-height:72px}.face.r-mastery{box-shadow:0 0 0 2px #ff9a3c,0 0 16px #ff9a3caa}.card.picked{filter:drop-shadow(0 0 10px #e0705f) drop-shadow(0 0 3px #e0705f)}.prep-c{margin:6px 0 2px;font-size:20px;color:var(--brass-hi);border-bottom:1px solid #b8925a66;padding-bottom:4px}.prep-g{margin:10px 0 6px;font-size:15px;color:var(--bone-dim)}.prep-g+.cardgrid{justify-content:flex-start}.cardpick.st-stack{position:relative}.cardpick.st-stack .scard{box-shadow:6px 6px 0 -1px #2a3037,6px 6px 0 0 #b8925a88,12px 12px 0 -1px #20252b,12px 12px 0 0 #b8925a55}.st-n{position:absolute;top:-6px;right:-4px;z-index:3;background:var(--brass);color:#1a1510;font-weight:700;font-size:16px;padding:2px 9px;border-radius:12px}.gb-tabs{display:flex;gap:8px;flex-wrap:wrap}.gb-tab{padding:9px 22px;font-size:18px;font-weight:700;border:1px solid #c9a46a66;border-radius:7px;background:none;color:var(--bone-dim);cursor:pointer}.gb-tab.on{background:var(--brass);color:#1a1510}.gb-m{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:16px}.port .gb-m{grid-template-columns:1fr;overflow:auto}.gb-fig{position:relative;border:1px solid #ffffff14;border-radius:8px;background:#0c0f12;min-height:420px}.gb-fig svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:88%;fill:#d9d3c6}.gb-slot{position:absolute;width:26%;height:26%;display:flex;flex-direction:column;justify-content:flex-start;border:1px dashed #ffffff33;border-radius:7px;background:#171b20;padding:6px 8px;text-align:left;cursor:pointer;color:inherit}.gb-slot.on{border:1px solid var(--brass-hi)}.gb-slot.sel,.gb-c.sel{outline:2px solid var(--brass-hi)}.gb-slot i{font-style:normal;font-size:12px;color:var(--brass);display:block}.gb-slot em{font-style:normal;font-size:14px;display:block;margin-top:4px;line-height:1.25}.gb-r{display:flex;flex-direction:column;gap:8px;min-height:0;position:relative}.gb-fl{display:flex;gap:6px}.gb-fl button{padding:4px 12px;border:1px solid #ffffff22;border-radius:14px;background:none;color:var(--bone-dim);cursor:pointer}.gb-fl .on{color:var(--brass-hi);border-color:var(--brass)}.gb-g{display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:78px;align-content:start;gap:5px;overflow:auto;flex:1;min-height:0}.gb-c{border:1px solid #a78bda88;border-radius:5px;background:#1b1f25;padding:4px 5px;text-align:left;color:inherit;cursor:pointer;overflow:hidden}.gb-c b{display:block;font-size:11px;color:#b9a3e6}.gb-c span{font-size:13px;line-height:1.2;display:block;margin-top:3px}.gb-c.own{border-color:#67b98a99}.gb-c.own b{color:#8ed3a8}.gb-c.live{border:2px solid #ffd76a;background:#3a2f12;box-shadow:0 0 14px #ffd76a88}.gb-c.live b{color:#ffd76a}.gb-c.e{border-color:#ffffff10;background:#12151a;cursor:default}.gb-tip{position:absolute;right:8px;bottom:8px;width:min(300px,90%);background:#262c33;border:1px solid var(--brass);border-radius:8px;padding:12px 14px;box-shadow:0 12px 30px #000c;z-index:3}.gb-tip h4{margin:0 0 4px;font-size:18px;color:var(--brass-hi)}.gb-tip p{margin:3px 0 8px}[data-tut=prep] #prepBtn{box-shadow:0 0 0 3px var(--brass-hi),0 0 22px var(--brass-hi)}#knightFig .kn-art.act{animation:knAct .32s ease-out}@keyframes knAct{40%{transform:translateY(-10px) scale(1.07)}}#knightFig{position:absolute;pointer-events:none;z-index:1}#knightFig .kn-art{position:absolute;inset:0;filter:grayscale(1) brightness(1.55) contrast(.95) drop-shadow(0 0 14px #dfe6ee55);transform-origin:50% 100%}#knightFig .kn-art svg{width:100%;height:100%;display:block}#knightFig.in .kn-art{animation:knIn .7s ease-out both}@keyframes knIn{from{opacity:0;transform:translateY(24px) scale(.94)}}#knightFig .kn-art.hit{animation:hit .3s}#knightFig.dead{opacity:.18;transition:opacity .8s}#knightFig .kn-plate{position:absolute;left:50%;bottom:100%;translate:-50% -6px;width:max(150px,90%);text-align:center}#knightFig .kn-plate b{display:block;font-family:var(--f-display);font-weight:400;font-size:18px;color:#dfe6ee;text-shadow:0 2px 6px #000}#knightFig .kn-bar{position:relative;display:block;height:12px;border-radius:3px;background:#0b0d10;box-shadow:inset 0 0 0 1px #ffffff1a;overflow:hidden;margin-top:3px}#knightFig .kn-bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#cfd8e2,#7c8792)}#knightFig .kn-bar em{position:relative;font-style:normal;font-size:10.5px;font-weight:700;line-height:12px;color:#0d1013}.port #knightFig .kn-plate b{font-size:21px}
+#dockL .plate-btn.big{font-size:21px;font-weight:700;padding:12px 24px;min-height:58px;border:2px solid var(--brass);color:var(--brass-hi)}.port #dockL .plate-btn.big{font-size:26px;padding:14px 28px;min-height:72px}.face.r-mastery{box-shadow:0 0 0 2px #ff9a3c,0 0 16px #ff9a3caa}.card.picked{filter:drop-shadow(0 0 10px #e0705f) drop-shadow(0 0 3px #e0705f)}.prep-c{margin:6px 0 2px;font-size:20px;color:var(--brass-hi);border-bottom:1px solid #b8925a66;padding-bottom:4px}.prep-g{margin:10px 0 6px;font-size:15px;color:var(--bone-dim)}.prep-g+.cardgrid{justify-content:flex-start}.cardpick.st-stack{position:relative}.cardpick.st-stack .scard{box-shadow:6px 6px 0 -1px #2a3037,6px 6px 0 0 #b8925a88,12px 12px 0 -1px #20252b,12px 12px 0 0 #b8925a55}.st-n{position:absolute;top:-6px;right:-4px;z-index:3;background:var(--brass);color:#1a1510;font-weight:700;font-size:16px;padding:2px 9px;border-radius:12px}.gb-tabs{display:flex;gap:8px;flex-wrap:wrap}.gb-tab{padding:9px 22px;font-size:18px;font-weight:700;border:1px solid #c9a46a66;border-radius:7px;background:none;color:var(--bone-dim);cursor:pointer}.gb-tab.on{background:var(--brass);color:#1a1510}.gb-m{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:16px}.port .gb-m{grid-template-columns:1fr;overflow:auto}.gb-fig{position:relative;border:1px solid #ffffff14;border-radius:8px;background:#0c0f12;min-height:420px}.gb-fig svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:88%;fill:#d9d3c6}.gb-slot{position:absolute;width:26%;height:26%;display:flex;flex-direction:column;justify-content:flex-start;border:1px dashed #ffffff33;border-radius:7px;background:#171b20;padding:6px 8px;text-align:left;cursor:pointer;color:inherit}.gb-slot.on{border:1px solid var(--brass-hi)}.gb-slot.sel,.gb-c.sel{outline:2px solid var(--brass-hi)}.gb-slot i{font-style:normal;font-size:12px;color:var(--brass);display:block}.gb-slot em{font-style:normal;font-size:14px;display:block;margin-top:4px;line-height:1.25}.gb-r{display:flex;flex-direction:column;gap:8px;min-height:0;position:relative}.gb-fl{display:flex;gap:6px}.gb-fl button{padding:4px 12px;border:1px solid #ffffff22;border-radius:14px;background:none;color:var(--bone-dim);cursor:pointer}.gb-fl .on{color:var(--brass-hi);border-color:var(--brass)}.gb-g{display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:78px;align-content:start;gap:5px;overflow:auto;flex:1;min-height:0}.gb-c{border:1px solid #a78bda88;border-radius:5px;background:#1b1f25;padding:4px 5px;text-align:left;color:inherit;cursor:pointer;overflow:hidden}.gb-c b{display:block;font-size:11px;color:#b9a3e6}.gb-c span{font-size:13px;line-height:1.2;display:block;margin-top:3px}.gb-c.own{border-color:#67b98a99}.gb-c.own b{color:#8ed3a8}.gb-c.live{border:2px solid #ffd76a;background:#3a2f12;box-shadow:0 0 14px #ffd76a88}.gb-c.live b{color:#ffd76a}.gb-c.e{border-color:#ffffff10;background:#12151a;cursor:default}.gb-tip{position:absolute;right:8px;bottom:8px;width:min(300px,90%);background:#262c33;border:1px solid var(--brass);border-radius:8px;padding:12px 14px;box-shadow:0 12px 30px #000c;z-index:3}.gb-tip h4{margin:0 0 4px;font-size:18px;color:var(--brass-hi)}.gb-tip p{margin:3px 0 8px}[data-tut=prep] #prepBtn{box-shadow:0 0 0 3px var(--brass-hi),0 0 22px var(--brass-hi)}.knfig .kn-art.act{animation:knAct .32s ease-out}@keyframes knAct{40%{transform:translateY(-10px) scale(1.07)}}.knfig{position:absolute;pointer-events:none;z-index:1}.knfig .kn-art{position:absolute;inset:0;filter:grayscale(1) brightness(1.55) contrast(.95) drop-shadow(0 0 14px #dfe6ee55);transform-origin:50% 100%}.knfig .kn-art svg{width:100%;height:100%;display:block}.knfig.in .kn-art{animation:knIn .7s ease-out both}@keyframes knIn{from{opacity:0;transform:translateY(24px) scale(.94)}}.knfig .kn-art.hit{animation:hit .3s}.knfig.dead{opacity:.18;transition:opacity .8s}.knfig .kn-plate{position:absolute;left:50%;bottom:100%;translate:-50% -6px;width:max(150px,90%);text-align:center}.knfig .kn-plate b{display:block;font-family:var(--f-display);font-weight:400;font-size:18px;color:#dfe6ee;text-shadow:0 2px 6px #000}.knfig .kn-bar{position:relative;display:block;height:12px;border-radius:3px;background:#0b0d10;box-shadow:inset 0 0 0 1px #ffffff1a;overflow:hidden;margin-top:3px}.knfig .kn-bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#cfd8e2,#7c8792)}.knfig .kn-bar em{position:relative;font-style:normal;font-size:10.5px;font-weight:700;line-height:12px;color:#0d1013}.port .knfig .kn-plate b{font-size:21px}
 #introFilm{position:absolute;inset:0;z-index:30;background:#08090a;display:grid;place-items:center;transition:opacity .5s}#introFilm canvas{display:block;width:100%;height:auto;max-height:100%}#introFilm.out{opacity:0}#ifSkip{position:absolute;right:24px;bottom:22px;z-index:2;font-size:15px;color:var(--bone-dim);padding:6px 14px;border-radius:6px;background:rgba(14,17,20,.6);border:1px solid #3b434d;pointer-events:none}.port #ifSkip{font-size:19px}
 
 button{font-family:var(--f-ui);color:var(--bone);cursor:pointer}
@@ -858,7 +858,7 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .scn{background:#05060af7!important}.panel.scene{width:min(760px,92%);background:none;border:0;box-shadow:none;align-items:stretch;gap:16px}.scn-who{font-family:'Song Myung',serif;color:var(--brass-hi);font-size:22px}.scn-t{font-family:'Song Myung',serif;font-size:24px;line-height:1.7;color:var(--bone);min-height:3em;word-break:keep-all}.port .scn-t{font-size:28px}.scn-b{display:flex;justify-content:space-between;gap:12px;align-items:center}
 #palbox{position:absolute;z-index:8;display:flex;align-items:center;gap:8px;max-width:300px;pointer-events:none}#palbox[hidden]{display:none}#palbox .pfig{width:34px;height:46px;flex:0 0 auto}#palbox .pfig svg{width:100%;height:100%;display:block}#palbox .pinfo{font-size:13px;color:var(--bone);min-width:120px;background:#0d0e10c9;padding:4px 8px;border-radius:6px}#palbox .pinfo b{font-weight:600}#palbox .pinfo em{color:#ef9a8c;font-style:normal;margin-left:6px}#palbox .pbar{position:relative;height:10px;background:#000a;border-radius:3px;margin-top:3px;overflow:hidden;font-size:9px;line-height:10px;text-align:center}#palbox .pbar i{position:absolute;inset:0 auto 0 0;background:#8f2c22}#palbox .pbar u{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#ffd34d}#palbox .pbar span{position:relative}#palbox.gone{filter:grayscale(1) brightness(.5)}#palbox.hit .pfig{animation:palhit .35s}@keyframes palhit{25%{transform:translateX(-4px);filter:drop-shadow(0 0 6px #e33)}75%{transform:translateX(4px)}}#palbox .psay{position:absolute;left:44px;bottom:calc(100% + 4px);width:max-content;max-width:270px;padding:7px 11px;border-radius:9px;background:#f0e7d6;color:#1c140a;font-size:15px;line-height:1.35;box-shadow:0 4px 14px #000a}#palbox .psay[hidden]{display:none}.port #palbox .pinfo{font-size:16px}.port #palbox .psay{font-size:19px;max-width:420px}
 #echips{position:absolute;left:50%;top:100%;translate:-50% 6px;width:min(420px,120%);justify-content:center;pointer-events:auto;z-index:4}.port #echips{top:calc(100% - 66px)}#echips:empty{display:none}.chip{font-size:15px;padding:4px 10px;cursor:help;pointer-events:auto}.port .chip{font-size:19px}.uchips .chip{font-size:12px;padding:2px 6px}.chip.pulse,#intent.pulse{animation:tutpulse 1.2s ease-in-out infinite;outline:2px solid var(--brass-hi);border-radius:10px}
-#knightFig{pointer-events:auto;cursor:pointer;z-index:4}#knightFig.tgt .kn-art{filter:drop-shadow(0 0 10px #ffd34d)}#knightFig.tgt .kn-plate b{color:#ffd34d}#knightFig.tgt .kn-plate b::before{content:'▶ '}
+.knfig{pointer-events:auto;cursor:help;z-index:4}.kn-st{display:block;color:#ef9a8c;font-size:12px;text-align:center;margin-top:12px}
 #stage:has(#modal:not([hidden])) #tut{top:auto;bottom:14px;left:50%;right:auto;translate:-50% 0;width:min(560px,calc(100% - 32px))}#stage:has(#tut:not([hidden])) #prepScroll{padding-bottom:210px}.port #stage:has(#tut:not([hidden])) #prepScroll,#stage.port:has(#tut:not([hidden])) #prepScroll{padding-bottom:280px}
 .tut-auto{height:3px;border-radius:2px;background:#ffffff1f;overflow:hidden;margin-top:4px}.tut-auto i{display:block;height:100%;background:var(--brass-hi);width:100%;transform-origin:left;animation:tutbar linear forwards}@keyframes tutbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 #stsheet{position:absolute;z-index:11;max-height:260px;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:10px 14px;border-radius:10px;background:linear-gradient(#262c33fa,#171b20fa);border:1px solid var(--brass);box-shadow:0 12px 34px #000c;display:flex;flex-direction:column;gap:8px}#stsheet[hidden]{display:none}#stsheet div{display:flex;flex-direction:column;gap:2px}#stsheet b{color:var(--brass-hi);font-size:16px}#stsheet span{color:var(--bone);font-size:15px;line-height:1.45}.port #stsheet b{font-size:20px}.port #stsheet span{font-size:19px}
@@ -944,7 +944,7 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
   <canvas id="bg" width="1600" height="900"></canvas>
   <div id="scene">
     <div id="foefigs" hidden></div>
-    <div id="knightFig" hidden><div class="kn-art"></div><div class="kn-plate"><b>은빛 기사</b><span class="kn-bar"><i></i><em></em></span></div></div>
+    <div id="knightFig" class="knfig" hidden><div class="kn-art"></div><div class="kn-plate"><b>은빛 기사</b><span class="kn-bar"><i></i><em></em></span><small class="kn-st"></small></div></div><div id="knightFig2" class="knfig" hidden><div class="kn-art"></div><div class="kn-plate"><b>은빛 기사</b><span class="kn-bar"><i></i><em></em></span><small class="kn-st"></small></div></div>
     <div id="enemy" hidden>
       <div id="intent"></div>
       <div id="eart"></div>
@@ -1317,44 +1317,32 @@ function dainP3(kind,loss){
 }
 /* V32 은빛 기사: 보스가 소환하는 적 캐릭터. 살아 있는 동안 보스 대신 피해를 받음 */
 const destroyBuild=()=>{const r=S.run;return !!(r&&(r.mode==='dain'||r.mode==='surt'))};
-function summonKnight(pct){
-  const E=S.C.E,m=Math.max(1,Math.round(E.maxHp*pct));E.kn={hp:m,max:m,hurt:0,blocked:0};
-  fxAt('enemy','은빛 기사 소환','info');renderKnight();clog(`은빛 기사 소환 · 체력 ${m} — 살아 있는 동안 보스 대신 피해를 받음`,'e');renderCombat();
-}
-function knightTake(d){
-  const E=S.C.E,k=E.kn;if(!k||k.hp<=0||d<=0)return;
-  if(!k.blocked){k.blocked=1;say(BOSS_LINES.knightStop)}
-  k.hp=Math.max(0,k.hp-d);fxAt('enemy',`은빛 기사 -${d}`,'info');knightHitAnim();renderKnight();clog(`은빛 기사가 대신 받음 -${d} (남은 체력 ${k.hp})`,'e');
-  if(k.hp<=0){say(BOSS_LINES.knightDead);clog('은빛 기사가 쓰러졌다','e')}
-  else if(!k.hurt&&k.hp<=k.max*.3){k.hurt=1;say(BOSS_LINES.knightHurt)}
-}
+/* 은빛 기사 2명 — 대상 지정 불가, 명령-보호: 살아 있는 무작위 1명이 보스의 피해를 50%는 전부, 50%는 75%만 대신 맞고, 대신 맞은 기사는 다음 턴에 움직이지 않음 */
+const knAlive=E=>(E&&E.kns||[]).filter(k=>k.hp>0);
+function summonKnights(){const E=S.C.E;E.kns=[0,1].map(()=>{const m=ri(462,633);return{hp:m,max:m,idx:0,stun:-1}});fxAt('enemy','은빛 기사 소환','info');renderKnight();clog('은빛 기사 2명 소환 · 명령-보호','e');renderCombat()}
+function knightTake(d){const C=S.C,E=C.E,ks=knAlive(E);if(!ks.length||d<=0)return d;const k=pick(ks),part=rnd()<.5?d:Math.ceil(d*.75),rest=d-part;
+  k.hp=Math.max(0,k.hp-part);k.stun=C.turn+1;fxAt('enemy',`은빛 기사 -${part}`,'info');knightHitAnim(E.kns.indexOf(k));renderKnight();clog(`은빛 기사가 대신 받음 -${part} (남은 체력 ${k.hp})${rest?` · 경감 후 보스 -${rest}`:''}`,'e');
+  if(k.hp<=0)clog('은빛 기사가 쓰러졌다','e');return rest}
 /* V32 페이즈 전환: 체력이 1 이하로 떨어지면 턴 종료 후 특수 대사(컷신)를 보여 주고 다시 재개 */
 async function bossPhaseCut(){
   const C=S.C,E=C.E,p=E.pendPhase;E.pendPhase=0;if(!p||C.over)return;
   if(p===2){
-    summonKnight(.25);E.said['은빛 소환']=1;await wait(600);
+    summonKnights();E.said['은빛 소환']=1;await wait(600);
     E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');
     enterPhase2('cut');
   }else if(p===3){enterPhase3()}
   renderCombat();await wait(300);
 }
-/* 은빛 기사 행동: 에인헤랴르 이단심문관의 행동을 보스가 행동할 때마다 순서대로 한 번씩 함 (공격레벨·명중은 이단심문관 기준, 전투 보정은 이 전투 값) */
-const KN_ORDER=['낙인','고해 강요','처단'];
-const knNext=k=>KN_ORDER[(k.idx||0)%KN_ORDER.length];
-async function knightAct(){
-  const C=S.C,E=C.E,r=S.run,k=E&&E.kn;if(!k||k.hp<=0||E.phase>=3||C.over||r.hp<=0)return;
-  const name=knNext(k),a=ACT[name];k.idx=(k.idx||0)+1;
-  toast('은빛 기사',name);clog(`은빛 기사 · ${name}`,'e');
-  const art=$('#knightFig .kn-art');if(art&&!REDUCED){art.classList.remove('act');void art.offsetWidth;art.classList.add('act')}
-  await wait(260);
-  if(a.pend){C.pend.push(a.pend);fxAt('player',name,'info');renderCombat();await wait(260);return}
-  const sv={name:E.name,atk:E.atk,acc:E.acc,revenge:E.revenge,actFlat:E.actFlat};let hit=false;
-  Object.assign(E,{name:'은빛 기사',atk:Math.round(lvAB(25)*diffEm()),acc:ENEMY.inquisitor.acc+(E.human||0)*5,revenge:0,actFlat:0});
-  try{for(const x of a.d){if(await enemyStrike(x,{gim:a.gim})!==false)hit=true;if(C.over||r.hp<=0)return}}
-  finally{Object.assign(E,sv)}
-  if(a.vuln){if(hit){C.pVuln+=a.vuln;fxAt('player',`취약 ${a.vuln}`,'info');clog(`적중 · 취약 ${a.vuln}`,'e')}else clog('빗나가 취약이 붙지 않음','e')}
-  renderCombat();await wait(200);
-}
+/* 은빛 기사 행동: 보호 위주 — 보스에게 방어도 80~120, 3번째 행동마다 약한 공격 30~50, 대신 맞은 기사는 다음 턴 행동 없음 */
+async function knightAct(){const C=S.C,E=C.E,r=S.run;if(!E||E.phase>=3)return;
+  for(const k of knAlive(E)){if(C.over||r.hp<=0)return;const i=E.kns.indexOf(k);
+    if(k.stun>=C.turn){clog('은빛 기사 · 명령-보호로 움직이지 않음','e');continue}
+    k.idx=(k.idx||0)+1;const art=$(`#knightFig${i?'2':''} .kn-art`);if(art&&!REDUCED){art.classList.remove('act');void art.offsetWidth;art.classList.add('act')}
+    await wait(240);
+    if(k.idx%3){const g=ri(80,120);E.block+=g;fxAt('enemy',`방어도 +${g}`,'info');clog(`은빛 기사 · 보호 — 방어도 +${g}`,'e');renderCombat();await wait(200);continue}
+    const sv={name:E.name,atk:E.atk,acc:E.acc,revenge:E.revenge,actFlat:E.actFlat};Object.assign(E,{name:'은빛 기사',atk:Math.round(lvAB(25)*diffEm()),acc:ENEMY.inquisitor.acc,revenge:0,actFlat:0});
+    try{await enemyStrike({t:'atk',a:30,b:50},{})}finally{Object.assign(E,sv)}
+    renderCombat();await wait(200)}}
 function knightCheck(){return;
   const E=S.C&&S.C.E;if(!E||!E.knightMax)return;
   E.knight=Math.min(E.knight,E.block);
@@ -2593,10 +2581,11 @@ function makeEnemy(key){
   /* 적 소지 장비 — 효과는 적용되지 않고, 이기면 그중 1개를 탈취 (에인헤랴르는 고정 장비) */
   E.gear=d.gearFix?d.gearFix.slice():rollEnemyGear(d.gearN||0,d.ws);
   if(E.boss){Object.assign(E,{phase:1,anger:0,human:0,p2turns:0,p3turns:0,mercyCD:0,wfSkip:false,said:{},baseAcc:E.acc,kn:null,pendPhase:0});
-    /* V32: 은빛 기사가 살아 있으면 보스가 받는 피해를 기사가 대신 받음 */
-    let _hp=E.hp;Object.defineProperty(E,'hp',{enumerable:true,configurable:true,get(){return _hp},set(v){if(v<_hp&&E.kn&&E.kn.hp>0){knightTake(_hp-v);return}_hp=v}});}
+  }
   return E;
 }
+/* 은빛 기사가 살아 있으면 보스가 받는 피해를 기사가 대신 받음 (전투 시작 때 적을 복사하므로 여기서 연결) */
+function bossGuard(E){let _hp=E.hp;Object.defineProperty(E,'hp',{enumerable:true,configurable:true,get(){return _hp},set(v){if(v<_hp&&knAlive(E).length){_hp-=knightTake(_hp-v);return}_hp=v}})}
 function startCombat(E0){
   const r=S.run;
   const draw=shuffle(r.deck.map(c=>({uid:c.uid,id:c.id,mods:c.mods||[]})));
@@ -2622,7 +2611,7 @@ function startCombat(E0){
   for(const f of C.foes)clog(`전투 시작 · ${f.name} Lv ${f.lv} · 체력 ${f.maxHp} · 공격레벨 ${f.atk} · 방어레벨 ${f.def} · 명중 ${f.acc} · 회피 ${f.eva}`,'h');
   if(C.noWs)toast('계약 파기 전투',`이 전투에서는 ${WS2[C.noWs].n} 카드를 쓸 수 없다`);
   if(E.boss){
-    if(r.flags.kicked){E.anger=3;E.raged=1;E.atk+=15;E.acc-=15;enterPhase2('start',true);summonKnight(.25)}
+    if(r.flags.kicked){E.anger=3;E.raged=1;E.atk+=15;E.acc-=15;enterPhase2('start',true);summonKnights()}
     say(BOSS_LINES.start);
     const specials=C.draw.filter(c=>CARDS[c.id].rar==='special');
     if(specials.length){const s=pick(specials);C.seal[s.uid]=2;toast('감정',`특수무기 「${CARDS[s.id].name}」 2턴 동안 봉인`)}
@@ -2630,6 +2619,7 @@ function startCombat(E0){
   }
   if(r.next){const t=[];if(r.next.eva)t.push(`회피 ${r.next.eva}`);if(r.next.cost)t.push(`코스트 ${r.next.cost}`);if(r.next.cost1)t.push(`첫 턴 코스트 +${r.next.cost1}`);if(t.length){toast('사건의 여파',t.join(' · '));clog('사건의 여파: '+t.join(' · '))}}
   a2CombatStart(C);
+  for(const f of C.foes)if(f.boss)bossGuard(f);
   for(const f of C.foes){C.E=f;chooseIntent()}C.E=C.foes[0];if(E.tut)E.intent='지팡이';
   startPlayerTurn();
 }
@@ -3027,7 +3017,7 @@ async function pStrike(die,o={}){
   const vs=(o.nul?`${r0}→0 [무효]`:`${r0}${ht?` + 열기 ${ht}`:''}${gp?` + 공방렙 차이 ${gp}`:''}${ms?' [작품-완성 최대치 ×3]':''}`)+(v!==v0&&!o.nul?` → ${v}`:'');
   const ch=o.sure?100:hitChance(pAcc(),E.eva+E.evaB),roll=ri(1,100),lb=o.label||'공격';
   const hit=tf==='hit'?true:tf==='miss'?false:roll<=ch,f=hit?formula(v,o.flat||0,o.atk!=null?o.atk:pAtk(),pTraits(o),E.def,{ignoreDef:pt('pierceDef'),x:o.x}):null,bl=hit?(o.pierce?0:Math.min(E.block,f.fin)):0,loss=hit?f.fin-bl:0;
-  if(tf==='hit')await tutHold({r0,atk:o.atk!=null?o.atk:pAtk(),fin:f.fin,ch});else{const rg=pDieRange(die);await diceFocus({lb:`${lb} 주사위 → ${C.kT&&E.kn&&E.kn.hp>0?'은빛 기사':E.name}`,a:rg[0],b:rg[1],r0,pow:v,hit,ch,dmg:loss,bl})}
+  if(tf==='hit')await tutHold({r0,atk:o.atk!=null?o.atk:pAtk(),fin:f.fin,ch});else{const rg=pDieRange(die);await diceFocus({lb:`${lb} 주사위 → ${E.name}`,a:rg[0],b:rg[1],r0,pow:v,hit,ch,dmg:loss,bl})}
   if(C.over)return false;
   if(!hit){fxAt('enemy','빗나감','miss');sfx('miss');dainP3('miss');clog(`${lb} 주사위 ${vs} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss');palEv('miss');renderCombat();await wait(170);return false}
   E.block-=bl;E.hp-=loss;E.dmgTurn=(E.dmgTurn||0)+loss;C.cardDmg=(C.cardDmg||0)+loss;hurtFace(loss);if(bl)knightCheck();dainP3('hit',loss);
@@ -3169,7 +3159,7 @@ async function execAct(name){
     E.firstAtk=false;E.revenge=0;E.frost=false;
     if(a.vuln){if(hit){C.pVuln+=a.vuln;fxAt('player',`취약 ${a.vuln}`,'info');clog(`적중 · 취약 ${a.vuln}`,'e')}else clog('빗나가 취약이 붙지 않음','e')}
   }
-  if(name==='은빛 소환'&&E.boss){if(!E.kn||E.kn.hp<=0)summonKnight(.15);else{E.kn.hp=E.kn.max;fxAt('enemy','은빛 기사 회복','info')}}
+  if(name==='은빛 소환'&&E.boss){if(!knAlive(E).length)summonKnights();else{knAlive(E).forEach(k=>k.hp=k.max);fxAt('enemy','은빛 기사 회복','info')}}
   else if(a.k==='def'&&!(E.boss&&E.phase===3)){for(const x of a.d){const v=rollDie(x);E.block+=v;fxAt('enemy',`+${v} 방어도`,'block');clog(`방어 주사위 ${v} → 방어도 +${v} (현재 ${E.block})`,'e')}}
   if(a.curse){const n=E.boss?2:1;for(let i=0;i<n;i++){const c=addToDeck(a.curse);C.disc.push({uid:c.uid,id:c.id})}
     toast(name,`덱에 「${CARDS[a.curse].name}」 ${n}장 추가`);clog(`덱에 「${CARDS[a.curse].name}」 ${n}장 추가`,'e')}
@@ -4330,6 +4320,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V37.27.27.10','11/6','순수유물주의자 2페이즈 — 은빛 기사 2명(대상 지정 불가, 체력 462~633, 명령-보호: 무작위 1명이 피해를 50%는 전부 · 50%는 75% 대신 맞고 다음 턴 행동 없음, 행동은 보호 위주), 12막 장로들의 대화'],
   ['V37.26.27.10','11/6','이별 전투의 적을 노르드교 이행자로 변경(레벨 35, 체력 3000~4500), 그 전투의 동료 대사는 ... · 아군일세! · 더는 그만! · 그만하게나만 반복'],
   ['V37.26.26.10','11/6','2장 진입 — 돔 선택지 문구, 하늘을 보는 장면(한 글자씩 나오는 줄)과 페이드 아웃, 멜헬름과 대화, 선택 없이 손에 이끌려 상점으로, 멜헬름이 상점을 설명하고 첫 종목을 줌. 구출은 2장 첫 사건 막에서(그 전에 적을 쓰러뜨리면 없음), 동료 이름 리테, 리테가 없으면 구역 안내는 멜헬름. 상점 반응(비싼 물건 · 싼 물건 · 그냥 나감 · 돈 부족 · 새로고침 · 주식). 상점 전투에서 지면 체력 1 · 5000실링을 잃고 쫓겨남. 카드 · 장비 보관함에서 끌어서 덱 · 리테 · 장비 칸에 편성. 1장 · 2장 나레이션을 주인공 시점으로. 수르트모드 레벨 1500, 돌팔매는 원거리 · 리테에게'],
   ['V37.25.23.10','11/6','여관 — 2장 상점 막에 들어가면 25%로 여관, 5단화에 체력 15% 회복, 쉴 때마다 8시간 경과, 반복 가능. 2장 상점 가격 50% 인하, 상점과 사건 비율 8 : 7'],
@@ -4825,7 +4816,7 @@ function openPrep(v,anchor){if(S.prepTab==='pal'&&S.run.pal)return openPalTab();
     save();openPrep(view,to==='deck')});
   if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
-function hideCombatUI(){stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{const kf=$('#knightFig');if(kf)kf.hidden=true}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
+function hideCombatUI(){stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{document.querySelectorAll('.knfig').forEach(k=>k.hidden=true)}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
 const EFEET0={land:L.land.efeet,port:L.port.efeet};
 function positionScene(){
   const o=L[S.orient],en=$('#enemy');
@@ -4860,20 +4851,13 @@ function intentHTML(){
   return`<div class="iv ${cls}">${ic}${v}</div>${dz?`<div class="idice">${dz}</div>`:''}<div class="iname">${C.cancelNext?'<s>':''}${E.intent}${C.cancelNext?'</s> — 취소됨':''}</div>`;
 }
 /* V32.20.2.6 은빛 기사 그림 — 보스 옆에 서서 보스 대신 피해를 받음 */
-function renderKnight(){
-  const kf=$('#knightFig');if(!kf)return;const C=S.C,E=C&&C.E;
-  const k=E&&E.boss&&S.screen==='combat'&&!C.over?E.kn:null;
-  if(!k){kf.hidden=true;kf.className='';return}
-  const o=L[S.orient],w=o.ew*.62,h=o.eh*.72,land=S.orient==='land';
-  kf.style.width=w+'px';kf.style.height=h+'px';kf.style.left=(o.ex-o.ew*(land?.78:.62)-w/2)+'px';kf.style.top=(o.efeet+16-h)+'px';
+function renderKnight(){const C=S.C,E=C&&C.E;[0,1].forEach(i=>{const kf=$('#knightFig'+(i?'2':''));if(!kf)return;
+  const k=E&&E.boss&&S.screen==='combat'&&!C.over&&E.kns?E.kns[i]:null;if(!k){kf.hidden=true;kf.className='knfig';return}
+  const o=L[S.orient],w=o.ew*.62,h=o.eh*.72,land=S.orient==='land',off=o.ew*(land?.78:.62);kf.style.width=w+'px';kf.style.height=h+'px';kf.style.left=(o.ex+(i?off:-off)-w/2)+'px';kf.style.top=(o.efeet+16-h)+'px';
   const art=kf.querySelector('.kn-art');if(!art.dataset.k){art.dataset.k=1;art.innerHTML=ENEMY_SVG.inquisitor||''}
-  kf.querySelector('.kn-bar i').style.width=clamp(k.hp/k.max*100,0,100)+'%';kf.querySelector('.kn-bar em').textContent=`${k.hp} / ${k.max}`;
-  if(kf.hidden){kf.hidden=false;kf.className='in'}
-  kf.classList.toggle('dead',k.hp<=0);kf.classList.toggle('tgt',!!C.kT&&k.hp>0);$('#enemy').classList.toggle('tgt2',!!E.kn&&E.kn.hp>0&&!C.kT);if(k.hp<=0)C.kT=false;
-}
-function knightPick(on){const C=S.C;if(!C||C.over||!C.E||!C.E.kn||C.E.kn.hp<=0)return;C.kT=!!on;toast('대상',on?'은빛 기사':C.E.name);renderCombat()}
-function overKnight(x,y){const k=$('#knightFig');if(!k||k.hidden||k.classList.contains('dead'))return false;const rc=k.getBoundingClientRect();return x>=rc.left&&x<=rc.right&&y>=rc.top&&y<=rc.bottom}
-function knightHitAnim(){const a=$('#knightFig .kn-art');if(!a||REDUCED)return;a.classList.remove('hit');void a.offsetWidth;a.classList.add('hit')}
+  kf.querySelector('.kn-bar i').style.width=clamp(k.hp/k.max*100,0,100)+'%';kf.querySelector('.kn-bar em').textContent=`${k.hp} / ${k.max}`;kf.querySelector('.kn-st').textContent=k.hp>0&&k.stun>=C.turn?'다음 턴 행동 불가':'';
+  if(kf.hidden){kf.hidden=false;kf.className='knfig in'}kf.classList.toggle('dead',k.hp<=0)})}
+function knightHitAnim(i){const a=$(`#knightFig${i?'2':''} .kn-art`);if(!a||REDUCED)return;a.classList.remove('hit');void a.offsetWidth;a.classList.add('hit')}
 function renderEnemy(){
   const C=S.C,E=C.E;renderKnight();
   const art=$('#eart');
@@ -4898,7 +4882,7 @@ function renderEnemy(){
   if(E.key==='clerk'&&E.defined)chips.push(`<span class="chip brass">페이즈 2 · 정의</span>`);
   if(E.boss){chips.push(`<span class="chip brass">페이즈 ${E.phase} · ${['','정화','단죄','번제화'][E.phase]}</span>`);
     if(E.phase<3)chips.push(`<span class="chip brass">분노 ${E.anger}</span>`);
-    if(E.kn&&E.kn.hp>0)chips.push(`<span class="chip good">은빛 기사 ${E.kn.hp} / ${E.kn.max} · 대신 피해 · 다음 행동 ${knNext(E.kn)}</span>`);
+    if(knAlive(E).length)chips.push(`<span class="chip good">은빛 기사 ${knAlive(E).length} · 명령-보호</span>`);
     if(E.pendPhase)chips.push(`<span class="chip bad">페이즈 ${E.pendPhase} 준비</span>`);
     if(E.human)chips.push(`<span class="chip">인간의 몸 명중 -${E.human*5}</span>`);
     if(E.phase===3)chips.push(`<span class="chip">남은 불꽃 ${5-E.p3turns}턴</span>`);}
@@ -5146,7 +5130,7 @@ function bindCard(el,key){
     const pt=stageXY(e),o=L[S.orient];
     const C=S.C;
     if(S.screen==='hunt'){if(e.type==='pointerup'&&pt.y<o.dropY&&C&&C.phase==='player'&&!S.busy&&!C.over)hPlayStack(d.single?el._uids.slice(0,1):el._uids.slice(),hPick(pt));else layoutHand();return}
-    if(e.type==='pointerup'&&C&&C.phase==='player'&&!S.busy&&!C.over){if(overKnight(e.clientX,e.clientY))C.kT=true;else if(C.E&&C.E.kn&&C.E.kn.hp>0&&pt.y<o.dropY)C.kT=false;const ff=foeAt(e.clientX,e.clientY);if(ff)setTarget(ff)}
+    if(e.type==='pointerup'&&C&&C.phase==='player'&&!S.busy&&!C.over){const ff=foeAt(e.clientX,e.clientY);if(ff)setTarget(ff)}
     if(e.type==='pointerup'&&(pt.y<o.dropY||foeAt(e.clientX,e.clientY))&&C&&C.phase==='player'&&!S.busy&&!C.over){if(el._fuse&&!d.single)playFused(el._uids.slice(),el._fuse);else playStack(d.single?el._uids.slice(0,1):el._uids.slice())}
     else layoutHand();
   };
@@ -5156,7 +5140,6 @@ function bindCard(el,key){
 function hpPreview(c,n,f){
   document.querySelectorAll('.hppv,.hppvt').forEach(x=>x.remove());
   const C=S.C;if(!c||!C||!f||!alive(f)||S.screen!=='combat')return;
-  {const K=f.kn;if(K&&K.hp>0){const dk=(cdef(c).d||[]).filter(x=>x.t==='atk');if(dk.length){let lo=0,hi=0;for(const x of dk){const v=pPreview(c,x);lo+=v.lo;hi+=v.hi}const em=$('#knightFig .kn-bar em');if(em){const t=document.createElement('span');t.className='hppvt';t.textContent=` → ${Math.max(0,K.hp-hi)}~${Math.max(0,K.hp-lo)}`;em.appendChild(t)}}}}
   const d=cdef(c),dice=(d.d||[]).filter(x=>x.t==='atk');if(!dice.length)return;
   const prev=C.E;C.E=f;let lo=0,hi=0,ch=100;
   try{for(const x of dice){const v=pPreview(c,x);lo+=v.lo;hi+=v.hi;ch=v.ch}}catch(e){C.E=prev;return}
@@ -6289,7 +6272,7 @@ const S_RUMOR=[['부상당한 노르드교 단원','이상한 말이 돌더군. 
 ENEMY.nordJudge={...ENEMY.inquisitor,name:'노르드교 이행자',sub:'노르드교',art:'cultist',lv:35,hpR:undefined};
 const RIFT_LINES=['...','아군일세!','더는 그만!','그만하게나'];/* 이별 전투에서는 이 대사만 반복 */
 const S_RIFT=['내가 떠나온 지역의 이행자가 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이행자','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이행자','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
-const S_VOW=[['순수유물주의자','제가 막겠습니다. 그리고 회개시키겠습니다.'],'교황은 별다른 말 없이 일어섰다.','그녀는 그 침묵을 긍정의 뜻으로 받아들였다.'];
+const S_VOW=[['???','...그에게 보낸 모든 성직자가 연락 두절이네.'],['???','살아 있는지는... 아직 모르지. 알 수가 없어.'],['???','그건 이단이다. 어디에 속해 있지 않든, 지금 그것이 하고 있는 건 교단을 향한 반발일지니.'],['교황','교단에 맞지 않으면 이단이라 하는 건가?'],['교황','글쎄, 그건 그가 어떻게 행동하는지, 손속이 어떤지 보고 판단하겠네.'],['순수유물주의자','곧 교단에 도착합니다. 제가 직접 막겠습니다.'],['교황','...']];
 const S_BOSS=['은빛 기사들이 길을 메운다. 그 앞에 붉은 휘장의 주교가 서 있다.','그녀는 기사의 어깨를 거칠게 밀어내면서도, 그 은빛 갑주의 흠집을 손끝으로 쓸었다.'];
 const S_FREE=['상점 문이 열려 있다. 안에는 아무도 없다.','주인은 물건도 두고 도망친 모양이다.',['부상당한 노르드교 단원','주인이 없군. 양심껏 챙기게나, 형제여.']];
 const ZONE_TXT={N:'이전에 느껴본 적 없는 종류의 추위가 살결을 얼린다. 이번 거대 공방은 멈춤의 공방인 것 같다.',E:'매캐한 연기와 습한 분위기, 익숙한 분위기가 나를 반긴다. 이번 공방은 압력의 공방인 것 같다.',W:'역겨우면서도 달콤한 냄새가 코를 강타한다. 이번 공방은 배부름의 공방인 것 같다.',S:'이해할 수 없는 알 수 없는 무언가들이 나를 환영한다. 이번 공방은 교육과 예술의 공방인 것 같다.'};
@@ -6391,12 +6374,12 @@ function openPalTab(){const r=S.run,p=r.pal,m=$('#modal'),fight=S.screen==='comb
 /* ---- 전투 버튼: 세로 화면에서 체력창 바로 밑 ---- */
 function dockFit(){requestAnimationFrame(()=>{const a=$('#dockL'),b=$('#dockR'),pp=$('#ppanel');if(!a||!b||!pp)return;const on=S.orient==='port'&&S.screen==='combat';for(const e of[a,b]){if(on){const o=stage.getBoundingClientRect(),sc=S.scale||1,t=(pp.getBoundingClientRect().bottom-o.top)/sc+8;e.style.top=t/UIZ+'px';e.style.bottom='auto'}else{e.style.top='';e.style.bottom=''}}})}
 /* ---- 상태이상 설명 창 ---- */
-const STATUS_INFO=[[/방어도 감소/,'턴마다 얻는 방어도가 줄어든다.'],[/방어도/,'피해를 먼저 대신 맞는다. 다음 턴 시작 시 50%만 남는다.'],[/회피/,'회피가 높을수록 공격이 덜 맞는다. 회피 주사위는 한 턴 최대 +30.'],[/약화/,'주는 피해가 줄어든다. 턴마다 1 감소.'],[/취약/,'받는 피해가 커진다. 턴마다 1 감소.'],[/전격/,'쌓인 만큼 고정 피해를 받는다.'],[/소각/,'턴마다 불타는 피해를 받는다. 냉매가 중화한다.'],[/증기/,'증기 1당 받는 피해 +10%. 턴이 끝날 때 10 이상이면 10을 소모해 열기 1이 된다.'],[/열기/,'열기 1당 공격 주사위 +1. 턴마다 1 감소. 증기 10으로만 얻는다.'],[/냉동/,'1턴 동안 행동할 수 없다. 얼어 있을 때 공격받으면 깨짐이 2단계 오른다.'],[/냉매/,'냉매 1당 행동 수치 +1, 코스트 -1. 3 이상이면 냉동된다. 소각을 중화한다.'],[/깨짐/,'1단계당 받는 피해 +50%.'],[/먹기/,'먹기 1당 최대 체력 +5%. 10이면 배부름(최대 체력 +50%), 배부름이 3턴 이어지면 포화가 쌓여 모든 카드에 최대 체력 비례 피해가 붙는다.'],[/예술적 감각/,'같은 카드 또는 다른 카드를 3번 연속 쓰면 오른다. 1당 드로우 +1, 코스트 +1. 3이면 작품 준비 카드가 생긴다.'],[/작품 준비/,'턴마다 5~20% 확률로 작품-완성이 된다. 턴이 지나도 사라지지 않는다.'],[/작품/,'패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2.'],[/송출 대기/,'다음 행동 위력 +50%.'],[/버팀/,'방어도가 다음 턴에도 전부 남는다.'],[/마비/,'명중 -10.'],[/궁니르-명중/,'쌓인 만큼 궁니르의 공격이 이어진다.'],[/복수심/,'맞을수록 공격이 강해진다.'],[/유희/,'쌓인 만큼 피해가 커진다.'],[/단련/,'방패 찍기의 고정 피해가 커진다.'],[/반동/,'공격받으면 그만큼 되돌려 준다.'],[/은빛 기사/,'대신 피해를 받고, 보스가 행동할 때마다 함께 행동한다.'],[/페이즈/,'보스의 현재 단계.'],[/분노/,'특수무기를 쓸 때마다 오른다. 3이면 이성을 잃는다.']];
+const STATUS_INFO=[[/방어도 감소/,'턴마다 얻는 방어도가 줄어든다.'],[/방어도/,'피해를 먼저 대신 맞는다. 다음 턴 시작 시 50%만 남는다.'],[/회피/,'회피가 높을수록 공격이 덜 맞는다. 회피 주사위는 한 턴 최대 +30.'],[/약화/,'주는 피해가 줄어든다. 턴마다 1 감소.'],[/취약/,'받는 피해가 커진다. 턴마다 1 감소.'],[/전격/,'쌓인 만큼 고정 피해를 받는다.'],[/소각/,'턴마다 불타는 피해를 받는다. 냉매가 중화한다.'],[/증기/,'증기 1당 받는 피해 +10%. 턴이 끝날 때 10 이상이면 10을 소모해 열기 1이 된다.'],[/열기/,'열기 1당 공격 주사위 +1. 턴마다 1 감소. 증기 10으로만 얻는다.'],[/냉동/,'1턴 동안 행동할 수 없다. 얼어 있을 때 공격받으면 깨짐이 2단계 오른다.'],[/냉매/,'냉매 1당 행동 수치 +1, 코스트 -1. 3 이상이면 냉동된다. 소각을 중화한다.'],[/깨짐/,'1단계당 받는 피해 +50%.'],[/먹기/,'먹기 1당 최대 체력 +5%. 10이면 배부름(최대 체력 +50%), 배부름이 3턴 이어지면 포화가 쌓여 모든 카드에 최대 체력 비례 피해가 붙는다.'],[/예술적 감각/,'같은 카드 또는 다른 카드를 3번 연속 쓰면 오른다. 1당 드로우 +1, 코스트 +1. 3이면 작품 준비 카드가 생긴다.'],[/작품 준비/,'턴마다 5~20% 확률로 작품-완성이 된다. 턴이 지나도 사라지지 않는다.'],[/작품/,'패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2.'],[/송출 대기/,'다음 행동 위력 +50%.'],[/버팀/,'방어도가 다음 턴에도 전부 남는다.'],[/마비/,'명중 -10.'],[/궁니르-명중/,'쌓인 만큼 궁니르의 공격이 이어진다.'],[/복수심/,'맞을수록 공격이 강해진다.'],[/유희/,'쌓인 만큼 피해가 커진다.'],[/단련/,'방패 찍기의 고정 피해가 커진다.'],[/반동/,'공격받으면 그만큼 되돌려 준다.'],[/명령-보호|은빛 기사/,'은빛 기사는 살아 있는 동안 순수유물주의자의 피해를 대신 맞는다. 50%는 전부, 50%는 75%를 대신 맞고 나머지만 보스가 받는다. 대신 맞은 기사는 다음 턴에 움직이지 않는다. 기사는 대상으로 지정할 수 없다.'],[/페이즈/,'보스의 현재 단계.'],[/분노/,'특수무기를 쓸 때마다 오른다. 3이면 이성을 잃는다.']];
 function statusRule(t){if(TRAITS[t])return TRAITS[t].text;for(const[re,x]of STATUS_INFO)if(re.test(t))return x;return''}
 function stSheet(items,anchor){let b=$('#stsheet');if(!items){if(b)b.hidden=true;return}if(!b){b=document.createElement('div');b.id='stsheet';stage.appendChild(b);b.addEventListener('pointerdown',e=>e.stopPropagation())}
   b.innerHTML=items.map(([n,x])=>`<div><b>${n}</b><span>${x||'설명이 아직 없습니다.'}</span></div>`).join('');b.hidden=false;b.scrollTop=0;
   const o=stage.getBoundingClientRect(),a=anchor.getBoundingClientRect(),sc=S.scale||1,w=440,h=Math.min(260,b.offsetHeight||260),W=o.width/sc,H=o.height/sc;let x=clamp((a.left-o.left)/sc+(a.width/sc)/2-w/2,12,W-w-12),y=(a.bottom-o.top)/sc+8;if(y+h>H-12)y=Math.max(60,(a.top-o.top)/sc-h-8);b.style.left=x+'px';b.style.top=y+'px';b.style.width=w+'px'}
-stage.addEventListener('click',e=>{if(e.target.closest('#knightFig')&&S.C){e.stopPropagation();knightPick(true);return}if(e.target.closest('#eart')&&S.C&&S.C.E&&S.C.E.kn&&S.C.E.kn.hp>0&&S.C.kT){e.stopPropagation();knightPick(false);return}const sh=$('#stsheet');if(sh&&!sh.hidden&&!e.target.closest('#stsheet')){sh.hidden=true}
+stage.addEventListener('click',e=>{const kfg=e.target.closest('.knfig');if(kfg&&S.C){e.stopPropagation();stSheet([['명령-보호',statusRule('명령-보호')]],kfg);return}const sh=$('#stsheet');if(sh&&!sh.hidden&&!e.target.closest('#stsheet')){sh.hidden=true}
   const ch=e.target.closest('.chip');if(ch&&ch.closest('#echips,#ppanel,#foebar,#foefigs')){e.stopPropagation();const box=ch.parentElement,all=[...box.querySelectorAll('.chip')],sorted=[ch,...all.filter(x=>x!==ch)];stSheet(sorted.map(x=>[x.textContent.trim(),statusRule(x.textContent.trim())]),box);return}
   const it=e.target.closest('#intent');if(it&&S.C&&S.C.E&&ACT[S.C.E.intent]){e.stopPropagation();const E=S.C.E,g=gimOf(E),a=ACT[E.intent];stSheet([[E.intent,a.tag||(a.k==='atk'?'공격한다.':a.k==='def'?'방어도를 얻는다.':'효과를 발휘한다.')],...(g?[[GIM[g].n,GIM[g].t]]:[])],it)}},true);
 /* 여관 — 2장 상점 막에 들어가면 25%로 여관. 5단화로 최대 체력 15% 회복, 쉴 때마다 8시간이 지나 주가가 움직임 */
