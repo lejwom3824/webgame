@@ -2513,7 +2513,7 @@ function enterNode(i){
   let at;
   if(t==='battle'&&r.tut&&row===1)at={kind:'combat',enemy:tutEnemy()};
   else if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(r.pal&&r.pal.k==='nord'?'priest':row<5?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
-  else if(t==='rift'){const e=makeEnemy('nordJudge');e.rift=true;at={kind:'combat',enemy:e}}
+  else if(t==='rift'){const e=makeEnemy('nordJudge');e.rift=true;e.riftHp=ri(3000,4500);at={kind:'combat',enemy:e}}
   else if(t==='elite')at={kind:'combat',enemy:makeEnemy('inquisitor')};
   else if(t==='boss')at={kind:'combat',enemy:makeEnemy('bishop')};
   else if(t==='rest')at={kind:'rest'};
@@ -2609,7 +2609,7 @@ function startCombat(E0){
     evaMod:(r.next&&r.next.eva)||0,costMod:(r.next&&r.next.cost)||0,cost1:(r.next&&r.next.cost1)||0};
   if(C.E.tut){C.E.intent=null}
   for(const f of C.foes){if(f.apMax==null){f.apMax=f.boss?10:f.tier==='elite'?6:5}f.ap=f.apMax;f.early=false}
-  C.atInfo={rush:r.at&&r.at.rush!=null?r.at.rush:null,laev:!!(r.at&&r.at.laev),node:r.at?r.at.node:null,evb:r.at&&r.at.evb?r.at.evb:null,shopFight:!!(r.at&&r.at.shopFight)};C.rush=C.atInfo.rush;C.noFlee=!!(r.at&&r.at.noFlee);palStart();C.noWs=C.rush===2&&r.rushWs?r.rushWs:null;
+  C.atInfo={rush:r.at&&r.at.rush!=null?r.at.rush:null,laev:!!(r.at&&r.at.laev),node:r.at?r.at.node:null,evb:r.at&&r.at.evb?r.at.evb:null,shopFight:!!(r.at&&r.at.shopFight)};C.rush=C.atInfo.rush;C.noFlee=!!(r.at&&r.at.noFlee);if(C.E&&C.E.riftHp){C.E.maxHp=C.E.hp=C.E.riftHp;C.E.riftHp=0}palStart();C.noWs=C.rush===2&&r.rushWs?r.rushWs:null;
   C.eqUsed={};C.wsUse={};
   if(eqW('km_b')){const pool=EQ_ALL.filter(k=>!EQUIP[k].ws&&!EQUIP[k].held&&!(r.equip||[]).includes(k));if(pool.length)C.tempEq=pick(pool)}
   S.C=C;S.screen='combat';viewFor('combat');
@@ -3183,7 +3183,6 @@ async function execAct(name){
 /* 적의 공격 주사위 하나 — 같은 최종 데미지 공식과 명중 판정 */
 async function enemyStrike(die,o={}){
   const C=S.C,E=C.E,r=S.run;
-  if(E.rift&&!r.flags.riftDone){C.riftN=(C.riftN||0)+1;palSay(C.riftN>1?'멈추게! 아군일세!':'아군일세!',true)}
   if(C.palShield){C.palShield=false;await wait(500);fxAt('player','대신 맞음','info');clog('부상당한 노르드교 단원이 대신 맞고 쓰러졌다','e');return 0}
   if(palUp()&&!o.mercy&&rnd()<.25)return palHurt(die);
   if(E.key!=='bishop'&&!REDUCED){const en=$('#enemy');en.classList.remove('lunge');void en.offsetWidth;en.classList.add('lunge');await wait(150);setTimeout(()=>en.classList.remove('lunge'),200)}
@@ -4331,6 +4330,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V37.26.27.10','11/6','이별 전투의 적을 노르드교 이행자로 변경(레벨 35, 체력 3000~4500), 그 전투의 동료 대사는 ... · 아군일세! · 더는 그만! · 그만하게나만 반복'],
   ['V37.26.26.10','11/6','2장 진입 — 돔 선택지 문구, 하늘을 보는 장면(한 글자씩 나오는 줄)과 페이드 아웃, 멜헬름과 대화, 선택 없이 손에 이끌려 상점으로, 멜헬름이 상점을 설명하고 첫 종목을 줌. 구출은 2장 첫 사건 막에서(그 전에 적을 쓰러뜨리면 없음), 동료 이름 리테, 리테가 없으면 구역 안내는 멜헬름. 상점 반응(비싼 물건 · 싼 물건 · 그냥 나감 · 돈 부족 · 새로고침 · 주식). 상점 전투에서 지면 체력 1 · 5000실링을 잃고 쫓겨남. 카드 · 장비 보관함에서 끌어서 덱 · 리테 · 장비 칸에 편성. 1장 · 2장 나레이션을 주인공 시점으로. 수르트모드 레벨 1500, 돌팔매는 원거리 · 리테에게'],
   ['V37.25.23.10','11/6','여관 — 2장 상점 막에 들어가면 25%로 여관, 5단화에 체력 15% 회복, 쉴 때마다 8시간 경과, 반복 가능. 2장 상점 가격 50% 인하, 상점과 사건 비율 8 : 7'],
   ['V37.24.23.10','11/5','튜토리얼 설명 단계 자동 넘김(글 길이만큼 지나면 넘어가고, 창을 누르면 바로 넘어감), 이별 전투의 적을 정예 노르드교 이단심판관으로 변경'],
@@ -6286,8 +6286,9 @@ const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','나는 살던
 const S_NORD=['벽에 기대앉은 남자가 숨을 고른다. 붉은 천을 두른 다리에서 피가 배어 나온다.',['부상당한 노르드교 단원','그 검... 우리 쪽 물건이군. 형제여, 이런 곳에서 만나다니.'],'나는 그의 말에 아무것도 답하지 않았다.',['부상당한 노르드교 단원','이 몸으로는 이제 칼을 못 쥐네. 나도 한때는 이 지역에서 제일이었는데 말일세.'],['부상당한 노르드교 단원','자네도 세계수로 가는 길인가? 좋군. 뜻이 같으니 길도 같은 게지.'],['부상당한 노르드교 단원','말이 없군. 좋네, 뜻이 같으면 말은 필요 없지.']];
 const S_TREE=['세계수를 감싼 바벨탑 모양의 교단이 가까워진다.','의심이 확신으로 바뀌고, 심장이 빠르게 뛴다.',['부상당한 노르드교 단원','저걸 태우면 말일세, 형제여. 무엇이 남을지 궁금하지 않나?'],'나는 고개를 들어 세계수를 올려다보았다. 그저 순수한 열망으로.'];
 const S_RUMOR=[['부상당한 노르드교 단원','이상한 말이 돌더군. 형제를 판 놈이 있다고. 헛소리지.'],['부상당한 노르드교 단원','자네는 듣지 말게. 내가 자네를 아니까.']];
-ENEMY.nordJudge={...ENEMY.inquisitor,name:'노르드교 이단심판관',sub:'노르드교',art:'cultist'};
-const S_RIFT=['내가 떠나온 지역의 이단심판관이 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이단심판관','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이단심판관','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
+ENEMY.nordJudge={...ENEMY.inquisitor,name:'노르드교 이행자',sub:'노르드교',art:'cultist',lv:35,hpR:undefined};
+const RIFT_LINES=['...','아군일세!','더는 그만!','그만하게나'];/* 이별 전투에서는 이 대사만 반복 */
+const S_RIFT=['내가 떠나온 지역의 이행자가 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이행자','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이행자','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
 const S_VOW=[['순수유물주의자','제가 막겠습니다. 그리고 회개시키겠습니다.'],'교황은 별다른 말 없이 일어섰다.','그녀는 그 침묵을 긍정의 뜻으로 받아들였다.'];
 const S_BOSS=['은빛 기사들이 길을 메운다. 그 앞에 붉은 휘장의 주교가 서 있다.','그녀는 기사의 어깨를 거칠게 밀어내면서도, 그 은빛 갑주의 흠집을 손끝으로 쓸었다.'];
 const S_FREE=['상점 문이 열려 있다. 안에는 아무도 없다.','주인은 물건도 두고 도망친 모양이다.',['부상당한 노르드교 단원','주인이 없군. 양심껏 챙기게나, 형제여.']];
@@ -6351,7 +6352,7 @@ function palRender(on){let b=$('#palbox');const r=S.run,show=on!==false&&r&&r.pa
   b.querySelector('.pinfo').innerHTML=`<b>${PAL_NAME[p.k]}</b>${st&&S.screen==='combat'?`<div class="pbar"><i style="width:${pct}%"></i><u></u><span>${Math.max(0,p.hp)} / ${st.maxHp}</span></div>`:''}${p.away?'<em>퇴각</em>':''}`;
   if(S.screen==='combat'){const pp=$('#ppanel');if(pp){const a=pp.getBoundingClientRect(),o=stage.getBoundingClientRect(),sc=S.scale||1;b.style.left=(a.left-o.left)/sc+'px';b.style.top=((a.top-o.top)/sc-(S.orient==='port'?150:112))+'px';b.style.bottom='auto'}}else{b.style.left='28px';b.style.top='auto';b.style.bottom=(S.orient==='port'?108:104)+'px'}}
 function palSay(t,force){const now=Date.now();if(!force&&now-palT<3200)return;palT=now;if(!S.run||!S.run.pal)return;palRender();const b=$('#palbox');if(!b||b.hidden)return;const e=b.querySelector('.psay');e.textContent=t;e.hidden=false;clearTimeout(palHide);palHide=setTimeout(()=>{e.hidden=true},2800)}
-function palEv(k,force){const r=S.run;if(!r||!r.pal)return;const L=PAL_LINES[r.pal.k];if(!L||!L[k])return;if(!force&&rnd()>.45)return;palSay(L[k],force)}
+function palEv(k,force){const r=S.run;if(!r||!r.pal)return;if(S.C&&S.C.E&&S.C.E.rift&&!S.C.over){if(!r.flags.riftDone)palSay(pick(RIFT_LINES),true);return}const L=PAL_LINES[r.pal.k];if(!L||!L[k])return;if(!force&&rnd()>.45)return;palSay(L[k],force)}
 function palBark(key,line,kw){const r=S.run;if(!r||!r.pal||r.pal.k!=='girl')return;r.flags.barks=r.flags.barks||{};if(r.flags.barks[key])return;r.flags.barks[key]=1;palSay(line,true);if(kw)setTimeout(()=>{document.querySelectorAll('.chip').forEach(c=>{if(c.textContent.includes(kw)){c.classList.add('pulse');setTimeout(()=>c.classList.remove('pulse'),2600)}});if(kw==='행동'){const i=$('#intent');i.classList.add('pulse');setTimeout(()=>i.classList.remove('pulse'),2600)}},60)}
 function palWatch(){const C=S.C,r=S.run;if(!C||!r||!r.pal||r.pal.k!=='girl'||C.over)return;const E=C.E;
   if(C.pSteam)palBark('steam','숨이 막혀요... 몸이 눅눅해지는 것 같아요.','증기');if(C.heat)palBark('heat','뜨거워요! 뭔가 힘이 나는데요? 금방 식을 것 같아요.','열기');
