@@ -4342,6 +4342,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.28.47.11','11/7','화면 개편 — 대화 장면을 비주얼 노벨식으로(허리 위 인물 · 말하는 사람만 밝게 · 이름표 · 아래 대사창 · 대사를 눌러도 다음 · 위쪽에 지역 이름과 기록 · 자동 · 선택지는 대사창 아래 가로 버튼), 전투는 동료 얼굴 칸을 왼쪽 위에(말풍선은 얼굴 옆 · 말할 때 빛남 · 맞으면 흔들림), 위쪽 가운데 턴 수, 행동력을 불씨 구슬로, 턴 종료를 테두리 버튼으로, 위쪽 정보를 둥근 칸으로, 화면 테두리. 동료가 2장에서 회색으로 보이던 문제 수정. 그림이 없는 인물은 실루엣으로 자리만 잡아 둠'],
   ['V2.28.46.11','11/7','설정 정리 — UI 크기 · 효과음 · 화면 흔들림 · 주사위 연출 · 전환 팁 · 튜토리얼 다시 보기를 설정 안의 환경 설정 창으로 옮김'],
   ['V2.28.45.11','11/7','설정의 2장으로 건너뛰기(임시) 버튼이 화면 아래로 밀려 보이지 않던 문제 — 설정 맨 위로 옮김'],
   ['V2.28.45.10','11/7','동료 대사 — 확률 없이 매번, 상황마다 여러 줄(전투 시작 · 턴 · 방어 · 회피 · 적중 · 큰 피해 · 빗나감 · 피격 · 위기 · 막음 · 피함 · 처치 · 승리 · 추가타 · 퇴각 · 복귀 · 지도 이동 · 상점 · 구매 · 나감 · 사건 · 휴식 · 보관함 · 건네기 · 지역 필드 · 영입 막 · 가만히 있을 때), 리테 · 제바르크 · 오토 · 견습생 · 부상당한 노르드교 단원. 말풍선을 모든 화면 맨 앞에 띄우고, 떠 있는 동안 조작을 막으며 누르면 사라짐. 구출 장면에 여기가 어딥니까?(떨어진 지역의 공방과 미덕), 비 사건은 리테를 만난 다음 사건 막에서. 붉은 천을 누르면 보관함 안에서 설명이 펼쳐짐. 설정에 2장으로 건너뛰기(임시)'],
@@ -4764,7 +4765,7 @@ function renderTop(){
   tb.innerHTML=`<div class="tb-l"><span class="logo">재의 미드가르드</span>${r.act===2?`<span class="tb-chip">2장 · <b>니다벨리르</b></span><span class="tb-chip">${r.dir?DIR2[r.dir].n+' · ':''}<b>${r.floor||0}</b>막</span>${r.hostile?'<span class="tb-chip" style="color:#ef9a8c">적대</span>':''}`:`<span class="tb-chip">1장 · <b>미드가르드</b></span><span class="tb-chip"><b>${r.floor}</b> / ${ROWS}막</span>`}</div>
    <div class="tb-r"><span class="tb-chip">체력 <b>${Math.max(0,r.hp)}</b>/${r.maxHp}</span><span class="tb-chip"><b>${money(r.gold)}</b></span>
    <span class="tb-chip">${r.mode==='dain'?'<b style="color:#ef9a8c">다인모드</b>':`${r.mode==='thor'?'<b style="color:#a9cdea">묠니르</b> · ':r.mode==='odin'?'<b style="color:#a9c2d6">궁니르</b> · ':''}Lv <b>${r.lvl}</b><i class="xp" title="경험치 ${r.exp} / ${need}"><i style="width:${pct}%"></i></i>`}</span>
-   ${['over','victory'].includes(S.screen)?'':'<button class="plate-btn" id="menuBtn" aria-label="메뉴">메뉴</button>'}</div>`;
+   ${['over','victory'].includes(S.screen)?'':'<button class="plate-btn" id="menuBtn" aria-label="메뉴">메뉴</button>'}</div>${S.screen==='combat'&&S.C?`<span class="tb-mid">${S.C.turn||1}턴</span>`:''}`;
   {const fight=S.screen==='combat',dl=dockEl('dockL'),dr=dockEl('dockR'),show=!['over','victory'].includes(S.screen);
     dl.className=dr.className=fight?'dock fight':'dock';dl.hidden=false;
     dl.innerHTML=`<button class="plate-btn big" id="deckBtn">덱 ${r.deck.length}</button>${S.screen==='map'||fight?`<button class="plate-btn big" id="prepBtn">보관함 ${(r.store||[]).length}</button>`:''}`;
@@ -4958,7 +4959,7 @@ function renderPlayer(){
   const pct=clamp(r.hp/r.maxHp*100,0,100);
   $('#ppanel').innerHTML=`<div class="pp-name">${dain?'다인슬레이프':r.mode==='thor'?'묠니르 (토르)':r.mode==='odin'?'궁니르 (오딘)':'일반인'}<small>${dain?'Lv 1 고정':`Lv ${r.lvl}`} · 공 ${pAtk()} · 방 ${pDef()} · 명중 ${pAcc()} · 회피 ${pEva()}</small></div>
     <div class="pp-hp"><div class="pbar"><i style="width:${pct}%"></i><span>${Math.max(0,r.hp)} / ${r.maxHp}</span></div></div>
-    <div class="pp-row">${dain?`<div class="orb blood" title="코스트 대신 체력을 소모해 카드를 사용함">포식</div>`:`<div class="orb" title="코스트">${C.energy}<small>/${C.maxE}</small></div>`}
+    <div class="pp-row">${dain?`<div class="orb blood" title="코스트 대신 체력을 소모해 카드를 사용함">포식</div>`:(C.maxE<=8?`<div class="orb eorbs" title="코스트 ${C.energy} / ${C.maxE}">${Array.from({length:Math.max(C.maxE,C.energy)},(_,k)=>`<i class="${k<C.energy?(k>=C.maxE?'on ex':'on'):''}"></i>`).join('')}</div>`:`<div class="orb" title="코스트">${C.energy}<small>/${C.maxE}</small></div>`)}
       <div class="shield${C.block?'':' zero'}"><b>${C.block}</b>방어도</div></div>
     ${chips.length?`<div class="chips">${chips.join('')}</div>`:''}`;
   pilesHTML(C,C.phase==='enemy'?'적의 차례':'턴 종료',C.phase!=='player'||C.over||!!C.select,endTurn);
@@ -6352,13 +6353,25 @@ function a2Guide(k,then){const g=A2_GUIDE[k];if(!g)return;const seen=a2GuideSeen
 function a2GuideRegion(reg){const r=S.run;if(!reg||reg==='C')return;r.flags.reg=r.flags.reg||{};if(!r.flags.reg[reg]){r.flags.reg[reg]=1;if(r.pal&&r.pal.k==='girl')palSay(PAL_REGION[reg],true);else{r.flags.melReg=r.flags.melReg||{};r.flags.melReg[reg]=r.flags.melReg[reg]||1}}if(r.floor>=10&&r.mode==='human'&&!r.flags['zn'+reg]){r.flags['zn'+reg]=1;r.pendZone=reg}}
 /* ================= 이야기 장면 · 동료 · 상태이상 설명 (V37) ================= */
 /* 장면: '글' | ['이름','대사'] | {c:[{b:'선택지',f:함수,then:[이어지는 장면]}]} */
-function showScene(list,done,opt){opt=opt||{};
+/* V2.28.47.11 대화 장면 — 비주얼 노벨식 (허리 위 인물, 이름표, 아래 대사창). 그림은 PORTRAIT에 이름으로 넣는다: {img, face:{x,y,w}, ar} — x·y·w는 그림 가로 기준 비율, ar은 세로/가로 */
+const PORTRAIT={};
+const VN_NOFIG=new Set(['주인공','나','']);
+function vnFig(n){const P=PORTRAIT[n]||(n==='순수유물주의자'&&typeof BISHOP_BODY!=='undefined'?{img:BISHOP_BODY}:null);
+  return P?`<img class="vn-img" src="${P.img}" alt="${n}">`:`<div class="vn-sil" aria-hidden="true"><i></i><u></u></div>`}
+function faceHTML(n){const P=PORTRAIT[n];if(!P||!P.face)return '<span class="fsil" aria-hidden="true"><i></i><u></u></span>';
+  const f=P.face,W=100/f.w,ar=P.ar||2;return `<img class="fimg" alt="" src="${P.img}" style="width:${W}%;left:${-(f.x-f.w/2)*W}%;top:${-(f.y*ar-f.w/2)*W}%">`}
+function showScene(list,done,opt){opt=opt||{};let vnL='',vnR='',vnLast='',vnHist=[],vnAuto=false,vnPrev=null;
+  const vnTop=()=>{const r=S.run,loc=r?(r.act===2?`2장 · ${r.dir&&typeof DIR2!=='undefined'&&DIR2[r.dir]?DIR2[r.dir].n+' 구역':'니다벨리르'}`:'1장 · 미드가르드'):'';return `<div class="vn-top"><span>${loc}</span><span class="vn-tools"><button class="vn-tool" id="vnLog">기록</button><button class="vn-tool${vnAuto?' on':''}" id="vnAuto">자동</button></span></div>`};
+  const vnBind=next=>{const l=$('#vnLog'),a=$('#vnAuto');if(l)l.onclick=e=>{e.stopPropagation();const o=document.createElement('div');o.className='vn-log';o.innerHTML=`<div class="vn-logbox">${vnHist.map(h=>`<p>${h[0]?`<b>${h[0]}</b>`:''}${h[1]}</p>`).join('')||'<p>아직 없음</p>'}<small>눌러서 닫기</small></div>`;o.onclick=()=>o.remove();$('#modal .vn').appendChild(o)};
+    if(a)a.onclick=e=>{e.stopPropagation();vnAuto=!vnAuto;a.classList.toggle('on',vnAuto);if(vnAuto&&next)next()}};
+  const vnStage=w=>{if(w&&!VN_NOFIG.has(w)){if(w!==vnL&&w!==vnR){if(!vnR)vnR=w;else if(!vnL)vnL=w;else if(vnLast==='r')vnL=w;else vnR=w}vnLast=w===vnR?'r':'l'}
+    const one=(n,sd)=>n?`<div class="vn-p ${sd}${n===w?' on':''}">${vnFig(n)}</div>`:'';return `<div class="vn-ps">${one(vnL,'l')}${one(vnR,'r')}</div>`};
   const m=$('#modal');list=list.slice();$('#tut').hidden=true;stage.removeAttribute('data-tut');palRender(false);m.hidden=false;m.classList.add('scn');m.classList.remove('scn-sky','scn-dark','scn-lite');if(opt.sky)m.classList.add('scn-sky');if(opt.lite)m.classList.add('scn-lite');S.modalLock=true;let i=0,tmr=0;
   const end=()=>{clearTimeout(tmr);S.modalLock=false;closeModal();if(done)done()};
   const dark=()=>{m.classList.add('scn-dark');m.classList.remove('scn-sky')};
   const draw=()=>{clearTimeout(tmr);const it=list[i];if(it==null)return end();
-    if(it.fx==='fade'){dark();i++;return draw()}
-    if(it.c){m.innerHTML=`<div class="panel scene"><div class="choices">${it.c.map((x,j)=>`<button class="choice" data-sc="${j}"><b>${x.b}</b></button>`).join('')}</div></div>`;
+    if(it.fx==='fade'){dark();vnL=vnR='';i++;return draw()}
+    if(it.c){const pv=vnPrev;m.innerHTML=`<div class="vn">${vnTop()}${vnStage(pv&&pv[0]||'')}<div class="vn-box vn-ch">${pv&&pv[0]?`<div class="vn-name">${pv[0]}</div>`:''}${pv?`<div class="scn-t">${pv[1]}</div>`:''}<div class="vn-chrow">${it.c.map((x,j)=>`<button class="vn-cb" data-sc="${j}">${x.b}</button>`).join('')}</div></div></div>`;vnBind();
       m.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{const x=it.c[+b.dataset.sc];if(x.f)x.f();if(x.then)list.splice(i+1,0,...x.then);i++;draw()});return}
     /* 타이핑 — 한 글자씩, 건너뛸 수 없음, 다 나온 뒤 1초 후 다음 */
     if(it.ty==='typing'){m.innerHTML=`<div class="panel scene"><div class="scn-t" id="scT"></div><div class="scn-b"><span></span><button class="btn-main" id="scNext" style="visibility:hidden">다음</button></div></div>`;
@@ -6367,8 +6380,8 @@ function showScene(list,done,opt){opt=opt||{};
     const who=Array.isArray(it)?it[0]:(it.who||''),tx=Array.isArray(it)?it[1]:(typeof it==='string'?it:it.t);
     /* 자동 진행 — 누를 것 없이 넘어감 (손에 이끌림) */
     if(it.auto){m.innerHTML=`<div class="panel scene ${it.cls||''}">${who?`<div class="scn-who">${who}</div>`:''}<div class="scn-t">${tx}</div></div>`;tmr=setTimeout(()=>{i++;draw()},it.auto);return}
-    m.innerHTML=`<div class="panel scene">${who?`<div class="scn-who">${who}</div>`:''}<div class="scn-t">${tx}</div><div class="scn-b"><button class="btn-ghost" id="scSkip">건너뛰기</button><button class="btn-main" id="scNext">다음</button></div></div>`;
-    $('#scNext').onclick=()=>{i++;draw()};$('#scSkip').onclick=()=>{let j=i+1;while(j<list.length&&!list[j].c&&!list[j].ty&&!list[j].auto){if(list[j].fx==='fade')dark();j++}i=j;draw()}};
+    vnHist.push([who,tx]);vnPrev=[who,tx];m.innerHTML=`<div class="vn">${vnTop()}${vnStage(who)}<div class="vn-box">${who?`<div class="vn-name">${who}</div>`:''}<div class="scn-t">${tx}</div><div class="scn-b"><button class="btn-ghost" id="scSkip">건너뛰기</button><button class="btn-main" id="scNext">다음</button></div></div></div>`;
+    const go=()=>{clearTimeout(tmr);i++;draw()};$('#scNext').onclick=go;m.querySelector('.scn-t').onclick=go;vnBind(()=>{clearTimeout(tmr);tmr=setTimeout(go,1600+String(tx).length*45)});if(vnAuto)tmr=setTimeout(go,1600+String(tx).length*45);$('#scSkip').onclick=()=>{let j=i+1;while(j<list.length&&!list[j].c&&!list[j].ty&&!list[j].auto){if(list[j].fx==='fade')dark();j++}i=j;draw()}};
   draw()}
 const S_OPEN=['나는 꿈에서 하늘이 되었다.','푸르디푸른 하늘이 되어, 전에 겪어 본 적 없는 더없이 자유로운 감각.','하지만 그 감각은 일어나는 순간 없어졌다.','창밖은 오늘도 붉었다.','노크가 울린다.','문을 열자 사제가 서 있다.',['사제','얼마 전, 부모님께서 사상하셨습니다. 그 노고에 진심으로 감사드립니다.'],'사제가 봉투를 내민다. 기억 속 부모의 전부였던, 묵직한 봉투.',['사제','이것이 마지막 번제비입니다.'],'나는 봉투를 받아 들었다. 이번에도 만나지 못하고 끝나 버렸다.','사제의 시선이 내 허리춤에 멈춘다. 조잡한 철제검.',['사제','그 검은... 이단의 길을 걷는 겁니까?'],'나는 오해를 풀고 싶지도 않았다. 어차피 맞닥뜨려야 할 문제였다.','나는 말없이 검을 쥐었다.'];
 const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','나는 살던 집을 떠나, 세계수를 중심축으로 잡고 나아가기 시작했다.','골목에서 성직자가 나를 불러 세운다.',['성직자','통보하러 간 사제가 돌아오지 않았습니다. 혹시 보셨습니까?'],'성직자의 눈이 철제검으로 내려간다.'],
@@ -6604,16 +6617,16 @@ let palT=0,palHide=0;
 function palRender(on){let b=$('#palbox');const r=S.run,show=on!==false&&r&&r.pal&&(S.screen==='combat'||S.screen==='map');
   if(!show){if(b)b.hidden=true;return}
   if(!b){b=document.createElement('div');b.id='palbox';b.innerHTML='<div class="pfig"></div><div class="pinfo"></div><div class="psay" hidden></div>';stage.appendChild(b)}
-  const p=r.pal,gone=p.away||r.flags.riftDone;b.hidden=false;b.className=(S.screen==='combat'?'fight':'')+(gone?' gone':'');b.querySelector('.pfig').innerHTML=PAL_FIG;
+  const p=r.pal,gone=p.away||(p.k==='nord'&&r.flags.riftDone);b.hidden=false;b.className=(S.screen==='combat'?'fight':'')+(gone?' gone':'');b.querySelector('.pfig').innerHTML=faceHTML(p.k==='nord'?PAL_NAME.nord:mateN(p));
   const st=isMate(p)?palStats():null,pct=st?clamp(p.hp/st.maxHp*100,0,100):0;
   b.querySelector('.pinfo').innerHTML=`<b>${mateN(p)}</b>${st&&S.screen==='combat'?`<div class="pbar"><i style="width:${pct}%"></i><u></u><span>${Math.max(0,p.hp)} / ${st.maxHp}</span></div>`:''}${p.away?'<em>퇴각</em>':''}`;
-  if(S.screen==='combat'){const pp=$('#ppanel');if(pp){const a=pp.getBoundingClientRect(),o=stage.getBoundingClientRect(),sc=S.scale||1;b.style.left=(a.left-o.left)/sc+'px';b.style.top=((a.top-o.top)/sc-(S.orient==='port'?150:112))+'px';b.style.bottom='auto'}}else{b.style.left='28px';b.style.top='auto';b.style.bottom=(S.orient==='port'?108:104)+'px'}}
-function palSay(t){const r=S.run;if(!r||!r.pal||!t)return;sayShow(r.pal.k==='nord'?PAL_NAME.nord:mateN(r.pal),t)}
+  if(S.screen==='combat'){b.style.left='30px';b.style.top=(S.orient==='port'?112:76)+'px';b.style.bottom='auto'}else{b.style.left='28px';b.style.top='auto';b.style.bottom=(S.orient==='port'?108:104)+'px'}}
+function palSay(t){const r=S.run;if(!r||!r.pal||!t)return;{const bx=$('#palbox');if(bx){bx.classList.remove('talk');void bx.offsetWidth;bx.classList.add('talk');clearTimeout(bx._tk);bx._tk=setTimeout(()=>bx.classList.remove('talk'),2600)}}{const bx=$('#palbox'),q=bx&&bx.querySelector('.psay');if(S.screen==='combat'&&q&&!bx.hidden){q.textContent=t;q.hidden=false;clearTimeout(q._t);q._t=setTimeout(()=>{q.hidden=true},Math.min(6000,2200+t.length*55));return}}sayShow(r.pal.k==='nord'?PAL_NAME.nord:mateN(r.pal),t)}
 /* 말풍선 (V2.28) — 모든 화면 맨 앞, 떠 있는 동안 아래 조작을 막음, 말풍선을 누르면 사라짐, 안 누르면 몇 초 뒤 사라짐 */
 function sayShow(who,t){let L=$('#saylayer');if(!L){L=document.createElement('div');L.id='saylayer';L.hidden=true;stage.appendChild(L);
     const stop=e=>{e.stopPropagation();e.preventDefault()};['pointerdown','pointerup','mousedown','touchstart','wheel','contextmenu'].forEach(ev=>L.addEventListener(ev,stop,{passive:false}));
     L.addEventListener('click',e=>{stop(e);if(e.target.closest('.sb'))sayHide()})}
-  L.innerHTML=`<div class="sb" role="button" tabindex="0"><i>${PAL_FIG}</i><div><b>${who}</b><span>${t}</span><small>눌러서 닫기</small></div></div>`;L.hidden=false;clearTimeout(palHide);palHide=setTimeout(sayHide,Math.min(6500,2400+t.length*55))}
+  L.innerHTML=`<div class="sb" role="button" tabindex="0"><i class="sbface">${faceHTML(who)}</i><div><b>${who}</b><span>${t}</span><small>눌러서 닫기</small></div></div>`;L.hidden=false;clearTimeout(palHide);palHide=setTimeout(sayHide,Math.min(6500,2400+t.length*55))}
 function sayHide(){clearTimeout(palHide);const L=$('#saylayer');if(L)L.hidden=true}
 function palEv(k){const r=S.run;if(!r||!r.pal)return;if(S.C&&S.C.E&&S.C.E.rift&&!S.C.over){if(!r.flags.riftDone)palSay(pick(RIFT_LINES));return}if(r.pal.away&&S.C&&!S.C.over&&k!=='back'&&k!=='out')return;const L=PAL_LINES[r.pal.k],v=L&&L[k];if(!v)return;palSay(Array.isArray(v)?pick(v):v)}
 function bagTalk(){const n=Date.now();if(n-(S.bagT||0)>10000){S.bagT=n;palEv('bag')}}
@@ -6892,5 +6905,64 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 .unit.back.wt .uart{filter:drop-shadow(0 0 14px #ffd34d) brightness(1.1)}
 .uc.ap{color:var(--brass-hi);border-color:#b8925a99}.uc.ap.warn{color:#f0a493;border-color:#e0705f}.uc.ap.done{opacity:.6}
 .plate-btn.auto.on{border-color:var(--verdigris);color:#b8e2d6;box-shadow:0 0 0 1px var(--verdigris) inset,0 0 12px #63a29166}
+
+/* V2.28.47.11 화면 개편 */
+#stage::after{content:"";position:absolute;inset:7px;border:1px solid #6b2e1a80;border-radius:8px;pointer-events:none;z-index:70}
+.tb-chip{border:1px solid #6b2e1a;border-radius:999px;padding:3px 12px;background:#1d1714d0;color:#e9cfae}
+.tb-chip b{color:#ffcf9a}
+#modal.scn{backdrop-filter:none}
+.vn{position:absolute;inset:0;zoom:1!important}
+#modal.scn:not(.scn-sky):not(.scn-dark) .vn{background:linear-gradient(#2a150f 0,#160f0c 48%,#0c0909 100%)}
+.vn-ps{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.vn-p{position:absolute;bottom:0;width:62%;height:80%;filter:brightness(.38) saturate(.7);transition:filter .25s}
+.vn-p.on{filter:none}
+.vn-p.r{right:-7%}.vn-p.l{left:-7%}
+#stage:not(.port) .vn-p{width:32%;height:94%}#stage:not(.port) .vn-p.r{right:8%}#stage:not(.port) .vn-p.l{left:8%}
+.vn-img{position:absolute;left:50%;top:0;height:185%;width:auto;max-width:none;transform:translateX(-50%)}
+.vn-sil{position:absolute;inset:0;opacity:.75}.vn-p.on .vn-sil{opacity:1}
+.vn-sil i{position:absolute;left:50%;top:9%;width:24%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:#3a2a22;box-shadow:0 0 0 2px #8a4a2a66}
+.vn-sil u{position:absolute;left:20%;right:20%;top:21%;bottom:0;border-radius:50% 50% 0 0/22% 22% 0 0;background:#3a2a22;box-shadow:0 0 0 2px #8a4a2a66}
+.vn-box{position:absolute;left:26px;right:26px;bottom:28px;padding:24px 28px 18px;background:#1a1310f2;border:1px solid #8a4a2a;border-radius:10px;box-shadow:0 -12px 40px #000c;zoom:var(--uiz,1)}
+.port .vn-box{bottom:64px;left:22px;right:22px}
+.vn-box .scn-t{min-height:3.4em;cursor:pointer}
+.vn-box .scn-b{margin-top:10px}
+.vn-name{position:absolute;left:-1px;top:-44px;padding:7px 24px;border-radius:9px 9px 0 0;background:#6e2232;color:#fbe2e6;font-family:var(--f-display);font-size:22px;border:1px solid #8a4a2a;border-bottom:0}
+.port .vn-name{font-size:26px;top:-50px}
+.vn-ch{padding:18px}
+#modal.scn-sky .vn-box{background:#ffffffd9;border-color:#14212e44}#modal.scn-sky .vn-box .scn-t{color:#14212e}
+#palbox .pfig{position:relative;width:48px;height:48px;border-radius:10px;border:2px solid #8a4a2a;background:#241b17;overflow:hidden;flex:0 0 auto}
+#palbox.fight .pfig{width:118px;height:118px;border-radius:14px}
+.port #palbox.fight .pfig{width:140px;height:140px}
+#palbox.talk .pfig{border-color:#ffa65a;box-shadow:0 0 0 3px #ffa65a55,0 0 22px #ffa65a66}
+#palbox.hit .pfig{animation:palhit .35s,facehit .35s}
+@keyframes facehit{20%{translate:-7px 2px}45%{translate:6px -2px}70%{translate:-3px 1px}}
+.fimg{position:absolute;max-width:none;height:auto}
+.fsil{position:absolute;inset:0}.fsil i{position:absolute;left:50%;top:16%;width:42%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:#4a362c}.fsil u{position:absolute;left:14%;right:14%;top:60%;bottom:-10%;border-radius:46% 46% 0 0;background:#4a362c}
+
+.vn-top{position:absolute;left:26px;right:26px;top:22px;display:flex;justify-content:space-between;align-items:center;color:#f0b27a;font-size:20px;z-index:2;zoom:var(--uiz,1)}
+.vn-tools{display:flex;gap:8px}
+.vn-tool{border:1px solid #8a4a2a;background:#1d1714d0;color:#f0b27a;border-radius:999px;padding:4px 14px;font-size:16px}
+.vn-tool.on{border-color:#ffa65a;color:#ffd2a0;box-shadow:0 0 0 2px #ffa65a44}
+.vn-chrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.vn-cb{flex:1 1 calc(50% - 10px);min-width:calc(50% - 10px);padding:14px 12px;border-radius:8px;border:1px solid #6b2e1a;background:#231a15;color:#efe2d2;font-size:19px;line-height:1.4}
+.vn-cb:first-child{border-color:#ffa65a;color:#ffd2a0}
+.port .vn-cb{font-size:22px}
+.vn-ch{padding:24px 28px 20px}
+.vn-log{position:absolute;inset:0;background:#000b;z-index:5;display:flex;align-items:center;justify-content:center;padding:40px}
+.vn-logbox{max-height:80%;overflow:auto;width:100%;background:#1a1310;border:1px solid #8a4a2a;border-radius:10px;padding:20px 24px;font-size:19px;line-height:1.6;color:#efe2d2}
+.vn-logbox b{color:#f0b27a;margin-right:10px}.vn-logbox small{display:block;color:#a08670;margin-top:10px}
+.tb-mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#f0b27a;font-size:1.05em}
+.orb.eorbs{width:auto;height:auto;min-width:0;background:none;border:0;box-shadow:none;display:flex;gap:7px;align-items:center;padding:0;font-size:0}
+.orb.eorbs i{width:22px;height:22px;border-radius:50%;border:2px solid #ffa65a;background:transparent;display:block}
+.orb.eorbs i.on{background:#ffa65a;box-shadow:0 0 10px #ffa65a88}.orb.eorbs i.ex{background:#ffd27a;border-color:#ffd27a}
+.port .orb.eorbs i{width:28px;height:28px}
+#endTurn{background:#1d1714;border:2px solid #ffa65a;color:#ffd2a0;box-shadow:0 0 14px #ffa65a33}
+#endTurn:not(:disabled):hover{background:#2a1d16}
+#palbox.fight{flex-direction:column;align-items:flex-start;gap:6px;max-width:none}
+#palbox.fight .pinfo{min-width:0;width:118px;padding:3px 6px;font-size:13px}
+.port #palbox.fight .pinfo{width:140px;font-size:15px}
+#palbox.fight .psay{left:calc(100% + 12px);top:18px;bottom:auto;max-width:330px;font-size:18px;border-radius:12px}
+.port #palbox.fight .psay{font-size:21px;max-width:440px}
+#saylayer .sb i.sbface{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;background:#241b17;border:2px solid #8a4a2a}
 </style>
 </body></html>
