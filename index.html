@@ -1346,7 +1346,7 @@ function knightTake(d){const C=S.C,E=C.E,ks=knAlive(E);if(!ks.length||d<=0)retur
 /* V32 페이즈 전환: 체력이 1 이하로 떨어지면 턴 종료 후 특수 대사(컷신)를 보여 주고 다시 재개 */
 async function bossPhaseCut(){
   const C=S.C,E=C.E,p=E.pendPhase;E.pendPhase=0;if(!p||C.over)return;
-  if(E.key==='clerk'){E.phase=2;E.idx=0;E.block=0;await wait(400);E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');E.dmgMul=Math.round((E.dmgMul||1)*1.25*100)/100;toast('페이즈 2','기입관이 서류를 새로 편다');clog('페이즈 2 — 체력 전부 회복, 공격 위력 +25%','e');chooseIntent();renderCombat();await wait(300);return}
+  if(E.key==='clerk'){E.phase=2;E.idx=0;E.block=0;await wait(400);E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');toast('페이즈 2','기입관이 서류를 새로 편다');clog('페이즈 2 — 체력 전부 회복','e');chooseIntent();renderCombat();await wait(300);return}
   if(p===2){
     summonKnights();E.said['은빛 소환']=1;await wait(600);
     E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');
@@ -2603,6 +2603,8 @@ function makeEnemy(key){
   E.apMax=d.apMax||(d.tier==='boss'?10:d.tier==='elite'?6:5);E.ap=E.apMax;
   {const tb=TUNE.cb,a=(S.run&&S.run.act)||1,t=E.tier||'normal',fl=(S.run&&S.run.floor)||0,rp=a===1&&tb.ramp?Math.min(1,Math.max(0,fl-1)/tb.ramp):1,mk=v=>1+((v||1)-1)*rp;
     E.maxHp=Math.round(E.maxHp*mk((tb.hp[a]||{})[t]));E.dmgMul=Math.round(mk((tb.dmg[a]||{})[t])*100)/100}
+  /* 기입관: 페이즈당 체력은 난이도별 고정값 (V2.29.49.12) */
+  if(key==='clerk')E.maxHp=CLERK_HP[(S.run&&S.run.diff)||'easy']||CLERK_HP.easy;
   E.hp=E.maxHp;
   /* 적 소지 장비 — 효과는 적용되지 않고, 이기면 그중 1개를 탈취 (에인헤랴르는 고정 장비) */
   E.gear=d.gearFix?d.gearFix.slice():rollEnemyGear(d.gearN||0,d.ws);
@@ -3201,6 +3203,11 @@ async function execAct(name){
   E.last.push(name);if(E.last.length>2)E.last.shift();
   renderCombat();await wait(260);
 }
+/* 기입관의 공격은 주사위 하나당 내 최대 체력(전투 시작 때)의 정해진 범위 안으로 맞춤 — 대비(막으면 -80% · 못 막으면 +100%)는 그 뒤에 곱함
+   서류 정리(주사위 2개): 하나당 [하한, 상한] · 삭제: [하한, 상한] */
+const CLERK_HP={veasy:4000,easy:5000,normal:6000,hard:8000,vhard:10000};
+const CLERK_DMG={veasy:{a:[.08,.15],b:[.20,.30]},easy:{a:[.08,.15],b:[.20,.35]},normal:{a:[.08,.20],b:[.25,.40]},hard:{a:[.10,.24],b:[.25,.45]},vhard:{a:[.10,.27],b:[.25,.50]}};
+function clerkClamp(v,E){if(!E||E.key!=='clerk')return v;const C=S.C,r=S.run,T=CLERK_DMG[r.diff||'easy']||CLERK_DMG.easy,m=(C&&C.baseMax)||r.maxHp,R=E.intent==='삭제'?T.b:T.a;return Math.min(m*R[1],Math.max(m*R[0],v))}
 /* 적의 공격 주사위 하나 — 같은 최종 데미지 공식과 명중 판정 */
 async function enemyStrike(die,o={}){
   const C=S.C,E=C.E,r=S.run;
@@ -3212,7 +3219,7 @@ async function enemyStrike(die,o={}){
   const r0=o.mercy?0:rollDie(die),v=o.mercy?0:eAdj(r0);
   let dmg=0,txt='';
   if(o.mercy){dmg=r.hp;txt=`남은 체력만큼 ${dmg}`}
-  else{const f=formula(v,E.revenge+(E.actFlat||0),E.atk,eTraits(),pDef(),{x:has(E,'무모함')&&E.firstAtk?2:1});const gx=gm&&o.gim!=='read'?gm.m():gm?1.5:1;dmg=Math.round(f.fin*(E.dmgMul||1)*gx);txt=`${gm?`[${gm.n} ${gm.ok()?'성공':'실패'} ×${gx}] `:''}${E.dmgMul&&E.dmgMul!==1?`[전투 보정 ×${E.dmgMul}] `:''}공격 주사위 ${v}: ${f.text}`}
+  else{const f=formula(v,E.revenge+(E.actFlat||0),E.atk,eTraits(),pDef(),{x:has(E,'무모함')&&E.firstAtk?2:1});const gx=gm&&o.gim!=='read'?gm.m():gm?1.5:1;dmg=Math.round(clerkClamp(f.fin*(E.dmgMul||1),E)*gx);txt=`${gm?`[${gm.n} ${gm.ok()?'성공':'실패'} ×${gx}] `:''}${E.dmgMul&&E.dmgMul!==1?`[전투 보정 ×${E.dmgMul}] `:''}공격 주사위 ${v}: ${f.text}`}
   if(!o.mercy&&gs('lateGuard')&&C.turn>=3)dmg=Math.round(dmg*.8);
   {const hit=roll<=ch,bb=Math.min(C.block,dmg);await diceFocus({foe:true,lb:o.mercy?`${E.name} · 안 아프게 빨리`:`${E.name} · 공격 주사위${gm?` · ${gm.n} ${gm.ok()?'성공':'실패'}`:''}`,a:o.mercy?0:die.a,b:o.mercy?0:die.b,r0:o.mercy?'—':r0,pow:o.mercy?'남은 체력':v,hit,ch,dmg:hit?dmg-bb:0,bl:hit?bb:0})}
   if(roll>ch){fxAt('player','빗나감','miss');sfx('miss');clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);return false}
@@ -4358,6 +4365,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.29.49.12','11/13','기입관 밸런스 — 페이즈당 체력을 난이도별로 정함(매우 쉬움 4000 · 쉬움 5000 · 보통 6000 · 어려움 8000 · 매우 어려움 10000). 기입관의 공격은 주사위 하나당 내 최대 체력의 정해진 범위 안으로 들어옴(서류 정리 하나당 보통 8~20% · 어려움 10~24% · 매우 어려움 10~27%, 삭제는 보통 25~40% · 어려움 25~45% · 매우 어려움 25~50%에 대비 배율 — 막으면 -80%, 못 막으면 +100%). 2페이즈의 공격 위력 +25%는 없앰.'],
   ['V2.29.48.12','11/13','자명종의 강제와 기입관의 고정 — 니다벨리르에 온 뒤 10시간마다 강제가 하나 걸리고(갈 수 없음 · 가야 함 · 살 수 없음 · 주식을 사고팔 수 없음 · 장비를 바꿀 수 없음 · 카드를 뺄 수 없음 · 새로고침해도 바뀌지 않음), 굳지 않은 강제는 다음 10시간에 사라지고 새 강제가 생김. 행동 3회(이동 · 사건 · 상점 · 시간 보내기 · 선택지)마다 걸려 있는 강제 하나가 굳어 풀리지 않음. 노트 — 상점에 들어갈 때마다 관으로 내려와 갱신, 글만 있으면 강제 · 도장이 찍혀 있으면 고정. 중앙정부 문 — 판마다 10~20막 사이에서 정해진 막 수를 지나고 20시간을 넘겨야 열림, 문이 열린 뒤에는 강제가 사라지지 않고 10시간마다 겹쳐 쌓임. 기입관 보스전 개조 — 특성 바꾸기 · 카드 종류 무효 · 따라 쓰기 삭제, 한 턴에 같은 카드를 2번째 쓰면 검게 변하고 3번째는 효과 없이 자물쇠(2턴), 그 턴에 가장 많이 쓴 카드는 다음 1턴 잠김, 카드 3장마다 묶인 카드에 도장(전투 끝까지 사용 불가), 체력 1 이하에서 즉시 턴 종료 후 전부 회복(2페이즈), 체력 상향. 공방 동료(제바르크 · 오토 · 견습생) 영입을 이전으로 되돌림 — 리테만 남음.'],
   ['V2.28.47.12','11/7','화면 개편 — 대화 장면을 비주얼 노벨식으로(허리 위 인물 · 말하는 사람만 밝게 · 이름표 · 아래 대사창 · 대사를 눌러도 다음 · 위쪽에 지역 이름과 기록 · 자동 · 선택지는 대사창 아래 가로 버튼), 전투는 동료 얼굴 칸을 왼쪽 위에(말풍선은 얼굴 옆 · 말할 때 빛남 · 맞으면 흔들림), 위쪽 가운데 턴 수, 행동력을 불씨 구슬로, 턴 종료를 테두리 버튼으로, 위쪽 정보를 둥근 칸으로, 화면 테두리. 동료가 2장에서 회색으로 보이던 문제 수정. 그림이 없는 인물은 실루엣으로 자리만 잡아 둠'],
   ['V2.28.46.11','11/7','설정 정리 — UI 크기 · 효과음 · 화면 흔들림 · 주사위 연출 · 전환 팁 · 튜토리얼 다시 보기를 설정 안의 환경 설정 창으로 옮김'],
