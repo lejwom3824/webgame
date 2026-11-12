@@ -404,6 +404,12 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .mark{font-size:1.15em;font-weight:800;padding:.15em .5em;border-radius:.5em;background:#0d0f12e6;border:1px solid}
 .mark.seal{color:#cfd7df;border-color:#cfd7df}.mark.brand{color:#f0a493;border-color:#b0473b}.mark.temp{color:var(--verdigris);border-color:var(--verdigris)}
 .card.sealed .face.front{filter:grayscale(.85) brightness(.7)}
+.card.jc-warn .face.front{filter:brightness(.34) contrast(1.15)}.card.jc-lock .face.front{filter:grayscale(1) brightness(.5)}
+.mark.jcwarn{color:#e9e2d2;border-color:#e9e2d2}.mark.jclock{color:#d9c48a;border-color:#d9c48a}.mark.jcfix{color:#ef8f7c;border-color:#b0473b}
+.jm-note .jm-h{font-weight:800;margin:14px 0 6px;letter-spacing:.04em}.jm-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.jm-l li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 12px;border:1px solid #ffffff22;border-radius:8px;background:#0d0f12aa}.jm-l li.none{opacity:.5}.jm-l li.fx{border-color:#b0473b}
+.jm-seal{flex:none;font-style:normal;font-weight:800;color:#ef8f7c;border:2px solid #b0473b;border-radius:6px;padding:1px 8px;transform:rotate(-8deg)}
+.plate-btn.jm-new{box-shadow:0 0 0 2px #d9c48a,0 0 14px #d9c48a88}
+.node.jmno{opacity:.38}.node.jmfix{opacity:.3}.node.jmfix .base{stroke:#b0473b;stroke-dasharray:5 4}
 .bname{font-family:var(--f-display);font-size:1.6em;padding:1.1em 1em .2em;text-align:center;line-height:1.15;text-wrap:balance;color:var(--brass-hi)}
 .btext{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:block;text-align:center;padding:.4em 1.1em;font-size:1.48em;line-height:1.48;font-weight:500;text-wrap:pretty;word-break:keep-all}
 .rule{width:70%;height:1px;flex:0 0 auto;background:linear-gradient(90deg,transparent,#b8925a88,transparent)}
@@ -1340,6 +1346,7 @@ function knightTake(d){const C=S.C,E=C.E,ks=knAlive(E);if(!ks.length||d<=0)retur
 /* V32 페이즈 전환: 체력이 1 이하로 떨어지면 턴 종료 후 특수 대사(컷신)를 보여 주고 다시 재개 */
 async function bossPhaseCut(){
   const C=S.C,E=C.E,p=E.pendPhase;E.pendPhase=0;if(!p||C.over)return;
+  if(E.key==='clerk'){E.phase=2;E.idx=0;E.block=0;await wait(400);E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');E.dmgMul=Math.round((E.dmgMul||1)*1.25*100)/100;toast('페이즈 2','기입관이 서류를 새로 편다');clog('페이즈 2 — 체력 전부 회복, 공격 위력 +25%','e');chooseIntent();renderCombat();await wait(300);return}
   if(p===2){
     summonKnights();E.said['은빛 소환']=1;await wait(600);
     E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');
@@ -2397,6 +2404,10 @@ function newRun(hero){
 /* 이전 버전 저장 이어하기 — 20막 지도 → 30막 세 갈래 지도, 장비 칸 추가 */
 function migrateRun(r){
   if(!r)return r;r.store=r.store||[];ensureGear(r);r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
+  /* V2.29.48.12: 공방 동료(제바르크·오토·견습생) 롤백 — 건넨 카드·장비는 보관함으로, 리테만 남김 */
+  {const OUT=['smith','otto','cadet'],back=p=>{if(!p)return;for(const c of p.cards||[])r.store.push(c);r.bag=r.bag||[];for(const g of p.gear||[])r.bag.push(g)};
+    if(r.mates){for(const k of OUT)if(r.mates[k]){back(r.mates[k]);delete r.mates[k]}}
+    if(r.pal&&OUT.includes(r.pal.k)){back(r.pal);r.pal=(r.mates&&r.mates.girl)||null;if(r.mates)delete r.mates.girl}}
   /* V36: 1장 30막 → 15막, 진행한 막은 절반으로 */
   if(r.map&&r.map.v===2&&r.map.path){const m=r.map,row=Math.min(ROWS-1,Math.ceil(m.row/2));m.path=m.path.slice(-row);m.path=row?m.path:[];m.row=row;m.opts=[];m.v=3;if(!r.act||r.act===1)r.floor=row;m.shops=Math.min(m.shops||0,SHOP_MAX);delete r.mapUndo}
   if(!r.map||r.map.g){const old=r.map&&r.map.g,path=[];
@@ -2573,7 +2584,7 @@ function resumeAt(){
 /* ================= combat setup ================= */
 function has(E,t){return E.traits.includes(t)}
 function makeEnemy(key){
-  const d=ENEMY[key];const lv=Array.isArray(d.lv)?ri(d.lv[0],d.lv[1]):d.lv;const HPR2={mech:[750,952],porter:[727,923],server:[840,1067],appr:[637,807],poor:[615,778]},HPF2={sender:1418,examiner:1422,craftsman:1619,collab:1619,docent:1619,chef:1619,guard:1794,clerk:2416};
+  const d=ENEMY[key];const lv=Array.isArray(d.lv)?ri(d.lv[0],d.lv[1]):d.lv;const HPR2={mech:[750,952],porter:[727,923],server:[840,1067],appr:[637,807],poor:[615,778]},HPF2={sender:1418,examiner:1422,craftsman:1619,collab:1619,docent:1619,chef:1619,guard:1794,clerk:4300};
   if(!d.hpR&&HPR2[key])d.hpR=HPR2[key];
   /* 문서에 체력 범위가 따로 적힌 적은 그 범위를 레벨에 맞춰 나눔 (이단심문관 308~422) */
   let maxHp=HPF2[key]||(d.hpR?Math.round(d.hpR[0]+(d.hpR[1]-d.hpR[0])*(lv-d.lv[0])/(d.lv[1]-d.lv[0])):hpAt(d.hp1,lv));
@@ -2825,6 +2836,7 @@ function canPlay(c){
   const d=CARDS[c.id],C=S.C,r=S.run;
   if(d.unplayable&&!dainCurse())return'사용할 수 없는 카드입니다';
   if(C.seal[c.uid]>0)return'봉인된 카드입니다';
+  {const jw=jcDeny(c);if(jw)return jw}
   if(C.pFrozen&&C.turn>=C.pFrozenTurn)return'냉동 — 이번 턴에는 행동할 수 없습니다';
   if(C.noWs&&CARDS[c.id].ws2===C.noWs)return'계약 파기 전투 — 계약한 공방의 카드는 사용할 수 없습니다';
   if(c.id==='t_recall'&&!C.thrown)return'묠니르를 던진 뒤에만 쓸 수 있습니다';
@@ -2866,6 +2878,8 @@ async function playCardRaw(uid,o={}){
   C.hand.splice(C.hand.indexOf(c),1);removeHandEl(uid);
   clog(`▸ ${cardName(c.id,c)}${k.hp!=null?` (체력 ${k.hp})`:` (코스트 ${k.e})`}`,'h');C.curSpecial=d.rar==='special';
   renderCombat();
+  /* 기입관: 한 턴에 같은 카드 3번째 사용 — 효과도 피해도 없이 자물쇠 */
+  if(U&&jcPlay(c)){if(!c.temp&&!c.fusedTmp)C.disc.push(c);jcAfter();renderCombat();if(!o.noTick&&!C.over&&r.hp>0)await apTick(1);return}
   const M=m=>hasM(c,m);
   const so=cardStrikeOpts(c);if(d.type==='atk'){C.ashBonus=0;C.tossBonus=0}
   // 주사위 순서: 카드에 적힌 순서 → 연타 복제 → 주인공 특성 추가 주사위
@@ -2960,6 +2974,7 @@ async function playCardRaw(uid,o={}){
   /* 검도-변화: 같은 카드가 패에 있으면 행동 수치 없이 재사용, 재사용 코스트·드로우는 최대 2 */
   if(c.id==='ms_kendo2'&&!o.reuse){for(let n=1;;n++){if(C.over||C.dead||r.hp<=0)break;const dup=C.hand.find(x=>x.id==='ms_kendo2'&&!canPlay(x));if(!dup)break;clog('검도-변화 재사용','h');await playCardRaw(dup.uid,{noTick:true,reuse:n})}}
   if(!o.reuse)tutEvent('play');
+  if(U&&!C.over)jcAfter();
   if(!o.noTick&&!C.over&&!C.dead&&r.hp>0)await apTick(1);
   if(U&&!C.over&&!C.dead&&r.hp>0&&C.E&&C.E.pendPhase&&C.phase==='player'){S.busy=false;await endTurn()}/* 순수유물주의자: 체력 0이면 즉시 턴 종료 후 회복 */
 }
@@ -3082,7 +3097,7 @@ function heal(n){
 function checkEnemy(){
   const C=S.C,E=C.E;if(C.over)return true;
   if(E.boss&&(E.phase===1||(E.phase===2&&destroyBuild()))&&E.hp<=0){E.hp=1;if(!E.pendPhase){E.pendPhase=E.phase+1;clog(E.phase===1?'체력 0 — 즉시 턴 종료, 페이즈 2':'체력 0 — 즉시 턴 종료, 페이즈 3','e')}renderCombat();return false}
-  if(E.key==='clerk')clerkCheck(E);
+  if(E.key==='clerk'&&E.phase!==2&&E.hp<=0){E.hp=1;if(!E.pendPhase){E.pendPhase=2;clog('체력 0 — 즉시 턴 종료, 페이즈 2','e')}renderCombat();return false}
   if(E.hp<=0&&E.tut&&tutOn()&&S.run.tutStep<(E.tutKeep||0)){E.hp=1;fxAt('enemy','튜토리얼 중','info');return false}/* 튜토리얼 설명이 끝날 때까지 쓰러지지 않음 */
   if(E.hp<=0){E.hp=0;if(liveFoes().length)palEv('kill');return foeDown(E)}
   return false;
@@ -3093,7 +3108,7 @@ async function endTurn(){
   const E=C.E;
   if(E&&E.rift&&!r.flags.riftDone){r.flags.riftDone='dead';C.palShield=true;r.keep=[...(r.keep||[]),'nred'];palSay('아군...일세...',true);fxAt('player','대신 맞음','info');toast('노르드교의 붉은 천','귀속 — 버릴 수 없다');palRender();save()}
   clog('턴 종료','h');tutEvent('end');
-  if(E&&E.boss&&E.pendPhase)await bossPhaseCut();
+  if(E&&(E.boss||E.key==='clerk')&&E.pendPhase)await bossPhaseCut();
   if(eqW('st_b')&&C.energy>0&&r.mode!=='dain'){C.steinBlock=C.energy*3;clog(`스타인러 공방: 남은 코스트 ${C.energy} → 다음 턴 방어 ${C.steinBlock}`)}
   const lacks=dainCurse()?0:C.hand.filter(c=>c.id==='lack').length;
   if(lacks){r.hp-=3*lacks;fxAt('player',`결핍 -${3*lacks}`,'self');flashHurt();clog(`결핍 ${lacks}장: 체력 -${3*lacks}`)}
@@ -3858,9 +3873,9 @@ Object.assign(ACT,{
   '진압봉':{k:'atk',gim:'guard',d:[A(22,30)]},
   '정의 집행':{k:'def',d:[D(20,28)],fx:()=>{S.C.redefMore=(S.C.redefMore||0)+2;clog('정의 집행: 다음 턴 재정의되는 카드 +2장','e')},tag:'다음 턴 재정의 +2장'},
   '서류 정리':{k:'atk',d:[A(14,20),A(14,20)]},
-  '기입':{k:'def',d:[D(24,36)],fx:()=>{S.C.nullMore=(S.C.nullMore||0)+1;clog('기입: 다음 턴 무효로 정의되는 카드 종류 +1','e')},tag:'무효 종류 +1'},
+  '기입':{k:'def',d:[D(24,36)]},
   '정정':{k:'debuff',desc:'직전에 쓴 카드를 그대로 따라 씀',fx:async()=>{const C=S.C,id=C.lastCardId;if(!id||!CARDS[id]||!(CARDS[id].d||[]).length){clog('정정: 따라 쓸 카드가 없다','e');return}toast('정정',`「${CARDS[id].name}」을(를) 따라 썼다`);await enemyUseCard(id)}},
-  '삭제':{k:'atk',gim:'guard',d:[A(40,60)],tag:'무효로 정의된 횟수 1당 +10%'},
+  '삭제':{k:'atk',gim:'guard',d:[A(40,60)]},
   /* 약화된 수르트 (레바테인 사건 · 임시 행동) */
   '레바테인-타격':{k:'atk',d:[A(16,24)],fx:hit=>{if(hit)a2Give('burn',5)},tag:'소각 5'},
   '점화':{k:'debuff',desc:'소각 10',fx:()=>a2Give('burn',10)},
@@ -3899,9 +3914,10 @@ Object.assign(ENEMY,{
     passives:[['시식의 정석','먹기·배부름·포화 키워드를 플레이어와 같은 규칙으로 씀']]},
   guard:{name:'중앙정부의 경비원',tier:'elite',act2:1,gearN:2,lv:58,hp1:350,ab:49,acc:85,eva:40,apMax:7,order:['진압봉','진압봉','정의 집행'],art:'e_guard',
     passives:[['재정의','매 턴 시작 시 플레이어 패의 카드 2장을 무작위로 재정의함 (이름·코스트·공격↔방어 중 1~2가지), 바뀐 카드는 그 턴이 끝나면 원래대로 돌아옴']]},
-  clerk:{name:'기록하는 공무원',tier:'boss',act2:1,gearN:2,lv:30,hp1:500,hpBonus1:721,atkFix:109,acc:80,eva:40,apMax:10,order:['서류 정리','기입'],order2:['정정','삭제'],art:'clerk',
-    passives:[['기록','플레이어가 이번 턴에 가장 많이 쓴 카드 종류(공격·방어·회피)를 기록해, 다음 턴 그 종류의 카드를 무효로 정의함 (무효로 정의된 카드는 주사위 값이 0)'],
-      ['정의','체력이 50% 이하가 되면 자명종이 플레이어를 다시 정의함, 플레이어의 패시브·특성 중 1개가 이번 전투 동안 무작위 부정적 특성으로 바뀜']]},
+  clerk:{name:'기록하는 공무원',tier:'boss',act2:1,gearN:2,lv:30,hp1:500,hpBonus1:721,atkFix:109,acc:80,eva:40,apMax:10,order:['서류 정리','기입'],order2:['서류 정리','삭제'],art:'clerk',
+    passives:[['자명종','한 턴에 같은 카드를 2번째 쓰면 카드가 검게 변함. 3번째 쓰면 그 사용은 효과도 피해도 없이 자물쇠로 묶임 (2턴이 지나야 풀림). 그 턴에 가장 많이 쓴 카드는 다음 1턴 동안 잠김'],
+      ['기입','카드를 3장 쓸 때마다 자물쇠로 묶인 카드 하나에 도장을 찍음. 도장이 찍힌 카드는 이 전투가 끝날 때까지 쓸 수 없음. 묶인 카드가 없으면 도장은 버려짐'],
+      ['마감','체력이 1 이하가 되면 그 자리에서 턴이 끝나고, 다음 턴에 체력을 전부 회복함 (1회)']]},
   surtW:{name:'약화된 수르트',sub:'레바테인 사건 · 임시 수치',tier:'boss',lv:130,hp1:300,atkFix:100,acc:70,eva:50,apMax:10,order:['레바테인-타격','점화','레바테인-타격'],art:'surt'},
 });
 const A2_NORMAL=['mech','porter','server','appr','poor','weaver','interp','keeper'];
@@ -4222,7 +4238,7 @@ function showEventKey(k){
   sc.innerHTML=`<div class="panel evpanel" style="width:min(800px,100%)"><div><div class="psub">사건 · ${PLACE[ev.place]}${ev.zone?` · ${ev.zone==='C'?'공통':DIR2[ev.zone].n}`:''}</div><div class="ptitle">${ev.title}</div></div>
     <div class="ptext">${ev.text}</div><div class="choices">${ev.choices.map((c,i)=>{const L=c.chk&&luck(c.chk),poor=c.cost&&r.gold<c.cost;
       return`<button class="choice" data-i="${i}" ${poor?'disabled':''}><b>${c.b}</b>${c.chk?`<i class="chk${L.auto?' auto':L.pct<35?' low':''}">${chkLabel(c.chk,L)}</i><span>성공: ${c.ok.s}<br>실패: ${c.ng.s}${poor?' — 실링이 모자라다':''}</span>`:`<span>${c.s}${poor?' — 실링이 모자라다':''}</span>`}</button>`}).join('')}</div></div>`;
-  sc.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const c=ev.choices[+b.dataset.i];r.flags.events.push(k);
+  sc.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const c=ev.choices[+b.dataset.i];r.flags.events.push(k);jmAct();
     if(!c.chk)return runFx(c.fx,showMap);rollLuck(ev,c)});
 }
 /* 운 주사위를 굴리는 화면 */
@@ -4288,7 +4304,7 @@ function eventPanel(title,sub,text,choices){
   const sc=openScreen('',{dim:true});
   sc.innerHTML=`<div class="panel" style="width:min(760px,100%)"><div><div class="psub">${sub}</div><div class="ptitle">${title}</div></div>
     <div class="ptext">${text}</div><div class="choices">${choices.map((c,i)=>`<button class="choice" data-i="${i}"><b>${c.b}</b><span>${c.s}</span></button>`).join('')}</div></div>`;
-  sc.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>choices[+b.dataset.i].f());
+  sc.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{jmAct();choices[+b.dataset.i].f()});
 }
 function pickFromDeck(title,onPick,onBack,list){
   const r=S.run,sc=openScreen('',{dim:true});
@@ -4342,6 +4358,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.29.48.12','11/13','자명종의 강제와 기입관의 고정 — 니다벨리르에 온 뒤 10시간마다 강제가 하나 걸리고(갈 수 없음 · 가야 함 · 살 수 없음 · 주식을 사고팔 수 없음 · 장비를 바꿀 수 없음 · 카드를 뺄 수 없음 · 새로고침해도 바뀌지 않음), 굳지 않은 강제는 다음 10시간에 사라지고 새 강제가 생김. 행동 3회(이동 · 사건 · 상점 · 시간 보내기 · 선택지)마다 걸려 있는 강제 하나가 굳어 풀리지 않음. 노트 — 상점에 들어갈 때마다 관으로 내려와 갱신, 글만 있으면 강제 · 도장이 찍혀 있으면 고정. 중앙정부 문 — 판마다 10~20막 사이에서 정해진 막 수를 지나고 20시간을 넘겨야 열림, 문이 열린 뒤에는 강제가 사라지지 않고 10시간마다 겹쳐 쌓임. 기입관 보스전 개조 — 특성 바꾸기 · 카드 종류 무효 · 따라 쓰기 삭제, 한 턴에 같은 카드를 2번째 쓰면 검게 변하고 3번째는 효과 없이 자물쇠(2턴), 그 턴에 가장 많이 쓴 카드는 다음 1턴 잠김, 카드 3장마다 묶인 카드에 도장(전투 끝까지 사용 불가), 체력 1 이하에서 즉시 턴 종료 후 전부 회복(2페이즈), 체력 상향. 공방 동료(제바르크 · 오토 · 견습생) 영입을 이전으로 되돌림 — 리테만 남음.'],
   ['V2.28.47.12','11/7','화면 개편 — 대화 장면을 비주얼 노벨식으로(허리 위 인물 · 말하는 사람만 밝게 · 이름표 · 아래 대사창 · 대사를 눌러도 다음 · 위쪽에 지역 이름과 기록 · 자동 · 선택지는 대사창 아래 가로 버튼), 전투는 동료 얼굴 칸을 왼쪽 위에(말풍선은 얼굴 옆 · 말할 때 빛남 · 맞으면 흔들림), 위쪽 가운데 턴 수, 행동력을 불씨 구슬로, 턴 종료를 테두리 버튼으로, 위쪽 정보를 둥근 칸으로, 화면 테두리. 동료가 2장에서 회색으로 보이던 문제 수정. 그림이 없는 인물은 실루엣으로 자리만 잡아 둠'],
   ['V2.28.46.11','11/7','설정 정리 — UI 크기 · 효과음 · 화면 흔들림 · 주사위 연출 · 전환 팁 · 튜토리얼 다시 보기를 설정 안의 환경 설정 창으로 옮김'],
   ['V2.28.45.11','11/7','설정의 2장으로 건너뛰기(임시) 버튼이 화면 아래로 밀려 보이지 않던 문제 — 설정 맨 위로 옮김'],
@@ -4768,9 +4785,9 @@ function renderTop(){
    ${['over','victory'].includes(S.screen)?'':'<button class="plate-btn" id="menuBtn" aria-label="메뉴">메뉴</button>'}</div>${S.screen==='combat'&&S.C?`<span class="tb-mid">${S.C.turn||1}턴</span>`:''}`;
   {const fight=S.screen==='combat',dl=dockEl('dockL'),dr=dockEl('dockR'),show=!['over','victory'].includes(S.screen);
     dl.className=dr.className=fight?'dock fight':'dock';dl.hidden=false;
-    dl.innerHTML=`<button class="plate-btn big" id="deckBtn">덱 ${r.deck.length}</button>${S.screen==='map'||fight?`<button class="plate-btn big" id="prepBtn">보관함 ${(r.store||[]).length}</button>`:''}`;
+    dl.innerHTML=`<button class="plate-btn big" id="deckBtn">덱 ${r.deck.length}</button>${S.screen==='map'||fight?`<button class="plate-btn big" id="prepBtn">보관함 ${(r.store||[]).length}</button>`:''}${jmOn()?`<button class="plate-btn big${jmS().noteNew?' jm-new':''}" id="noteBtn">노트</button>`:''}`;
     dr.hidden=!show;dr.innerHTML=`${r.traits&&r.traits.length?`<button class="plate-btn" id="trBtn">특성 ${r.traits.length}</button>`:''}${show?`<button class="plate-btn auto${SET.auto?' on':''}" id="autoBtn" title="자동 전투 — 오른쪽 카드부터 쓸 수 있는 카드를 전부 쓰고 턴을 끝낸다" aria-pressed="${!!SET.auto}">AUTO${SET.auto?' · 켬':''}</button>`:''}`}
-  $('#deckBtn').onclick=()=>openList('덱',[...r.deck].sort(deckSort));if($('#menuBtn'))$('#menuBtn').onclick=openGameMenu;if($('#autoBtn'))$('#autoBtn').onclick=autoToggle;if($('#prepBtn'))$('#prepBtn').onclick=openPrep;
+  $('#deckBtn').onclick=()=>openList('덱',[...r.deck].sort(deckSort));if($('#menuBtn'))$('#menuBtn').onclick=openGameMenu;if($('#autoBtn'))$('#autoBtn').onclick=autoToggle;if($('#prepBtn'))$('#prepBtn').onclick=openPrep;if($('#noteBtn'))$('#noteBtn').onclick=openNote;
   if($('#trBtn'))$('#trBtn').onclick=()=>{const m=$('#modal');m.hidden=false;
     m.innerHTML=`<div class="panel" style="width:min(720px,100%)"><div class="maphead"><div class="ptitle">주인공 특성</div><button class="btn-ghost" id="mClose">닫기</button></div>
       <div class="plist">${r.traits.map(k=>`<div><b>${PTRAIT[k].n}</b>${PTRAIT[k].t}</div>`).join('')}</div></div>`;$('#mClose').onclick=closeModal};
@@ -4800,13 +4817,14 @@ function openGearBag(){bagTalk();const r=ensureGear(S.run),m=$('#modal'),fight=S
   m.querySelectorAll('[data-gi]').forEach(b=>b.onclick=()=>{S.gearSel={i:+b.dataset.gi};openGearBag()});
   m.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{S.gearSel={o:b.dataset.go};openGearBag()});
   if(!fight)bindDrag(m,(from,to,id)=>{const v=id.split(':')[1];
-    if(from==='bag'&&to==='wear'){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}
-    else if(from==='wear'&&to==='bag'){const old=takeOff(r,v,0);if(old)r.bag.push(old)}
+    const GL=s=>{if(jmGearLocked(s)){toast('장비','이 장비는 바꿀 수 없다');return true}return false};
+    if(from==='bag'&&to==='wear'){const i=+v,k=r.bag[i];if(!k)return;if(GL(GEAR[k].s))return;r.bag.splice(i,1);const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}
+    else if(from==='wear'&&to==='bag'){if(GL(v))return;const old=takeOff(r,v,0);if(old)r.bag.push(old)}
     else if(from==='bag'&&to==='palgear'&&pal){const i=+v,k=r.bag[i];if(!k)return;r.bag.splice(i,1);pal.gear.push(k);pal.first=pal.first||k;toast(MATE[pal.k].n,`「${GEAR[k].n}」 건넴`);palEv('give')}
-    else if(from==='wear'&&to==='palgear'&&pal){const old=takeOff(r,v,0);if(!old)return;pal.gear.push(old);pal.first=pal.first||old;toast(MATE[pal.k].n,`「${GEAR[old].n}」 건넴`);palEv('give')}
-    else if(from==='palgear'&&(to==='bag'||to==='wear')&&pal){const i=+v,k=pal.gear[i];if(!k)return;pal.gear.splice(i,1);if(to==='wear'){const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}else r.bag.push(k)}
+    else if(from==='wear'&&to==='palgear'&&pal){if(GL(v))return;const old=takeOff(r,v,0);if(!old)return;pal.gear.push(old);pal.first=pal.first||old;toast(MATE[pal.k].n,`「${GEAR[old].n}」 건넴`);palEv('give')}
+    else if(from==='palgear'&&(to==='bag'||to==='wear')&&pal){const i=+v,k=pal.gear[i];if(!k)return;if(to==='wear'&&GL(GEAR[k].s))return;pal.gear.splice(i,1);if(to==='wear'){const old=wearAt(r,k,GEAR[k].s,0);if(old)r.bag.push(old)}else r.bag.push(k)}
     else return;S.gearSel=null;save();renderTop();openGearBag()});
-  if($('#gbAct'))$('#gbAct').onclick=()=>{if(sel.s){const old=takeOff(r,sel.s,0);if(old)r.bag.push(old)}else{const k=r.bag[sel.i],s=GEAR[k].s;r.bag.splice(sel.i,1);const old=wearAt(r,k,s,0);if(old)r.bag.push(old)}S.gearSel=null;save();renderTop();openGearBag()};
+  if($('#gbAct'))$('#gbAct').onclick=()=>{if(jmGearLocked(sel.s||GEAR[r.bag[sel.i]].s))return toast('장비','이 장비는 바꿀 수 없다');if(sel.s){const old=takeOff(r,sel.s,0);if(old)r.bag.push(old)}else{const k=r.bag[sel.i],s=GEAR[k].s;r.bag.splice(sel.i,1);const old=wearAt(r,k,s,0);if(old)r.bag.push(old)}S.gearSel=null;save();renderTop();openGearBag()};
 }
 function bindPrepTabs(m){m.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{S.gearSel=null;S.prepTab=b.dataset.ptab;openPrep()})}
 function prepClose(fight){closeModal();renderTop();if(fight){if(S.C.prepEdit){S.C.prepEdit=false;clog('전투 중 정비 — 이번 턴을 소모했다','h');renderCombat();endTurn()}else renderCombat()}}
@@ -4843,10 +4861,10 @@ function openPrep(v,anchor){if(!S.prepOpenT||Date.now()-S.prepOpenT>1500)bagTalk
     ${palC?`<div class="ap-h">${MATE[palC.k].n}에게 준 카드 ${palC.cards.length}장<span class="dzhint">끌어다 놓으면 건네준다</span></div><div class="cardgrid" data-dz="pal" style="overflow:visible;height:auto;max-height:none;margin-bottom:16px;min-height:120px">${palC.cards.map(c=>`<div class="cardpick" data-duid="${c.uid}" data-dsrc="pal" data-dname="${CARDS[c.id].name}">${staticCard(c.id,false,c)}<button class="plate-btn" data-pback2="${c.uid}">돌려받기</button></div>`).join('')||'<div class="hint">아직 없음 · 공격 카드를 주면 함께 공격한다</div>'}</div>`:''}
     <div data-dz="store" style="min-height:160px"><div class="ap-h" id="prepStoreH">카드 보관함</div>${storeHTML(st)||'<div class="hint">비어 있음</div>'}</div></div></div>`;
   bindStatic(m);bindPrepTabs(m);$('#mClose').onclick=()=>prepClose(fight);
-  m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.deck.find(x=>x.uid===+b.dataset.out);if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}tutEvent('prepOut');save();openPrep(view)});
+  m.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const view=prepView(),c0=r.deck.find(x=>x.uid===+b.dataset.out),c=jmDeckPick(c0);if(c0&&!c)return toast('덱','이 카드는 덱에서 뺄 수 없다');if(!c||r.deck.length<=PREP_MIN)return;r.deck.splice(r.deck.indexOf(c),1);r.store.push(c);if(fight){prepSync(c,true);S.C.prepEdit=true}tutEvent('prepOut');save();openPrep(view)});
   m.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{const view=prepView(),c=r.store.find(x=>x.uid===+b.dataset.in);if(!c)return;r.store.splice(r.store.indexOf(c),1);r.deck.push(c);if(fight){prepSync(c,false);S.C.prepEdit=true}tutEvent('prepIn');save();openPrep(view,true)});
   m.querySelectorAll('[data-pback2]').forEach(b=>b.onclick=()=>{const view=prepView(),c=palC.cards.find(x=>x.uid===+b.dataset.pback2);if(!c)return;palC.cards.splice(palC.cards.indexOf(c),1);r.store.push(c);save();openPrep(view)});
-  bindDrag(m,(from,to,uid)=>{uid=+uid;const view=prepView(),L={deck:r.deck,store:r.store,pal:palC?palC.cards:null},a=L[from],b=L[to];if(!a||!b)return;const c=a.find(x=>x.uid===uid);if(!c)return;
+  bindDrag(m,(from,to,uid)=>{uid=+uid;const view=prepView(),L={deck:r.deck,store:r.store,pal:palC?palC.cards:null},a=L[from],b=L[to];if(!a||!b)return;let c=a.find(x=>x.uid===uid);if(!c)return;if(from==='deck'){c=jmDeckPick(c);if(!c)return toast('덱','이 카드는 덱에서 뺄 수 없다')}
     if(from==='deck'&&r.deck.length<=PREP_MIN){toast('덱',`덱은 최소 ${PREP_MIN}장이어야 한다`);return}
     a.splice(a.indexOf(c),1);b.push(c);if(fight&&(from==='deck'||to==='deck')){prepSync(c,from==='deck');S.C.prepEdit=true}
     if(from==='deck'&&to==='store')tutEvent('prepOut');if(from==='store'&&to==='deck')tutEvent('prepIn');
@@ -4917,7 +4935,7 @@ function renderEnemy(){
   if(E.art)chips.push(`<span class="chip brass">예술적 감각 ${E.art}</span>`);if(E.wipT!=null)chips.push(`<span class="chip brass">작품 준비 </span>`);if(E.done)chips.push(`<span class="chip bad">작품 완성 · 위력 +200%</span>`);if(E.stun)chips.push(`<span class="chip good">말문이 막힘 · 다음 행동 취소</span>`);if(E.rage)chips.push(`<span class="chip bad">분노 · 위력 +${Math.round((E.rage-1)*100)}%</span>`);
   if(E.mark)chips.push(`<span class="chip bad">궁니르-명중 ${E.mark}</span>`);
   if(E.charged)chips.push(`<span class="chip bad">송출 대기</span>`);if(E.para)chips.push(`<span class="chip bad">마비 · 명중 -10</span>`);
-  if(E.key==='clerk'&&E.defined)chips.push(`<span class="chip brass">페이즈 2 · 정의</span>`);
+  if(E.key==='clerk'&&E.phase===2)chips.push(`<span class="chip brass">페이즈 2</span>`);
   if(E.boss){chips.push(`<span class="chip brass">페이즈 ${E.phase} · ${['','정화','단죄','번제화'][E.phase]}</span>`);
     if(E.phase<3)chips.push(`<span class="chip brass">분노 ${E.anger}</span>`);
     if(knAlive(E).length)chips.push(`<span class="chip good">은빛 기사 ${knAlive(E).length} · 명령-보호</span>`);
@@ -5084,6 +5102,7 @@ function renderHand(){
     if(C.seal[c.uid])marks.push(`<span class="mark seal">봉인 ${C.seal[c.uid]}</span>`);
     if(C.brand.includes(c.uid))marks.push(`<span class="mark brand">낙인</span>`);
     if(c.temp)marks.push(`<span class="mark temp">복제</span>`);
+    {const jm=!fuse&&jcMark(c);if(jm)marks.push(jm.m);el.classList.toggle('jc-warn',!!jm&&jm.cls==='jc-warn');el.classList.toggle('jc-lock',!!jm&&jm.cls==='jc-lock')}
     {const pk=C.select&&C.select.pick?cards.filter(x=>C.select.pick.includes(x.uid)).length:0;if(pk)marks.push(`<span class="mark temp">버림 ${pk}</span>`);el.classList.toggle('picked',pk>0)}
     if(S.screen==='hunt'){const W=hWeight(c);if(W>1)marks.push(`<span class="mark wt">가중치 ${W}</span>`)}
     el.querySelector('.marks').innerHTML=marks.join('');
@@ -5531,7 +5550,6 @@ function a2AfterDraw(){const C=S.C,r=S.run;
   /* 냉각 코일 */
   if(gs('coil')&&(C.pSteam||0)>=10){C.pSteam-=10;a2Hit('cool',2);clog('냉각 코일: 증기 -10, 대상에게 냉매 2')}
   if(liveFoes().some(f=>f.key==='guard'))redefine(2+(C.redefMore||0)),C.redefMore=0;
-  if(liveFoes().some(f=>f.key==='clerk')&&C.nullNext){C.nullKinds=C.nullNext;C.nullNext=null;toast('기록',`이번 턴 ${C.nullKinds.map(k=>KIND_N[k]).join('·')} 카드는 무효`);clog(`기록: 이번 턴 ${C.nullKinds.map(k=>KIND_N[k]).join('·')} 카드의 주사위 값 0`,'e')}
 }
 /* 턴 시작 (코스트 계산 전) — 냉매 감소, 열기 감소 */
 function a2TurnStart(){const C=S.C;if(C.coldAuto&&alive(C.E))a2Hit('cool',C.coldAuto);if(C.foodAuto)foodGain(null,C.foodAuto,true);if(eq('own_kr')&&C.turn>=3)gainBlock(15,0,'오래된 근속 배지');if(C.pCool>0)C.pCool--;foodTurn(null,true);if(C.pCrack&&C.turn>(C.pCrackT||0)+1)C.pCrack=0}
@@ -5546,9 +5564,8 @@ async function a2EndTurn(){const C=S.C,r=S.run;
   for(const w of wips){if(rnd()<.05+rnd()*.15){for(const a of[C.hand,C.draw,C.disc]){const i=a.indexOf(w);if(i>=0)a.splice(i,1)}C.exh.push(w);C.hand.push({uid:UID++,id:'art_done',temp:true});C.master=true;toast('작품-완성','공격 위력 +200% · 드로우 +3 · 코스트 +2');clog('작품 준비 → 작품-완성')}}
   if(C.pFrozen&&C.turn>=C.pFrozenTurn){C.pFrozen=false;clog('냉동이 풀렸다')}
   C.redef={};
-  /* 기록 — 이번 턴에 가장 많이 쓴 카드 종류 → 다음 턴 무효 */
-  if(liveFoes().some(f=>f.key==='clerk')){const u=C.kindUse||{},ks=Object.keys(u).filter(k=>u[k]>0).sort((a,b)=>u[b]-u[a]);const n=1+(C.nullMore||0);C.nullMore=0;
-    if(ks.length){C.nullNext=ks.slice(0,n);clog(`기록: 이번 턴 가장 많이 쓴 ${C.nullNext.map(k=>KIND_N[k]).join('·')} 카드를 다음 턴 무효로 정의`,'e')}}
+  /* 기입관: 그 턴에 가장 많이 쓴 카드 → 다음 1턴 잠김 */
+  jcEndTurn();
   C.kindUse={};C.nullKinds=null;
   /* 적: 도망 (턴 종료 시 체력 50% 이하) */
   for(const E of liveFoes()){if((E.key==='cultist'||E.key==='poor')&&!E.noFlee&&E.hp<=E.maxHp*.5){E.fled=true;C.fledAny=true;toast(E.key==='poor'?'발악':'점조직',`${E.name}이(가) 도망쳤다`);clog(`${E.name} 도망침`,'e')}}
@@ -5608,7 +5625,8 @@ function foeDown(E){const C=S.C;if(E.dead)return false;E.dead=true;$('#enemy').c
   clog(`${E.name} 쓰러짐`,'h');toast('처치',`${E.name}`);
   setTimeout(()=>{if(S.C===C&&!C.over){$('#enemy').classList.remove('dead');C.E=alive(C.E)?C.E:liveFoes()[0];renderCombat()}},REDUCED?60:420);return true}
 /* 공무원 '정의' (체력 50% 이하) */
-function clerkCheck(E){const C=S.C,r=S.run;if(E.key!=='clerk'||E.defined||E.hp>E.maxHp*.5||E.hp<=0)return;E.defined=true;E.phase=2;E.idx=0;
+function clerkCheck(E){return;/* V2.29.48.12: 정의(특성 바꾸기) 삭제 */
+  const C=S.C,r=S.run;if(E.key!=='clerk'||E.defined||E.hp>E.maxHp*.5||E.hp<=0)return;E.defined=true;E.phase=2;E.idx=0;
   const negs=Object.keys(PTRAIT).filter(k=>PTRAIT[k].c<0&&!PTRAIT[k].hide&&!r.traits.includes(k));const nk=pick(negs);
   if(r.traits.length){const i=Math.floor(rnd()*r.traits.length);C.defOrig={i,k:r.traits[i]};r.traits[i]=nk;toast('정의',`자명종이 다시 정의했다 — 「${PTRAIT[C.defOrig.k].n}」 → 「${PTRAIT[nk].n}」 (이번 전투)`)}
   else{C.defAdd=nk;r.traits.push(nk);toast('정의',`자명종이 다시 정의했다 — 「${PTRAIT[nk].n}」 (이번 전투)`)}
@@ -5780,13 +5798,14 @@ function genMap2(dir){
 function m2PickStart(nodes,dir){let best=null;for(const n of nodes){if(n.kind!=='room'||n.reg!==dir||n.gate||n.adj.includes(0))continue;const d=Math.hypot(n.x,n.y);if(!best||d<best[0])best=[d,n]}return best?best[1]:null}
 /* 동료 영입 막 (위치 고정) — 스타인러 제바르크의 작업장 · 크리뷔스 오토의 냉각 작업장 · 아쉬부티 아카데미 앞 */
 const FIX_N={smith:'제바르크의 작업장',otto:'오토의 냉각 작업장',cadet:'아카데미 앞'};
-function m2AssignFix(M){if(M.fixDone)return;for(const[g,k]of[['E','smith'],['N','otto'],['S','cadet']]){let best=null;
+function m2AssignFix(M){M.fixDone=true;return;/* V2.29.48.12: 공방 동료 영입 막 롤백 */
+  if(M.fixDone)return;for(const[g,k]of[['E','smith'],['N','otto'],['S','cadet']]){let best=null;
   for(const n of M.nodes){if(n.kind!=='room'||n.reg!==g||n.gate||n.isStart||n.fix||n.id===M.cur||n.cleared||n.used||n.shop)continue;const d=Math.abs(Math.hypot(n.x,n.y)-M2D*.55);if(!best||d<best[0])best=[d,n]}
   if(best)best[1].fix=k}M.fixDone=true}
 const m2Node=id=>S.run.m2.nodes[id];
 const regWS=reg=>reg==='C'?'krim':DIR2[reg].ws;
 /* 막 종류 — 숫자를 그 지도의 '만약에' 규칙으로 읽음 */
-function m2Type(n){const r=S.run;if(n.kind==='center')return'rush';if(n.kind==='ws')return r.m2&&n.id===r.m2.start?'start':'ws';if(n.isStart)return'begin';if(n.fix)return n.fixDone?'empty':'mate';if(n.cleared)return'empty';
+function m2Type(n){const r=S.run;if(n.kind==='center')return'rush';if(n.kind==='ws')return r.m2&&n.id===r.m2.start?'start':'ws';if(n.isStart)return'begin';if(n.cleared)return'empty';
   if(r.mode==='dain')return n.v===2?'elite':'combat';if(r.hostile&&!isFriend(regWS(n.reg)))return'combat';
   let v=n.v;if(!A2RULE.combat&&v<=1)v=2;else if(!A2RULE.elite&&v>=2)v=1;return['combat','event','shop','elite'][v]}
 const M2N={begin:'시작 지점',mate:'동료',shop:'상점',event:'사건',combat:'전투',elite:'정예',empty:'빈 칸',start:'시작',ws:'공방',rush:'중앙정부 · 정예 러시',gate:'중앙정부 입구',boss:'보스'};
@@ -5815,7 +5834,7 @@ function m2Svg(mode){const r=S.run,M=r.m2,IN=M.inside;
   for(const n of M.nodes)for(const j of n.adj){if(j<n.id)continue;const pk=(n.id===M.cur&&nb.has(j))||(j===M.cur&&nb.has(n.id));if(only&&!pk)continue;const m=M.nodes[j];
     h+=`<line class="edge${walked.has(n.id+'-'+j)?' walked':''}${pk?' pick':''}" x1="${n.x}" y1="${n.y}" x2="${m.x}" y2="${m.y}"/>`}
   for(const n of M.nodes){if(only&&!only.has(n.id))continue;const t=m2Type(n),big=n.kind!=='room'?(n.kind==='center'?36:32):26,ch=nb.has(n.id),here=n.id===M.cur;
-    h+=`<g class="node ${t}${here?' here':''}${ch?' choice':''}${n.vis&&!here?' seen':''}" ${ch?`data-id="${n.id}"`:''} transform="translate(${n.x} ${n.y})"><circle class="halo" r="${big+9}"/><circle class="base" r="${big}"/><g transform="scale(1.55)">${M2IC[t]}</g>${n.used&&t==='shop'?`<text class="used" y="${big+16}" text-anchor="middle">사용함</text>`:''}<title>${M2N[t]}</title></g>`;
+    const jn=jmNoted(n.id);h+=`<g class="node ${t}${here?' here':''}${ch?' choice':''}${n.vis&&!here?' seen':''}${jn?(jn>1?' jmfix':' jmno'):''}" ${ch?`data-id="${n.id}"`:''} transform="translate(${n.x} ${n.y})"><circle class="halo" r="${big+9}"/><circle class="base" r="${big}"/><g transform="scale(1.55)">${M2IC[t]}</g>${n.used&&t==='shop'?`<text class="used" y="${big+16}" text-anchor="middle">사용함</text>`:''}<title>${M2N[t]}</title></g>`;
     }
   if(mode==='full'){const off={N:-52,E:66,S:72,W:66};for(const k of'NESW')h+=`<text class="lab" x="${WS_POS[k][0]}" y="${WS_POS[k][1]+off[k]}">${WS_LAB[k]}</text>`;h+=`<text class="lab small" x="0" y="66">중앙정부</text>`}
   if(mode==='mini'&&cur.kind!=='center'){const half=m2MiniHalf(),lk=M.wsNeed!=null&&!M.wsDone?m2Node(M.wsNeed):null,a=lk?Math.atan2(lk.y-cur.y,lk.x-cur.x):Math.atan2(-cur.y,-cur.x),x=cur.x+Math.cos(a)*half*.84,y=cur.y+Math.sin(a)*half*.84;h+=`<g class="m2arrow" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(a*180/Math.PI).toFixed(1)}) scale(${(half/170).toFixed(2)})"><path d="M-18 -13 L18 0 L-18 13 L-9 0Z"/></g>`}
@@ -5840,10 +5859,10 @@ function showMap2(full){const r0=S.run;if(r0.m2&&r0.m2.v===2&&!r0.m2.fixDone)m2A
   const optBtn=(attr,type,name,note,cls)=>`<button class="m2opt ${type}${cls||''}" ${attr}><svg viewBox="-15 -15 30 30" aria-hidden="true">${M2IC[type]}</svg><b>${name}</b>${note?`<small>${note}</small>`:''}</button>`;
   let opts;
   if(IN){const nd=innerNodes(IN.diag),nx=nd[IN.cur+1];opts=nx?optBtn(`data-in="${nx.id}"`,nx.kind==='re'?'elite':nx.kind,nx.kind==='re'?'정예 '+nx.n:'보스','',''):''}
-  else opts=[...cur.adj].sort((a,b)=>DIST[a]-DIST[b]).map(j=>{const n=M.nodes[j],ty=m2Type(n),close=DIST[j]<DIST[M.cur];return optBtn(`data-id="${j}"`,ty,n.kind==='ws'?WS_LAB[n.reg]:n.fix&&!n.fixDone?FIX_N[n.fix]:M2N[ty],`${m2Bearing2(cur,n)}쪽${close?(lockC?' · 공방 방향':' · 중앙정부 방향'):''}${n.kind==='center'&&lockC?' · 공방에 먼저 다녀와야 함':''}`,close?' near':'')}).join('');
-  const LEG=[['here','내 위치'],['can','갈 수 있는 곳'],['shop','상점'],['event','사건'],['combat','전투'],['elite','정예'],['mate','동료'],['ws','공방'],['rush','중앙정부']];
+  else opts=[...cur.adj].sort((a,b)=>DIST[a]-DIST[b]).map(j=>{const n=M.nodes[j],ty=m2Type(n),close=DIST[j]<DIST[M.cur];return optBtn(`data-id="${j}"`,ty,n.kind==='ws'?WS_LAB[n.reg]:M2N[ty],`${m2Bearing2(cur,n)}쪽${close?(lockC?' · 공방 방향':' · 중앙정부 방향'):''}${n.kind==='center'&&lockC?' · 공방에 먼저 다녀와야 함':n.kind==='center'&&!jmS().open?' · 문이 닫혀 있음':''}${jmNoted(j)?(jmNoted(j)>1?' · 기입':' · 보류'):''}`,close?' near':'')}).join('');
+  const LEG=[['here','내 위치'],['can','갈 수 있는 곳'],['shop','상점'],['event','사건'],['combat','전투'],['elite','정예'],['ws','공방'],['rush','중앙정부']];
   const sc=openScreen('');
-  sc.innerHTML=`<div class="m2stage"><div class="m2head"><b>${where}</b>${guide?`<span>${guide}</span>`:''}<span class="${r.hostile&&!IN?'bad':''}">${what}</span>${fld?`<span class="m2fld">${fld}</span>`:''}</div><div class="m2opts">${opts}</div>
+  sc.innerHTML=`<div class="m2stage"><div class="m2head"><b>${where}</b>${guide?`<span>${guide}</span>`:''}<span class="${r.hostile&&!IN?'bad':''}">${what}</span>${fld?`<span class="m2fld">${fld}</span>`:''}${IN?'':`<span>${jmS().open?'중앙정부의 문이 열려 있다':'중앙정부의 문은 닫혀 있다'}</span>`}</div><div class="m2opts">${opts}</div>
     <div class="m2tag">누르면 전체 지도</div><div class="m2mini" id="m2mini" tabindex="0" role="button" aria-label="전체 지도 열기"><svg viewBox="${m2MiniBox()}">${m2Svg('mini')}</svg></div>
     <div class="m2full" id="m2full" hidden><svg id="m2fsvg" viewBox="-520 -520 1040 1040">${m2Svg('full')}</svg>
       <div class="m2legend">${LEG.map(([k,n])=>`<span class="lg ${k}"><i></i>${n}</span>`).join('')}</div>
@@ -5871,7 +5890,6 @@ function showMap2(full){const r0=S.run;if(r0.m2&&r0.m2.v===2&&!r0.m2.fixDone)m2A
   $('#m2close').onclick=()=>{box.hidden=true};
   if(full)openFull();
   palRender();palIdle();
-  if(!IN&&cur.adj.some(j=>{const x=M.nodes[j];return x.fix&&!x.fixDone&&!hasMate(x.fix)})){r.flags.fixSaid=r.flags.fixSaid||{};if(!r.flags.fixSaid[cur.id]){r.flags.fixSaid[cur.id]=1;setTimeout(()=>palEv('fix'),600)}}
 }
 function m2Bearing2(a,b){return m2Bearing({x:b.x-a.x,y:b.y-a.y})}
 function a2Group(shopWs){const n=ri(1,3),o=[];for(let i=0;i<n;i++)o.push(pick(A2_NORMAL));const staff=shopWs&&SHOP_STAFF[shopWs];if(staff)o[0]=staff;return o.map(k=>makeEnemy(k))}
@@ -5880,17 +5898,18 @@ function innerGo(id){const r=S.run,IN=r.m2.inside;if(!IN||id!==IN.cur+1)return;s
 function enterNode2(id){
   const r=S.run,M=r.m2,n=m2Node(id),from=M.cur;if(!m2Node(from).adj.includes(id))return;
   if(n.kind==='center'&&M.wsNeed!=null&&!M.wsDone)return toast('중앙정부',`${WS_LAB[r.dir]}에 먼저 다녀와야 한다`);
+  if(n.kind==='center'&&!jmS().open)return toast('중앙정부','문이 닫혀 있다');
+  {const dn=jmMoveDeny(from,id);if(dn)return toast('',dn)}
   const a=Math.min(from,id),b=Math.max(from,id);M.walked=M.walked||[];if(!M.walked.includes(a+'-'+b))M.walked.push(a+'-'+b);
   if(n.kind==='center'){const gate=m2Node(from).gate||'NE';return confirmBox('중앙정부','중앙정부 안으로 들어간다 — 정예 4명과 보스를 차례로 상대한다. 사이에 회복은 없고, 도망칠 수 없으며, 되돌아갈 수 없다.','들어간다',()=>{M.cur=id;n.vis=true;M.inside={diag:gate,cur:0};save();showMap();a2Guide('gov','krim')})}
-  M.cur=id;const first=!n.vis;n.vis=true;r.floor=(r.floor||0)+1;stockTick();palEv('map');
+  M.cur=id;const first=!n.vis;n.vis=true;r.floor=(r.floor||0)+1;stockTick();jmAct();jmDoor();palEv('map');
   if(fieldStep(n,id,first))return;
   m2Arrive(id,first)}
 function m2Arrive(id,first){const r=S.run,M=r.m2,n=m2Node(id);
   a2GuideRegion(n.reg);
   if(n.kind==='ws'&&n.id===M.wsNeed&&!M.wsDone){M.wsDone=true;save();toast(WS_LAB[n.reg],'공방에 닿았다 — 이제 중앙정부로 향할 수 있다')}
   if(n.kind==='ws'&&n.reg==='S'&&r.mode==='human'){save();return gokStall()}
-  if(n.fix&&!n.fixDone&&r.mode==='human'){save();return mateVisit(n)}
-  const t=m2Type(n);let at=null;
+    const t=m2Type(n);let at=null;
   if((t==='combat'||t==='elite')&&!r.hostile&&r.mode==='human'){n.cleared=true;save();showMap();return confirmBox('적대','이곳의 사람들은 적대하지 않으면 싸우지 않는다. 적대하면 모든 공방이 플레이어를 적대한다.','적대한다',()=>{r.hostile=true;n.cleared=false;toast('적대','모든 공방이 플레이어를 적대한다');r.at={kind:'combat',enemies:a2Group(null),node:id};save();transition(resumeAt)})}
   if(t==='combat')at={kind:'combat',enemies:a2Group(n.v===0||n.shop?(n.shop?n.shop.ws:regWS(n.reg)):null),node:id};
   else if(t==='elite')at={kind:'combat',enemies:[makeEnemy(pick(['sender','examiner']))],node:id};
@@ -5972,7 +5991,7 @@ function showBark(who,tx){let b=$('#mbark');if(!b){b=document.createElement('div
 function shopBark(k,line){const r=S.run;if(k==='rich'||k==='cheap')palEv('buy');else if(k==='quit')palEv('leave');if(!r||r.act!==2||r.mode!=='human')return;const l=line||(k&&MEL_BARK[k]?mpick(MEL_BARK[k]):'');if(!l)return;showBark('멜헬름',l);const p=r.pal;if(k&&p&&p.k==='girl'&&!p.away&&RIT_BARK[k]&&Math.random()<.6)setTimeout(()=>showBark('리테',mpick(RIT_BARK[k])),1300)}
 function melRegion(n,delay){const r=S.run,F=r.flags,reg=n&&n.reg;if(!reg||reg==='C'||(r.pal&&r.pal.k==='girl')||!F.melIntro)return;F.melReg=F.melReg||{};F.reg=F.reg||{};
   if(F.melReg[reg]===1||!F.reg[reg]){F.melReg[reg]=2;F.reg[reg]=1;save();setTimeout(()=>shopBark(null,MEL_REGION[reg]),delay||1800)}}
-function shopOnEnter(n){const r=S.run,key=(r.at&&r.at.node)+'|'+(r.floor||0);if(S.shopVisit===key)return;S.shopVisit=key;S.shopLook=false;S.shopBought=false;if(r.mode!=='human')return;
+function shopOnEnter(n){const r=S.run,key=(r.at&&r.at.node)+'|'+(r.floor||0);if(S.shopVisit===key)return;S.shopVisit=key;S.shopLook=false;S.shopBought=false;jmAct();jmNoteSync();save();if(r.mode!=='human')return;
   const st=r.stock;if(st&&st.own){st.seen=st.seen||{};let best=0;for(const k in st.own){const p=st.p[k],s0=st.seen[k];if(s0){const ch=(p-s0)/s0;if(Math.abs(ch)>Math.abs(best))best=ch}}for(const k in st.own)st.seen[k]=st.p[k];
     if(best>=.15)setTimeout(()=>shopBark('sup'),600);else if(best<=-.15)setTimeout(()=>shopBark('sdown'),600)}
   melRegion(n)}
@@ -6003,12 +6022,12 @@ function showShop2(){
   bindStatic(sc);
   sc.querySelectorAll('.shoprow .cardpick,.shopgear .eqcard').forEach(e=>e.addEventListener('click',ev=>{if(!ev.target.closest('button'))S.shopLook=true}));
   const bought=(p,g0)=>{S.shopBought=true;shopBark(p>=g0*.5?'rich':Math.random()<.5?'cheap':null)};
-  sc.querySelectorAll('[data-bc]').forEach(b=>b.onclick=()=>{const it=sh.cards[+b.dataset.bc],p=cPrice(it);if(it.sold)return;if(r.gold<p)return shopBark('poor');const g0=r.gold;r.gold-=p;it.sold=true;n.used=true;addToDeck(it.id);toast('카드',`「${CARDS[it.id].name}」 — 카드 보관함으로`);save();showShop2();bought(p,g0)});
-  sc.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{const it=sh.gear[+b.dataset.bg],p=gPrice(it);if(it.sold)return;if(r.gold<p)return shopBark('poor');const g0=r.gold;r.gold-=p;it.sold=true;n.used=true;save();setTimeout(()=>bought(p,g0),50);
+  sc.querySelectorAll('[data-bc]').forEach(b=>b.onclick=()=>{const it=sh.cards[+b.dataset.bc],p=cPrice(it);if(it.sold)return;if(jmNoBuy('card',+b.dataset.bc))return toast('상점','이 물건은 지금 살 수 없다');if(r.gold<p)return shopBark('poor');const g0=r.gold;r.gold-=p;it.sold=true;n.used=true;addToDeck(it.id);toast('카드',`「${CARDS[it.id].name}」 — 카드 보관함으로`);save();showShop2();bought(p,g0)});
+  sc.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{const it=sh.gear[+b.dataset.bg],p=gPrice(it);if(it.sold)return;if(jmNoBuy('gear',+b.dataset.bg))return toast('상점','이 물건은 지금 살 수 없다');if(r.gold<p)return shopBark('poor');const g0=r.gold;r.gold-=p;it.sold=true;n.used=true;save();setTimeout(()=>bought(p,g0),50);
     if(it.type==='held'){r.equip=r.equip||[];if(!r.equip.includes(it.k))r.equip.push(it.k);toast('소유 효과 장비',`「${EQUIP[it.k].n}」 — 장비 보관함에 있으면 효과가 난다`);save();showShop2()}else gainGear(it.k,showShop2)});
   $('#sRer').onclick=()=>{if(r.gold<rerCost)return shopBark('poor');r.gold-=rerCost;if(freeR&&!(eq('u_pass')&&!sh.rer)&&r.flags.actF.freeRer>0)r.flags.actF.freeRer--;sh.rer++;n.shop=null;const keep={rer:sh.rer,removed:sh.removed,removeCost:sh.removeCost,disc30:sh.disc30,ws:sh.ws};
     r.shopN2--;const ns=genShop2(n);Object.assign(ns,keep);n.shop=ns;
-    const W2c=WS2[ns.ws];ns.cards=shuffle(W2c.cards.slice()).slice(0,5+(eq('u_case')?1:0)).map(id=>({id}));save();showShop2();if(Math.random()<.5)shopBark('rer')};
+    const W2c=WS2[ns.ws];ns.cards=shuffle(W2c.cards.slice()).slice(0,5+(eq('u_case')?1:0)).map(id=>({id}));for(const i of jmKeepSlots())if(sh.cards[i]&&i<ns.cards.length)ns.cards[i]=sh.cards[i];save();showShop2();if(Math.random()<.5)shopBark('rer')};
   $('#sLeave').onclick=()=>{const q=S.shopLook&&!S.shopBought;showMap();if(q)shopBark('quit')};
   $('#sFight').onclick=()=>confirmBox('전투','이 버튼을 누르면 전투가 시작됩니다. 모든 공방이 적대하고 상점이 닫힙니다.','전투한다',()=>{favHit(sh.ws);r.hostile=true;toast('적대','모든 공방이 플레이어를 적대한다');shopBark('fight');r.at={kind:'combat',enemies:a2Group(sh.ws),node:n.id,noFlee:true,shopFight:true};save();transition(resumeAt)});
   shopOnEnter(n);
@@ -6027,7 +6046,7 @@ const STOCK_HIST=48;
 function ensureStock(r){if(!r.stock){const p={},hist={};for(const k in STOCKS){p[k]=Math.round(STOCKS[k].base*(.85+rnd()*.3));hist[k]=[p[k]]}r.stock={h:0,p,hist,own:{},log:[]}}return r.stock}
 function stockTick(skip){const r=S.run;if(!r||r.act!==2)return;const st=ensureStock(r);st.h++;if(!skip)st.nat=(st.nat||0)+1;
   for(const k in STOCKS){const d=STOCKS[k],g=(rnd()+rnd()+rnd()-1.5)/.5*d.vol;let m=1+(skip?0:d.drift)+g;
-    if(rnd()<d.jp)m*=rnd()<1/(2+d.js)?1+d.js:1/(1+d.js);st.p[k]=Math.max(Math.round(d.base*.1),Math.round(st.p[k]*m));const h=st.hist[k];h.push(st.p[k]);if(h.length>STOCK_HIST)h.shift()}}
+    if(rnd()<d.jp)m*=rnd()<1/(2+d.js)?1+d.js:1/(1+d.js);st.p[k]=Math.max(Math.round(d.base*.1),Math.round(st.p[k]*m));const h=st.hist[k];h.push(st.p[k]);if(h.length>STOCK_HIST)h.shift()}jmHour()}
 function stockSpark(h){const w=120,ht=34,lo=Math.min(...h),hi=Math.max(...h),sp=hi-lo||1;
   const pts=h.map((v,i)=>`${(i/(Math.max(1,h.length-1))*w).toFixed(1)},${(ht-2-(v-lo)/sp*(ht-4)).toFixed(1)}`).join(' ');
   const up=h[h.length-1]>=h[0];return`<svg viewBox="0 0 ${w} ${ht}" width="${w}" height="${ht}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${up?'#9ad6c4':'#ee9a8e'}" stroke-width="2"/></svg>`}
@@ -6046,11 +6065,11 @@ function openStock(back){
     <div class="stks">${Object.keys(STOCKS).map(row).join('')}</div>
     <div class="stk-t"><span class="stk-l">시간 넘기기 · 남은 ${left}시간</span>${[1,6,24].map(h=>`<button class="plate-btn" data-skip="${h}" ${left<h?'disabled':''}>+${h}시간</button>`).join('')}<span class="stk-l">매도 수수료 2%</span><button class="linkbtn" id="stHelp">주식 설명</button></div></div>`;
   $('#stHelp').onclick=()=>featGuide('stock',()=>openStock(back),true);
-  m.querySelectorAll('[data-skip]').forEach(b=>b.onclick=()=>{const n=Math.min(+b.dataset.skip,st.skipLeft);if(n<1)return;st.skipLeft-=n;for(let i=0;i<n;i++)stockTick(true);save();openStock(back)});
+  m.querySelectorAll('[data-skip]').forEach(b=>b.onclick=()=>{const n=Math.min(+b.dataset.skip,st.skipLeft);if(n<1)return;st.skipLeft-=n;for(let i=0;i<n;i++)stockTick(true);jmAct();save();openStock(back)});
   $('#mClose').onclick=()=>{closeModal();back()};
-  m.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy,p=st.p[k],n=b.dataset.n==='max'?Math.floor(r.gold/p):+b.dataset.n;if(n<1||r.gold<p*n)return;
+  m.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{if(jmNoStock(b.dataset.buy))return toast('주식','이 공방의 주식은 지금 사고팔 수 없다');const k=b.dataset.buy,p=st.p[k],n=b.dataset.n==='max'?Math.floor(r.gold/p):+b.dataset.n;if(n<1||r.gold<p*n)return;
     r.gold-=p*n;const o=st.own[k]=st.own[k]||{n:0,cost:0};o.n+=n;o.cost+=p*n;st.seen=st.seen||{};st.seen[k]=p;save();renderTop();openStock(back);if(Math.random()<.6)shopBark('sbuy')});
-  m.querySelectorAll('[data-sell]').forEach(b=>b.onclick=()=>{const k=b.dataset.sell,o=st.own[k];if(!o||!o.n)return;const n=b.dataset.n==='all'?o.n:Math.min(o.n,+b.dataset.n),p=st.p[k];
+  m.querySelectorAll('[data-sell]').forEach(b=>b.onclick=()=>{if(jmNoStock(b.dataset.sell))return toast('주식','이 공방의 주식은 지금 사고팔 수 없다');const k=b.dataset.sell,o=st.own[k];if(!o||!o.n)return;const n=b.dataset.n==='all'?o.n:Math.min(o.n,+b.dataset.n),p=st.p[k];
     const avg=o.cost/o.n,gain=stockNet(p,n)-avg*n;r.gold+=stockNet(p,n);o.cost-=avg*n;o.n-=n;if(!o.n)delete st.own[k];save();renderTop();openStock(back);shopBark(gain>=0?'swin':'sloss')});
 }
 /* 도박장 (V23) — 2장 공방 상점 · 판돈 1단화 · 10단화 · 100단화 · 원카드 · 포카드 · 블랙잭
@@ -6372,7 +6391,7 @@ function showScene(list,done,opt){opt=opt||{};let vnL='',vnR='',vnLast='',vnHist
   const draw=()=>{clearTimeout(tmr);const it=list[i];if(it==null)return end();
     if(it.fx==='fade'){dark();vnL=vnR='';i++;return draw()}
     if(it.c){const pv=vnPrev;m.innerHTML=`<div class="vn">${vnTop()}${vnStage(pv&&pv[0]||'')}<div class="vn-box vn-ch">${pv&&pv[0]?`<div class="vn-name">${pv[0]}</div>`:''}${pv?`<div class="scn-t">${pv[1]}</div>`:''}<div class="vn-chrow">${it.c.map((x,j)=>`<button class="vn-cb" data-sc="${j}">${x.b}</button>`).join('')}</div></div></div>`;vnBind();
-      m.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{const x=it.c[+b.dataset.sc];if(x.f)x.f();if(x.then)list.splice(i+1,0,...x.then);i++;draw()});return}
+      m.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{const x=it.c[+b.dataset.sc];jmAct();if(x.f)x.f();if(x.then)list.splice(i+1,0,...x.then);i++;draw()});return}
     /* 타이핑 — 한 글자씩, 건너뛸 수 없음, 다 나온 뒤 1초 후 다음 */
     if(it.ty==='typing'){m.innerHTML=`<div class="panel scene"><div class="scn-t" id="scT"></div><div class="scn-b"><span></span><button class="btn-main" id="scNext" style="visibility:hidden">다음</button></div></div>`;
       const el=$('#scT'),tx=it.t;let k=0;const step=()=>{if(!el.isConnected)return;k++;el.textContent=tx.slice(0,k);
@@ -6688,17 +6707,120 @@ stage.addEventListener('click',e=>{const kfg=e.target.closest('.knfig');if(kfg&&
   const it=e.target.closest('#intent');if(it&&S.C&&S.C.E&&ACT[S.C.E.intent]){e.stopPropagation();const E=S.C.E,g=gimOf(E),a=ACT[E.intent];stSheet([[E.intent,a.tag||(a.k==='atk'?'공격한다.':a.k==='def'?'방어도를 얻는다.':'효과를 발휘한다.')],...(g?[[GIM[g].n,GIM[g].t]]:[])],it)}},true);
 /* 여관 — 2장 상점 막에 들어가면 25%로 여관. 5단화로 최대 체력 15% 회복, 쉴 때마다 8시간이 지나 주가가 움직임 */
 const INN_COST=5000,INN_HEAL=.15,INN_HOURS=8;
+/* ================= 자명종의 강제 · 기입관의 고정 · 노트 (V2.29.48.12) =================
+   자명종(시간): 니다벨리르에 온 뒤 10시간마다 강제가 하나 걸림. 굳지 않은 강제는 다음 10시간에 사라지고 새 강제가 생김.
+     중앙정부 문이 열린 뒤에는 사라지지 않고 10시간마다 하나씩 겹쳐 쌓임.
+   기입관(행동): 행동 3회(이동 · 사건 · 상점 · 시간 보내기 · 선택지)마다 걸려 있는 강제 하나를 굳힘. 굳힐 강제가 없으면 버려짐.
+   노트: 상점에 들어갈 때마다 관으로 내려와 갱신. 글만 있으면 강제, 도장이 찍혀 있으면 고정.
+   중앙정부 문: 판마다 10~20막 사이에서 정해진 막 수를 지나고, 20시간을 넘겨야 열림. */
+const JM_KIND=['noGo','mustGo','noBuy','noStock','gearLock','cardLock','noRefresh'];
+const JM_MUST=new Set(['mustGo','gearLock','cardLock']);
+const ORD_N=['첫째','둘째','셋째','넷째','다섯째','여섯째'];
+function jmOn(){const r=S.run;return!!(r&&r.act===2&&r.m2&&r.m2.v===2)}
+function jmS(){const r=S.run;if(!r.jm)r.jm={acts:0,list:[],need:ri(10,20),open:false,note:[],noteNew:false,seq:0};return r.jm}
+const jmList=()=>jmOn()?jmS().list:[];
+const jmHas=k=>jmList().some(x=>x.k===k);
+function jmBlockedNode(id,extra){const n=m2Node(id);if(!n||n.kind==='center')return false;const L=extra?[...jmList(),extra]:jmList();
+  return L.some(x=>x.k==='noGo'&&(x.node===id||(x.reg&&x.reg===n.reg)))}
+/* 지금 자리에서 중앙정부(그리고 아직 안 간 내 공방)까지 갈 길이 남는지 */
+function jmSafe(extra){const M=S.run.m2,seen=new Set([M.cur]),q=[M.cur];
+  while(q.length){const a=q.pop();for(const b of M.nodes[a].adj){if(seen.has(b))continue;if(b!==0&&jmBlockedNode(b,extra))continue;seen.add(b);if(b!==0)q.push(b)}}
+  if(!seen.has(0))return false;if(M.wsNeed!=null&&!M.wsDone&&!seen.has(M.wsNeed))return false;return true}
+function jmDoor(){if(!jmOn())return;const r=S.run,J=jmS(),st=ensureStock(r);if(!J.open&&(r.floor||0)>=J.need&&st.h>20){J.open=true;toast('중앙정부','문이 열렸다');try{sfx('block',.5)}catch(e){}}}
+function jmMoveDeny(from,id){if(!jmOn())return null;const M=S.run.m2,J=jmS();
+  if(jmBlockedNode(id))return'이쪽으로 가실 수 없습니다';
+  if(jmHas('mustGo')){const goal=(M.wsNeed!=null&&!M.wsDone)?M.wsNeed:0,D=m2Dist(goal);
+    const ok=j=>!jmBlockedNode(j)&&!(M.nodes[j].kind==='center'&&(!J.open||(M.wsNeed!=null&&!M.wsDone)));
+    const closer=M.nodes[from].adj.filter(j=>D[j]<D[from]&&ok(j));if(closer.length&&!closer.includes(id))return'이쪽으로 가셔야 합니다'}
+  return null}
+function jmNew(){const r=S.run,M=r.m2,J=jmS(),cur=M.nodes[M.cur],dup=(k,f)=>J.list.some(x=>x.k===k&&f(x));
+  for(const k of shuffle(JM_KIND.slice())){
+    if(k==='noGo'){
+      if(rnd()<.4){const regs=shuffle('NESW'.split('')).filter(g=>g!==cur.reg&&!(M.wsNeed!=null&&!M.wsDone&&g===r.dir)&&!dup('noGo',x=>x.reg===g));
+        for(const g of regs){const it={k,reg:g};if(jmSafe(it))return it}}
+      const near=shuffle(cur.adj.slice()),far=shuffle(M.nodes.filter(n=>n.kind==='room'&&!cur.adj.includes(n.id)).map(n=>n.id));
+      for(const id of[...near,...far]){const n=M.nodes[id];if(n.kind!=='room'||n.gate||id===M.cur||id===M.wsNeed||jmBlockedNode(id))continue;const it={k,node:id};if(jmSafe(it))return it}
+      continue}
+    if(k==='mustGo'){if(jmHas('mustGo'))continue;return{k}}
+    if(k==='noBuy'){const c=shuffle([0,1,2,3,4].flatMap(i=>[{t:'card',i},{t:'gear',i}])).find(o=>!dup('noBuy',x=>x.t===o.t&&x.i===o.i));if(c)return{k,...c};continue}
+    if(k==='noStock'){const c=shuffle(Object.keys(STOCKS)).find(s=>!dup('noStock',x=>x.ws===s));if(c)return{k,ws:c};continue}
+    if(k==='gearLock'){ensureGear(r);const c=shuffle(GSLOT_ORDER.slice()).find(s=>r.gear[s]&&r.gear[s][0]&&GEAR[r.gear[s][0]]&&!dup('gearLock',x=>x.s===s));if(c)return{k,s:c,g:r.gear[c][0]};continue}
+    if(k==='cardLock'){const c=shuffle(r.deck.slice()).find(c=>!dup('cardLock',x=>x.uid===c.uid||x.cid===c.id));if(c)return{k,uid:c.uid,cid:c.id};continue}
+    if(k==='noRefresh'){const c=shuffle([0,1,2,3,4]).find(i=>!dup('noRefresh',x=>x.i===i));if(c!=null)return{k,i:c};continue}
+  }return null}
+/* 자명종 — 10시간마다 */
+function jmBell(){if(!jmOn()||S.run.m2.inside)return;const J=jmS();if(!J.open)J.list=J.list.filter(x=>x.fixed);
+  const it=jmNew();if(it){it.id=++J.seq;it.fixed=false;J.list.push(it)}
+  toast('자명종','어디선가 자명종이 울린다');try{sfx('block',.4)}catch(e){}}
+function jmHour(){if(!jmOn())return;const st=ensureStock(S.run);if(st.h>0&&st.h%10===0)jmBell();jmDoor()}
+/* 기입관 — 행동 3회마다 */
+function jmAct(){if(!jmOn()||S.run.m2.inside)return;const J=jmS();J.acts=(J.acts||0)+1;if(J.acts<3)return;J.acts=0;
+  const c=J.list.filter(x=>!x.fixed);if(c.length)pick(c).fixed=true}
+const jmGearLocked=s=>jmList().some(x=>x.k==='gearLock'&&x.s===s);
+const jmCardLocked=uid=>jmList().some(x=>x.k==='cardLock'&&x.uid===uid);
+/* 겹친 카드는 한 장만 고정 — 같은 카드 중 고정되지 않은 장을 대신 내줌 */
+function jmDeckPick(c){const r=S.run;if(!c||!jmCardLocked(c.uid))return c;const q=x=>x.id===c.id&&(x.mods||[]).join(',')===(c.mods||[]).join(',');return r.deck.find(x=>q(x)&&!jmCardLocked(x.uid))||null}
+const jmNoBuy=(t,i)=>jmList().some(x=>x.k==='noBuy'&&x.t===t&&x.i===i);
+const jmNoStock=ws=>jmList().some(x=>x.k==='noStock'&&x.ws===ws);
+const jmKeepSlots=()=>jmList().filter(x=>x.k==='noRefresh').map(x=>x.i);
+function jmLine(x){
+  if(x.k==='noGo')return x.reg?`${DIR2[x.reg].n}쪽 구역에 들어가는 것`:`지도에 표시된 막에 들어가는 것`;
+  if(x.k==='mustGo')return'가야 할 곳에 가까워지는 쪽으로만 걷는 것';
+  if(x.k==='noBuy')return`상점 ${x.t==='card'?'카드':'장비'} 진열대 ${ORD_N[x.i]} 칸의 물건을 사는 것`;
+  if(x.k==='noStock')return`${WS2[x.ws].n} 주식을 사고파는 것`;
+  if(x.k==='gearLock')return`${GSLOT[x.s].n}의 「${GEAR[x.g]?GEAR[x.g].n:'장비'}」을(를) 그대로 끼고 있는 것`;
+  if(x.k==='cardLock')return`「${CARDS[x.cid]?CARDS[x.cid].name:'카드'}」 한 장을 덱에 넣어 두는 것`;
+  if(x.k==='noRefresh')return`상점 카드 진열대 ${ORD_N[x.i]} 칸을 새것으로 바꾸는 것`;return''}
+/* 상점에 들어갈 때 — 주식 시세가 내려오는 관으로 노트가 내려옴 */
+function jmNoteSync(){if(!jmOn())return;const J=jmS(),a=JSON.stringify(J.note||[]),nw=J.list.map(x=>({...x}));J.note=nw;if(JSON.stringify(nw)!==a){J.noteNew=true;toast('노트','관에서 쪽지가 떨어졌다');renderTop()}}
+const jmNoted=id=>{if(!jmOn())return 0;const n=m2Node(id);if(!n||n.kind==='center')return 0;let v=0;for(const x of jmS().note||[])if(x.k==='noGo'&&(x.node===id||(x.reg&&x.reg===n.reg)))v=Math.max(v,x.fixed?2:1);return v};
+function openNote(){if(S.modalLock||S.busy)return;const r=S.run,J=jmS(),m=$('#modal');m.hidden=false;J.noteNew=false;
+  const N=J.note||[],row=x=>`<li class="${x.fixed?'fx':''}"><span>${jmLine(x)}</span>${x.fixed?'<i class="jm-seal">기입</i>':''}</li>`;
+  const must=N.filter(x=>JM_MUST.has(x.k)),not=N.filter(x=>!JM_MUST.has(x.k));
+  m.innerHTML=`<div class="panel jm-note" style="width:min(680px,100%)"><div class="maphead"><div><div class="psub">상점에 들어갈 때마다 관으로 내려온다</div><div class="ptitle">노트</div></div><button class="btn-ghost" id="mClose">닫기</button></div>
+    <div class="jm-h">당신이 해야 하는 것</div><ul class="jm-l">${must.map(row).join('')||'<li class="none">—</li>'}</ul>
+    <div class="jm-h">당신이 하면 안 되는 것</div><ul class="jm-l">${not.map(row).join('')||'<li class="none">—</li>'}</ul></div>`;
+  $('#mClose').onclick=()=>{closeModal();renderTop()};save()}
+
+/* ================= 기입관 보스전 (V2.29.48.12) =================
+   한 턴에 같은 카드(이름 기준)를 2번째 쓰면 검게 변해 경고, 3번째 쓰면 그 사용은 효과도 피해도 없이 자물쇠로 묶임(2턴이 지나야 풀림).
+   그 턴에 가장 많이 쓴 카드(같으면 마지막에 쓴 카드)는 다음 1턴 동안 약하게 잠김 — 굳지 않음.
+   카드 3장을 쓸 때마다 도장: 자물쇠로 묶인 카드 중 전투 누적으로 가장 많이 쓴 카드(같으면 마지막에 쓴 카드)가 굳어 전투가 끝날 때까지 못 씀. 묶인 카드가 없으면 버려짐. */
+function jcOn(){const C=S.C;return!!(C&&!C.over&&S.screen==='combat'&&C.foes&&liveFoes().some(f=>f.key==='clerk'))}
+function jcS(){const C=S.C;return C.jc||(C.jc={use:{},tot:{},ord:{},seq:0,weak:{},lock:{},fix:{},n3:0})}
+function jcDeny(c){if(!jcOn())return null;const J=jcS(),id=c.id,T=S.C.turn;
+  if(J.fix[id])return'기입됨 — 이 전투에서는 쓸 수 없습니다';
+  if(J.lock[id]>=T)return`자물쇠 — ${J.lock[id]-T+1}턴 뒤에 풀립니다`;
+  if(J.weak[id]>=T)return'잠김 — 다음 턴에 풀립니다';return null}
+function jcPlay(c){if(!jcOn())return false;const J=jcS(),id=c.id,T=S.C.turn;J.use[id]=(J.use[id]||0)+1;J.tot[id]=(J.tot[id]||0)+1;J.ord[id]=++J.seq;J.n3++;
+  if(J.use[id]>=3){J.lock[id]=T+2;clog(`기입: 「${CARDS[id].name}」 — 한 턴에 3번째 사용, 효과 없음 · 자물쇠 (2턴)`,'e');fxAt('player','자물쇠','info');return true}
+  if(J.use[id]===2)clog(`기입: 「${CARDS[id].name}」 — 한 턴에 2번째 사용, 한 번 더 쓰면 묶인다`,'e');return false}
+function jcAfter(){if(!jcOn())return;const J=jcS(),T=S.C.turn;if(J.n3<3)return;J.n3=0;
+  const ids=Object.keys(J.lock).filter(id=>J.lock[id]>=T&&!J.fix[id]);
+  if(!ids.length){clog('기입: 도장을 찍을 카드가 없다','e');return}
+  ids.sort((a,b)=>((J.tot[b]||0)-(J.tot[a]||0))||((J.ord[b]||0)-(J.ord[a]||0)));const id=ids[0];J.fix[id]=1;
+  clog(`기입: 「${CARDS[id].name}」에 도장 — 이 전투가 끝날 때까지 쓸 수 없다`,'e');fxAt('enemy','기입','info');toast('기입',`「${CARDS[id].name}」`)}
+function jcEndTurn(){const C=S.C;if(!C||!C.jc)return;const J=C.jc,ids=Object.keys(J.use).filter(id=>J.use[id]>0);
+  if(ids.length&&jcOn()){ids.sort((a,b)=>(J.use[b]-J.use[a])||((J.ord[b]||0)-(J.ord[a]||0)));const id=ids[0];
+    if(!(J.lock[id]>=C.turn)&&!J.fix[id]){J.weak[id]=C.turn+1;clog(`기입: 이번 턴에 가장 많이 쓴 「${CARDS[id].name}」 — 다음 턴 잠김`,'e')}}
+  J.use={}}
+function jcMark(c){if(!jcOn())return null;const J=jcS(),id=c.id,T=S.C.turn;
+  if(J.fix[id])return{cls:'jc-lock',m:'<span class="mark jcfix">기입</span>'};
+  if(J.lock[id]>=T)return{cls:'jc-lock',m:`<span class="mark jclock">자물쇠 ${J.lock[id]-T+1}</span>`};
+  if(J.weak[id]>=T)return{cls:'jc-lock',m:'<span class="mark jclock">잠김</span>'};
+  if((J.use[id]||0)>=2)return{cls:'jc-warn',m:'<span class="mark jcwarn">경고</span>'};return null}
+
 function showInn(){const r=S.run;S.screen='shop';viewFor('shop');renderTop();hideCombatUI();const amt=Math.round(r.maxHp*INN_HEAL),off=r.gold<INN_COST||r.hp>=r.maxHp;
   const sc=openScreen('',{dim:true});sc.innerHTML=`<div class="panel evpanel" style="width:min(640px,100%)"><div><div class="psub">니다벨리르</div><div class="ptitle">여관</div></div><div class="ptext">상점인 줄 알았는데 침대가 놓여 있다. 주인이 값부터 부른다.</div>
     <div class="lines"><div><span>체력</span><b>${r.hp} / ${r.maxHp}</b></div><div><span>보유</span><b>${money(r.gold)}</b></div></div>
     <div class="choices"><button class="choice" id="iRest" ${off?'disabled':''}><b>쉰다</b><span>${money(INN_COST)} · 체력 +${amt} · ${INN_HOURS}시간이 지남${r.hp>=r.maxHp?' · 체력이 가득 찼다':r.gold<INN_COST?' · 돈이 모자란다':''}</span></button><button class="choice" id="iLeave"><b>떠난다</b></button></div></div>`;
-  $('#iRest').onclick=()=>{if(r.gold<INN_COST||r.hp>=r.maxHp)return;r.gold-=INN_COST;r.hp=Math.min(r.maxHp,r.hp+amt);for(let i=0;i<INN_HOURS;i++)stockTick();save();renderTop();showInn()};
+  $('#iRest').onclick=()=>{if(r.gold<INN_COST||r.hp>=r.maxHp)return;r.gold-=INN_COST;r.hp=Math.min(r.maxHp,r.hp+amt);for(let i=0;i<INN_HOURS;i++)stockTick();jmAct();save();renderTop();showInn()};
   $('#iLeave').onclick=()=>{r.at=null;save();showMap()}}
 /* 2장 승리 — 업데이트 대기 */
 function showAct2Victory(gold,lines,loot){S.screen='victory';renderTop();const r=S.run,sc=openScreen('',{dim:true});lines=lines||[];clearSave();
   sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center;max-width:720px"><div class="psub">2장 · 니다벨리르</div><div class="ptitle">기록하는 공무원을 쓰러뜨렸다</div>
     <div class="lines" style="min-width:min(420px,100%)">${gold?`<div><span>실링</span><b>+${money(gold)} · 보유 ${money(r.gold)}</b></div>`:''}${lines.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')}${loot?`<div><span>장비 탈취</span><b>${GEAR[loot].n}</b></div>`:''}<div><span>처치</span><b>${r.kills}</b></div><div><span>남은 체력</span><b>${r.hp} / ${r.maxHp}</b></div><div><span>레벨</span><b>${r.lvl}</b></div></div>
-    <div class="hint">3장은 아직 준비 중입니다 (업데이트 대기).</div><button class="btn-main" id="goT">처음으로</button></div>`;
+    <div class="hint">노트에 찍혀 있던 도장이 전부 떨어져 나갔다.</div><div class="hint">3장은 아직 준비 중입니다 (업데이트 대기).</div><button class="btn-main" id="goT">처음으로</button></div>`;
   $('#goT').onclick=()=>showTitle({menu:true});}
 /* 니다벨리르 배경 (임시) — 철제 돔 */
 function drawNida(g,t){const cv=g.canvas,W=cv.width,H=cv.height;const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#14171b');gr.addColorStop(.55,'#22262b');gr.addColorStop(1,'#0c0d0f');g.fillStyle=gr;g.fillRect(0,0,W,H);
@@ -6722,7 +6844,6 @@ function openAch(back){const a=achGet(),m=$('#modal');m.hidden=false;
 function a2PreAct(E,name){const r=S.run;let x=1;
   if(E.charged){x*=1.5;E.charged=false;clog('송출 대기: 이번 행동 위력 +50%','e')}
   if(name==='빚 독촉'&&r.gold<100000){x*=2;clog('빚 독촉: 실링 100000 미만 — 피해 2배','e')}
-  if(name==='삭제'&&S.C.nullCount){x*=1+.1*S.C.nullCount;clog(`삭제: 무효로 정의된 횟수 ${S.C.nullCount} → 피해 +${S.C.nullCount*10}%`,'e')}
   E.actX=x;E.actFlat=(name==='무쇠 팬'&&E.sat)?Math.round(r.maxHp*.02*E.sat):0}
 /* 공방렙 차이: 내 공격레벨 − 상대 방어레벨이 3 남을 때마다 공격 위력 +1 (낮아도 위력은 줄지 않음) — 적이 플레이어를 공격할 때도 같음 */
 const gapP=(atk,def)=>Math.max(0,Math.floor((atk-def)/3));
