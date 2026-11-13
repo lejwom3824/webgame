@@ -224,11 +224,27 @@
 #stage.a2 .ebar i,#stage.a2 .pbar i{background:linear-gradient(#ee6a55,#a23a2d)}
 #stage.a2 .m2stage .disc{fill:#18202a}#stage.a2 .m2stage .tier{stroke:#3d4a58}#stage.a2 .m2stage .tier0{fill:#202a35;stroke:#56667a}
 #stage.a2 .jm-ticket{background:#1b232c}
+
+/* ---------- 기입관의 메모 · 보관함 (V2.31.52.14) ---------- */
+.memo{position:relative;box-sizing:border-box;width:250px;padding:16px 18px 14px;background:linear-gradient(#efe6cf,#e2d6b8);color:#2b2620;border-radius:2px;box-shadow:0 6px 16px #0009,inset 0 0 0 1px #00000014;
+  font-family:"Nanum Pen Script","Gaegu","Nanum Myeongjo",cursive;font-size:23px;line-height:1.25;transform:rotate(var(--mr,0deg));text-align:left}
+.memo::before{content:"";position:absolute;left:50%;top:-7px;width:54px;height:14px;margin-left:-27px;background:#c9b98c99;box-shadow:0 1px 2px #0005}
+.memo-no{font-size:17px;color:#6a5d48;letter-spacing:.04em}
+.memo-q{margin:4px 0 8px;padding-bottom:6px;border-bottom:1px dashed #8a7b5c;font-size:26px;color:#1d1915}
+.memo-q i{font-style:normal;color:#8a7b5c;margin:0 2px}
+.memo ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.memo li{padding-left:14px;position:relative}.memo li::before{content:"–";position:absolute;left:0;color:#8a7b5c}
+.memo s{color:#8c7f68;text-decoration-thickness:2px}
+.memo.weave{background:linear-gradient(#f2ead6,#e6dbbf)}
+.memo-row{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin-top:18px;padding-top:16px;border-top:1px dashed #5d5547}
+.vault-grid{display:flex;flex-wrap:wrap;gap:22px 20px;justify-content:center;padding:14px 6px 8px}
+.vault-empty{padding:70px 0 80px;text-align:center;font-family:var(--f-serif);font-size:22px;color:var(--bone-dim)}
+.port .memo{width:290px;font-size:27px}.port .memo-q{font-size:30px}.port .memo-no{font-size:20px}
 </style>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Nanum+Myeongjo:wght@400;700&family=Gothic+A1:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Nanum+Myeongjo:wght@400;700&family=Gothic+A1:wght@400;500;700;800&family=Nanum+Pen+Script&family=Gaegu&display=swap">
 <style>
 /* Layout: one letterboxed stage (16:9 landscape / 9:16 portrait) — first-person battlefield painted over an ash-fall Midgard, UI as tarnished iron plates with brass and rune engraving */
 :root{
@@ -4383,6 +4399,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
       ${false&&cs?`<button class="mbtn" id="mContC">이어하기 · 세계수 등반<small>${(CDIFF[cs.diff]||CDIFF.easy).n} · ${cs.act===2?`2장 니다벨리르 · ${cs.floor||0}막`:`${cs.floor} / ${ROWS}막`} · ${cs.mode==='dain'?'다인모드':`Lv ${cs.lvl}`}</small></button>`:''}
       ${false&&hs?`<button class="mbtn" id="mContH">이어하기 · 절멸전<small>${GODS[hs.god].god} · 처치 ${hs.kills}${hs.mode==='exterminate'?' / 2000':''}</small></button>`:''}
       <button class="mbtn" id="mClimb">세계수 등반<small>일반인으로 시작해 세계수를 오른다</small></button>
+      <button class="mbtn" id="mVault">보관함<small>${memoSeen().length?`${memoSeen().length}장`:'아직 모은 것이 없다...'}</small></button>
       <button class="mbtn" id="mSet">설정<small>${PATCH[0][0]} · 패치 내역은 설정에서</small></button></div>`:`<div class="ttl-tap" id="ttlTap">게임 시작</div>`}</div>`,{full:true});
   if(!menu){
     const el=$('#ttl');el.focus({preventScroll:true});
@@ -4390,7 +4407,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
     el.addEventListener('click',go);
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
   }else{
-    $('#mClimb').onclick=()=>{endTitleScene();transition(showClimbPrep)};$('#mSet').onclick=openSettings;
+    $('#mClimb').onclick=()=>{endTitleScene();transition(showClimbPrep)};$('#mSet').onclick=openSettings;$('#mVault').onclick=()=>openVault();
     if($('#mCont'))$('#mCont').onclick=()=>{endTitleScene();openSlots('load')};
     if(false)$('#mContC').onclick=()=>{S.run=migrateRun(cs);syncUID();transition(resumeAt)};
     if(false)$('#mContH').onclick=()=>{S.H=hs;syncUID();transition(resumeHunt)};
@@ -4398,6 +4415,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.31.52.14','11/13','기입관이 잘못 보낸 메모 — 노트가 갱신될 때 드물게(8%) 기입관의 메모가 섞여 내려옴, 중앙정부 문이 열릴 때까지 한 번도 안 왔으면 다음 갱신에 반드시 한 장, 한 번 받은 메모는 다른 판에서도 다시 오지 않음, 받은 메모는 그 판의 노트에 계속 남음. 메모는 손글씨 메모지 모양. 보관함 — 시작 화면과 게임 중 메뉴에서 열고, 처음에는 "아직 모은 것이 없다...", 받은 메모가 한 장씩 쌓이며 받은 순서 · 접수 번호 순서로 볼 수 있음, 저장 기록을 지워도 남음. 번호표 문구를 이방인 접수로 바꿈.'],
   ['V2.30.52.14','11/13','카드로 베기 — 공격 카드가 눕혀져 칼날처럼 적을 베고 지나감, 검 카드 9장(어설픈 베기·베기·피륙·갈라내기·도려내기·일섬·대절단·검도-정석·검도-변화)은 한 장씩 다른 움직임, 공방 카드는 공방별 움직임(스타인러 내려찍기·크리뷔스 미끄러짐·아쉬부티 붓질·레미 내려치기·크리밀라 던지기)에 타격 순서와 위력이 더해짐, 방어 카드는 방패 고리 · 기술 카드는 빛으로 흩어짐. 카드별 소리 — 휘두르는 소리와 맞는 소리 두 박자(피륙은 부웅 뒤 갈라지는 소리), 전부 합성음. 피격 — 적이 몸을 당겼다 덮침, 막으면 하늘색 방패 고리, 피하면 화면이 옆으로 미끄러짐. 적이 맞은 방향으로 밀리고 체력 막대는 깎인 양이 밝게 남았다 줄어듦, 빗나가면 적이 비켜섬. AUTO 중에는 눕는 동작 생략. 2장 색감을 쇠와 구리(푸른 쇳빛 바탕 · 구리 · 증기 빛)로 바꿈.'],
   ['V2.30.51.14','11/13','공방 대련장 — 각 지역 끝의 공방 막에서 "대련장에 들어간다", 언제든 그만둘 수 있고 지면 체력 1로 나옴, 이기면 그 공방 카드 3장 중 1장과 실링(500~1000), 적대로 이어지지 않고 경험치 없음. 정예에게 도전 — 스타인러 공방 장인 · 크리뷔스 공방 협업 책임자 · 아쉬부티 공방 수석 해설사 · 레미 공방 총주방장, 공방마다 한 번만 이길 수 있고 값비싼 카드 중에서 고르며 실링 3000~5000. 수입품 — 상점 카드 마지막 칸은 다른 공방의 카드, 값 20% 더. 2장 카드 값을 이전의 12분의 1로 낮춤(15단화 → 1단화 250실링, 60단화 → 5단화). 중앙정부 문은 20시간이 넘으면 열림(공방을 먼저 들르는 조건과 막 수 조건 삭제), 닫힌 문에 가려 하면 "이곳으로 갈 수 없습니다"와 함께 노트에 번호표가 끼워짐.'],
   ['V2.29.50.14','11/13','상점은 자동으로 들어가지 않음 — 2장은 상점 막에 서면 지도에 "상점에 입장한다"(여관이면 "여관에 들어간다") 버튼이 생기고 누르지 않으면 그냥 지나감, 1장은 상점 막에서 입장할지 지나갈지 고름. 강제 때문에 갈 수 있는 막이 하나도 없어 고립되던 문제 수정 — 지금 선 자리에서 나갈 길 하나와 중앙정부로 가는 길은 항상 남고, 이미 고립된 저장은 그 자리에서 강제가 적용되지 않음.'],
@@ -6937,15 +6955,112 @@ function jmLine(x){
   if(x.k==='cardLock')return`「${CARDS[x.cid]?CARDS[x.cid].name:'카드'}」 한 장을 덱에 넣어 두는 것`;
   if(x.k==='noRefresh')return`상점 카드 진열대 ${ORD_N[x.i]} 칸을 새것으로 바꾸는 것`;return''}
 /* 상점에 들어갈 때 — 주식 시세가 내려오는 관으로 노트가 내려옴 */
-function jmNoteSync(){if(!jmOn())return;const J=jmS(),a=JSON.stringify(J.note||[]),nw=J.list.map(x=>({...x}));J.note=nw;if(JSON.stringify(nw)!==a){J.noteNew=true;toast('노트','관에서 쪽지가 떨어졌다');renderTop()}}
+/* ================= 기입관이 잘못 보낸 메모 (V2.31.52.14) =================
+   자명종이 뱉은 이방인의 기록 파편을 기입관이 받아 적고 분류하다 만 메모. 정식 기록만 내려보내야 하는데 실수로 섞여 내려옴.
+   노트가 갱신될 때마다 8% · 문이 열릴 때까지 한 번도 안 왔으면 다음 갱신에 반드시 · 한 번 받은 메모는 다른 판에서도 다시 오지 않음 · 회수 없음.
+   파편 문장은 전부 사용자가 보낸 글에서 끊은 것. 종류: N 인명 · V 서술 · O 대상 · T 시점/수량 · C 이음말 · Q 인용 */
+const MEMO_F={
+g1a:['이전의 세계수는','O'],g1b:['거인들만이 살던 곳','O'],g2a:['서리가 흩날리는 곳에서 살았기에','V'],g2b:['서리거인이라 불리었다','V'],g3:['욕심과 소유욕이 강했다','V'],
+g4a:['각자 자기만의 동굴','O'],g4b:['소중하게 여기는 것을 보관했다','V'],g5a:['유폐해 놓았던 괴수들이','O'],g5b:['잡아 죽이기 시작했다','V'],g6a:['뭉쳐 저항하고','V'],g6b:['토벌했다','V'],
+g7a:['이미르','N'],g7b:['가장 앞에서 괴수들을 처리하던','V'],g7c:['거인들의 영웅','O'],g8a:['세계수는 괴수들로 인해 불타올랐고','V'],g8b:['잿더미로 변했다','V'],
+g9a:['재 속에서','C'],g9b:['새로운 세계수를 찾아 들어 올렸고','V'],g9c:['그의 몸과 세계수의 재로','O'],g10a:['그 이름이 워그드라실','O'],g10b:['가장 꼭대기에서','C'],g10c:['신들이 하나둘 나타나기 시작했다','V'],
+g11a:['새롭게 나타난 신들에 의해','C'],g11b:['단칸방처럼 놔두어진','V'],g11c:['요툰헤임에 갇혔다','V'],g12a:['결정을 존중했다','V'],g12b:['동시에 분노했다','V'],g12c:['배신자로 여기기까지 했다','V'],
+g13a:['사라졌고','V'],g13b:['남은 것은 애병 레바테인뿐','O'],g14a:['온몸이 불로 뒤덮여','V'],g14b:['수많은 서리거인을 몰살한','V'],g14c:['거대 괴수의 척추를 단조해 만든 검','O'],
+g15a:['잠들어 있는','V'],g15b:['깨울 방법을 찾는다','V'],g16a:['주인에게만 반응했다','V'],g16b:['신성한 하얀 불을 훔친다','V'],
+g17a:['오딘이 세계수에서 떼어낸 사생아','O'],g17b:['로키','N'],g17c:['요툰헤임으로 향했고','V'],g17d:['끝끝내 그에게 검을 쥐여 준다','V'],g18a:['검을 잡고 들어 올리자','V'],g18b:['맥동이 들려온다','V'],
+g19:['이미르와 같은 그것을 느꼈기 때문','V'],g20a:['거인 중 하나가','O'],g20b:['하얀 불을 던져 버린다','V'],g21a:['순식간에 타들어 가며','V'],g21b:['손과 손잡이가 달라붙어 하나가','V'],
+g22:['깨어나길 기다렸다','V'],g23a:['맥동만 들리고','V'],g23b:['타 버린 시체','O'],g23c:['아무런 움직임조차','C'],g24a:['깨어날 레바테인을 놔두고','V'],g24b:['먼저 신들과의 전쟁을 시작한다','V'],
+g25a:['서리거인들을 몰살했던 불의 괴수','O'],g25b:['레바테인을 통해 다시 나타났다','V'],g26a:['레바테인으로 만들어진 자','O'],g26b:['수르트라고 불렸다','V'],g27a:['실험체이자','O'],g27b:['적이며','O'],g27c:['동시에 그들의 왕','O'],
+p1a:['다섯 살이 되던 해','T'],p1b:['부모는 돌아오지 않았다','V'],p2a:['스무 명이 넘어가는','T'],p2b:['위탁 가정에 맡겨졌다','V'],p3a:['똑같은 이유로','C'],p3b:['부모를 기다리는 아이들','O'],
+p4:['계속해서 똑같은 꿈','O'],p5a:['꿈에서','C'],p5b:['하늘이 되었다','V'],p6a:['푸르디푸른','C'],p6b:['전에 겪어 본 적 없는','C'],p6c:['더없이 자유로운 감각','O'],
+p7a:['일어나는 순간 없어졌고','V'],p7b:['그 감각을 느끼기 위해 달렸다','V'],p8a:['다른 아이들이 부모님에 대해 물을 때','C'],p8b:['그는 이 세상에 대해 물어봤다','V'],
+p9a:['붉은 이유는','O'],p9b:['세계수에 불이 붙었기 때문','V'],p9c:['찾는 건 꼭대기에 있을 수도 있다','Q'],p10a:['그때부터','C'],p10b:['목적이 세계수 꼭대기에 가는 것','O'],
+p11a:['힘든 것들은 모두','O'],p11b:['하늘 위를 가리키며','V'],p12a:['그 말을 믿었고','V'],p12b:['꼭대기가 목표가 되었다','V'],p13:['그곳은 어떤 모습일까','Q'],
+p14a:['황금빛 초원','O'],p14b:['푸른 하늘이 있을 거라고','Q'],p15a:['이곳이든 그곳이든 모두 불타 버려서','V'],p15b:['부모님도 푸른 하늘도','O'],p15c:['전부 타 없어졌을 거라고','Q'],
+p16a:['그럼에도','C'],p16b:['계속해서 먼저 들으러 오는','V'],p17a:['부모가 불길에 휩싸이는 모습을','O'],p17b:['눈앞에서 지켜보았다','V'],
+p18a:['타오르는 불길에 뛰어들어','V'],p18b:['구하려 한 흔적','O'],p18c:['몸과 마음에 깊이','C'],p19a:['끼워 주지 않자','V'],p19b:['외톨이가 되었다','V'],p19c:['눈에 띄게 말이 없어졌다','V'],
+p20a:['이야기를 시작할 때면','C'],p20b:['항상 먼저 앉아 들었다','V'],p21a:['열다섯 살이 되던 해','T'],p21b:['길을 잘못 들어','V'],p21c:['완전히 다른 길로','C'],
+p22a:['엄청나게 커다란 광장','O'],p22b:['완전히 교단 밖','O'],p23:['먼저 벗어나기로 했다','V'],p24a:['뤼펀스','N'],p24b:['표냐','N'],p24c:['드류뱌','N'],p24d:['꿈에 대한 그림을 주었다','V'],
+p25a:['놀림받을까 주지 않은','V'],p25b:['어릴 적 그린 그림','O'],p26a:['마지막 인사 때','T'],p26b:['이름을 밝혔다','V'],p26c:['마리에','N'],p26d:['다음에 꼭 만나자고','Q']};
+/* 엮는 메모 — 기입관이 파편을 맞게 이은 것. lv 1 작은 정답 · 2 이방인을 파악함 · 3 대상은 하나 · 4 확정 */
+const MEMO_W=[
+{k:['p1a','p1b'],l:['같은 건. 붙임','이방인 유년기 항목으로 기입'],lv:1},
+{k:['p2a','p2b'],l:['수량은 가정의 인원','붙임. 이방인 거처 항목'],lv:1},
+{k:['p3a','p3b'],l:['아이들. 이방인도 그중 하나','붙임'],lv:1},
+{k:['p5a','p5b'],l:['꿈속의 일. 오기 아님','분류: 꿈'],lv:1},
+{k:['p21a','p21b','p21c'],l:['열다섯. 길. 붙임','다섯 살 건의 뒤'],lv:1},
+{k:['p22a','p22b'],l:['장소 둘은 같은 곳','광장이 곧 교단 밖'],lv:1},
+{k:['p24a','p24b','p24c'],l:['인명 셋. 한 줄로 수신된 것으로 봄','이방인과 친하게 지낸 자들'],lv:1},
+{k:['p26c','p26b'],l:['인명. 마지막에 밝힌 이름','붙임'],lv:1},
+{k:['p25a','p25b'],l:['그림 건. 붙임','품목: 그림'],lv:1},
+{k:['p9a','p9b'],l:['이유와 답. 붙임','붉은 것은 불 때문'],lv:1},
+{k:['g2a','g2b'],l:['호칭의 유래. 붙임','이방인 건과 무관해 보임 → 같은 접수. 보관'],lv:1},
+{k:['g13a','g13b'],l:['사라진 자와 남은 물건','품목: 레바테인'],lv:1},
+{k:['g26a','g26b'],l:['호칭. 붙임','인명: 수르트'],lv:1},
+{k:['g10a','g10b','g10c'],l:['지명: 워그드라실','꼭대기에 신들. 붙임'],lv:1},
+{k:['g17b','g17a'],l:['로키 = 사생아. 붙임','인명 대장에 올림'],lv:1},
+{k:['g7a','g7c'],l:['이미르 = 거인들의 영웅. 붙임','인명 대장에 올림'],lv:1},
+{k:['p5b','p7b','p10b'],l:['꿈 → 달림 → 목적. 순서 맞음','이방인 이동 사유: 꿈','사유란에 "꿈"이라고 적어도 되는가. 적음'],lv:2},
+{k:['p1a','p21a'],l:['다섯, 열다섯. 사이 십 년','위탁 가정 건은 전부 이 사이에 둠'],lv:2},
+{k:['p15c','p17b','p18a'],l:['타 없어졌을 거라 말한 아이 = 불길을 본 아이','같은 아이. 이방인 아님'],lv:2},
+{k:['p16b','p20b','p26c'],l:['먼저 들으러 오는 아이 = 이름을 밝힌 아이','마리에'],lv:2},
+{k:['p14a','p14b','p24d'],l:['그림의 내용: 초원과 하늘','이방인이 그림. 세 명에게 줌'],lv:2},
+{k:['g9b','g9c','g10a'],l:['들어 올린 자의 몸과 재가 재료','만들어진 것: 워그드라실'],lv:2},
+{k:['g16a','g19','g18b'],l:['검은 주인에게만 반응','주인은 이미르','로키에게서 같은 것 → 맥동'],lv:2},
+{k:['p10b','g10b'],l:['"꼭대기" 두 건','같은 나무의 꼭대기'],lv:2},
+{k:['g7a','g13a','p1a'],l:['접수 번호가 전부 이방인 건으로 나옴','자명종은 틀리지 않음','대상은 하나'],lv:3},
+{k:['g7c','p2b'],l:['영웅과 위탁 아동이 한 접수','~~나눔~~','나눌 수 없음. 나누지 않음'],lv:3},
+{k:['g7a','p1a','g13a'],l:['~~대상은 둘~~','~~오기~~','이미르가 이방인.','기입함'],lv:4}];
+const MEMO_KEYS=Object.keys(MEMO_F),MEMO_IDS=[...MEMO_KEYS.map(k=>'f:'+k),...MEMO_W.map((w,i)=>'w:'+i)];
+/* 접수 번호 — 받은 순서도 시간 순서도 아닌, 자명종이 뱉은 대로의 번호 */
+const MEMO_NO=(()=>{const r=mulberry(4127),a=MEMO_KEYS.map((k,i)=>i);for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}const o={};MEMO_KEYS.forEach((k,i)=>o[k]=String(31+a[i]*6+(i%5)).padStart(4,'0'));return o})();
+function memoLines(id){
+  if(id[0]==='w')return MEMO_W[+id.slice(2)].l;
+  const k=id.slice(2),[tx,ty]=MEMO_F[k],no=+MEMO_NO[k],r=mulberry(no*7+3),pk=a=>a[Math.floor(r()*a.length)],nb=String(Math.max(31,no-(1+Math.floor(r()*9)))).padStart(4,'0');
+  if(k==='p5b')return['분류: ~~직업~~ → ~~사망?~~ → 미분류','사람이 하늘이 될 수는 없음. 오기로 처리할 것','~~오기로 처리~~ 자명종은 틀리지 않음'];
+  const T={N:[['인명 추정','대조할 명부 없음','보류'],['인명','이곳 사람 아님','보류'],['인명 추정','~~주민 대장 대조~~ 없음','보류']],
+    V:[['주어 미수신','앞 조각 대기 → ~~대기~~','정렬 불가'],['누가?','~~이방인~~ 근거 없음','미분류'],['서술만 수신','주어 칸 비움','순서 미상'],['주어 미수신',`${nb}과 붙여 봄. 안 붙음`,'보류']],
+    O:[['대상','무엇의?',`${nb}과 붙여 봄. 안 붙음`],['품목? 장소?','~~품목~~ → ~~장소~~ → 미분류'],['명사만 수신','서술 대기','보류'],['대상','누구의?','순서 미상']],
+    T:[['시점','기준 연도 없음','이것만 순서 잡힘. 나머지 순서 미상'],['수량 또는 시점','무엇의?','단위 미수신']],
+    C:[['이음말만 수신','앞뒤 없음','~~폐기~~ 자명종은 틀리지 않음. 보관'],['조각의 조각','앞 조각 대기','순서 미상'],['꾸밈말만 수신','꾸밀 것 미수신','보류']],
+    Q:[['인용','화자 미상','보류'],['누가 한 말?','~~이방인~~ → 미상','순서 미상']]};
+  const L=pk(T[ty]||T.V).slice();
+  if(k==='p2a'){L.length=0;L.push('수량','무엇의?',`${nb}과 붙여 봄. 안 붙음`)}
+  const d=r();/* 업무가 밀려 엉킨 흔적 */
+  if(d<.12)L.push(`퇴근 전까지 ${3+Math.floor(r()*17)}건`);else if(d<.2)L.unshift(`접수 ~~${nb}~~ ${MEMO_NO[k]}`);else if(d<.26)L.push('같은 조각 두 번 분류함. 하나 지움');else if(d<.31)L.push('점심 뒤 다시 볼 것 → ~~다시 봄~~');
+  return L}
+const memoStrike=s=>s.replace(/~~(.+?)~~/g,'<s>$1</s>');
+function memoHTML(id){const w=id[0]==='w'?MEMO_W[+id.slice(2)]:null,ks=w?w.k:[id.slice(2)],r=mulberry((+MEMO_NO[ks[0]])*13+(w?7:1));
+  return`<div class="memo${w?' weave':''}" style="--mr:${(r()*3-1.5).toFixed(2)}deg"><div class="memo-no">접수 ${ks.map(k=>MEMO_NO[k]).join(' · ')}</div>
+    <div class="memo-q">${ks.map(k=>MEMO_F[k][0]).join(' <i>/</i> ')}</div><ul>${memoLines(id).map(l=>`<li>${memoStrike(l)}</li>`).join('')}</ul></div>`}
+const memoNoOf=id=>+MEMO_NO[id[0]==='w'?MEMO_W[+id.slice(2)].k[0]:id.slice(2)];
+function memoStore(){try{const a=JSON.parse(localStorage.getItem('ashMemo')||'[]');return Array.isArray(a)?a.filter(x=>MEMO_IDS.includes(x)):[]}catch(e){return[]}}
+let MEMO_MEM=null;/* 저장소를 쓸 수 없는 곳에서는 켜 둔 동안만 기억 */
+function memoSeen(){return MEMO_MEM||(MEMO_MEM=memoStore())}
+function memoAdd(id){const a=memoSeen();if(a.includes(id))return;a.push(id);try{localStorage.setItem('ashMemo',JSON.stringify(a))}catch(e){}}
+/* 노트가 갱신될 때 호출 — 조용히 섞여 옴(알림 없음) */
+function memoRoll(){if(!jmOn())return false;const J=jmS();J.memos=J.memos||[];
+  const due=J.open&&!J.memos.length;if(!(rnd()<.08||due))return false;
+  const seen=memoSeen(),pool=MEMO_IDS.filter(x=>!seen.includes(x));if(!pool.length)return false;
+  const id=pick(pool);J.memos.push(id);memoAdd(id);return true}
+/* 메모 보관함 — 받은 만큼만 쌓임. 전체 장수는 보이지 않음 */
+function openVault(back){const m=$('#modal');m.hidden=false;const seen=memoSeen();S.vaultSort=S.vaultSort||'got';
+  const list=S.vaultSort==='no'?seen.slice().sort((a,b)=>memoNoOf(a)-memoNoOf(b)):seen.slice();
+  m.innerHTML=`<div class="panel vault" style="width:min(980px,100%)"><div class="maphead"><div><div class="psub">${seen.length?`${seen.length}장`:'&nbsp;'}</div><div class="ptitle">보관함</div></div>
+    <div style="display:flex;gap:10px">${seen.length>1?`<button class="btn-ghost" id="vSort">${S.vaultSort==='no'?'접수 번호 순서':'받은 순서'}</button>`:''}<button class="btn-ghost" id="mClose">닫기</button></div></div>
+    ${seen.length?`<div class="vault-grid">${list.map(memoHTML).join('')}</div>`:'<div class="vault-empty">아직 모은 것이 없다...</div>'}</div>`;
+  $('#mClose').onclick=()=>{closeModal();if(back)back()};const vs=$('#vSort');if(vs)vs.onclick=()=>{S.vaultSort=S.vaultSort==='no'?'got':'no';openVault(back)}}
+function jmNoteSync(){if(!jmOn())return;const J=jmS(),a=JSON.stringify(J.note||[]),nw=J.list.map(x=>({...x}));J.note=nw;if(JSON.stringify(nw)!==a){J.noteNew=true;toast('노트','관에서 쪽지가 떨어졌다');renderTop()}
+  if(memoRoll()){J.noteNew=true;renderTop()}}
 const jmNoted=id=>{if(!jmOn())return 0;const n=m2Node(id);if(!n||n.kind==='center')return 0;let v=0;for(const x of jmS().note||[])if(x.k==='noGo'&&(x.node===id||(x.reg&&x.reg===n.reg)))v=Math.max(v,x.fixed?2:1);return v};
 function openNote(){if(S.modalLock||S.busy)return;const r=S.run,J=jmS(),m=$('#modal');m.hidden=false;J.noteNew=false;
   const N=J.note||[],row=x=>`<li class="${x.fixed?'fx':''}"><span>${jmLine(x)}</span>${x.fixed?'<i class="jm-seal">기입</i>':''}</li>`;
   const must=N.filter(x=>JM_MUST.has(x.k)),not=N.filter(x=>!JM_MUST.has(x.k));
   m.innerHTML=`<div class="panel jm-note" style="width:min(680px,100%)"><div class="maphead"><div><div class="psub">상점에 들어갈 때마다 관으로 내려온다</div><div class="ptitle">노트</div></div><button class="btn-ghost" id="mClose">닫기</button></div>
-    ${J.ticket?`<div class="jm-ticket"><div><b>외지인 접수</b><span>도착 20시간 이후</span></div>${J.open?'<i class="jm-seal">호출</i>':`<em>앞으로 ${Math.max(1,21-ensureStock(r).h)}시간</em>`}</div>`:''}
+    ${J.ticket?`<div class="jm-ticket"><div><b>이방인 접수</b><span>도착 20시간 이후</span></div>${J.open?'<i class="jm-seal">호출</i>':`<em>앞으로 ${Math.max(1,21-ensureStock(r).h)}시간</em>`}</div>`:''}
     <div class="jm-h">당신이 해야 하는 것</div><ul class="jm-l">${must.map(row).join('')||'<li class="none">—</li>'}</ul>
-    <div class="jm-h">당신이 하면 안 되는 것</div><ul class="jm-l">${not.map(row).join('')||'<li class="none">—</li>'}</ul></div>`;
+    <div class="jm-h">당신이 하면 안 되는 것</div><ul class="jm-l">${not.map(row).join('')||'<li class="none">—</li>'}</ul>
+    ${(J.memos||[]).length?`<div class="memo-row">${J.memos.map(memoHTML).join('')}</div>`:''}</div>`;
   $('#mClose').onclick=()=>{closeModal();renderTop()};save()}
 
 /* ================= 기입관 보스전 (V2.29.48.12) =================
@@ -7173,12 +7288,13 @@ function openGameMenu(){if(!inGame())return;
     <div class="choices">
       <button class="choice" id="gmCont"><b>계속하기</b><span>게임으로 돌아간다</span></button>
       <button class="choice" id="gmSet"><b>설정</b><span>UI 크기 · 효과음 · 화면 흔들림 · 전환 팁 · 튜토리얼 · 패치 내역</span></button>
+      <button class="choice" id="gmVault"><b>보관함</b><span>${memoSeen().length?`${memoSeen().length}장`:'아직 모은 것이 없다...'}</span></button>
       <button class="choice" id="gmSv"><b>저장하기</b><span>원하는 칸에 지금 상태를 직접 저장 · 여러 칸에 나눠 저장할 수 있다</span></button>
       <button class="choice" id="gmSave"><b>저장하고 나가기</b><span>${fight?'지금 전투는 시작한 시점부터 다시 한다':'지금 막에서 이어 할 수 있다'} · 시작 화면으로</span></button>
       <button class="choice" id="gmQuit"><b>중단하기</b><span>이번 ${hunt?'절멸전':'등반'}을 그만두고 자동 저장 기록을 지운다 · 직접 저장한 칸은 남는다</span></button>
     </div></div>`;
   $('#gmCont').onclick=closeModal;
-  $('#gmSet').onclick=()=>{S.setBack=openGameMenu;openSettings()};
+  $('#gmSet').onclick=()=>{S.setBack=openGameMenu;openSettings()};$('#gmVault').onclick=()=>openVault(openGameMenu);
   $('#gmSv').onclick=()=>{if(hunt)saveHunt();else save();openSlots('save',openGameMenu)};
   $('#gmSave').onclick=()=>{if(hunt)saveHunt();else save();toast('저장','저장 기록에 저장했다');leaveToTitle()};
   const q=$('#gmQuit');let armd=false;q.onclick=()=>{if(!armd){armd=true;q.querySelector('b').textContent='한 번 더 누르면 중단';q.querySelector('span').textContent='자동 저장 기록이 지워지고 되돌릴 수 없다 (직접 저장한 칸은 남음)';return}
