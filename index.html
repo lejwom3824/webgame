@@ -2531,7 +2531,7 @@ function enterNode(i){
   else if(t==='elite')at={kind:'combat',enemy:makeEnemy('inquisitor')};
   else if(t==='boss')at={kind:'combat',enemy:makeEnemy('bishop')};
   else if(t==='rest')at={kind:'rest'};
-  else if(t==='shop'){r.shop=null;at=!r.tut&&rnd()<BLACK_P?{kind:'black'}:{kind:'shop'}}
+  else if(t==='shop'){r.shop=null;at=r.tut?{kind:'shop'}:{kind:'shopAsk',black:rnd()<BLACK_P}}
   /* 특수무기 사건은 1%, 나머지 일반 사건 99% */
   else at={kind:'event',ev:(r.mode==='human'&&!r.flags.dainSeen&&rnd()<.01)?'dain':pickEvent()};
   r.at=at;if(at.kind==='shop')genShop();
@@ -2562,6 +2562,7 @@ function resumeAt(){
   const r=S.run,at=r.at;if(!at)return showMap();
   if(at.kind==='combat'&&!at.gokDone&&!(r.flags&&r.flags.gokMet)&&(at.enemies||[]).some(f=>f.key==='interp'))return gokFirst(at);
   if(at.kind==='combat')return startCombat(JSON.parse(JSON.stringify(at.enemies||at.enemy)));
+  if(at.kind==='shopAsk')return eventPanel('상점','','길가에 상점이 열려 있다.',[{b:'상점에 입장한다',s:'물건을 둘러본다',f:()=>{r.at=at.black?{kind:'black'}:{kind:'shop'};if(r.at.kind==='shop'){r.shop=null;genShop()}save();transition(resumeAt)}},{b:'지나간다',s:'들르지 않고 다음 막으로',f:()=>{r.at=null;save();showMap()}}]);
   if(at.kind==='inn')return showInn();
   if(at.kind==='a2first')return showA2First();
   if(at.kind==='a2rain')return showA2Rain();
@@ -4366,6 +4367,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.29.50.14','11/13','상점은 자동으로 들어가지 않음 — 2장은 상점 막에 서면 지도에 "상점에 입장한다"(여관이면 "여관에 들어간다") 버튼이 생기고 누르지 않으면 그냥 지나감, 1장은 상점 막에서 입장할지 지나갈지 고름. 강제 때문에 갈 수 있는 막이 하나도 없어 고립되던 문제 수정 — 지금 선 자리에서 나갈 길 하나와 중앙정부로 가는 길은 항상 남고, 이미 고립된 저장은 그 자리에서 강제가 적용되지 않음.'],
   ['V2.29.49.13','11/13','인물의 말풍선이 떠 있는 동안 아무것도 눌리지 않던 문제 수정 — 말풍선은 조작을 막지 않고, 어디를 누르든 말풍선이 닫히면서 누른 것이 그대로 눌림.'],
   ['V2.29.49.12','11/13','기입관 밸런스 — 페이즈당 체력을 난이도별로 정함(매우 쉬움 4000 · 쉬움 5000 · 보통 6000 · 어려움 8000 · 매우 어려움 10000). 기입관의 공격은 주사위 하나당 내 최대 체력의 정해진 범위 안으로 들어옴(서류 정리 하나당 보통 8~20% · 어려움 10~24% · 매우 어려움 10~27%, 삭제는 보통 25~40% · 어려움 25~45% · 매우 어려움 25~50%에 대비 배율 — 막으면 -80%, 못 막으면 +100%). 2페이즈의 공격 위력 +25%는 없앰.'],
   ['V2.29.48.12','11/13','자명종의 강제와 기입관의 고정 — 니다벨리르에 온 뒤 10시간마다 강제가 하나 걸리고(갈 수 없음 · 가야 함 · 살 수 없음 · 주식을 사고팔 수 없음 · 장비를 바꿀 수 없음 · 카드를 뺄 수 없음 · 새로고침해도 바뀌지 않음), 굳지 않은 강제는 다음 10시간에 사라지고 새 강제가 생김. 행동 3회(이동 · 사건 · 상점 · 시간 보내기 · 선택지)마다 걸려 있는 강제 하나가 굳어 풀리지 않음. 노트 — 상점에 들어갈 때마다 관으로 내려와 갱신, 글만 있으면 강제 · 도장이 찍혀 있으면 고정. 중앙정부 문 — 판마다 10~20막 사이에서 정해진 막 수를 지나고 20시간을 넘겨야 열림, 문이 열린 뒤에는 강제가 사라지지 않고 10시간마다 겹쳐 쌓임. 기입관 보스전 개조 — 특성 바꾸기 · 카드 종류 무효 · 따라 쓰기 삭제, 한 턴에 같은 카드를 2번째 쓰면 검게 변하고 3번째는 효과 없이 자물쇠(2턴), 그 턴에 가장 많이 쓴 카드는 다음 1턴 잠김, 카드 3장마다 묶인 카드에 도장(전투 끝까지 사용 불가), 체력 1 이하에서 즉시 턴 종료 후 전부 회복(2페이즈), 체력 상향. 공방 동료(제바르크 · 오토 · 견습생) 영입을 이전으로 되돌림 — 리테만 남음.'],
@@ -5867,18 +5869,20 @@ function showMap2(full){const r0=S.run;if(r0.m2&&r0.m2.v===2&&!r0.m2.fixDone)m2A
   const guide=IN?'':lockC?`먼저 <b>${WS_LAB[r.dir]}</b>까지 최소 <b>${DIST[M.cur]}막</b> · ${m2Bearing({x:tg.x-cur.x,y:tg.y-cur.y})}쪽 · 그다음 중앙정부`:`중앙정부까지 최소 <b>${DIST[M.cur]}막</b> · ${m2Bearing({x:-cur.x,y:-cur.y})}쪽 방향`;
   const FL=!IN&&FIELD[cur.reg],fld=FL?`${FL.n} — ${FL.t}${cur.reg==='E'?` · 지금 증기 ${r.fSteam||0} / 10`:''}`:'';
   const optBtn=(attr,type,name,note,cls)=>`<button class="m2opt ${type}${cls||''}" ${attr}><svg viewBox="-15 -15 30 30" aria-hidden="true">${M2IC[type]}</svg><b>${name}</b>${note?`<small>${note}</small>`:''}</button>`;
-  let opts;
+  let opts,shopIn='';
+  if(!IN&&m2Type(cur)==='shop')shopIn=optBtn('data-shopin="1"','shop',cur.inn?'여관에 들어간다':'상점에 입장한다','들르지 않고 지나가도 된다',' near');
   if(IN){const nd=innerNodes(IN.diag),nx=nd[IN.cur+1];opts=nx?optBtn(`data-in="${nx.id}"`,nx.kind==='re'?'elite':nx.kind,nx.kind==='re'?'정예 '+nx.n:'보스','',''):''}
   else opts=[...cur.adj].sort((a,b)=>DIST[a]-DIST[b]).map(j=>{const n=M.nodes[j],ty=m2Type(n),close=DIST[j]<DIST[M.cur];return optBtn(`data-id="${j}"`,ty,n.kind==='ws'?WS_LAB[n.reg]:M2N[ty],`${m2Bearing2(cur,n)}쪽${close?(lockC?' · 공방 방향':' · 중앙정부 방향'):''}${n.kind==='center'&&lockC?' · 공방에 먼저 다녀와야 함':n.kind==='center'&&!jmS().open?' · 문이 닫혀 있음':''}${jmNoted(j)?(jmNoted(j)>1?' · 기입':' · 보류'):''}`,close?' near':'')}).join('');
+  const shopGo=()=>{const n=M.nodes[M.cur];if(S.busy||m2Type(n)!=='shop')return;if(n.inn==null)n.inn=rnd()<.25;r.at=n.inn?{kind:'inn',node:n.id}:rnd()<BLACK_P?{kind:'black',node:n.id}:{kind:'shop2',node:n.id};save();transition(resumeAt)};
   const LEG=[['here','내 위치'],['can','갈 수 있는 곳'],['shop','상점'],['event','사건'],['combat','전투'],['elite','정예'],['ws','공방'],['rush','중앙정부']];
   const sc=openScreen('');
-  sc.innerHTML=`<div class="m2stage"><div class="m2head"><b>${where}</b>${guide?`<span>${guide}</span>`:''}<span class="${r.hostile&&!IN?'bad':''}">${what}</span>${fld?`<span class="m2fld">${fld}</span>`:''}${IN?'':`<span>${jmS().open?'중앙정부의 문이 열려 있다':'중앙정부의 문은 닫혀 있다'}</span>`}</div><div class="m2opts">${opts}</div>
+  sc.innerHTML=`<div class="m2stage"><div class="m2head"><b>${where}</b>${guide?`<span>${guide}</span>`:''}<span class="${r.hostile&&!IN?'bad':''}">${what}</span>${fld?`<span class="m2fld">${fld}</span>`:''}${IN?'':`<span>${jmS().open?'중앙정부의 문이 열려 있다':'중앙정부의 문은 닫혀 있다'}</span>`}</div><div class="m2opts">${shopIn}${opts}</div>
     <div class="m2tag">누르면 전체 지도</div><div class="m2mini" id="m2mini" tabindex="0" role="button" aria-label="전체 지도 열기"><svg viewBox="${m2MiniBox()}">${m2Svg('mini')}</svg></div>
     <div class="m2full" id="m2full" hidden><svg id="m2fsvg" viewBox="-520 -520 1040 1040">${m2Svg('full')}</svg>
       <div class="m2legend">${LEG.map(([k,n])=>`<span class="lg ${k}"><i></i>${n}</span>`).join('')}</div>
       <div class="m2tools"><button class="btn-ghost" id="m2in" aria-label="확대">＋</button><button class="btn-ghost" id="m2out" aria-label="축소">－</button><button class="btn-ghost" id="m2me">내 위치</button><button class="btn-ghost" id="m2all">전체</button><button class="btn-ghost" id="m2close">작게 보기</button></div></div></div>`;
   const pickNode=e=>{const g=e.target.closest('[data-id],[data-in]');if(!g)return false;e.stopPropagation();if(g.dataset.in!=null)innerGo(+g.dataset.in);else enterNode2(+g.dataset.id);return true};
-  sc.querySelectorAll('.m2opt').forEach(b=>b.onclick=pickNode);
+  sc.querySelectorAll('.m2opt').forEach(b=>b.onclick=b.dataset.shopin?(e=>{e.stopPropagation();shopGo()}):pickNode);
   /* 전체 지도 — 내 위치에서 크게 시작, 끌어서 이동 · 휠이나 두 손가락으로 확대 */
   const fs=$('#m2fsvg'),box=$('#m2full'),me=IN?innerNodes(IN.diag)[IN.cur]:cur,V={x:me.x,y:me.y,w:620},MIN=320,MAX=1060;
   const draw=()=>{const W=fs.clientWidth||1,H=fs.clientHeight||1,a=H/W;V.w=clamp(V.w,MIN,MAX);V.x=clamp(V.x,-M2R,M2R);V.y=clamp(V.y,-M2R,M2R);let w=V.w,h=V.w;if(a<1)w=V.w/a;else h=V.w*a;fs.setAttribute('viewBox',`${V.x-w/2} ${V.y-h/2} ${w} ${h}`)};
@@ -5927,7 +5931,7 @@ function m2Arrive(id,first){const r=S.run,M=r.m2,n=m2Node(id);
     if(first)r.quiet=(r.quiet||0)+1;
     if(t==='shop'){
       if(false){r.flags.mjolSeen=true;at={kind:'mjol',node:id}}
-      else{if(n.inn==null)n.inn=rnd()<.25;at=n.inn?{kind:'inn',node:id}:rnd()<BLACK_P?{kind:'black',node:id}:{kind:'shop2',node:id}}}
+      else{if(n.inn==null)n.inn=rnd()<.25;at=null/* V2.29.50.14: 자동 입장 없음 — 지도에서 '상점에 입장한다'를 눌러야 들어감 */}}
     else if(r.mode==='human'&&r.flags.a2New&&!r.flags.a2Ev1){r.flags.a2Ev1=1;at={kind:'a2first',node:id}}
     else if(r.mode==='human'&&r.flags.pendRain){r.flags.pendRain=0;at={kind:'a2rain',node:id}}
     else{const ev=pickEvent(n.reg);at=ev?{kind:'event',ev,node:id}:null}
@@ -6735,9 +6739,13 @@ function jmBlockedNode(id,extra){const n=m2Node(id);if(!n||n.kind==='center')ret
 /* 지금 자리에서 중앙정부(그리고 아직 안 간 내 공방)까지 갈 길이 남는지 */
 function jmSafe(extra){const M=S.run.m2,seen=new Set([M.cur]),q=[M.cur];
   while(q.length){const a=q.pop();for(const b of M.nodes[a].adj){if(seen.has(b))continue;if(b!==0&&jmBlockedNode(b,extra))continue;seen.add(b);if(b!==0)q.push(b)}}
-  if(!seen.has(0))return false;if(M.wsNeed!=null&&!M.wsDone&&!seen.has(M.wsNeed))return false;return true}
+  if(!seen.has(0))return false;if(M.wsNeed!=null&&!M.wsDone&&!seen.has(M.wsNeed))return false;
+  /* 고립 방지 (V2.29.50.14): 지금 선 자리에서 중앙정부가 아닌 막으로 나갈 길이 하나는 남아야 함 */
+  if(!M.nodes[M.cur].adj.some(b=>b!==0&&!jmBlockedNode(b,extra)))return false;return true}
 function jmDoor(){if(!jmOn())return;const r=S.run,J=jmS(),st=ensureStock(r);if(!J.open&&(r.floor||0)>=J.need&&st.h>20){J.open=true;toast('중앙정부','문이 열렸다');try{sfx('block',.5)}catch(e){}}}
 function jmMoveDeny(from,id){if(!jmOn())return null;const M=S.run.m2,J=jmS();
+  /* 고립 방지: 갈 수 있는 막이 하나도 없으면 강제는 이 걸음에 적용되지 않음 */
+  {const cOpen=J.open&&!(M.wsNeed!=null&&!M.wsDone);if(!M.nodes[from].adj.some(j=>M.nodes[j].kind==='center'?cOpen:!jmBlockedNode(j)))return null}
   if(jmBlockedNode(id))return'이쪽으로 가실 수 없습니다';
   if(jmHas('mustGo')){const goal=(M.wsNeed!=null&&!M.wsDone)?M.wsNeed:0,D=m2Dist(goal);
     const ok=j=>!jmBlockedNode(j)&&!(M.nodes[j].kind==='center'&&(!J.open||(M.wsNeed!=null&&!M.wsDone)));
