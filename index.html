@@ -323,18 +323,18 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 #enemy.ultdark #eart{filter:brightness(.3) saturate(.5)}
 .ult-eye{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;pointer-events:none;z-index:4}
 .ult-eye[hidden]{display:none}
-.ult-eye::before,.ult-eye::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:2px;background:linear-gradient(90deg,transparent,#ff6a4a 30%,#fff 50%,#ff6a4a 70%,transparent)}
-.ult-eye::before{width:44px;height:3px}.ult-eye::after{width:3px;height:44px;background:linear-gradient(180deg,transparent,#ff6a4a 30%,#fff 50%,#ff6a4a 70%,transparent)}
-#enemy.ult .ult-eye{animation:ultEye 1.5s ease-in-out infinite;filter:drop-shadow(0 0 6px #ff3b2f)}
+.ult-eye::before,.ult-eye::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:2px;background:linear-gradient(90deg,transparent,var(--ec,#ff6a4a) 30%,#fff 50%,var(--ec,#ff6a4a) 70%,transparent)}
+.ult-eye::before{width:44px;height:3px}.ult-eye::after{width:3px;height:44px;background:linear-gradient(180deg,transparent,var(--ec,#ff6a4a) 30%,#fff 50%,var(--ec,#ff6a4a) 70%,transparent)}
+#enemy.ult .ult-eye{animation:ultEye 1.5s ease-in-out infinite;filter:drop-shadow(0 0 6px var(--ec,#ff3b2f))}
 @keyframes ultEye{0%,100%{transform:scale(.65) rotate(0);opacity:.75}50%{transform:scale(1.15) rotate(10deg);opacity:1}}
 #eart svg .wpn{transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-box:fill-box;transform-origin:50% 50%}
 #eart svg .inq-sword{transform:rotate(180deg)}
 #enemy.ult #eart svg .inq-sword{transform:none}
 #eart svg .hm-l,#eart svg .hm-r{transition:transform .5s}
-#enemy.ult #eart svg .hm-l{transform:translateX(-5px)}
-#enemy.ult #eart svg .hm-r{transform:translateX(5px)}
+#enemy.ult #eart svg .hm-l,#enemy.hmopen #eart svg .hm-l{transform:translateX(-5px)}
+#enemy.ult #eart svg .hm-r,#enemy.hmopen #eart svg .hm-r{transform:translateX(5px)}
 #eart svg .hm-blade{transform:scaleY(0);transform-box:fill-box;transform-origin:50% 0;transition:transform .45s .25s}
-#enemy.ult #eart svg .hm-blade{transform:scaleY(1)}
+#enemy.ult #eart svg .hm-blade,#enemy.hmopen #eart svg .hm-blade{transform:scaleY(1)}
 #hand.ult-burn .card{animation:ultBurn 1.1s ease-in-out infinite}
 @keyframes ultBurn{0%,100%{box-shadow:0 0 10px 2px rgba(255,90,30,.55),0 -8px 18px rgba(255,140,40,.4)}50%{box-shadow:0 0 22px 6px rgba(255,60,20,.8),0 -16px 30px rgba(255,170,60,.55)}}
 .ult-prev{margin:10px 0;padding:12px 14px;border:2px solid #e3b75a;border-radius:8px;background:linear-gradient(#2a2216,#17130d);box-shadow:0 0 18px rgba(227,183,90,.35)}
@@ -454,7 +454,7 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .flipped .face.front{display:none}
 .flipped .face.back{display:flex}
 .btext.dense{font-size:1.85em;line-height:1.4;padding:.3em .9em}
-.r-start,.r-common{--fr:#7d838b;--fr2:#7d838b55}.r-combo{--fr:#7fae8f;--fr2:#7fae8f66}.r-fusion{--fr:#d7a24a;--fr2:#d7a24a88}.r-uncommon{--fr:#b8925a;--fr2:#b8925a66}.r-rare{--fr:#e2e6ea;--fr2:#e2e6ea66}.r-special{--fr:#a53c32;--fr2:#a53c3277}.r-curse{--fr:#6f5c88;--fr2:#6f5c8866}
+.r-start,.r-common{--fr:#7d838b;--fr2:#7d838b55}.r-ult{--fr:#e3b75a;--fr2:#e3b75a99}.face.r-ult{box-shadow:0 0 0 2px #e3b75a,0 0 18px #e3b75aaa}.r-combo{--fr:#7fae8f;--fr2:#7fae8f66}.r-fusion{--fr:#d7a24a;--fr2:#d7a24a88}.r-uncommon{--fr:#b8925a;--fr2:#b8925a66}.r-rare{--fr:#e2e6ea;--fr2:#e2e6ea66}.r-special{--fr:#a53c32;--fr2:#a53c3277}.r-curse{--fr:#6f5c88;--fr2:#6f5c8866}
 .t-atk{--tt:#a5584b}.t-def{--tt:#5b9888}.t-skill{--tt:#bcae92}.t-power{--tt:#b8925a}.t-curse{--tt:#5b4a73}
 .cost{position:absolute;left:.6em;top:.6em;width:3.8em;height:3.8em;border-radius:50%;display:grid;place-items:center;z-index:2;font-family:var(--f-display);font-size:1em;
   background:radial-gradient(circle at 38% 32%,#f2cd8a,#9d6d33 60%,#4d3416);color:#1c140a;box-shadow:0 0 0 .2em #16120d,0 .3em .6em #000a}
@@ -1117,7 +1117,17 @@ const CARDS={
   prayer:{name:'닿지 않는 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45, 드로우 +1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
   // 임시 카드 — 문서 일반덱에 회피 주사위 카드가 없어 시험용으로 넣음
   duck:{name:'몸 낮추기',cost:1,type:'def',rar:'common',d:[V(10,16),D(15,25)],text:'회피 10~16, 방어 15~25',flavor:''},
-  parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',d:[V(6,10),A(35,50)],text:'회피 6~10, 공격 35~50',flavor:''},
+  parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',text:'패링\n이번 턴 회피 +10\n회피에 성공하면 공격 90~120으로 반격',flavor:''},
+  /* V2.33.65.16: 힘을 얻는 카드 (코스트는 문서에 없어 임시 1) */
+  c_est:{name:'견적 내기',cost:1,type:'atk',rar:'common',tmp:true,d:[A(30,40)],text:'공격 30~40\n이 카드 적중 시 힘 +20',flavor:''},
+  c_stance:{name:'자세잡기',cost:1,type:'def',rar:'common',tmp:true,d:[D(50,50)],text:'방어 50\n사용 시 힘 +20',flavor:''},
+  /* V2.33.65.16: 노르드교 원형 카드 — 노르드교 무기 전용 (등급·가격은 문서에 없어 임시) */
+  n_weak:{name:'약점 노리기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n이번 턴 동안 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25 (최대 3회)',flavor:''},
+  n_tear:{name:'약점 찢기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(60,90)],xFn:(C,E)=>pExpo(E)?1.25:1,text:'노르드교 무기 전용\n공격 60~90\n대상이 약점 노출이면 데미지 +25%',flavor:''},
+  n_force:{name:'표식 강제 부여',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n적중 시 이번 턴부터 대상에게 표식Ⅰ, 이미 표식이 있으면 그 뒤 2턴 동안 맞지 않아도 표식 유지',flavor:''},
+  /* V2.33.65.16: 궁극기 — 적이 쓴 궁극기를 맞고 버티면 1장 (황금빛 테두리 · 유일) */
+  u_exec:{name:'처형 집행',cost:3,type:'atk',rar:'ult',ult:1,nord:1,sure:true,d:[A(400,600)],text:'궁극기 · 유일 · 노르드교 무기 전용\n대상의 표식이 Ⅴ일 때만 사용\n공격 400~600, 표식을 전부 소모, 회피 불가',flavor:''},
+  u_purge:{name:'처단',cost:4,type:'atk',rar:'ult',ult:1,d:[A(50,100)],xFn:(C,E)=>E&&E.nord?(E.block>0?4.1:5):1,sureFn:(C,E)=>!!(E&&E.nord),text:'궁극기 · 유일\n자신의 공격이 3번 적중하면 사용 (회피나 방어도로 전부 막힌 공격은 세지 않음, 쓰면 0으로)\n공격 50~100, 대상이 노르드교 소속이면 데미지 +400%·회피 불가, 대상에게 방어도가 있으면 증가율 -90%',flavor:''},
   // 임시 카드 — 버리기 계열 (문서에 없음)
   tidy:{name:'정리',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 카드를 최대 3장 골라 버린다\n버린 장수만큼 드로우',flavor:''},
   // 임시 카드 — 조합 (휴식에서 두 장을 합침, 문서에 없음)
@@ -1157,12 +1167,12 @@ const CARDS={
   s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5부여\n이 카드로 적을 처치시 드로우 +1(1턴에 최대 3)',flavor:'짧은 손잡이가 손에 감긴다.'},
   s_ragnarok:{name:'라그나로크',cost:3,type:'skill',rar:'special',text:'대상에게 소각 +30\n드로우 +2',flavor:'종막이었어야 할 불.'},
 };
-const START_DECK=[['slash',5],['guard',4],['breath',1]];
-const POOL={common:['ms_slash','stab','double','smash','shield','gap','hardtack','prayer','duck','parry','tidy'],uncommon:['steam','mimic','f_pi','ornament','hook','temper','quick']};
+const START_DECK=[['slash',3],['guard',3],['breath',2]];/* V2.33.65.16: 시작 덱 8장 — 어설픈 베기 3 · 막기 3 · 숨 고르기 2 */
+const POOL={common:['ms_slash','stab','double','smash','shield','gap','hardtack','prayer','duck','parry','tidy','c_est','c_stance','n_weak','n_tear','n_force'],uncommon:['steam','mimic','f_pi','ornament','hook','temper','quick']};
 /* 신화 빌드 — 다인 시작 덱 10장 (문서 장수) */
 const DAIN_DECK=[['d_dirty',3],['d_cannibal',2],['d_giant',2],['d_glutton',1],['d_crumble',1],['d_hungry',1]];
-const TYPE_LABEL={atk:'공격',def:'방어',skill:'기술',power:'지속',curse:'저주'};
-const RAR_LABEL={combo:'조합',fusion:'합성',mastery:'특수카드(숙련도)'};
+const TYPE_LABEL={atk:'공격',def:'방어',skill:'지원',power:'지원',curse:'저주'};/* 카드 종류: 공격 · 방어 · 지원 */
+const RAR_LABEL={combo:'조합',fusion:'합성',mastery:'특수카드(숙련도)',ult:'궁극기'};
 // 임시 수치 (문서에 아직 없는 값) — 한곳에 모아 둠
 /* ================= 장비 (웹게임 문서: 상점 · 장비 / 공방 장비) ================= */
 const EQUIP={};/* 소유 효과 물건 전부 삭제 (V2.31.54.14) */
@@ -1215,7 +1225,7 @@ function gainGear(k,done){
 function eq(k){const r=S.run;return!!(r&&r.equip&&r.equip.includes(k))||!!(S.C&&!S.C.over&&S.C.tempEq===k&&S.screen==='combat')}
 /* 공통 키워드 (웹게임 문서: 기본 규칙 · 공통 키워드) — 카드 이름으로 묶임 */
 const KW={
-  uniq:{n:'유일',t:'같은 유일 카드는 패에 1장만 보유할 수 있음',ids:['o_shatter']},
+  uniq:{n:'유일',t:'같은 유일 카드는 패에 1장만 보유할 수 있음',ids:['o_shatter','u_exec','u_purge']},
   member:{n:'단원',t:'단원 카드는 패에 모든 단원 카드를 포함해 1장만 소유 할 수 있음, 복제·강화·봉인·소멸·낙인 불가능, 모든 종류의 부정적·긍정적 키워드로 이 카드의 효과를 바꿀 수 없음',ids:[]},
   toss:{n:'버림',t:'카드마다 정해진 수만큼 플레이어가 패에서 골라 버림',ids:['tidy','c_whirl']}
 };
@@ -1285,7 +1295,7 @@ const ACT={
   '행동-표식 강제 부여':{k:'atk',d:[A(30,50)],cost:1,forceMark:1,neg:1,desc:'적중 시 이번 턴부터 표식Ⅰ, 이미 표식이 있으면 그 뒤 2턴 동안 맞지 않아도 표식 유지'},
   '행동-파쇄':{k:'atk',d:[A(120,180)],cost:2,shatter:1,desc:'대상에게 방어도가 있으면 방어도에만 2배 데미지, 남는 데미지는 체력에 들어가지 않음'},
   '행동-처형 집행':{k:'atk',d:[A(400,600)],cost:3,exec:1,ult:1,desc:'궁극기 · 대상의 표식이 Ⅴ일 때만, 표식을 전부 소모, 회피 불가'},
-  '뼈와 살의 해체학':{k:'atk',d:[A(360,540)],cost:3,ult:1,desc:'궁극기 · 자신의 턴이 아닐 때 행동 포인트를 다 닳아 행동할 때만 사용'},
+  '뼈와 살의 해체학':{k:'atk',d:[A(360,540)],cost:3,burstOnly:1,desc:'특수 카드 · 자신의 턴이 아닐 때 행동 포인트를 다 닳아 행동할 때만 사용'},
   '으스러트리기':{k:'atk',d:[A(100,150)],cost:2,frac:1,neg:1,desc:'적중 시 대상에게 골절'},
   '박 살':{k:'atk',d:[A(140,210)],cost:2,fracX:.5,desc:'대상이 골절이면 데미지 +50%'},
   '뜯어지는 강타':{k:'atk',d:[A(80,120)],cost:1},
@@ -2020,7 +2030,7 @@ const talentBonus=h=>Math.max(0,heroTalentLeft(h));
 function newRun(hero){
   const tb=talentBonus(hero),base1=hero.base1*hpMulOf(hero.traits)*(1+.05*tb),hp=hpAt(base1,1);
   const run={mode:'human',act:1,fate:hero.fate||'pick',diff:hero.diff||'easy',lvl:1,exp:0,base1,hp,maxHp:hp,atk:hero.atk+tb,def:hero.def+tb,talentBonus:tb,acc:hero.acc,eva:hero.eva,traits:hero.traits.slice(),talent:hero.talent,
-    gold:TUNE.startGold,deck:[],map:null,pos:null,floor:0,flags:{kicked:false,events:[]},equip:[],dome:0,kills:0,turns:0,at:null,eatHp:0,tut:!tutDone(),tutStep:0};
+    gold:TUNE.startGold,deck:[],map:null,pos:null,floor:0,flags:{kicked:false,events:[]},equip:[],dome:0,kills:0,turns:0,at:null,eatHp:0,tut:false,tutStep:0,weapon:'n_dagger',ults:[]};
   for(const[id,n]of(hero.deck||START_DECK))for(let i=0;i<n;i++)if(CARDS[id])run.deck.push({uid:UID++,id});
   ensureGear(run);run.map=newMap(run);
   return run;
@@ -2039,7 +2049,7 @@ function purgeDeleted(r){if(!r)return r;const okc=c=>c&&CARDS[c.id],LG={"g_lhood
 function migrateRun(r){
   if(!r)return r;r.store=r.store||[];purgeDeleted(r);
   /* V2.32.61.14: 문서에서 빠진 특성(고지능·최상의 질병 5위·약화 부여 효과·장기기억증)은 저장 기록에서도 지움 */
-  if(r.traits)r.traits=r.traits.filter(k=>PTRAIT[k]);ensureGear(r);r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
+  if(r.traits)r.traits=r.traits.filter(k=>PTRAIT[k]);ensureGear(r);if(r.mode==='human'&&!r.weapon)r.weapon='n_dagger';r.ults=r.ults||[];r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
   /* V2.29.48.12: 공방 동료(제바르크·오토·견습생) 롤백 — 건넨 카드·장비는 보관함으로, 리테만 남김 */
   {const OUT=['smith','otto','cadet'],back=p=>{if(!p)return;for(const c of p.cards||[])r.store.push(c);r.bag=r.bag||[];for(const g of p.gear||[])r.bag.push(g)};
     if(r.mates){for(const k of OUT)if(r.mates[k]){back(r.mates[k]);delete r.mates[k]}}
@@ -2198,8 +2208,19 @@ const A2_KINDS=['fall','land','dir','a2first','a2rain','shop2','contract','inn',
 function showA1End(){const r=S.run;if(r){r.at={kind:'a1end'};save()}S.screen='a1end';try{hideCombatUI()}catch(e){}renderTop();
   const sc=openScreen('',{full:true});sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center;max-width:720px;margin:auto"><div class="psub">1장 · 미드가르드</div><div class="ptitle">순수유물주의자를 넘어섰다</div>
     <p style="opacity:.85;line-height:1.7">세계수 아래, 니다벨리르로 가는 길은 아직 열리지 않았다.<br>2장은 다음 업데이트를 기다려 주세요.</p>
-    <div class="choices" style="width:100%"><button class="choice" id="a1Title"><b>타이틀로</b><span>저장 기록은 이 자리에 남는다</span></button></div></div>`;
+    <div class="choices" style="width:100%">${r&&r.map&&r.mode==='human'?'<button class="choice" id="a1Stage"><b>막 골라 이어하기</b><span>1장의 원하는 막으로 돌아가 다시 오른다 · 덱·체력·카드는 지금 그대로</span></button>':''}<button class="choice" id="a1Title"><b>타이틀로</b><span>저장 기록은 이 자리에 남는다</span></button></div></div>`;
+  if($('#a1Stage'))$('#a1Stage').onclick=showStagePick;
   $('#a1Title').onclick=()=>{S.run=null;showTitle()}}
+/* V2.33.65.16: 막 골라 이어하기 — 1장을 끝낸 뒤 원하는 막으로 돌아가 다시 오름 (덱·체력·카드·실링은 그대로, 그 막부터 길을 새로 고름) */
+function showStagePick(){const r=S.run,M=r.map;S.screen='a1end';
+  const sc=openScreen('',{full:true}),lab=n=>n===BOSS_ROW?'보스 · 순수유물주의자':ELITE_ROWS.includes(n)?'정예':n===1?'처음 막':'',
+    past=n=>{const p=M.path[n-1];return p&&NODE[p.t]?`지난번 ${NODE[p.t].n}`:''};
+  sc.innerHTML=`<div class="panel" style="width:min(900px,100%);margin:auto"><div class="maphead"><div><div class="psub">1장 · 미드가르드 · 덱·체력·카드는 지금 그대로</div><div class="ptitle">막 골라 이어하기</div></div><button class="btn-ghost" id="spBack">돌아가기</button></div>
+    <div class="choices stagepick" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;overflow:auto">${[...Array(ROWS)].map((_,k)=>{const n=k+1;return`<button class="choice" data-row="${n}"><b>${n}막</b><span>${[lab(n),past(n)].filter(Boolean).join(' · ')||'갈림길'}</span></button>`}).join('')}</div></div>`;
+  $('#spBack').onclick=showA1End;
+  sc.querySelectorAll('[data-row]').forEach(b=>b.onclick=()=>{const n=+b.dataset.row;
+    M.path=M.path.slice(0,n-1);M.row=n-1;r.floor=n-1;M.shops=M.path.filter(p=>p.t==='shop').length;M.bossDone=false;M.opts=genOpts(r,n);
+    delete r.mapUndo;r.shop=null;r.at=null;save();toast('막 골라 이어하기',`${n}막부터 다시 오른다`);transition(showMap)})}
 function resumeAt(){
   const r=S.run,at=r.at;if(r.act===2||(at&&A2_KINDS.includes(at.kind)))return showA1End();if(!at)return showMap();
   if(at.kind==='combat'&&!at.gokDone&&!(r.flags&&r.flags.gokMet)&&(at.enemies||[]).some(f=>f.key==='interp'))return gokFirst(at);
@@ -2298,7 +2319,10 @@ function formula(die,flat,atk,traits,def,o={}){
 const pt=k=>!!(S.run&&S.run.traits&&S.run.traits.includes(k));
 const berserk=()=>S.run.mode==='dain'&&S.run.hp<=S.run.maxHp*.25;
 /* 다인 육참골단: 방어레벨(장비 포함)이 전부 공격레벨로 */
-const pAtk=()=>S.run.atk+gs('atk')+(S.run.mode==='dain'?S.run.def+gs('def'):0),pDef=()=>S.run.mode==='dain'?0:S.run.def+gs('def');
+/* V2.33.65.16: 무기 — 노르드교 조잡한 단검 (모든 데미지 흡혈 +5% · 공격레벨 +2 · 무기 특수 효과 표식 · 노르드교 전용 카드) */
+const WEAPON={n_dagger:{n:'노르드교 조잡한 단검',t:'검 계열 · 모든 데미지 흡혈 +5% · 공격레벨 +2 · 무기 특수 효과 표식 · 노르드교 전용 카드를 쓸 수 있음'}};
+const dagger=()=>!!(S.run&&S.run.mode==='human'&&S.run.weapon==='n_dagger');
+const pAtk=()=>S.run.atk+gs('atk')+(dagger()?2:0)+(S.run.mode==='dain'?S.run.def+gs('def'):0),pDef=()=>S.run.mode==='dain'?0:S.run.def+gs('def');
 const pAcc=()=>S.run.acc+(pt('accUp')?10:0)-(pt('accDown')?10:0)+gs('acc');
 const pEva=()=>S.run.eva+(pt('evaUp')?10:0)-(pt('evaDown')?10:0)+gs('eva')+(S.C&&S.screen==='combat'?S.C.evaB+(S.C.evaMod||0)-(S.C.evaMinus||0):0);
 function rollDie(d,player){
@@ -2369,7 +2393,7 @@ async function startPlayerTurn(){
   C.turn++;C.phase='player';C.block=C.hold?C.block:Math.floor(C.block/2);C.hold=false;C.blockGot=false;C.recoil=0;C.freeAP=0;C.discount=false;C.evaB=C.evaNext||0;C.evaNext=0;C.hitsTurn=0;C.atkRow=0;
   /* 코스트·드로우 증가는 전투 안에서만 — 전투가 끝나면 기본값으로 */
   r.turns=(r.turns||0)+1;const gr=growth(C.turn);C.maxE=gr.e;C.drawN=gr.d;if(r.mode==='odin'){C.maxE+=2;C.drawN+=3}/* 올파더 */
-  clog(`${C.turn}턴 · 코스트 ${C.maxE} · 드로우 ${C.drawN}`,'h');markTick();
+  clog(`${C.turn}턴 · 코스트 ${C.maxE} · 드로우 ${C.drawN}`,'h');markTick();pMarkTick();C.parryN=0;
   C.ultDark=null;for(const f of liveFoes()){f.ultArmed=null;foeRefill(f);if(!f.noAct)clog(`${f.name} · 코스트 ${f.c} / ${f.cMax} · 행동 포인트 ${f.apMax}`,'h')}
   a2TurnStart();
   if(pt('selfVuln')){C.pVuln=Math.min(10,C.pVuln+1);clog(`${PTRAIT.selfVuln.n}: 자신에게 취약 1`)}
@@ -2451,6 +2475,9 @@ function canPlay(c){
   {const jw=jcDeny(c);if(jw)return jw}
   if(C.pFrozen&&C.turn>=C.pFrozenTurn)return'냉동 — 이번 턴에는 행동할 수 없습니다';
   if(C.noWs&&CARDS[c.id].ws2===C.noWs)return'계약 파기 전투 — 계약한 공방의 카드는 사용할 수 없습니다';
+  if(d.nord&&!dagger())return'노르드교 무기가 있어야 쓸 수 있습니다';
+  if(c.id==='u_exec'&&!(C.E&&C.E.pmk&&C.E.pmk.lv>=5))return'대상의 표식이 Ⅴ일 때만 사용할 수 있습니다';
+  if(c.id==='u_purge'&&(C.pPurge||0)<3)return`자신의 공격이 3번 적중해야 사용할 수 있습니다 (${Math.min(3,C.pPurge||0)}/3)`;
   if(c.id==='t_recall'&&!C.thrown)return'묠니르를 던진 뒤에만 쓸 수 있습니다';
   if(c.id==='d_crumble'&&r.hp>r.maxHp*.25)return'체력이 25% 이하일 때만 사용할 수 있습니다';
   if(c.id==='w_s5'&&(C.pSteam||0)<20)return'증기가 20 미만이면 사용할 수 없습니다';
@@ -2511,7 +2538,7 @@ async function playCardRaw(uid,o={}){
     if(C.over)break;
     if(x.t==='atk'){hadAtk=true;const W=weightTargets(c);for(const f of W.tg){if(C.over)break;if(!alive(f))continue;const prev=C.E;C.E=f;
         const oh=l=>{if(onHit)onHit(l);if(r.mode==='thor'&&c.id!=='t_recall'&&alive(f))f.el+=c.id==='t_throw'?2:1;if(c.id==='o_mark'&&alive(f)){f.mark=Math.min(10,(f.mark||0)+1);fxAt('enemy',`궁니르-명중 ${f.mark}`,'info')}};
-        if(await pStrike(x,{...so,scale:(so.scale||1)*(x.sc||1)*(crit?1.5:1),label:x.lb,onHit:oh,wb:W.wb,nul,sure:!!d.sure,accAdd:d.acc||0}))hitAny=true;
+        if(await pStrike(x,{...so,scale:(so.scale||1)*(x.sc||1)*(crit?1.5:1),label:x.lb,onHit:oh,wb:W.wb,nul,sure:!!d.sure||!!(d.sureFn&&d.sureFn(C,f)),accAdd:d.acc||0}))hitAny=true;
         if(f.dead||f.hp<=0){ctx.killed=true;if(gs('killEat')&&!C.over)foodGain(null,gs('killEat'),true);if(r.mode==='thor'){C.yu=Math.min(5,C.yu+1);toast('전투 중독','유희 +1')}}
         if(!C.over&&alive(prev))C.E=prev}}
     else if(x.t==='def')gained+=gainBlock(nul?0:(d.defFn?d.defFn(C,rollDie(x)):rollDie(x)),0,'방어 주사위');
@@ -2539,6 +2566,13 @@ async function playCardRaw(uid,o={}){
       case'ornament':C.discount=true;break;
       case'temper':C.temper++;break;
       case'tidy':{const n=await pickToss(3,'정리');if(n)drawN(n);tutEvent('toss');break}
+      case'parry':{C.evaB+=10;C.parryN=(C.parryN||0)+1;fxAt('player','회피 +10','info');clog('흘려 베기: 이번 턴 회피 +10 · 회피에 성공하면 반격');break}
+      case'c_est':if(hitAny){C.pStr=(C.pStr||0)+20;fxAt('player','힘 +20','info');clog(`견적 내기: 힘 +20 (최종 위력 +${C.pStr})`)}break;
+      case'c_stance':C.pStr=(C.pStr||0)+20;fxAt('player','힘 +20','info');clog(`자세잡기: 힘 +20 (최종 위력 +${C.pStr})`);break;
+      case'n_weak':if(C.E){C.E.pwkT=C.turn;C.E.pwkN=3}break;
+      case'n_force':if(hitAny&&C.E&&alive(C.E))pForceMark(C.E);break;
+      case'u_exec':if(C.E&&C.E.pmk){C.E.pmk.lv=0;C.E.pmk.lock=-9;clog('처형 집행: 표식을 전부 소모')}break;
+      case'u_purge':C.pPurge=0;clog('처단: 적중 수가 0으로 돌아감');break;
       default:break;
     }
     if(U)await a2CardFx(c,ctx);
@@ -2567,6 +2601,7 @@ async function playCardRaw(uid,o={}){
   {const ty=(d.d||[]).map(x=>x.t);if(!ty.includes('atk')){if(ty.includes('eva'))palEv('eva');else if(ty.includes('def'))palEv('def')}}
   if(!C.over){renderCombat();if(r.hp<=0)gameOver()}
   if(U&&hadAtk&&!C.over&&!C.dead&&r.hp>0)await palHit();
+  {const T=C.E;if(U&&c.id!=='n_weak'&&T&&alive(T)&&T.pwkT===C.turn&&T.pwkN>0&&pExpo(T)&&!C.over&&r.hp>0){T.pwkN--;clog(`약점 노리기: 추가타 (남은 ${T.pwkN}회)`);await pStrike(A(15,25),{atk:pAtk(),label:'약점 노리기 추가타'})}}
   if(U&&d.sword&&!C.over&&!C.dead&&r.hp>0)await masteryUse();
   /* 검도-변화: 같은 카드가 패에 있으면 행동 포인트 없이 재사용, 재사용 코스트·드로우는 최대 2 */
   if(c.id==='ms_kendo2'&&!o.reuse){for(let n=1;;n++){if(C.over||C.dead||r.hp<=0)break;const dup=C.hand.find(x=>x.id==='ms_kendo2'&&!canPlay(x));if(!dup)break;clog('발도술 재사용','h');await playCardRaw(dup.uid,{noTick:true,reuse:n})}}
@@ -2632,10 +2667,10 @@ async function diceFocus(o){
 }
 async function pStrike(die,o={}){
   const C=S.C,E=C.E,r=S.run;if(C.over)return false;
-  const tf=tutForce(),ms=masterOn(),r0=tf==='hit'?72:ms?pDieRange(die)[1]:rollDie(die,true),ht=C.heat||0,gp=gapP(o.atk!=null?o.atk:pAtk(),E.def),v0=o.nul?0:r0+ht+gp,v=Math.round(v0*atkScale()*(o.scale||1)*(ms?3:1));
-  const vs=(o.nul?`${r0}→0 [무효]`:`${r0}${ht?` + 열기 ${ht}`:''}${gp?` + 공방렙 차이 ${gp}`:''}${ms?' [작품-완성 최대치 ×3]':''}`)+(v!==v0&&!o.nul?` → ${v}`:'');
+  const tf=tutForce(),ms=masterOn(),r0=tf==='hit'?72:ms?pDieRange(die)[1]:rollDie(die,true),ht=C.heat||0,gp=gapP(o.atk!=null?o.atk:pAtk(),E.def),sw=(C.pStr||0)-(C.pWkF||0),v0=o.nul?0:Math.max(0,r0+ht+gp+sw),v=Math.round(v0*atkScale()*(o.scale||1)*(ms?3:1));
+  const vs=(o.nul?`${r0}→0 [무효]`:`${r0}${ht?` + 열기 ${ht}`:''}${gp?` + 공방렙 차이 ${gp}`:''}${C.pStr?` + 힘 ${C.pStr}`:''}${C.pWkF?` − 약화 ${C.pWkF}`:''}${ms?' [작품-완성 최대치 ×3]':''}`)+(v!==v0&&!o.nul?` → ${v}`:'');
   const ch=o.sure?100:hitChance(pAcc()+(o.accAdd||0),E.eva+E.evaB),roll=ri(1,100),lb=o.label||'공격';
-  const hit=tf==='hit'?true:tf==='miss'?false:roll<=ch,f=hit?formula(v,o.flat||0,o.atk!=null?o.atk:pAtk(),pTraits(o),E.def,{ignoreDef:pt('pierceDef'),x:o.x}):null,bl=hit?(o.pierce?0:Math.min(E.block,f.fin)):0,loss=hit?f.fin-bl:0;
+  const hit=tf==='hit'?true:tf==='miss'?false:roll<=ch,f=hit?formula(v,o.flat||0,o.atk!=null?o.atk:pAtk(),pTraits(o),E.def,{ignoreDef:pt('pierceDef'),x:(o.x||1)*pMarkMul(E)}):null,bl=hit?(o.pierce?0:Math.min(E.block,f.fin)):0,loss=hit?f.fin-bl:0;
   if(tf==='hit')await tutHold({r0,atk:o.atk!=null?o.atk:pAtk(),fin:f.fin,ch});else{const rg=pDieRange(die);await diceFocus({lb:`${lb} 주사위 → ${E.name}`,a:rg[0],b:rg[1],r0,pow:v,hit,ch,dmg:loss,bl})}
   if(C.over)return false;
   const CK=await cardCut(hit),hp0=E.hp/Math.max(1,E.maxHp);if(C.over)return false;
@@ -2647,6 +2682,8 @@ async function pStrike(die,o={}){
   await hitStop(tier,CK&&loss>0?(CK.K.stop||0):0);hitEnemyAnim(false);C.hitsTurn++;
   if(loss>0&&has(E,'복수심'))E.revenge=Math.min(10,E.revenge+2);
   if(o.leech&&loss>0)heal(loss*.2);
+  if(dagger()){if(loss>0)heal(loss*.05);pMarkHit(E)}
+  if(loss>0)C.pPurge=(C.pPurge||0)+1;
   if(pt('leech')&&loss>0)heal(loss*.1);
   if(gs('leech10')&&loss>0)heal(loss*.1);
   if(gs('coolHit'))a2Hit('cool',1);
@@ -2672,7 +2709,7 @@ function gainBlock(v,add,label){
 /* 고정 피해: 공식·명중을 건너뛰지만 방어도에 막힘 / 트루 데미지: 방어도도 무시 */
 function fixedDmg(n,label,trueD){
   const C=S.C,E=C.E;if(C.over||n<=0)return;
-  let b=0;if(!trueD){b=Math.min(E.block,n);E.block-=b}const l=n-b;E.hp-=l;if(E.hp<=0)E.dotKill=true;hurtFace(l);if(b)knightCheck();
+  let b=0;if(!trueD){b=Math.min(E.block,n);E.block-=b}const l=n-b;E.hp-=l;if(E.hp<=0)E.dotKill=true;if(dagger()&&l>0)heal(l*.05);hurtFace(l);if(b)knightCheck();
   clog(`${label} ${n} (${trueD?'트루 데미지':'고정 피해'} · 공식 없음)${b?` · 방어도 ${b} 흡수`:''} → 피해 ${l}`);
   fxAt('enemy',`${label} ${l}`,'info');if(l>0){const o=L[S.orient];sparks(o.ex,o.efeet-o.eh*.55,8);sfx('hit',.7)}hitEnemyAnim(false);renderCombat();checkEnemy();
 }
@@ -2732,14 +2769,14 @@ const FOE_NEG=new Set(['고해 강요','백색의 불꽃','미스틸테인','증
 function actCost(n){const a=ACT[n];if(!a)return 1;if(a.cost!=null)return a.cost;if(FOE_FIN.has(n))return 3;if(a.gim)return 2;return 1}
 function actType(n){const a=ACT[n];if(!a)return'atk';if(a.k==='cmd')return a.rally?'sup':ACT[a.cmd]&&ACT[a.cmd].k==='def'?'def':'atk';if(a.neg)return'atk';if(a.k==='def')return'def';if(a.k==='atk'||FOE_NEG.has(n)||n==='정정')return'atk';return'sup'}
 function actNeg(n){const a=ACT[n];return!!(a&&(a.vuln||a.pend||a.strip||a.neg||FOE_NEG.has(n)))}
-function actReady(E,n){const a=ACT[n];if(!a)return true;if(a.ult&&!E._burstArmed)return false;/* 궁극기는 예고(조건 충족 연출)가 먼저 나와야 씀 */
+function actReady(E,n){const a=ACT[n];if(!a)return true;if(a.burstOnly&&!S.C.apBurst)return false;if(a.ult&&!E._burstArmed)return false;/* 궁극기는 예고(조건 충족 연출)가 먼저 나와야 씀 */
   if(a.exec)return S.C.mk.lv>=5;if(a.purge)return(E.purgeHits||0)>=3;return true}
 /* ===== 궁극기 조건과 예고 (V2.32.64.15) ===== */
-const ULT_EYES={cultist:[240,360,[[111,134],[129,134]]],inquisitor:[240,380,[[110,52],[130,52]]],bishop:[260,400,[[122,100],[138,100]]]};
+/* 궁극기 예고의 눈빛 — 오른쪽 눈 하나만, 캐릭터의 퍼스널 컬러 (이단심문관: 채도를 낮춘 황금빛 아이보리 · 노르드교: 채도를 낮춘 검붉은 색) */
+const ULT_EYES={cultist:[240,360,[[111,134],[129,134]],'#a8564e'],inquisitor:[240,380,[[110,52],[130,52]],'#d6c9a4']};
 function ultCond(E){const C=S.C;if(!C||!E||!alive(E)||!E.hand)return null;const hv=n=>E.hand.includes(n);
   if(hv('행동-처형 집행')&&C.mk&&C.mk.lv>=5)return'행동-처형 집행';
   if(hv('명령 이행-처단')&&(E.purgeHits||0)>=3)return'명령 이행-처단';
-  if(E.key==='bishop'&&(E.phase||1)<2&&hv('뼈와 살의 해체학')&&(E.c||0)>=actCost('뼈와 살의 해체학'))return'뼈와 살의 해체학';
   return null}
 function ultCheck(){const C=S.C;if(!C||C.over)return;let any=false;
   for(const E of liveFoes()){const u=ultCond(E);
@@ -2748,7 +2785,7 @@ function ultCheck(){const C=S.C;if(!C||C.over)return;let any=false;
   const E=C.E,el=$('#enemy'),dark=any&&C.ultDark===C.turn;
   $('#ultShade').classList.toggle('on',dark);el.classList.toggle('ult',!!(E&&E.ultArmed));el.classList.toggle('ultdark',dark&&!!(E&&E.ultArmed));$('#hand').classList.toggle('ult-burn',any);
   const art=E&&ENEMY[E.key]&&ENEMY_SVG[ENEMY[E.key].art]?ENEMY[E.key].art:null,ey=art&&ULT_EYES[art];
-  el.querySelectorAll('.ult-eye').forEach((x,i)=>{if(!ey||!E.ultArmed){x.hidden=true;return}const a=$('#eart'),W=a.offsetWidth,H=a.offsetHeight,sc=Math.min(W/ey[0],H/ey[1]),ox=(W-ey[0]*sc)/2,oy=H-ey[1]*sc,pt=ey[2][i];x.hidden=false;x.style.left=(ox+pt[0]*sc)+'px';x.style.top=(oy+pt[1]*sc)+'px'})}
+  el.querySelectorAll('.ult-eye').forEach((x,i)=>{if(!ey||!E.ultArmed||i>0){x.hidden=true;return}x.style.setProperty('--ec',ey[3]);const a=$('#eart'),W=a.offsetWidth,H=a.offsetHeight,sc=Math.min(W/ey[0],H/ey[1]),ox=(W-ey[0]*sc)/2,oy=H-ey[1]*sc,pt=ey[2][i];x.hidden=false;x.style.left=(ox+pt[0]*sc)+'px';x.style.top=(oy+pt[1]*sc)+'px'})}
 function actText(n){const a=ACT[n];if(!a)return'';const p=[];if(a.d&&a.d.length)p.push(a.d.map(x=>`${DIE_NAME[x.t]} ${x.a===x.b?x.a:`${x.a}~${x.b}`}`).join(', '));
   if(a.vuln)p.push(`적중 시 취약 ${a.vuln}`);if(a.strip)p.push('방어도와 지속 효과 제거');if(a.gim&&GIM[a.gim])p.push(`${GIM[a.gim].n}: ${GIM[a.gim].t}`);if(a.tag)p.push(a.tag);if(a.desc)p.push(a.desc);if(a.mercy)p.push('남은 체력만큼');return p.join(' · ')}
 const FOE_SEEN_K='midgard_foeSeen';let FOE_SEEN={};try{FOE_SEEN=JSON.parse(localStorage.getItem(FOE_SEEN_K)||'{}')||{}}catch(e){FOE_SEEN={}}
@@ -2793,7 +2830,8 @@ async function foeBurst(){const C=S.C,E=C.E,r=S.run;if(!E.hand)foeRefill(E);
     E.c-=actCost(name);E.fdisc.push(name);E.intent=name;n++;foeSee(name);E.used.push({t:C.turn,n:name});renderCombat();
     if(E.stun){E.stun=false;toast('…!',`${E.name}이(가) 말문이 막혀 「${name}」 취소`);clog(`말문이 막힘: 「${name}」 취소`,'e');continue}
     const isUlt=!!(ACT[name]&&ACT[name].ult);if(isUlt){E.ultArmed=null;E._burstArmed=false;ultCheck()}
-    await execAct(name);if(isUlt&&name==='명령 이행-처단')E.purgeHits=0;if(C.over||r.hp<=0)return}
+    if(name==='뼈와 살의 해체학'&&!REDUCED){const en=$('#enemy');en.classList.add('hmopen');setTimeout(()=>en.classList.remove('hmopen'),1900);await wait(650)}
+    await execAct(name);if(isUlt&&name==='명령 이행-처단')E.purgeHits=0;if(C.over||r.hp<=0)return;if(isUlt)ultGain(name)}
   if(!n)clog(`${E.name}: 남은 코스트로 낼 수 있는 카드가 없다`,'e');
   renderCombat()}
 
@@ -2807,6 +2845,19 @@ function markTick(){const C=S.C,m=C.mk,P=C.turn-1;if(!m)return;
   if(m.lv<=0){if(m.hitT===P&&liveFoes().some(f=>f.nord)){m.lv=1;m.setT=C.turn;clog('표식Ⅰ이 붙었다','e')}return}
   if(m.expT===P||m.lock>=P||m.setT===P&&m.lock>=C.turn){m.lv=Math.min(5,m.lv+1);clog(`표식 단계 상승 → 표식${ROMAN[m.lv]}`,'e')}
   else{m.lv=0;m.lock=-9;clog('표식이 붙은 턴에 맞지 않아 표식이 사라졌다','e')}}
+/* V2.33.65.16: 플레이어의 표식 (노르드교 조잡한 단검의 무기 특수 효과) — 적마다 따로 */
+const pmkOf=E=>E.pmk||(E.pmk={lv:0,setT:-9,expT:-9,hitT:-9,lock:-9});
+const pExpo=E=>{const C=S.C;return!!(C&&E&&E.pmk&&E.pmk.lv>0&&E.pmk.expT===C.turn)};
+const pMarkMul=E=>E&&E.pmk&&E.pmk.lv?1+.1*E.pmk.lv:1;
+function pMarkHit(E){const C=S.C;if(!E||C.phase!=='player')return;const m=pmkOf(E);if(m.lv>0&&m.expT!==C.turn){m.expT=C.turn;fxAt('enemy','약점 노출','info');clog(`${E.name}: 표식이 붙은 턴에 다시 맞음 → 약점 노출`)}m.hitT=C.turn}
+function pForceMark(E){const C=S.C,m=pmkOf(E);if(m.lv<=0){m.lv=1;m.setT=C.turn;fxAt('enemy','표식Ⅰ','info');clog(`표식 강제 부여: ${E.name}에게 이번 턴부터 표식Ⅰ`)}else{m.lock=C.turn+2;clog('표식 강제 부여: 그 뒤 2턴 동안 맞지 않아도 표식 유지')}}
+function pMarkTick(){const C=S.C,P=C.turn-1;if(!dagger())return;for(const E of liveFoes()){const m=pmkOf(E);
+  if(m.lv<=0){if(m.hitT===P){m.lv=1;m.setT=C.turn;clog(`${E.name}에게 표식Ⅰ이 붙었다`)}continue}
+  if(m.expT===P||m.lock>=P||m.setT===P&&m.lock>=C.turn){m.lv=Math.min(5,m.lv+1);clog(`${E.name}: 표식 단계 상승 → 표식${ROMAN[m.lv]}`)}
+  else{m.lv=0;m.lock=-9;clog(`${E.name}: 표식이 붙은 턴에 맞지 않아 표식이 사라졌다`)}}}
+/* V2.33.65.16: 궁극기 획득 — 적이 쓴 궁극기를 맞고 버티면(회피·방어로 버텨도) 1장, 같은 궁극기는 1장만 */
+const ULT_GET={'행동-처형 집행':'u_exec','명령 이행-처단':'u_purge'};
+function ultGain(name){const r=S.run,id=ULT_GET[name];if(!id||!r||r.mode!=='human')return;r.ults=r.ults||[];if(r.ults.includes(id))return;r.ults.push(id);addToDeck(id);clog(`궁극기 「${name}」을(를) 버텼다 → 「${CARDS[id].name}」 획득`,'h');toast('궁극기',`「${CARDS[id].name}」 — 맞고 버텨 얻었다 · 카드 보관함으로`);save()}
 function pWkAdd(n){const C=S.C;C.pWkF=(C.pWkF||0)+n;fxAt('player',`약화 ${n}`,'info');clog(`훈계: 약화 ${n} (최종 위력 -${C.pWkF})`,'e')}
 function excommunicate(){const C=S.C,cnt={},src=C.hand.length?C.hand:C.draw.length?C.draw:C.disc;for(const c of src){if(!CARDS[c.id])continue;(cnt[c.id]=cnt[c.id]||[]).push(c)}
   const ids=shuffle(Object.keys(cnt)).sort((a,b)=>cnt[b].length-cnt[a].length).filter(id=>cnt[id].some(c=>!C.brand.includes(c.uid)));
@@ -2819,7 +2870,7 @@ async function doCommand(B,name,a){const C=S.C,r=S.run,ks=knAlive();
   for(const k of ks){if(C.over||r.hp<=0)return;if(!alive(k))continue;const act=k.hurtT===C.turn?'명령 이행-방패 세우기':a.cmd;
     await withFoe(k,()=>execAct(act));if(C.over||r.hp<=0)return}}
 /* 보스 카드 고르기 — 1페이즈는 정해진 순서, 2페이즈는 행동 예측(상대 패를 읽음) */
-function bishopPick(E){const C=S.C,h=E.hand,c=E.c,idx=h.map((_,i)=>i).filter(i=>actCost(h[i])<=c&&foeDrawOk(E,h[i])&&(h[i]!=='뼈와 살의 해체학'||(C.apBurst&&E._burstArmed)));if(!idx.length)return-1;const f=n=>{const i=idx.find(j=>h[j]===n);return i==null?-1:i};let i;
+function bishopPick(E){const C=S.C,h=E.hand,c=E.c,idx=h.map((_,i)=>i).filter(i=>actCost(h[i])<=c&&foeDrawOk(E,h[i])&&(h[i]!=='뼈와 살의 해체학'||C.apBurst));if(!idx.length)return-1;const f=n=>{const i=idx.find(j=>h[j]===n);return i==null?-1:i};let i;
   if((E.phase||1)<2){
     if((i=f('망치 돌리기'))>=0)return i;if(fracOn()&&(i=f('박 살'))>=0)return i;if((i=f('뼈와 살의 해체학'))>=0)return i;
     if(!fracOn()&&(i=f('으스러트리기'))>=0)return i;if((i=f('뜯어지는 강타'))>=0)return i;return idx[0]}
@@ -2918,7 +2969,7 @@ async function enemyStrike(die,o={}){
     if(E.key==='inquisitor'&&her){M*=1.25;tg.push('새겨진 본능-단죄 +25%')}
     if(M!==1){dmg=Math.round(dmg*M);txt=`[${tg.join(' · ')}] `+txt}}
   {const hit=roll<=ch,bb=Math.min(C.block,dmg);await diceFocus({foe:true,lb:o.mercy?`${E.name} · 안 아프게 빨리`:`${E.name} · 공격 주사위${gm?` · ${gm.n} ${gm.ok()?'성공':'실패'}`:''}`,a:o.mercy?0:die.a,b:o.mercy?0:die.b,r0:o.mercy?'—':r0,pow:o.mercy?'남은 체력':v,hit,ch,dmg:hit?dmg-bb:0,bl:hit?bb:0})}
-  if(roll>ch){fxAt('player','빗나감','miss');sfx('miss');swayFx();clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);return false}
+  if(roll>ch){fxAt('player','빗나감','miss');sfx('miss');swayFx();clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);if(C.parryN>0&&!C.over&&alive(E)){C.parryN--;clog('흘려 베기: 회피 성공 → 반격');C.fxCard='parry';await pStrike(A(90,120),{atk:pAtk(),label:'흘려 베기 반격'})}return false}
   if(!o.mercy&&dmg>0&&dmg<5&&eq('shell')){clog(`${txt} · 적중 → 막의 껍질이 튕겨냄 (5 미만)`,'e');fxAt('player','튕겨냄','block');await wait(200);return 0}
   if(E.nord)markHit();
   if(o.shatter&&C.block>0){const d2=dmg*2,b2=Math.min(C.block,d2);C.block-=b2;clog(`${txt} · 적중 → 파쇄: 방어도에만 2배 데미지 ${d2} · 방어도 ${b2} 깎임 (체력 피해 없음)`,'e');fxAt('player',`방어도 -${b2}`,'block');sfx('block');guardFx();renderCombat();await wait(260);return 0}
@@ -3856,7 +3907,7 @@ function pickFromDeck(title,onPick,onBack,list){
   sc.querySelectorAll('[data-uid]').forEach(b=>b.onclick=()=>onPick(r.deck.find(c=>c.uid===+b.dataset.uid)));
   $('#pkBack').onclick=onBack;
 }
-const RAR_ORDER={mastery:-1,special:0,start:1,common:2,uncommon:3,combo:4,fusion:5,rare:6,curse:7};
+const RAR_ORDER={ult:-2,mastery:-1,special:0,start:1,common:2,uncommon:3,combo:4,fusion:5,rare:6,curse:7};
 const deckSort=(a,b)=>(RAR_ORDER[CARDS[a.id].rar]-RAR_ORDER[CARDS[b.id].rar])||CARDS[a.id].name.localeCompare(CARDS[b.id].name,'ko');
 
 /* ================= title / end screens ================= */
@@ -3898,6 +3949,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.33.65.16','11/20','시작 덱 8장(어설픈 베기 3 · 막기 3 · 숨 고르기 2), 시작 덱 고르기(덱 편성) 삭제, 튜토리얼 꺼짐. 무기 노르드교 조잡한 단검 — 모든 데미지 흡혈 +5%, 공격레벨 +2, 무기 특수 효과 표식(적에게 표식Ⅰ~Ⅴ와 약점 노출, 단계 1당 받는 데미지 +10%), 노르드교 전용 카드. 노르드교 원형 카드 3장(약점 노리기 · 약점 찢기 · 표식 강제 부여)이 상점과 보상에 나옴. 궁극기 획득 — 적이 쓴 궁극기를 맞고 버티면(회피 · 방어로 버텨도) 1장: 처단 · 처형 집행, 황금빛 테두리 · 유일. 뼈와 살의 해체학은 궁극기가 아닌 특수 카드(예고 연출 없음, 쓸 때 망치에서 칼날이 나옴). 궁극기 예고의 눈빛은 오른쪽 눈 하나, 캐릭터 퍼스널 컬러(이단심문관 황금빛 아이보리 · 노르드교 검붉은 색). 흘려 베기 패링(이번 턴 회피 +10, 회피에 성공하면 90~120으로 반격), 견적 내기 · 자세잡기(힘 +20)와 힘 키워드. 카드 종류는 공격 · 방어 · 지원. 1장을 끝낸 뒤 막 골라 이어하기. 버그 수정 — 훈계의 약화가 실제 공격에 적용되지 않던 문제'],
   ['V2.32.64.15','11/20','숙련도 — 자세를 고르면 그 자세 카드 3장이 덱에 더해지고 이전 카드는 그대로 남음, 자세 베기 삭제, 검도-정석 → 검도(공격 100~150 · 방어 5~50 · 방어도 유지), 검도-변화 → 발도술(공격 50~100 · 재사용할 때마다 코스트 1), 선택창 2줄(발도술·검도 / 일섬·갈라내기)과 새 선택지 문장. 베기는 일반 카드, 피륙은 희귀 카드(코스트 3). 궁극기 — 명령 이행-처단 궁극기(자신의 공격이 3번 적중하면, 쓰면 0으로), 행동-처형 집행(표식 Ⅴ), 뼈와 살의 해체학(행동 포인트를 다 닳아 행동할 때만), 조건이 충족되면 화면이 어두워지고 적의 눈빛이 십자로 빛나며 카드가 타오르고 적의 모습이 바뀜(처단: 검을 위로, 해체학: 망치 손잡이가 갈라지며 칼날), 적을 누르면 궁극기 미리 보기. 버그 수정 — 침착함 특성이 붙은 1장 적과 싸우면 멈추던 문제, 적이 드로우 카드를 끝없이 내며 적 턴이 멈추던 문제'],
   ['V2.32.63.14','11/20','삭제된 예전 약화(데미지 -10%)를 거는 카드 삭제 — 어딘가의 차가움, 손 곱는 추위, 우산 걸기, 상한 음식 던지기, 식중독 (상점·보상·공방에서 나오지 않고, 저장 기록에서도 지움)'],
   ['V2.32.62.14','11/20','공통 카드 돌팔매 삭제 (상점·보상에서 나오지 않고, 저장 기록의 덱·보관함에서도 지움)'],
@@ -4207,10 +4259,8 @@ function showClimbPrep(){
         <div class="talent${left<0&&!FR?' bad':''}"><span>재능</span><b>${left}</b><em>/ ${h.talent}</em></div>
         ${FR?'':'<div class="hint" style="text-align:left">긍정적인 특성은 재능을 쓰고, 부정적인 특성은 재능을 돌려준다. 재능이 0 이상이어야 오를 수 있다.</div>'}
         <div class="hint" style="text-align:left">남는 재능 1당 최대 체력 +5% · 공격레벨 +1 · 방어레벨 +1${tb?` (지금 +${tb})`:''}</div>
-        <div class="ap-h" style="margin-top:6px">시작 덱 10장</div>
-        <div class="decks" role="group" aria-label="시작 덱">${allDecks().map(d=>`<button class="dkpick${d.id===dk.id?' on':''}" data-deck="${d.id}" aria-pressed="${d.id===dk.id}">${d.name}</button>`).join('')}<button class="dkpick add" id="dkNew" ${loadDecks().length>=DECKS_MAX?'disabled title="덱은 최대 10개"':''}>+ 새 덱</button></div>
-        <div class="clist">${dk.cards.map(([id,n])=>`<button class="cchip" data-card="${id}">${CARDS[id].name}<i>×${n}</i></button>`).join('')}</div>
-        ${dk.fixed?'':'<button class="plate-btn" id="dkEdit">이 덱 고치기</button>'}
+        <div class="ap-h" style="margin-top:6px">시작 덱 8장 · 무기 노르드교 조잡한 단검</div>
+        <div class="clist">${START_DECK.map(([id,n])=>`<button class="cchip" data-card="${id}">${CARDS[id].name}<i>×${n}</i></button>`).join('')}</div>
       </div>
       <div class="cp-list"><div class="ap-h">긍정적인 특성${FR?' · 고정됨':''}</div><div class="tlist">${pos.map(chip).join('')||'<div class="hint" style="text-align:left">없음</div>'}</div></div>
       <div class="cp-list"><div class="ap-h">부정적인 특성${FR?' · 고정됨':''}</div><div class="tlist">${neg.map(chip).join('')||'<div class="hint" style="text-align:left">없음</div>'}</div></div>
@@ -4220,14 +4270,11 @@ function showClimbPrep(){
   const keepScroll=fn=>{const el=$('#cprep'),st=el?[...el.querySelectorAll('.tlist')].map(x=>x.scrollTop):[],top=el?el.scrollTop:0;fn();const n=$('#cprep');if(n){n.scrollTop=top;n.querySelectorAll('.tlist').forEach((x,i)=>x.scrollTop=st[i]||0)}};
   if(!FR)sc.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>keepScroll(()=>{const k=b.dataset.t;h.traits=h.traits.includes(k)?h.traits.filter(x=>x!==k):[...h.traits,k];showClimbPrep()}));
   sc.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>openCard(b.dataset.card));
-  sc.querySelectorAll('[data-deck]').forEach(b=>b.onclick=()=>keepScroll(()=>{setPickedDeck(b.dataset.deck);showClimbPrep()}));
-  $('#dkNew').onclick=()=>openDeckEditor(null,()=>keepScroll(showClimbPrep));
-  if($('#dkEdit'))$('#dkEdit').onclick=()=>openDeckEditor(dk,()=>keepScroll(showClimbPrep));
   if($('#pRoll'))$('#pRoll').onclick=()=>keepScroll(()=>{const t=h.traits;S.hero=rollHero(h.diff);if(!FR)S.hero.traits=t;showClimbPrep()});
   sc.querySelectorAll('[data-fate]').forEach(b=>b.onclick=()=>{const k=b.dataset.fate;if(k===h.fate)return;try{localStorage.setItem(FATE_KEY,k)}catch(e){}S.hero=rollHero(h.diff);showClimbPrep()});
   sc.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{const k=b.dataset.diff;if(k===h.diff)return;try{localStorage.setItem(DIFF_KEY,k)}catch(e){}S.hero=rollHero(k);showClimbPrep()});
   $('#pBack').onclick=()=>{S.hero=null;transition(()=>showTitle({menu:true}))};
-  const go=()=>{sc.style.top='';h.deck=pickedDeck().cards.map(x=>x.slice());S.run=newRun(h);S.hero=null;transition(showMap)};
+  const go=()=>{sc.style.top='';h.deck=START_DECK.map(x=>x.slice());S.run=newRun(h);S.hero=null;transition(showMap)};
   setTimeout(guideShow,0);
   $('#pClimb').onclick=()=>{if(heroTalentLeft(h)<0&&!FR)return;slotStart(go)};
 }
@@ -4352,7 +4399,7 @@ function bindDrag(root,onDrop){root.querySelectorAll('[data-duid]').forEach(el=>
       if(over&&over.dataset.dz!==el.dataset.dsrc)onDrop(el.dataset.dsrc,over.dataset.dz,el.dataset.duid)};
     addEventListener('pointermove',mv,{passive:false});addEventListener('pointerup',up);addEventListener('pointercancel',up)})})}
 function storeHTML(list){
-  const cat=c=>{const t=CARDS[c.id].type;return t==='atk'?'공격':t==='def'?'방어':'유틸'},gr=c=>cardGrade(c.id)||'unique',RK=['common','rare','hero','legend','myth','unique'],GN={common:'일반',rare:'희귀',hero:'영웅',legend:'전설',myth:'신화',unique:'고유'};
+  const cat=c=>{const t=CARDS[c.id].type;return t==='atk'?'공격':t==='def'?'방어':'지원'},gr=c=>cardGrade(c.id)||'unique',RK=['common','rare','hero','legend','myth','unique'],GN={common:'일반',rare:'희귀',hero:'영웅',legend:'전설',myth:'신화',unique:'고유'};
   return['공격','방어','유틸'].map(k=>{const a=list.filter(c=>cat(c)===k);if(!a.length)return'';
     return`<div class="prep-c">${k} ${a.length}장</div>`+RK.map(g=>{const b=a.filter(c=>gr(c)===g);if(!b.length)return'';const m=new Map();for(const c of b){const q=c.id+'|'+(c.mods||[]).join(',');if(!m.has(q))m.set(q,[]);m.get(q).push(c)}
       return`<div class="prep-g">${GN[g]}</div><div class="cardgrid" style="overflow:visible;height:auto;max-height:none">${[...m.values()].map(x=>`<div class="cardpick${x.length>1?' st-stack':''}" data-duid="${x[0].uid}" data-dsrc="store" data-dname="${CARDS[x[0].id].name}">${x.length>1?`<span class="st-n">×${x.length}</span>`:''}${staticCard(x[0].id,false,x[0])}${CARDS[x[0].id].ranged?'<span class="rtag">원거리 · 동료에게</span>':''}<button class="plate-btn" data-in="${x[0].uid}">덱으로</button></div>`).join('')}</div>`}).join('')}).join('')}
@@ -4416,6 +4463,7 @@ function renderEnemy(){
   if(E.evaB)chips.push(`<span class="chip">회피 +${E.evaB}</span>`);
   if(E.weak)chips.push(`<span class="chip bad">약화 ${E.weak}</span>`);
   if(E.vuln)chips.push(`<span class="chip bad">취약 ${E.vuln}</span>`);
+  if(E.pmk&&E.pmk.lv)chips.push(`<span class="chip bad">표식${ROMAN[E.pmk.lv]} · 받는 데미지 +${E.pmk.lv*10}%${E.pmk.lock>=S.C.turn?' · 유지':''}</span>`);if(pExpo(E))chips.push(`<span class="chip bad">약점 노출</span>`);
   if(E.el)chips.push(`<span class="chip bad">전격 ${E.el}</span>`);
   if(E.burn)chips.push(`<span class="chip bad">소각 ${E.burn}</span>`);
   if(E.frost)chips.push(`<span class="chip bad">냉매 · 명중 -20</span>`);
@@ -4447,6 +4495,10 @@ function renderPlayer(){
   if(C.evaB)chips.push(`<span class="chip good">회피 +${C.evaB}</span>`);
   if(C.pWeak)chips.push(`<span class="chip bad">허약 ${C.pWeak}</span>`);
   if(C.pWkF)chips.push(`<span class="chip bad">약화 ${C.pWkF} · 위력 -${C.pWkF}</span>`);
+  if(C.pStr)chips.push(`<span class="chip good">힘 ${C.pStr} · 위력 +${C.pStr}</span>`);
+  if(C.parryN)chips.push(`<span class="chip good">흘려 베기 · 반격 ${C.parryN}</span>`);
+  if(r.ults&&r.ults.includes('u_purge')&&C.pPurge)chips.push(`<span class="chip brass">처단 적중 ${Math.min(3,C.pPurge)}/3</span>`);
+  if(dagger())chips.push(`<span class="chip brass">노르드교 조잡한 단검</span>`);
   if(C.mk&&C.mk.lv)chips.push(`<span class="chip bad">표식${ROMAN[C.mk.lv]} · 받는 데미지 +${C.mk.lv*10}%${C.mk.lock>=C.turn?' · 유지':''}</span>`);
   if(expoOn())chips.push(`<span class="chip bad">약점 노출</span>`);
   if(fracOn())chips.push(`<span class="chip bad">골절 · 턴 시작 코스트 -1 (${C.fracEnd-C.turn+(C.turn>C.fracS?1:0)}턴)</span>`);
@@ -6041,7 +6093,7 @@ function openPalTab(){const r=S.run,p=r.pal,m=$('#modal'),fight=S.screen==='comb
 /* ---- 전투 버튼: 세로 화면에서 체력창 바로 밑 ---- */
 function dockFit(){requestAnimationFrame(()=>{const a=$('#dockL'),b=$('#dockR'),pp=$('#ppanel');if(!a||!b||!pp)return;const on=S.orient==='port'&&S.screen==='combat';for(const e of[a,b]){if(on){const o=stage.getBoundingClientRect(),sc=S.scale||1,t=(pp.getBoundingClientRect().bottom-o.top)/sc+8;e.style.top=t/UIZ+'px';e.style.bottom='auto'}else{e.style.top='';e.style.bottom=''}}})}
 /* ---- 상태이상 설명 창 ---- */
-const STATUS_INFO=[[/방어도 감소/,'턴마다 얻는 방어도가 줄어든다.'],[/방어도/,'피해를 먼저 대신 맞는다. 다음 턴 시작 시 50%만 남는다.'],[/회피/,'회피가 높을수록 공격이 덜 맞는다. 회피 주사위는 한 턴 최대 +30.'],[/약화/,'주는 피해가 줄어든다. 턴마다 1 감소.'],[/취약/,'받는 피해가 커진다. 턴마다 1 감소.'],[/전격/,'쌓인 만큼 고정 피해를 받는다.'],[/소각/,'턴마다 불타는 피해를 받는다. 냉매가 중화한다.'],[/증기/,'증기 1당 받는 피해 +10%. 턴이 끝날 때 10 이상이면 10을 소모해 열기 1이 된다.'],[/열기/,'열기 1당 공격 주사위 +1. 턴마다 1 감소. 증기 10으로만 얻는다.'],[/냉동/,'1턴 동안 행동할 수 없다. 얼어 있을 때 공격받으면 깨짐이 2단계 오른다.'],[/냉매/,'냉매 1당 행동 포인트 +1, 코스트 -1. 3 이상이면 냉동된다. 소각을 중화한다.'],[/깨짐/,'1단계당 받는 피해 +50%.'],[/먹기/,'먹기 1당 최대 체력 +5%. 10이면 배부름(최대 체력 +50%), 배부름이 3턴 이어지면 포화가 쌓여 모든 카드에 최대 체력 비례 피해가 붙는다.'],[/예술적 감각/,'같은 카드 또는 다른 카드를 3번 연속 쓰면 오른다. 1당 드로우 +1, 코스트 +1. 3이면 작품 준비 카드가 생긴다.'],[/작품 준비/,'턴마다 5~20% 확률로 작품-완성이 된다. 턴이 지나도 사라지지 않는다.'],[/작품/,'패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2.'],[/송출 대기/,'다음 행동 위력 +50%.'],[/버팀/,'방어도가 다음 턴에도 전부 남는다.'],[/마비/,'명중 -10.'],[/궁니르-명중/,'쌓인 만큼 궁니르의 공격이 이어진다.'],[/복수심/,'맞을수록 공격이 강해진다.'],[/유희/,'쌓인 만큼 피해가 커진다.'],[/단련/,'방패 찍기의 고정 피해가 커진다.'],[/반동/,'공격받으면 그만큼 되돌려 준다.'],[/명령-보호|은빛 기사/,'은빛 기사는 살아 있는 동안 순수유물주의자의 피해를 대신 맞는다. 50%는 전부, 50%는 75%를 대신 맞고 나머지만 보스가 받는다. 대신 맞은 기사는 다음 턴에 움직이지 않는다. 기사는 대상으로 지정할 수 없다.'],[/페이즈/,'보스의 현재 단계.'],[/분노/,'특수무기를 쓸 때마다 오른다. 3이면 이성을 잃는다.']];
+const STATUS_INFO=[[/노르드교 조잡한 단검/,WEAPON.n_dagger.t],[/^표식/,'노르드교 무기의 특수 효과. 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 단계가 오름(Ⅰ~Ⅴ). 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐. 단계 1당 표식을 건 쪽에게 받는 데미지 +10%.'],[/약점 노출/,'표식이 붙은 턴에 공격을 맞으면 걸림. 그 턴 동안만 유지.'],[/^힘/,'최종 위력 +1. 이번 전투 동안 유지.'],[/흘려 베기/,'패링 — 이번 턴 회피에 성공하면 공격 90~120으로 반격.'],[/처단 적중/,'자신의 공격이 3번 적중하면 처단을 쓸 수 있다. 회피나 방어도로 전부 막힌 공격은 세지 않는다.'],[/방어도 감소/,'턴마다 얻는 방어도가 줄어든다.'],[/방어도/,'피해를 먼저 대신 맞는다. 다음 턴 시작 시 50%만 남는다.'],[/회피/,'회피가 높을수록 공격이 덜 맞는다. 회피 주사위는 한 턴 최대 +30.'],[/약화/,'주는 피해가 줄어든다. 턴마다 1 감소.'],[/취약/,'받는 피해가 커진다. 턴마다 1 감소.'],[/전격/,'쌓인 만큼 고정 피해를 받는다.'],[/소각/,'턴마다 불타는 피해를 받는다. 냉매가 중화한다.'],[/증기/,'증기 1당 받는 피해 +10%. 턴이 끝날 때 10 이상이면 10을 소모해 열기 1이 된다.'],[/열기/,'열기 1당 공격 주사위 +1. 턴마다 1 감소. 증기 10으로만 얻는다.'],[/냉동/,'1턴 동안 행동할 수 없다. 얼어 있을 때 공격받으면 깨짐이 2단계 오른다.'],[/냉매/,'냉매 1당 행동 포인트 +1, 코스트 -1. 3 이상이면 냉동된다. 소각을 중화한다.'],[/깨짐/,'1단계당 받는 피해 +50%.'],[/먹기/,'먹기 1당 최대 체력 +5%. 10이면 배부름(최대 체력 +50%), 배부름이 3턴 이어지면 포화가 쌓여 모든 카드에 최대 체력 비례 피해가 붙는다.'],[/예술적 감각/,'같은 카드 또는 다른 카드를 3번 연속 쓰면 오른다. 1당 드로우 +1, 코스트 +1. 3이면 작품 준비 카드가 생긴다.'],[/작품 준비/,'턴마다 5~20% 확률로 작품-완성이 된다. 턴이 지나도 사라지지 않는다.'],[/작품/,'패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2.'],[/송출 대기/,'다음 행동 위력 +50%.'],[/버팀/,'방어도가 다음 턴에도 전부 남는다.'],[/마비/,'명중 -10.'],[/궁니르-명중/,'쌓인 만큼 궁니르의 공격이 이어진다.'],[/복수심/,'맞을수록 공격이 강해진다.'],[/유희/,'쌓인 만큼 피해가 커진다.'],[/단련/,'방패 찍기의 고정 피해가 커진다.'],[/반동/,'공격받으면 그만큼 되돌려 준다.'],[/명령-보호|은빛 기사/,'은빛 기사는 살아 있는 동안 순수유물주의자의 피해를 대신 맞는다. 50%는 전부, 50%는 75%를 대신 맞고 나머지만 보스가 받는다. 대신 맞은 기사는 다음 턴에 움직이지 않는다. 기사는 대상으로 지정할 수 없다.'],[/페이즈/,'보스의 현재 단계.'],[/분노/,'특수무기를 쓸 때마다 오른다. 3이면 이성을 잃는다.']];
 function statusRule(t){if(TRAITS[t])return TRAITS[t].text;for(const[re,x]of STATUS_INFO)if(re.test(t))return x;return''}
 function stSheet(items,anchor){let b=$('#stsheet');if(!items){if(b)b.hidden=true;return}if(!b){b=document.createElement('div');b.id='stsheet';stage.appendChild(b);b.addEventListener('pointerdown',e=>e.stopPropagation())}
   b.innerHTML=items.map(([n,x])=>`<div><b>${n}</b><span>${x||'설명이 아직 없습니다.'}</span></div>`).join('');b.hidden=false;b.scrollTop=0;
@@ -6336,7 +6388,7 @@ function a2PreAct(E,name){const r=S.run;let x=1;
   E.actX=x;E.actFlat=(name==='무쇠 팬'&&E.sat)?Math.round(r.maxHp*.02*E.sat):0}
 /* 공방렙 차이: 내 공격레벨 − 상대 방어레벨이 3 남을 때마다 공격 위력 +1 (낮아도 위력은 줄지 않음) — 적이 플레이어를 공격할 때도 같음 */
 const gapP=(atk,def)=>Math.max(0,Math.floor((atk-def)/3));
-function pAdj(v,o,hi){const C=S.C,E=C.E;if(o&&o.nul)return 0;const base=masterOn()?hi:v;return Math.max(0,base+(C.heat||0)+gapP(o&&o.atk!=null?o.atk:pAtk(),E.def)-(C.pWkF||0))}
+function pAdj(v,o,hi){const C=S.C,E=C.E;if(o&&o.nul)return 0;const base=masterOn()?hi:v;return Math.max(0,base+(C.heat||0)+gapP(o&&o.atk!=null?o.atk:pAtk(),E.def)+(C.pStr||0)-(C.pWkF||0))}
 function eAdj(v){const C=S.C,E=C.E;return Math.round((v+(E.heat||0)+gapP(E.atk,pDef()))*(E.done?3:1)*(C.fleeX||1)*(E.actX||1))}
 /* 적이 여럿일 때 — 위쪽에 적 목록, 누르거나 카드를 끌어 놓으면 대상이 바뀜 */
 /* 여러 적 — 대상은 가운데 큰 그림(#enemy)이 그 자리로 가고, 나머지는 옆자리에 따로 섬 (V26) */
