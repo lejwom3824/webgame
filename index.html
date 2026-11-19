@@ -3865,6 +3865,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.32.59.14','11/20','보스 전투에서 순수유물주의자가 화면 정중앙에 서고, 에인헤랴르는 보스 오른쪽·왼쪽에 번갈아 섬'],
   ['V2.32.58.14','11/20','1장 적을 문서대로 새로 만듦 — 노른교 성직자(막기·말뿐인 저주·훈계·파문 선고), 노르드교 단원(어설픈 베기·숨 고르기·약점 노리기), 이단심문관(명령 이행-베기·내려찍기·처단, 새겨진 본능-단죄), 노르드교 이행자(행동-약점 찢기·표식 강제 부여·파쇄·처형 집행), 레벨·1레벨 스탯·행동 포인트 범위·덱 장수를 문서 값으로 · 순수유물주의자 새로 만듦: 1페이즈는 망치로 직접 공격(행동 포인트 5, 정해진 순서, 뼈와 살의 해체학·으스러트리기·박 살·뜯어지는 강타·망치 돌리기), 2페이즈는 에인헤랴르 지휘(행동 포인트 3, 모든 카드 3코스트, 보존·간절한 기도·행동 예측, 명령-베기·내려찍기·방패 세우기·빈틈 노리기·전열 정리), 에인헤랴르는 직접 공격할 수 있고 2명 수복·턴마다 +1명(최대 7명)·피해를 받은 턴에는 원호 방어만 · 새 키워드: 표식(Ⅰ~Ⅴ)·약점 노출·골절·약화(최종 위력 -1)·이단 표식, 기존 약화는 허약으로 표기 · 이전 보스 특색(분노·광분·감정·낙인·인간의 몸·안 아프게 빨리) 삭제 · 2장은 막음: 1장 보스를 쓰러뜨리면 업데이트 대기 화면, 2장 건너뛰기 버튼 삭제 · 1장 적 피해 보정과 에인헤랴르 피해 보정은 Claude 임시 값'],
   ['V2.31.58.14','11/19','스토리 건너뛰기를 누르면 그 대화 전체를 선택지까지 전부 건너뜀 (선택지는 맨 위의 것을 고른 것으로 처리) / 2장 공방 상점은 그 구역 공방의 카드만 판매 (동 스타인러 · 남 아쉬부티 · 서 레미 · 북 크리뷔스 · 중앙 크리밀라)'],
   ['V2.31.57.14','11/16','보류 탭 항목 전부 게임 코드에서 삭제 — 암시장·도박장·유물 조각·특수 대장장이, 묠니르·궁니르·다인 획득 사건, 저주와 다인 패시브 저주, 강화 특수능력·합체, 휴식·상점·사건의 카드 삭제와 강화, 멸망 빌드(보스 3페이즈), 장비 탈취, 훔친 카드, 도전과제, 인트로 영상, 적 머리 위 행동 예고, 튜토리얼 성직자 대사 / 카드 키워드 설명(합체·강화·명사·지정불가·연계) 삭제, 카드 글씨 크게, 감정서 새 효과(작품-준비가 있으면 턴마다 50% 확률로 패에 들어오고, 쓰면 50% 확률로 작품-완성)'],
@@ -6305,7 +6306,9 @@ function renderFoeFigs(){const C=S.C,bx=$('#foefigs');if(!bx)return;const o=L[S.
   const all=foes(),multi=!!(C&&!C.over&&S.screen==='combat'&&all.length>1);
   if(!multi){if(!bx.hidden||o.ex!==o.ex0){bx.hidden=true;bx.innerHTML='';o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0;positionScene()}return}
   const n=all.length,land=S.orient==='land',k=n>=6?(land?.5:.38):n>=4?(land?.62:.48):land?(n>=3?.8:.9):(n>=3?.62:.76),ew2=Math.round(o.ew0*k),gap=Math.min(land?(n>=3?400:460):(n>=3?290:340),Math.round((o.W-60-ew2)/Math.max(1,n-1)));
-  o.ew=ew2;o.eh=Math.round(o.eh0*k);const xs=all.map((f,i)=>o.ex0+(i-(n-1)/2)*gap);o.ex=xs[Math.max(0,all.indexOf(C.E))];positionScene();
+  o.ew=ew2;o.eh=Math.round(o.eh0*k);let xs=all.map((f,i)=>o.ex0+(i-(n-1)/2)*gap);
+  /* 보스는 정중앙, 나머지는 오른쪽·왼쪽 번갈아 */
+  const bi=all.findIndex(f=>f.boss);if(bi>=0){const side=Math.ceil((n-1)/2),g2=Math.min(gap*2,Math.round((o.W/2-70-ew2/2)/Math.max(1,side)));let j=0;xs=all.map((f,i)=>{if(i===bi)return o.ex0;j++;const st=Math.ceil(j/2);return o.ex0+(j%2?1:-1)*(st*Math.min(g2,land?400:290)+40)})}o.ex=xs[Math.max(0,all.indexOf(C.E))];positionScene();
   bx.hidden=false;
   bx.innerHTML=all.map((f,i)=>{if(f===C.E)return'';const pct=clamp(f.hp/f.maxHp*100,0,100),dead=!alive(f);
     return`<div class="ufoe${dead?' dead':''}" data-foe="${i}" role="button" tabindex="${dead?-1:0}" aria-label="${f.name} 상태창" style="left:${xs[i]-o.ew/2}px;top:${o.efeet-o.eh}px;width:${o.ew}px;height:${o.eh}px">
