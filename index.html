@@ -1204,7 +1204,7 @@ const TUNE={startGold:6000,/* 마지막 번제비 6단화 */
   gold2:{normal:[2000,5000],elite:[10000,50000],boss:[30000,100000]},
   restHeal:.25,humanHpCostPerCost:5,
   /* 전투 보정 (V27) — 장·등급별 적 체력 · 적 공격 피해 배율, 한 전투 경험치 상한(레벨업 필요 경험치의 배수, 0이면 없음) */
-  cb:{hp:{1:{normal:4,elite:3,boss:1.3},2:{normal:1,elite:.6,boss:.3}},dmg:{1:{normal:3.5,elite:1.6,boss:1.2},2:{normal:1,elite:.3,boss:.4}},expCap:0,ramp:4}};
+  cb:{hp:{1:{normal:4,elite:3,boss:1.3},2:{normal:1,elite:.6,boss:.3}},dmg:{1:{normal:.1,elite:.065,boss:.07},2:{normal:1,elite:.3,boss:.4}},expCap:0,ramp:4}};
 
 /* ================= enemies & traits ================= */
 const TRAITS={
@@ -1246,51 +1246,91 @@ const ACT={
   '공양의 칼':{k:'atk',gim:'stagger',d:[A(11,17)]},
   '안 아프게 빨리':{k:'atk',mercy:true},
   '노동':{k:'atk',d:[A(16,16)]},
+  /* ===== 1장 적 카드 (V2.32.58.14, 문서 카드 탭) ===== */
+  '막기':{k:'def',d:[D(35,50)],cost:1},
+  '말뿐인 저주':{k:'atk',d:[A(6,10)],cost:1},
+  '훈계':{k:'debuff',neg:1,cost:1,desc:'데미지 없음, 대상에게 약화 10',fx:async()=>{pWkAdd(10)}},
+  '파문 선고':{k:'debuff',neg:1,cost:2,desc:'데미지 없음, 대상의 패에서 가장 많이 든 카드(뭉치 전체)에 낙인',fx:async()=>{excommunicate()}},
+  '어설픈 베기':{k:'atk',d:[A(60,90)],cost:1},
+  '숨 고르기':{k:'sup',cost:0,desc:'드로우 +1',fx:async()=>{foeDraw(S.C.E,1)}},
+  '약점 노리기':{k:'atk',d:[A(30,50)],cost:1,wkHunt:1,desc:'이번 턴 동안 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25 (최대 3회)'},
+  '명령 이행-베기':{k:'atk',d:[A(100,150)],cost:1},
+  '명령 이행-내려찍기':{k:'atk',d:[A(130,190)],cost:2},
+  '명령 이행-처단':{k:'atk',d:[A(50,100)],cost:4,purge:1,desc:'이단 표식이 있으면 데미지 +400%·회피 불가, 대상에게 방어도가 있으면 증가율 -90%'},
+  '명령 이행-방패 세우기':{k:'def',d:[D(90,130)],cost:2},
+  '명령 이행-빈틈 노리기':{k:'atk',d:[A(50,70)],cost:1,vuln:1},
+  '행동-약점 찢기':{k:'atk',d:[A(60,90)],cost:1,expo:.25,desc:'대상이 약점 노출이면 데미지 +25%'},
+  '행동-표식 강제 부여':{k:'atk',d:[A(30,50)],cost:1,forceMark:1,neg:1,desc:'적중 시 이번 턴부터 표식Ⅰ, 이미 표식이 있으면 그 뒤 2턴 동안 맞지 않아도 표식 유지'},
+  '행동-파쇄':{k:'atk',d:[A(120,180)],cost:2,shatter:1,desc:'대상에게 방어도가 있으면 방어도에만 2배 데미지, 남는 데미지는 체력에 들어가지 않음'},
+  '행동-처형 집행':{k:'atk',d:[A(400,600)],cost:3,exec:1,ult:1,desc:'궁극기 · 대상의 표식이 Ⅴ일 때만, 표식을 전부 소모, 회피 불가'},
+  '뼈와 살의 해체학':{k:'atk',d:[A(360,540)],cost:3,ult:1,desc:'궁극기'},
+  '으스러트리기':{k:'atk',d:[A(100,150)],cost:2,frac:1,neg:1,desc:'적중 시 대상에게 골절'},
+  '박 살':{k:'atk',d:[A(140,210)],cost:2,fracX:.5,desc:'대상이 골절이면 데미지 +50%'},
+  '뜯어지는 강타':{k:'atk',d:[A(80,120)],cost:1},
+  '망치 돌리기':{k:'sup',cost:0,desc:'드로우 +1',fx:async()=>{foeDraw(S.C.E,1)}},
+  '명령-베기':{k:'cmd',cost:3,cmd:'명령 이행-베기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-베기를 실행함'},
+  '명령-내려찍기':{k:'cmd',cost:3,cmd:'명령 이행-내려찍기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-내려찍기를 실행함'},
+  '명령-방패 세우기':{k:'cmd',cost:3,cmd:'명령 이행-방패 세우기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-방패 세우기를 실행함, 방어도는 각 에인헤랴르가 얻음'},
+  '명령-빈틈 노리기':{k:'cmd',cost:3,cmd:'명령 이행-빈틈 노리기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-빈틈 노리기를 실행함'},
+  '명령-전열 정리':{k:'cmd',cost:3,rally:1,desc:'피해를 받은 에인헤랴르가 다시 모든 명령을 따르게 하고, 에인헤랴르 1명을 추가 소환함 (이미 7명이면 소환하지 않음)'},
 };
 /* hp1 = 1레벨 체력. 같은 체력 공식으로 레벨에 따라 오름 — 문서의 체력 범위에서 거꾸로 구한 값 */
 const ENEMY={
-  priest:{name:'노른교 성직자',tier:'normal',lv:[7,15],hp1:44,acc:70,eva:40,apMax:5,acts:{'기도':30,'지팡이':70},order:['기도','지팡이'],art:'priest'},
-  cultist:{name:'노르드교 단원',tier:'normal',lv:[10,20],hp1:40,acc:75,eva:60,apMax:3,acts:{'기습':60,'불씨':40},order:['기습','불씨'],art:'cultist',
-    passives:[['점조직','체력이 50% 이하가 되면 한 번 도망침. 도망치면 보상 실링 없음']]},
-  inquisitor:{name:'이단심문관',sub:'에인헤랴르',tier:'elite',lv:[20,30],hp1:80,hpR:[308,422],acc:100,eva:0,order:['낙인','고해 강요','처단'],art:'inquisitor',
-    passives:[['하라는 만큼만','명령받은 이단심문만 정확히 수행함. 낙인, 고해 강요, 처단 순서를 어떤 상황에서도 바꾸지 않음']]},
+  priest:{name:'노른교 성직자',tier:'normal',lv:[7,15],hp1:75,st:{hp:[50,100],atk:[25,50],def:[25,50]},acc:80,eva:70,ap:[6,8],art:'priest',
+    deck:{'막기':3,'말뿐인 저주':2,'훈계':3,'파문 선고':1},passives:[]},
+  cultist:{name:'노르드교 단원',tier:'normal',lv:[10,20],hp1:85,st:{hp:[60,110],atk:[30,55],def:[25,50]},acc:85,eva:75,ap:[5,7],art:'cultist',nord:1,
+    deck:{'어설픈 베기':3,'숨 고르기':1,'약점 노리기':2},
+    passives:[['점조직','턴 종료 시 체력이 50% 이하라면 도망침. 도망치면 보상 실링 없음'],['표식','노르드교 공통 패시브 — 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 표식 단계가 오름(Ⅰ~Ⅴ), 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐, 단계 1당 표식을 건 쪽에게 받는 데미지 +10%']]},
+  inquisitor:{name:'이단심문관',sub:'에인헤랴르',tier:'elite',lv:[20,30],hp1:200,st:{hp:[150,250],atk:[40,65],def:[40,65]},acc:100,eva:0,ap:[7,9],art:'inquisitor',
+    deck:{'명령 이행-베기':3,'명령 이행-내려찍기':2,'명령 이행-처단':1},
+    passives:[['새겨진 본능-단죄','이단을 심문할 때만 발동 — 이단 표식이 있는 대상(주인공)에게 데미지 +25%, 명중률 +10%'],['새겨진 본능-보호','순수유물주의자를 보호할 때만 발동']]},
   bishop:{name:'순수유물주의자',sub:'주교',tier:'boss',lv:45,hp1:160,acc:80,eva:45,art:'bishop',
-    passives:[['유산의 수호','플레이어가 특수무기 카드를 사용하면, 보존해야 할 유물을 휘둘러 망치는 것으로 보고 분노 +1. 특수무기 카드를 사용하지 않으면 분노가 쌓이지 않고 평범하게 상대함. 분노 3에서 이성을 잃어 공격레벨 +15, 명중 -15'],
-      ['찌꺼기 제거','백색의 불꽃은 플레이어 패의 카드 1장을 태움'],
-      ['인간의 몸','5턴째부터 매 턴 명중 -5 (중첩)'],
-      ['광분','다인슬레이프 이벤트에서 검을 경계 너머로 찼다면, 분노 3 상태(페이즈 2 단죄)로 전투를 시작함']]},
+    deck1:{'뼈와 살의 해체학':1,'으스러트리기':2,'박 살':2,'뜯어지는 강타':3,'망치 돌리기':2},
+    deck2:{'명령-베기':3,'명령-내려찍기':2,'명령-방패 세우기':2,'명령-빈틈 노리기':2,'명령-전열 정리':1},
+    passives:[['페이즈 1 · 정화','망치로 직접 공격. 상대의 패를 읽지 않고 정해진 순서로 냄 — 망치 돌리기 → 대상이 골절이면 박 살 → 해체학을 낼 코스트가 있으면 해체학 → 골절이 아니면 으스러트리기 → 남은 코스트로 뜯어지는 강타'],
+      ['페이즈 2 · 단죄','에인헤랴르를 지휘함. 행동 포인트 3, 모든 카드 3코스트, 명령은 살아 있는 모든 에인헤랴르에게 적용'],
+      ['보존','페이즈 2: 자신의 총 드로우와 총 코스트가 변경되지 않음, 턴이 지나도 영향받지 않음'],
+      ['간절한 기도','페이즈 2: 자신의 행동 포인트가 전부 소모되면 즉시 자신의 코스트를 최대로 회복함'],
+      ['행동 예측','페이즈 2: 상대방의 패를 읽음 — 피해를 받은 에인헤랴르가 있으면 명령-전열 정리, 상대가 낼 수 있는 공격 카드를 들고 있으면 방어도 없는 에인헤랴르가 있을 때 명령-방패 세우기 · 아니면 명령-빈틈 노리기, 그 밖에는 공격 명령'],
+      ['새겨진 본능-보호','페이즈 2: 살아 있는 무작위 에인헤랴르가 보스가 받을 데미지를 50% 확률로 대신 맞거나 50% 확률로 75%만 대신 맞음, 에인헤랴르가 전부 쓰러지면 보스가 데미지를 입음']]},
+  einherjar:{name:'에인헤랴르',sub:'명령-보호',tier:'elite',lv:[20,30],hp1:200,st:{hp:[150,250],atk:[40,65],def:[40,65]},acc:100,eva:0,art:'inquisitor',knight:1,deck:{},
+    passives:[['새겨진 본능-보호','순수유물주의자가 받을 데미지를 대신 받음'],['명령','행동 포인트와 카드가 없음, 순수유물주의자가 명령한 카드만 에인헤랴르 본연의 스탯으로 사용'],['원호 방어','피해를 받은 턴에는 어떤 명령을 받아도 명령 이행-방패 세우기만 함'],['퇴각과 교대','턴 종료 시 체력이 50% 이하인 처음 2명(수복으로 채운 에인헤랴르 포함)은 퇴각함, 늘어난 에인헤랴르는 처치되지 않으면 퇴각하지 않음']]},
 };
 
 const BOSS_LINES={};/* 보스 대사 없음 — 글은 문서 보류 탭 */
 const angerLine=n=>BOSS_LINES['anger'+n];
 /* V32 은빛 기사: 보스가 소환하는 적 캐릭터. 살아 있는 동안 보스 대신 피해를 받음 */
 /* 은빛 기사 2명 — 대상 지정 불가, 명령-보호: 살아 있는 무작위 1명이 보스의 피해를 50%는 전부, 50%는 75%만 대신 맞고, 대신 맞은 기사는 다음 턴에 움직이지 않음 */
-const knAlive=E=>(E&&E.kns||[]).filter(k=>k.hp>0);
-function summonKnights(){const E=S.C.E;E.kns=[0,1].map(()=>{const m=ri(462,633);return{hp:m,max:m,idx:0,stun:-1}});fxAt('enemy','은빛 기사 소환','info');renderKnight();clog('은빛 기사 2명 소환 · 명령-보호','e');renderCombat()}
-function knightTake(d){const C=S.C,E=C.E,ks=knAlive(E);if(!ks.length||d<=0)return d;const k=pick(ks),part=rnd()<.5?d:Math.ceil(d*.75),rest=d-part;
-  k.hp=Math.max(0,k.hp-part);k.stun=C.turn+1;fxAt('enemy',`은빛 기사 -${part}`,'info');knightHitAnim(E.kns.indexOf(k));renderKnight();clog(`은빛 기사가 대신 받음 -${part} (남은 체력 ${k.hp})${rest?` · 경감 후 보스 -${rest}`:''}`,'e');
-  if(k.hp<=0)clog('은빛 기사가 쓰러졌다','e');return rest}
+const knAlive=E=>liveFoes().filter(f=>f.knight);
+const KN_MAX=7,KN_DMG=.03;/* 에인헤랴르 피해 보정은 Claude 임시 값 */
+function addKnight(extra){const C=S.C;if(!C||C.over)return null;if(!C.foes)C.foes=[C.E];if(knAlive().length>=KN_MAX)return null;
+  const k=makeEnemy('einherjar');k.traits=[];k.maxHp=Math.max(1,Math.round(k.maxHp*.5));k.knight=1;k.extra=!!extra;k.noAct=1;k.dmgMul=KN_DMG;k.hurtT=-1;k.c=0;k.cMax=0;k.ap=0;k.apMax=0;k.hand=[];k.used=[];
+  let _hp=k.maxHp;Object.defineProperty(k,'hp',{enumerable:true,configurable:true,get(){return _hp},set(v){if(v<_hp&&S.C)k.hurtT=S.C.turn;_hp=v}});
+  C.foes.push(k);clog(`에인헤랴르 소환${extra?' (늘어난 에인헤랴르)':''} · 체력 ${k.maxHp}`,'e');return k}
+function summonKnights(){for(let i=0;i<2;i++)addKnight(false);fxAt('enemy','에인헤랴르 소환','info');renderCombat()}
+function knightTake(d){const C=S.C,ks=knAlive();if(!ks.length||d<=0)return d;const k=pick(ks),take=rnd()<.5?d:Math.ceil(d*.75),bl=Math.min(k.block||0,take),part=Math.min(k.hp,take-bl),rest=d-bl-part;
+  if(bl)k.block-=bl;k.hp=Math.max(0,k.hp-part);fxAt('enemy',`에인헤랴르 -${part}`,'info');clog(`새겨진 본능-보호: 에인헤랴르가 대신 받음 ${take}${bl?` (방어도 ${bl})`:''} · 체력 -${part} (남은 체력 ${k.hp})${rest?` · 보스 -${rest}`:''}`,'e');
+  if(k.hp<=0){k.dead=true;clog('에인헤랴르가 쓰러졌다','e')}renderCombat();return rest}
+/* 턴 종료: 퇴각과 교대 → 수복(2명까지) → 에인헤랴르 +1명 (최대 7명) */
+function knightUpkeep(){const C=S.C;if(!C||C.over)return;let out=0;
+  if(!C.foes)return;
+  C.foes=C.foes.filter(f=>{if(!f.knight)return true;if(!alive(f)){out++;return false}if(!f.extra&&f.hp<=f.maxHp*.5){clog(`${f.name} 퇴각 (체력 50% 이하)`,'e');out++;return false}return true});
+  if(!alive(C.E)||!C.foes.includes(C.E))C.E=C.foes.find(f=>f.boss)||liveFoes()[0];
+  let n=knAlive().filter(k=>!k.extra).length;while(n<2){if(!addKnight(false))break;n++}
+  addKnight(true);toast('에인헤랴르',`${knAlive().length}명`);renderCombat()}
 /* V32 페이즈 전환: 체력이 1 이하로 떨어지면 턴 종료 후 특수 대사(컷신)를 보여 주고 다시 재개 */
 async function bossPhaseCut(){
   const C=S.C,E=C.E,p=E.pendPhase;E.pendPhase=0;if(!p||C.over)return;
   if(E.key==='clerk'){E.phase=2;E.idx=0;E.block=0;await wait(400);E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');toast('페이즈 2','기입관이 서류를 새로 편다');clog('페이즈 2 — 체력 전부 회복','e');chooseIntent();renderCombat();await wait(300);return}
   if(p===2){
-    summonKnights();E.said['은빛 소환']=1;await wait(600);
-    E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');
-    enterPhase2('cut');
+    E.phase=2;E.idx=0;foeRedeal(E);E.apMax=3;E.ap=3;E.cMax=3;E.c=3;
+    summonKnights();await wait(600);
+    E.hp=E.maxHp;fxAt('enemy',`+${E.maxHp}`,'heal');toast('페이즈 2 · 단죄','순수유물주의자가 에인헤랴르를 지휘한다');clog('페이즈 2 · 단죄 — 체력 전부 회복, 에인헤랴르 2명 소환','e');
   }
   renderCombat();await wait(300);
 }
 /* 은빛 기사 행동: 보호 위주 — 보스에게 방어도 80~120, 3번째 행동마다 약한 공격 30~50, 대신 맞은 기사는 다음 턴 행동 없음 */
-async function knightAct(){const C=S.C,E=C.E,r=S.run;if(!E)return;
-  for(const k of knAlive(E)){if(C.over||r.hp<=0)return;const i=E.kns.indexOf(k);
-    if(k.stun>=C.turn){clog('은빛 기사 · 명령-보호로 움직이지 않음','e');continue}
-    k.idx=(k.idx||0)+1;const art=$(`#knightFig${i?'2':''} .kn-art`);if(art&&!REDUCED){art.classList.remove('act');void art.offsetWidth;art.classList.add('act')}
-    await wait(240);
-    if(k.idx%3){const g=ri(80,120);E.block+=g;fxAt('enemy',`방어도 +${g}`,'info');clog(`은빛 기사 · 보호 — 방어도 +${g}`,'e');renderCombat();await wait(200);continue}
-    const sv={name:E.name,atk:E.atk,acc:E.acc,revenge:E.revenge,actFlat:E.actFlat};Object.assign(E,{name:'은빛 기사',atk:Math.round(lvAB(25)*diffEm()),acc:ENEMY.inquisitor.acc,revenge:0,actFlat:0});
-    try{await enemyStrike({t:'atk',a:30,b:50},{})}finally{Object.assign(E,sv)}
-    renderCombat();await wait(200)}}
+async function knightAct(){return}/* 옛 은빛 기사 행동 — 에인헤랴르는 명령으로만 움직임 */
 function knightCheck(){return;
   const E=S.C&&S.C.E;if(!E||!E.knightMax)return;
   E.knight=Math.min(E.knight,E.block);
@@ -2057,7 +2097,7 @@ function genOpts(r,row){
   return out;
 }
 function newMap(r){const m={v:3,row:0,path:[],opts:[],shops:0,bossDone:false};r.map=m;m.opts=genOpts(r,1);return m}
-function showMap(){if(S.run&&S.run.act===2)return showMap2();
+function showMap(){if(S.run&&S.run.act===2)return showA1End();
   if(S.run&&storyMap())return;
   S.screen='map';viewFor('map');hideCombatUI();closeModal();if(S.run.at)S.run.at=null;renderTop();save();setTimeout(tutShow,0);
   const r=S.run,M=r.map;if(!M.opts||(!M.opts.length&&M.row<BOSS_ROW))M.opts=genOpts(r,M.row+1);
@@ -2101,7 +2141,7 @@ function enterNode(i){
   let at;
   if(t==='battle'&&r.tut&&row===1)at={kind:'combat',enemy:tutEnemy()};
   else if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(r.pal&&r.pal.k==='nord'?'priest':row<5?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
-  else if(t==='rift'){const e=makeEnemy('nordJudge');e.rift=true;e.riftHp=ri(3000,4500);at={kind:'combat',enemy:e}}
+  else if(t==='rift'){const e=makeEnemy('nordJudge');e.rift=true;at={kind:'combat',enemy:e}}
   else if(t==='elite')at={kind:'combat',enemy:makeEnemy('inquisitor')};
   else if(t==='boss')at={kind:'combat',enemy:makeEnemy('bishop')};
   else if(t==='rest')at={kind:'rest'};
@@ -2132,8 +2172,15 @@ function gokFirst(at){const r=S.run;r.flags.gokMet=true;at.gokDone=true;save();
     /* 입단 제의 — 수락 · 거절의 효과는 정해지면 넣음 (지금은 둘 다 전투 없이 지나감) */
     m.innerHTML=shell(`<p class="vq">「${o.yes}」</p><div class="vopts"><button class="plate-btn vopt" data-join="1">수락한다</button><button class="plate-btn vopt" data-join="0">거절한다</button></div>`);
     m.querySelectorAll('[data-join]').forEach(x=>x.onclick=()=>{if(x.dataset.join==='1'){r.flags.gokJoin=true;toast('곡해파','곡해파에 입단했다')}else toast('곡해파','입단을 거절했다');pass()})})}
+/* 2장은 업데이트 대기 (V2.32.58.14) — 1장 보스를 쓰러뜨리면 여기서 끝 */
+const A2_KINDS=['fall','land','dir','a2first','a2rain','shop2','contract','inn','a1end'];
+function showA1End(){const r=S.run;if(r){r.at={kind:'a1end'};save()}S.screen='a1end';try{hideCombatUI()}catch(e){}renderTop();
+  const sc=openScreen('',{full:true});sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center;max-width:720px;margin:auto"><div class="psub">1장 · 미드가르드</div><div class="ptitle">순수유물주의자를 넘어섰다</div>
+    <p style="opacity:.85;line-height:1.7">세계수 아래, 니다벨리르로 가는 길은 아직 열리지 않았다.<br>2장은 다음 업데이트를 기다려 주세요.</p>
+    <div class="choices" style="width:100%"><button class="choice" id="a1Title"><b>타이틀로</b><span>저장 기록은 이 자리에 남는다</span></button></div></div>`;
+  $('#a1Title').onclick=()=>{S.run=null;showTitle()}}
 function resumeAt(){
-  const r=S.run,at=r.at;if(!at)return showMap();
+  const r=S.run,at=r.at;if(r.act===2||(at&&A2_KINDS.includes(at.kind)))return showA1End();if(!at)return showMap();
   if(at.kind==='combat'&&!at.gokDone&&!(r.flags&&r.flags.gokMet)&&(at.enemies||[]).some(f=>f.key==='interp'))return gokFirst(at);
   if(at.kind==='combat')return startCombat(JSON.parse(JSON.stringify(at.enemies||at.enemy)));
   if(at.kind==='shopAsk')return eventPanel('상점','','길가에 상점이 열려 있다.',[{b:'상점에 입장한다',s:'물건을 둘러본다',f:()=>{r.at={kind:'shop'};r.shop=null;genShop();save();transition(resumeAt)}},{b:'지나간다',s:'들르지 않고 다음 막으로',f:()=>{r.at=null;save();showMap()}}]);
@@ -2160,8 +2207,8 @@ function makeEnemy(key){
   const d=ENEMY[key];const lv=Array.isArray(d.lv)?ri(d.lv[0],d.lv[1]):d.lv;const HPR2={mech:[750,952],porter:[727,923],server:[840,1067],appr:[637,807],poor:[615,778]},HPF2={sender:1418,examiner:1422,craftsman:1619,collab:1619,docent:1619,chef:1619,guard:1794,clerk:4300};
   if(!d.hpR&&HPR2[key])d.hpR=HPR2[key];
   /* 문서에 체력 범위가 따로 적힌 적은 그 범위를 레벨에 맞춰 나눔 (이단심문관 308~422) */
-  let maxHp=HPF2[key]||(d.hpR?Math.round(d.hpR[0]+(d.hpR[1]-d.hpR[0])*(lv-d.lv[0])/(d.lv[1]-d.lv[0])):hpAt(d.hp1,lv));
-  const E={key,name:d.names?pick(d.names):d.name,sub:d.sub||'',tier:d.tier,lv,maxHp,hp:0,atk:d.atkFix||lvAB(lv)+(d.ab||0),def:d.atkFix||lvAB(lv)+(d.ab||0),acc:d.acc,eva:d.eva,block:0,evaB:0,weak:0,vuln:0,el:0,burn:0,traits:[],
+  let maxHp=HPF2[key]||(d.hpR?Math.round(d.hpR[0]+(d.hpR[1]-d.hpR[0])*(lv-d.lv[0])/(d.lv[1]-d.lv[0])):hpAt(d.st?ri(d.st.hp[0],d.st.hp[1]):d.hp1,lv));
+  const E={key,name:d.names?pick(d.names):d.name,sub:d.sub||'',tier:d.tier,lv,maxHp,hp:0,atk:d.st?ri(d.st.atk[0],d.st.atk[1])+lvAB(lv):d.atkFix||lvAB(lv)+(d.ab||0),def:d.st?ri(d.st.def[0],d.st.def[1])+lvAB(lv):d.atkFix||lvAB(lv)+(d.ab||0),acc:d.acc,eva:d.eva,nord:!!d.nord,block:0,evaB:0,weak:0,vuln:0,el:0,burn:0,traits:[],
     frost:false,revenge:0,firstAtk:true,turn:0,prosth:false,coward:false,fled:false,intent:null,idx:0,last:[],boss:key==='bishop',steam:0,heat:0,cool:0,crack:0,food:0};
   const nT=d.tier==='normal'?ri(0,1):d.tier==='elite'?ri(1,2):0;
   const names=Object.keys(TRAITS);
@@ -2175,11 +2222,11 @@ function makeEnemy(key){
   /* 행동 포인트 — 주인공이 카드 1장을 쓸 때마다 1 소모, 0이 되면 곧바로 행동 (시작 평균 5, 보스 10) */
   E.apMax=d.apMax||(d.tier==='boss'?10:d.tier==='elite'?6:5);E.ap=E.apMax;
   {const tb=TUNE.cb,a=(S.run&&S.run.act)||1,t=E.tier||'normal',fl=(S.run&&S.run.floor)||0,rp=a===1&&tb.ramp?Math.min(1,Math.max(0,fl-1)/tb.ramp):1,mk=v=>1+((v||1)-1)*rp;
-    E.maxHp=Math.round(E.maxHp*mk((tb.hp[a]||{})[t]));E.dmgMul=Math.round(mk((tb.dmg[a]||{})[t])*100)/100}
+    E.maxHp=Math.round(E.maxHp*mk((tb.hp[a]||{})[t]));E.dmgMul=Math.round(((a===1?(tb.dmg[a]||{})[t]:mk((tb.dmg[a]||{})[t]))||1)*1000)/1000}
   /* 기입관: 페이즈당 체력은 난이도별 고정값 (V2.29.49.12) */
   if(key==='clerk')E.maxHp=CLERK_HP[(S.run&&S.run.diff)||'easy']||CLERK_HP.easy;
   E.hp=E.maxHp;
-  if(E.boss){Object.assign(E,{phase:1,anger:0,human:0,p2turns:0,mercyCD:0,wfSkip:false,said:{},baseAcc:E.acc,kn:null,pendPhase:0});
+  if(E.boss){Object.assign(E,{phase:1,anger:0,human:0,p2turns:0,mercyCD:-1,wfSkip:false,said:{},baseAcc:E.acc,kn:null,pendPhase:0});
   }
   return E;
 }
@@ -2191,7 +2238,7 @@ function startCombat(E0){
   const foeList=Array.isArray(E0)?E0:[typeof E0==='string'?makeEnemy(E0):E0];
   const C={E:foeList[0],foes:foeList,draw,hand:[],disc:[],exh:[],powers:[],
     energy:0,maxE:3,drawN:5,nextEnergy:0,block:0,evaB:0,pWeak:0,pVuln:0,pEl:0,pBurn:0,temper:0,discount:false,
-    pend:[],eat:0,healAcc:0,seal:{},brand:[],turn:0,phase:'player',over:false,select:null,recoil:0,hold:false,ashBonus:0,
+    pend:[],eat:0,healAcc:0,seal:{},brand:[],turn:0,mk:{lv:0,setT:-9,expT:-9,hitT:-9,lock:-9},fracS:-9,fracEnd:-9,pWkF:0,phase:'player',over:false,select:null,recoil:0,hold:false,ashBonus:0,
     blockDebt:pt('blockDebt')?5:0,yu:0,yuT:0,hitsTurn:0,log:[],
     evaMod:(r.next&&r.next.eva)||0,costMod:(r.next&&r.next.cost)||0,cost1:(r.next&&r.next.cost1)||0};
   if(C.E.tut){C.E.intent=null}
@@ -2208,13 +2255,7 @@ function startCombat(E0){
   const E=C.E;
   for(const f of C.foes)clog(`전투 시작 · ${f.name} Lv ${f.lv} · 체력 ${f.maxHp} · 공격레벨 ${f.atk} · 방어레벨 ${f.def} · 명중 ${f.acc} · 회피 ${f.eva}`,'h');
   if(C.noWs)toast('계약 파기 전투',`이 전투에서는 ${WS2[C.noWs].n} 카드를 쓸 수 없다`);
-  if(E.boss){
-    if(r.flags.kicked){E.anger=3;E.raged=1;E.atk+=15;E.acc-=15;enterPhase2('start',true);summonKnights()}
-    say(BOSS_LINES.start);
-    const specials=C.draw.filter(c=>CARDS[c.id].rar==='special');
-    if(specials.length){const s=pick(specials);C.seal[s.uid]=2;toast('감정',`특수무기 「${CARDS[s.id].name}」 2턴 동안 봉인`)}
-    else E.noSpecial=true;
-  }
+  if(E.boss){say(BOSS_LINES.start)}
   if(r.next){const t=[];if(r.next.eva)t.push(`회피 ${r.next.eva}`);if(r.next.cost)t.push(`코스트 ${r.next.cost}`);if(r.next.cost1)t.push(`첫 턴 코스트 +${r.next.cost1}`);if(t.length){toast('사건의 여파',t.join(' · '));clog('사건의 여파: '+t.join(' · '))}}
   a2CombatStart(C);
   for(const f of C.foes)if(f.boss)bossGuard(f);
@@ -2275,7 +2316,7 @@ function eTraits(){
   if(has(E,'빈털터리'))t.push({n:'빈털터리',v:.1});
   return t;
 }
-function enemyAcc(){const E=S.C.E;if(E.key==='collab'&&S.C.pFrozen)return 999;return E.acc-(E.boss?E.human*5:0)-(E.frost?20:0)-(E.para?10:0)}
+function enemyAcc(){const E=S.C.E;if(E.key==='collab'&&S.C.pFrozen)return 999;return E.acc+(E.key==='inquisitor'&&S.run.flags&&S.run.flags.heresy?10:0)-(E.boss?E.human*5:0)-(E.frost?20:0)-(E.para?10:0)}
 /* 예상 피해 범위 (카드·의도 표시용) */
 function pPreview(c,d){
   const C=S.C,E=C.E,r=S.run,o=cardStrikeOpts(c);
@@ -2307,8 +2348,8 @@ async function startPlayerTurn(){
   C.turn++;C.phase='player';C.block=C.hold?C.block:Math.floor(C.block/2);C.hold=false;C.blockGot=false;C.recoil=0;C.freeAP=0;C.discount=false;C.evaB=C.evaNext||0;C.evaNext=0;C.hitsTurn=0;
   /* 코스트·드로우 증가는 전투 안에서만 — 전투가 끝나면 기본값으로 */
   r.turns=(r.turns||0)+1;const gr=growth(C.turn);C.maxE=gr.e;C.drawN=gr.d;if(r.mode==='odin'){C.maxE+=2;C.drawN+=3}/* 올파더 */
-  clog(`${C.turn}턴 · 코스트 ${C.maxE} · 드로우 ${C.drawN}`,'h');
-  for(const f of liveFoes()){foeRefill(f);clog(`${f.name} · 코스트 ${f.c} / ${f.cMax} · 행동 포인트 ${f.apMax}`,'h')}
+  clog(`${C.turn}턴 · 코스트 ${C.maxE} · 드로우 ${C.drawN}`,'h');markTick();
+  for(const f of liveFoes()){foeRefill(f);if(!f.noAct)clog(`${f.name} · 코스트 ${f.c} / ${f.cMax} · 행동 포인트 ${f.apMax}`,'h')}
   a2TurnStart();
   if(pt('selfVuln')){C.pVuln=Math.min(10,C.pVuln+1);clog(`${PTRAIT.selfVuln.n}: 자신에게 취약 1`)}
   if(pt('selfWeak')){C.pWeak=Math.min(10,C.pWeak+1);clog(`${PTRAIT.selfWeak.n}: 자신에게 약화 1`)}
@@ -2319,6 +2360,7 @@ async function startPlayerTurn(){
   {const gb=gs('blockTurn')+(C.turn===1?gs('block0')+gs('blockFirst'):0);if(gb>0){C.block+=gb;clog(`장비 방어도 +${gb} (현재 ${C.block})`);fxAt('player',`+${gb} 방어도`,'block')}}
   if(C.lockDisc&&C.lockDisc.length){C.disc.push(...C.lockDisc.filter(x=>x.t<=C.turn).map(x=>x.c));C.lockDisc=C.lockDisc.filter(x=>x.t>C.turn)}
   C.energy=Math.max(0,C.maxE+C.nextEnergy+(C.costMod||0)+(C.turn===1?(C.cost1||0)+gs('cost1'):0)+a2EnergyMod());C.nextEnergy=0;
+  if(C.turn>C.fracS&&C.turn<=C.fracEnd&&C.energy>0){C.energy--;fxAt('player','골절 · 코스트 -1','info');clog('골절: 턴 시작 코스트 -1')}
   if(C.flaskDebt){const p=Math.min(C.energy,C.flaskDebt);C.energy-=p;clog(`미미르의 물병: 코스트 ${C.flaskDebt} 지불${p<C.flaskDebt?` (남은 코스트가 모자라 ${p}만 지불)`:''}`);C.flaskDebt=0}
   if(C.flaskHp){r.hp=Math.max(1,r.hp-C.flaskHp);fxAt('player',`물병 -${C.flaskHp}`,'self');clog(`미미르의 물병: 체력 ${C.flaskHp} 지불`);C.flaskHp=0}
   if(C.steinBlock){gainBlock(C.steinBlock,0,'스타인러 공방');C.steinBlock=0}
@@ -2542,10 +2584,11 @@ function fuseOpenWindow(){const box=$('#modal');return new Promise(res=>{box.hid
 /* 카드 1장 사용 → 적 행동 포인트 -1. 0이 되면 곧바로 행동하고 다시 채워져 횟수 제한 없이 계속 행동. 턴 종료 시 1 이상이면 0으로 만들고 다음 행동 1회 후 초기화 */
 async function apTick(n=1){
   const C=S.C,r=S.run;if(!C||C.over||C.dead||C.phase!=='player')return;
-  const ready=[];for(const E of liveFoes()){E.ap-=n;while(E.ap<=0){ready.push(E);E.ap+=Math.max(1,E.apMax)}}
+  const ready=[];for(const E of liveFoes()){if(E.noAct)continue;E.ap-=n;while(E.ap<=0){ready.push(E);E.ap+=Math.max(1,E.apMax)}}
   renderCombat();if(!ready.length)return;
   S.busy=true;C.phase='enemy';
   for(const E of ready){if(C.over||C.dead||r.hp<=0)break;if(!alive(E))continue;clog(`${E.name}의 행동 포인트가 0이 되었다 — 남은 코스트로 카드를 낸다`,'h');
+    if(E.key==='bishop'&&E.phase>=2){E.c=E.cMax;clog('간절한 기도: 행동 포인트를 전부 소모 — 코스트를 최대로 회복','e')}
     await wait(300);await withFoe(E,()=>foeBurst())}
   if(C.over||C.dead||r.hp<=0){S.busy=false;return}
   C.phase='player';if(C.pend.length){await wait(250);await resolvePending()}
@@ -2659,7 +2702,7 @@ async function endTurn(){
   if(await a2EndTurn()){S.busy=false;return}
   if(fleeResolve())return;
   await wait(380);
-  for(const f of liveFoes()){if(C.over||r.hp<=0)break;await withFoe(f,()=>enemyTurn())}
+  for(const f of liveFoes()){if(C.over||r.hp<=0)break;if(f.noAct)continue;await withFoe(f,()=>enemyTurn())}
   C.fleeX=0;
   S.busy=false;
   if(!C.over&&r.hp>0)startPlayerTurn();
@@ -2672,27 +2715,32 @@ async function endTurn(){
 const FOE_FIN=new Set(['처단','삭제','승강기 레버']);
 const FOE_NEG=new Set(['고해 강요','백색의 불꽃','미스틸테인','증기 분사','냉매 투척','냉각통 내려놓기','시제품 시험','실패작 던지기','반려 서류','냉매 살포','해설','곡해','레바테인-타격','점화','정의 집행','낙인']);
 function actCost(n){const a=ACT[n];if(!a)return 1;if(a.cost!=null)return a.cost;if(FOE_FIN.has(n))return 3;if(a.gim)return 2;return 1}
-function actType(n){const a=ACT[n];if(!a)return'atk';if(a.k==='def')return'def';if(a.k==='atk'||FOE_NEG.has(n)||n==='정정')return'atk';return'sup'}
-function actNeg(n){const a=ACT[n];return!!(a&&(a.vuln||a.pend||a.strip||FOE_NEG.has(n)))}
+function actType(n){const a=ACT[n];if(!a)return'atk';if(a.k==='cmd')return a.rally?'sup':ACT[a.cmd]&&ACT[a.cmd].k==='def'?'def':'atk';if(a.neg)return'atk';if(a.k==='def')return'def';if(a.k==='atk'||FOE_NEG.has(n)||n==='정정')return'atk';return'sup'}
+function actNeg(n){const a=ACT[n];return!!(a&&(a.vuln||a.pend||a.strip||a.neg||FOE_NEG.has(n)))}
+function actReady(E,n){const a=ACT[n];if(a&&a.exec)return S.C.mk.lv>=5;return true}
 function actText(n){const a=ACT[n];if(!a)return'';const p=[];if(a.d&&a.d.length)p.push(a.d.map(x=>`${DIE_NAME[x.t]} ${x.a===x.b?x.a:`${x.a}~${x.b}`}`).join(', '));
   if(a.vuln)p.push(`적중 시 취약 ${a.vuln}`);if(a.strip)p.push('방어도와 지속 효과 제거');if(a.gim&&GIM[a.gim])p.push(`${GIM[a.gim].n}: ${GIM[a.gim].t}`);if(a.tag)p.push(a.tag);if(a.desc)p.push(a.desc);if(a.mercy)p.push('남은 체력만큼');return p.join(' · ')}
 const FOE_SEEN_K='midgard_foeSeen';let FOE_SEEN={};try{FOE_SEEN=JSON.parse(localStorage.getItem(FOE_SEEN_K)||'{}')||{}}catch(e){FOE_SEEN={}}
 function foeSee(n){if(FOE_SEEN[n])return;FOE_SEEN[n]=1;try{localStorage.setItem(FOE_SEEN_K,JSON.stringify(FOE_SEEN))}catch(e){}}
+const deckList=o=>{const out=[];for(const k in o)for(let i=0;i<o[k];i++)out.push(k);return out};
 function foeActs(E){const d=ENEMY[E.key],r=S.run;
-  if(E.key==='bishop'){if(E.phase>=2)return['공양의 칼','공양의 칼','은빛 소환','미스틸테인'];return['미스틸테인','백색의 불꽃','공양의 칼']}
+  if(E.tut)return['기도','지팡이','지팡이'];
+  if(E.key==='bishop')return deckList(E.phase>=2?d.deck2:d.deck1);
+  if(d.deck)return deckList(d.deck);
   if(d.order){let o=(E.phase===2&&d.order2?d.order2:d.order).slice();if(E.key==='priest'&&r&&r.flags&&r.flags.noTithe)o=o.filter(a=>a!=='공양 요구');if(has(E,'무모함')){const o2=o.filter(a=>ACT[a].k!=='def');if(o2.length)o=o2}return o}
   const pool={...d.acts};if(E.key==='priest'&&r&&r.flags&&r.flags.noTithe)delete pool['공양 요구'];if(has(E,'무모함'))for(const k in pool)if(ACT[k].k==='def'&&Object.keys(pool).length>1)delete pool[k];
   const tot=Object.values(pool).reduce((a,b)=>a+b,0)||1,out=[];for(const k in pool){const n=Math.max(1,Math.round(pool[k]/tot*8));for(let i=0;i<n;i++)out.push(k)}return out}
-function foeBuildDeck(E){const src=foeActs(E);let deck=[];if(ENEMY[E.key].order||E.key==='bishop'){while(deck.length<8)deck.push(...src,...src)}else deck=src.slice();
+function foeBuildDeck(E){const src=foeActs(E);let deck=[];if(ENEMY[E.key].deck||E.key==='bishop'||E.tut)deck=src.slice();else if(ENEMY[E.key].order){while(deck.length<8)deck.push(...src,...src)}else deck=src.slice();
   E.fdeck=shuffle(deck);E.fdisc=[];E.hand=[];E.deckPh=E.phase||1;E.kinds=[...new Set(deck)]}
 function foeDraw(E,n){for(let i=0;i<n;i++){if(!E.fdeck.length){if(!E.fdisc.length)break;E.fdeck=shuffle(E.fdisc);E.fdisc=[]}E.hand.push(E.fdeck.pop())}}
 function foeRedeal(E){const n=Math.max(1,(E.hand||[]).length);foeBuildDeck(E);foeDraw(E,n)}
-function foeRefill(E){const C=S.C;if(!E.fdeck||(E.deckPh||1)!==(E.phase||1))foeBuildDeck(E);
+function foeRefill(E){const C=S.C;if(E.noAct){E.c=0;E.cMax=0;E.ap=0;E.apMax=0;E.used=E.used||[];return}if(!E.fdeck||(E.deckPh||1)!==(E.phase||1))foeBuildDeck(E);
   E.fdisc.push(...(E.hand||[]));E.hand=[];
-  const gr=growth(C.turn);E.cMax=E.tut?1:gr.e;E.c=Math.max(0,E.cMax-(E.cool||0));foeDraw(E,E.tut?3:gr.d);
-  if(E.apBase==null)E.apBase=E.apMax||(E.boss?10:E.tier==='elite'?6:5);const lo=Math.max(2,E.apBase-1),hi=E.apBase+1;
-  E.apMax=E.tut?E.apBase:ri(lo,hi);E.ap=E.apMax+(C.turn===1&&eq('bind')?2:0);E.early=false;E.dmgTurn=0;E.used=E.used||[]}
-function foePick(E){const h=E.hand,c=E.c,ok=i=>actCost(h[i])<=c;const idx=h.map((_,i)=>i).filter(ok);if(!idx.length)return-1;
+  const gr=growth(C.turn),keep=E.key==='bishop'&&E.phase>=2;/* 보존: 총 드로우·총 코스트 고정 */
+  E.cMax=E.tut?1:keep?3:gr.e;E.c=Math.max(0,E.cMax-(E.cool||0));foeDraw(E,E.tut?3:keep?5:gr.d);
+  if(E.apBase==null)E.apBase=E.apMax||(E.boss?10:E.tier==='elite'?6:5);const lo=Math.max(2,E.apBase-1),hi=E.apBase+1,dA=ENEMY[E.key].ap;
+  E.apMax=E.tut?E.apBase:E.key==='bishop'?(E.phase>=2?3:5):dA?ri(dA[0],dA[1]):ri(lo,hi);E.ap=E.apMax+(C.turn===1&&eq('bind')?2:0);E.early=false;E.dmgTurn=0;E.used=E.used||[]}
+function foePick(E){if(E.key==='bishop')return bishopPick(E);const h=E.hand,c=E.c,ok=i=>actCost(h[i])<=c&&actReady(E,h[i]);const idx=h.map((_,i)=>i).filter(ok);if(!idx.length)return-1;
   const T=i=>actType(h[i]);
   if(has(E,'침착함')&&E.turn<=1){const d=idx.find(i=>T(i)==='def');if(d!=null)return d}
   const neg=idx.filter(i=>T(i)!=='def'&&actNeg(h[i]));if(neg.length)return neg[0];
@@ -2704,7 +2752,6 @@ function foePick(E){const h=E.hand,c=E.c,ok=i=>actCost(h[i])<=c;const idx=h.map(
 async function foeBurst(){const C=S.C,E=C.E,r=S.run;if(!E.hand)foeRefill(E);
   if((E.deckPh||1)!==(E.phase||1))foeRedeal(E);
   if(E.frozen||E.frozeSkip){toast('냉동',`${E.name}이(가) 얼어 카드를 낼 수 없다`);clog(`${E.name}: 냉동 — 이번 턴 카드를 낼 수 없음`,'e');return}
-  if(E.key==='bishop'&&E.mercyCD===0&&r.hp<=r.maxHp*.25){E.mercyCD=4;say(BOSS_LINES.mercy);E.intent='안 아프게 빨리';foeSee(E.intent);E.used.push({t:C.turn,n:E.intent});await execAct(E.intent);if(C.over||r.hp<=0)return}
   let n=0;
   for(;;){if(C.over||r.hp<=0||!alive(E))return;
     let k=foePick(E);if(k<0)break;const name=E.hand.splice(k,1)[0];
@@ -2715,6 +2762,41 @@ async function foeBurst(){const C=S.C,E=C.E,r=S.run;if(!E.hand)foeRefill(E);
   if(!n)clog(`${E.name}: 남은 코스트로 낼 수 있는 카드가 없다`,'e');
   renderCombat()}
 
+/* ===== 1장 키워드 (V2.32.58.14) — 표식·약점 노출·골절·약화·낙인 ===== */
+const ROMAN=['','Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ'];
+const expoOn=()=>{const C=S.C;return!!(C&&C.mk&&C.mk.lv>0&&C.mk.expT===C.turn)};
+const fracOn=()=>{const C=S.C;return!!(C&&C.fracEnd!=null&&C.turn<=C.fracEnd)};
+function markHit(){const C=S.C,m=C.mk;if(m.lv>0&&m.expT!==C.turn){m.expT=C.turn;fxAt('player','약점 노출','info');clog('표식이 붙은 턴에 다시 맞음 → 약점 노출','e')}m.hitT=C.turn}
+function forceMark(){const C=S.C,m=C.mk;if(m.lv<=0){m.lv=1;m.setT=C.turn;fxAt('player','표식Ⅰ','info');clog('표식 강제 부여: 이번 턴부터 표식Ⅰ','e')}else{m.lock=C.turn+2;clog(`표식 강제 부여: 그 뒤 2턴 동안 맞지 않아도 표식 유지`,'e')}}
+function markTick(){const C=S.C,m=C.mk,P=C.turn-1;if(!m)return;
+  if(m.lv<=0){if(m.hitT===P&&liveFoes().some(f=>f.nord)){m.lv=1;m.setT=C.turn;clog('표식Ⅰ이 붙었다','e')}return}
+  if(m.expT===P||m.lock>=P||m.setT===P&&m.lock>=C.turn){m.lv=Math.min(5,m.lv+1);clog(`표식 단계 상승 → 표식${ROMAN[m.lv]}`,'e')}
+  else{m.lv=0;m.lock=-9;clog('표식이 붙은 턴에 맞지 않아 표식이 사라졌다','e')}}
+function pWkAdd(n){const C=S.C;C.pWkF=(C.pWkF||0)+n;fxAt('player',`약화 ${n}`,'info');clog(`훈계: 약화 ${n} (최종 위력 -${C.pWkF})`,'e')}
+function excommunicate(){const C=S.C,cnt={},src=C.hand.length?C.hand:C.draw.length?C.draw:C.disc;for(const c of src){if(!CARDS[c.id])continue;(cnt[c.id]=cnt[c.id]||[]).push(c)}
+  const ids=shuffle(Object.keys(cnt)).sort((a,b)=>cnt[b].length-cnt[a].length).filter(id=>cnt[id].some(c=>!C.brand.includes(c.uid)));
+  if(!ids.length){clog('파문 선고: 낙인을 찍을 카드가 없다','e');return}
+  const id=ids[0];cnt[id].forEach(c=>{if(!C.brand.includes(c.uid))C.brand.push(c.uid)});toast('파문 선고',`「${CARDS[id].name}」 ${cnt[id].length}장에 낙인`);clog(`파문 선고: 「${CARDS[id].name}」 ${cnt[id].length}장에 낙인 (사용할 때마다 체력 -3)`,'e')}
+/* 명령 — 살아 있는 모든 에인헤랴르가 명령 이행 카드를 실행, 피해를 받은 턴의 에인헤랴르는 원호 방어(명령 이행-방패 세우기)만 */
+async function doCommand(B,name,a){const C=S.C,r=S.run,ks=knAlive();
+  if(a.rally){ks.forEach(k=>k.hurtT=-1);const k=addKnight(true);toast('명령-전열 정리',k?'에인헤랴르 1명 추가':'에인헤랴르가 다시 명령을 따른다');clog(`명령-전열 정리: 피해를 받은 에인헤랴르가 다시 명령을 따름${k?' · 1명 추가 소환':' (이미 7명)'}`,'e');renderCombat();return}
+  if(!ks.length){clog(`${name}: 명령을 받을 에인헤랴르가 없다`,'e');return}
+  for(const k of ks){if(C.over||r.hp<=0)return;if(!alive(k))continue;const act=k.hurtT===C.turn?'명령 이행-방패 세우기':a.cmd;
+    await withFoe(k,()=>execAct(act));if(C.over||r.hp<=0)return}}
+/* 보스 카드 고르기 — 1페이즈는 정해진 순서, 2페이즈는 행동 예측(상대 패를 읽음) */
+function bishopPick(E){const C=S.C,h=E.hand,c=E.c,idx=h.map((_,i)=>i).filter(i=>actCost(h[i])<=c);if(!idx.length)return-1;const f=n=>{const i=idx.find(j=>h[j]===n);return i==null?-1:i};let i;
+  if((E.phase||1)<2){
+    if((i=f('망치 돌리기'))>=0)return i;if(fracOn()&&(i=f('박 살'))>=0)return i;if((i=f('뼈와 살의 해체학'))>=0)return i;
+    if(!fracOn()&&(i=f('으스러트리기'))>=0)return i;if((i=f('뜯어지는 강타'))>=0)return i;return idx[0]}
+  const ks=knAlive();
+  if(ks.some(k=>k.hurtT===C.turn)&&(i=f('명령-전열 정리'))>=0)return i;
+  if(!ks.length)return f('명령-전열 정리');
+  const pE=C.phase==='player'?C.energy:C.maxE,aff=x=>{const o=costOf(x);return o&&!o.none&&(o.e==null||o.e<=pE)};
+  const canAtk=C.hand.some(x=>CARDS[x.id]&&CARDS[x.id].type==='atk'&&aff(x));
+  if(canAtk){const pref=ks.some(k=>!k.block)?['명령-방패 세우기','명령-빈틈 노리기']:['명령-빈틈 노리기','명령-방패 세우기'];for(const n of pref)if((i=f(n))>=0)return i}
+  for(const n of['명령-내려찍기','명령-베기','명령-빈틈 노리기','명령-방패 세우기'])if((i=f(n))>=0)return i;
+  return idx[0]}
+
 /* ================= enemy turn ================= */
 async function enemyTurn(){
   const C=S.C,E=C.E,r=S.run;
@@ -2722,7 +2804,7 @@ async function enemyTurn(){
   E.block=Math.floor(E.block/2);E.evaB=0;E.knightMax=0;a2EnemyTurnStart(E);
   if(has(E,'두꺼운 피부')){E.block+=4;fxAt('enemy','+4 방어도','block');clog('두꺼운 피부: 방어도 +4','e')}
   if(has(E,'광기')){E.hp-=3;fxAt('enemy','광기 -3','self');renderCombat();if(checkEnemy())return}
-  if(E.boss){E.turn>=4&&(E.human++,E.human===1&&say(BOSS_LINES.human))}
+  if(E.boss&&E.phase>=2)for(const k of knAlive())k.block=Math.floor(k.block/2);
   E.turn++;
   let acted=true;
   if(E.frozeSkip){E.frozeSkip=false;toast('냉동',`${E.name}이(가) 얼어 움직이지 못한다`);clog(`${E.name}: 냉동 — 이번 턴 카드를 낼 수 없음`,'e');acted=false}
@@ -2730,11 +2812,7 @@ async function enemyTurn(){
   if(acted){await foeBurst();if(C.over||r.hp<=0)return}
   if(C.over)return;
   if(E.weak>0)E.weak--;if(E.vuln>0)E.vuln--;
-  if(E.boss){
-    if(E.mercyCD>0)E.mercyCD--;
-    if(E.phase===2){E.p2turns++;if(E.p2turns%3===0)C.pend.push('steal')}
-  }
-  await knightAct();if(C.over||r.hp<=0)return;
+  if(E.boss&&E.phase>=2&&!C.over)knightUpkeep();
   a2EnemyTurnEnd(E);
   if(E.hand){E.fdisc.push(...E.hand);E.hand=[]}
   renderCombat();
@@ -2756,10 +2834,16 @@ async function execAct(name){
   if(E.boss&&BOSS_LINES[name]&&(!E.said[name]||ACT[name].mercy)){E.said[name]=1;say(BOSS_LINES[name])}
   await wait(260);
   if(a.strip){C.block=0;C.temper=0;fxAt('player','방어도·지속 효과 제거','info');clog('미스틸테인: 방어도와 지속 효과를 떼어냄','e')}
+  if(E.wkT===C.turn&&E.wkN>0&&name!=='약점 노리기'&&expoOn()){E.wkN--;clog(`약점 노리기: 추가타 (남은 ${E.wkN}회)`,'e');await enemyStrike(A(15,25),{});if(r.hp<=0||C.over)return}
+  if(a.k==='cmd'){await doCommand(E,name,a);E.last.push(name);if(E.last.length>2)E.last.shift();renderCombat();await wait(200);return}
   a2PreAct(E,name);let hit=false;
   if(a.k==='atk'){
     if(a.mercy){if(await enemyStrike(null,{mercy:true}))hit=true;if(r.hp>0&&!C.over){say(BOSS_LINES.survived)}}
-    else for(const x of a.d){if(await enemyStrike(x,{gim:a.gim})!==false)hit=true;if(r.hp<=0||C.over){E.actX=1;return}}
+    else for(const x of a.d){if(await enemyStrike(x,{gim:a.gim,purge:a.purge,expo:a.expo,shatter:a.shatter,exec:a.exec,fracX:a.fracX})!==false)hit=true;if(r.hp<=0||C.over){E.actX=1;return}}
+    if(a.exec){C.mk.lv=0;C.mk.lock=-9;clog('처형 집행: 표식을 전부 소모','e')}
+    if(a.frac&&hit){C.fracS=C.turn;C.fracEnd=C.turn+2;fxAt('player','골절','info');clog('골절: 2턴 동안 턴 시작 코스트 -1','e')}
+    if(a.forceMark&&hit)forceMark();
+    if(a.wkHunt){E.wkT=C.turn;E.wkN=3}
     E.firstAtk=false;E.revenge=0;E.frost=false;
     if(a.vuln){if(hit){C.pVuln+=a.vuln;fxAt('player',`취약 ${a.vuln}`,'info');clog(`적중 · 취약 ${a.vuln}`,'e')}else clog('빗나가 취약이 붙지 않음','e')}
   }
@@ -2785,14 +2869,24 @@ async function enemyStrike(die,o={}){
   if(E.key!=='bishop'&&!REDUCED){const en=$('#enemy');en.classList.remove('lunge');void en.offsetWidth;en.classList.add('lunge');await wait(150);setTimeout(()=>en.classList.remove('lunge'),200)}
   const gm=o.gim&&GIM[o.gim];let ch=hitChance(enemyAcc(),pEva());const roll=E.tut&&tutOn()?1:ri(1,100);
   if(gm&&o.gim==='read')ch=gm.ok()?0:100;
+  const her=!!(S.run.flags&&S.run.flags.heresy);if(o.exec||(o.purge&&her))ch=100;
   const r0=o.mercy?0:rollDie(die),v=o.mercy?0:eAdj(r0);
   let dmg=0,txt='';
   if(o.mercy){dmg=r.hp;txt=`남은 체력만큼 ${dmg}`}
   else{const f=formula(v,E.revenge+(E.actFlat||0),E.atk,eTraits(),pDef(),{x:has(E,'무모함')&&E.firstAtk?2:1});const gx=gm&&o.gim!=='read'?gm.m():gm?1.5:1;dmg=Math.round(clerkClamp(f.fin*(E.dmgMul||1),E)*gx);txt=`${gm?`[${gm.n} ${gm.ok()?'성공':'실패'} ×${gx}] `:''}${E.dmgMul&&E.dmgMul!==1?`[전투 보정 ×${E.dmgMul}] `:''}공격 주사위 ${v}: ${f.text}`}
   if(!o.mercy&&gs('lateGuard')&&C.turn>=3)dmg=Math.round(dmg*.8);
+  if(!o.mercy){let M=1;const tg=[];
+    if(E.nord&&C.mk.lv){M*=1+.1*C.mk.lv;tg.push(`표식${ROMAN[C.mk.lv]} +${C.mk.lv*10}%`)}
+    if(o.expo&&expoOn()){M*=1+o.expo;tg.push(`약점 노출 +${o.expo*100}%`)}
+    if(o.fracX&&fracOn()){M*=1+o.fracX;tg.push(`골절 +${o.fracX*100}%`)}
+    if(o.purge&&her){const m2=C.block>0?4.1:5;M*=m2;tg.push(`처단 ×${m2}`)}
+    if(E.key==='inquisitor'&&her){M*=1.25;tg.push('새겨진 본능-단죄 +25%')}
+    if(M!==1){dmg=Math.round(dmg*M);txt=`[${tg.join(' · ')}] `+txt}}
   {const hit=roll<=ch,bb=Math.min(C.block,dmg);await diceFocus({foe:true,lb:o.mercy?`${E.name} · 안 아프게 빨리`:`${E.name} · 공격 주사위${gm?` · ${gm.n} ${gm.ok()?'성공':'실패'}`:''}`,a:o.mercy?0:die.a,b:o.mercy?0:die.b,r0:o.mercy?'—':r0,pow:o.mercy?'남은 체력':v,hit,ch,dmg:hit?dmg-bb:0,bl:hit?bb:0})}
   if(roll>ch){fxAt('player','빗나감','miss');sfx('miss');swayFx();clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);return false}
   if(!o.mercy&&dmg>0&&dmg<5&&eq('shell')){clog(`${txt} · 적중 → 막의 껍질이 튕겨냄 (5 미만)`,'e');fxAt('player','튕겨냄','block');await wait(200);return 0}
+  if(E.nord)markHit();
+  if(o.shatter&&C.block>0){const d2=dmg*2,b2=Math.min(C.block,d2);C.block-=b2;clog(`${txt} · 적중 → 파쇄: 방어도에만 2배 데미지 ${d2} · 방어도 ${b2} 깎임 (체력 피해 없음)`,'e');fxAt('player',`방어도 -${b2}`,'block');sfx('block');guardFx();renderCombat();await wait(260);return 0}
   const b=Math.min(C.block,dmg);C.block-=b;const loss=dmg-b;r.hp-=loss;palEv(loss>0?(r.hp<r.maxHp*.3?'low':'hurt'):'block');
   if(loss>0&&r.hp>0){if(gs('hitSteam'))a2Give('steam',gs('hitSteam'));if(gs('hitEva'))C.evaNext=gs('hitEva');if(gs('hitHeal'))heal(r.maxHp*gs('hitHeal')/100)}
   clog(`${txt} · 적중률 ${ch}% · 판정 ${roll} → 적중${b?` · 방어도 ${b} 흡수`:''} · 피해 ${loss}`,'e');
@@ -2853,6 +2947,7 @@ function winCombat(res){
   const all=foes(),killed=all.filter(f=>(f.dead||f.hp<=0)&&!f.fled),fled=all.filter(f=>f.fled&&!f.spared),spared=all.filter(f=>f.spared);
   const top=all.find(f=>f.tier==='boss')||all.find(f=>f.tier==='elite')||all[0];
   if(r.act===2&&killed.length&&!(C.atInfo&&(C.atInfo.evb||C.atInfo.spar)))r.flags.a2Felled=1;
+  if((r.act||1)===1&&killed.some(f=>f.key==='priest'&&!f.tut)&&!r.flags.heresy){r.flags.heresy=1;lines.push(['이단 표식','노른교 신자를 무력화했다'])}
   for(const E of killed){
     r.kills++;if(E.key==='cadet')r.flags.cadetGone=1;
     if(r.mode==='dain'){
@@ -3770,6 +3865,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.32.58.14','11/20','1장 적을 문서대로 새로 만듦 — 노른교 성직자(막기·말뿐인 저주·훈계·파문 선고), 노르드교 단원(어설픈 베기·숨 고르기·약점 노리기), 이단심문관(명령 이행-베기·내려찍기·처단, 새겨진 본능-단죄), 노르드교 이행자(행동-약점 찢기·표식 강제 부여·파쇄·처형 집행), 레벨·1레벨 스탯·행동 포인트 범위·덱 장수를 문서 값으로 · 순수유물주의자 새로 만듦: 1페이즈는 망치로 직접 공격(행동 포인트 5, 정해진 순서, 뼈와 살의 해체학·으스러트리기·박 살·뜯어지는 강타·망치 돌리기), 2페이즈는 에인헤랴르 지휘(행동 포인트 3, 모든 카드 3코스트, 보존·간절한 기도·행동 예측, 명령-베기·내려찍기·방패 세우기·빈틈 노리기·전열 정리), 에인헤랴르는 직접 공격할 수 있고 2명 수복·턴마다 +1명(최대 7명)·피해를 받은 턴에는 원호 방어만 · 새 키워드: 표식(Ⅰ~Ⅴ)·약점 노출·골절·약화(최종 위력 -1)·이단 표식, 기존 약화는 허약으로 표기 · 이전 보스 특색(분노·광분·감정·낙인·인간의 몸·안 아프게 빨리) 삭제 · 2장은 막음: 1장 보스를 쓰러뜨리면 업데이트 대기 화면, 2장 건너뛰기 버튼 삭제 · 1장 적 피해 보정과 에인헤랴르 피해 보정은 Claude 임시 값'],
   ['V2.31.58.14','11/19','스토리 건너뛰기를 누르면 그 대화 전체를 선택지까지 전부 건너뜀 (선택지는 맨 위의 것을 고른 것으로 처리) / 2장 공방 상점은 그 구역 공방의 카드만 판매 (동 스타인러 · 남 아쉬부티 · 서 레미 · 북 크리뷔스 · 중앙 크리밀라)'],
   ['V2.31.57.14','11/16','보류 탭 항목 전부 게임 코드에서 삭제 — 암시장·도박장·유물 조각·특수 대장장이, 묠니르·궁니르·다인 획득 사건, 저주와 다인 패시브 저주, 강화 특수능력·합체, 휴식·상점·사건의 카드 삭제와 강화, 멸망 빌드(보스 3페이즈), 장비 탈취, 훔친 카드, 도전과제, 인트로 영상, 적 머리 위 행동 예고, 튜토리얼 성직자 대사 / 카드 키워드 설명(합체·강화·명사·지정불가·연계) 삭제, 카드 글씨 크게, 감정서 새 효과(작품-준비가 있으면 턴마다 50% 확률로 패에 들어오고, 쓰면 50% 확률로 작품-완성)'],
   ['V2.31.56.14','11/16','보류된 것 게임에서 삭제 — 절멸전 코드 전부, 영웅 등급 카드 4장(미미르의 한 모금·글레이프니르의 실·드라우프니르의 파편·결계의 기억), 고치, 절멸전 영웅 처치 보상 16장, 사건 4개(층을 묶는 끈·파편 경매·미미르의 샘에서 흘러온 물·아랫지형으로 가는 승강기), 키워드 고유 명사·대명사, 신화무기 획득(묠니르·궁니르·레바테인·다인슬레이프 사건과 암시장 조각 판매)을 막음'],
@@ -3876,7 +3972,6 @@ function openSettings(){
   const m=$('#modal');m.hidden=false;
   m.innerHTML=`<div class="panel" style="width:min(640px,100%)"><div class="maphead"><div class="ptitle">설정</div><button class="btn-ghost" id="mClose">${S.setBack?'메뉴로':'닫기'}</button></div>
     <div class="choices">
-      <button class="choice" id="sSkip2" style="border-color:#c9a45c"><b>2장으로 건너뛰기 (임시)</b><span>1장 진행 중이면 지금 캐릭터로, 없으면 새 캐릭터로 2장 낙하 장면부터 시작</span></button>
       <button class="choice" id="sEnv"><b>환경 설정</b><span>UI 크기 · 효과음 · 화면 흔들림 · 주사위 연출 · 전환 팁 · 튜토리얼 다시 보기</span></button>
       <button class="choice" id="sPatch"><b>패치 내역 · ${PATCH[0][0]}</b><span>버전별로 바뀐 점</span></button>
       ${S.setBack?'':`<button class="choice" id="sSlots"><b>저장 기록 · ${slotCount()} / ${SLOT_MAX}</b><span>세계수 등반 저장 기록을 보고 이어하거나 지움 (최대 10개)</span></button>`}
@@ -3884,7 +3979,7 @@ function openSettings(){
   $('#mClose').onclick=()=>{const b=S.setBack;S.setBack=null;if(b)b();else closeModal()};
   $('#sEnv').onclick=openEnvSettings;
   $('#sPatch').onclick=()=>openPatch(openSettings);
-  $('#sSkip2').onclick=skipToA2;
+
   if($('#sSlots'))$('#sSlots').onclick=()=>openSlots('manage',openSettings);
 }
 /* 환경 설정 (V2.28.46) — 설정 안의 설정창 */
@@ -4049,7 +4144,7 @@ function guideShow(){
   box.hidden=true;stage.removeAttribute('data-tut');
 }
 /* 튜토리얼 전투의 적: 노른교 성직자 (레벨 7 고정, 특성 없음, 첫 행동은 공격) */
-function tutEnemy(n=1){const r=S.run,E=makeEnemy('priest');E.traits=[];E.lv=7;E.atk=lvAB(7);E.def=lvAB(7);E.acc=ENEMY.priest.acc;E.eva=ENEMY.priest.eva;const f=formula(75+gapP(r.atk,E.def),0,r.atk,[],E.def).fin;E.maxHp=E.hp=Math.round(f*(n===1?3:2.5));E.tut=true;E.tutN=n;E.tutKeep=TUT_KEEP[n-1];if(n===2){E.apMax=4;E.ap=4}return E}
+function tutEnemy(n=1){const r=S.run,E=makeEnemy('priest');E.traits=[];E.lv=7;E.atk=lvAB(7);E.def=lvAB(7);E.acc=70;E.eva=40;/* 튜토리얼 적은 예전 명중·회피 그대로 */const f=formula(75+gapP(r.atk,E.def),0,r.atk,[],E.def).fin;E.maxHp=E.hp=Math.round(f*(n===1?3:2.5));E.dmgMul=1;E.tut=true;E.tutN=n;E.tutKeep=TUT_KEEP[n-1];if(n===2){E.apMax=4;E.ap=4}return E}
 /* 4-1. 세계수 등반 준비 */
 function showClimbPrep(){
   S.screen='climbPrep';S.run=null;S.C=null;hideCombatUI();closeModal();renderTop();viewFor('title');
@@ -4264,7 +4359,7 @@ const ICON={
   mercy:'<svg viewBox="0 0 24 24"><path d="M12 2c3 5 6 7 6 12a6 6 0 0 1-12 0c0-5 3-7 6-12z" fill="#fff"/></svg>',
 };
 /* V32.20.2.6 은빛 기사 그림 — 보스 옆에 서서 보스 대신 피해를 받음 */
-function renderKnight(){const C=S.C,E=C&&C.E;[0,1].forEach(i=>{const kf=$('#knightFig'+(i?'2':''));if(!kf)return;
+function renderKnight(){[0,1].forEach(i=>{const kf=$('#knightFig'+(i?'2':''));if(kf){kf.hidden=true;kf.className='knfig'}});return;const C=S.C,E=C&&C.E;[0,1].forEach(i=>{const kf=$('#knightFig'+(i?'2':''));if(!kf)return;
   const k=E&&E.boss&&S.screen==='combat'&&!C.over&&E.kns?E.kns[i]:null;if(!k){kf.hidden=true;kf.className='knfig';return}
   const o=L[S.orient],w=o.ew*.62,h=o.eh*.72,land=S.orient==='land',off=o.ew*(land?.78:.62);kf.style.width=w+'px';kf.style.height=h+'px';kf.style.left=(o.ex+(i?off:-off)-w/2)+'px';kf.style.top=(o.efeet+16-h)+'px';
   const art=kf.querySelector('.kn-art');if(!art.dataset.k){art.dataset.k=1;art.innerHTML=ENEMY_SVG.inquisitor||''}
@@ -4293,9 +4388,9 @@ function renderEnemy(){
   if(E.mark)chips.push(`<span class="chip bad">궁니르-명중 ${E.mark}</span>`);
   if(E.charged)chips.push(`<span class="chip bad">송출 대기</span>`);if(E.para)chips.push(`<span class="chip bad">마비 · 명중 -10</span>`);
   if(E.key==='clerk'&&E.phase===2)chips.push(`<span class="chip brass">페이즈 2</span>`);
+  if(E.knight&&E.hurtT===C.turn)chips.push(`<span class="chip bad">원호 방어만</span>`);
   if(E.boss){chips.push(`<span class="chip brass">페이즈 ${E.phase} · ${['','정화','단죄','번제화'][E.phase]}</span>`);
-    if(E.phase<3)chips.push(`<span class="chip brass">분노 ${E.anger}</span>`);
-    if(knAlive(E).length)chips.push(`<span class="chip good">은빛 기사 ${knAlive(E).length} · 명령-보호</span>`);
+    if(knAlive(E).length)chips.push(`<span class="chip good">에인헤랴르 ${knAlive(E).length} · 새겨진 본능-보호</span>`);
     if(E.pendPhase)chips.push(`<span class="chip bad">페이즈 ${E.pendPhase} 준비</span>`);
     if(E.human)chips.push(`<span class="chip">인간의 몸 명중 -${E.human*5}</span>`);
 }
@@ -4311,7 +4406,12 @@ function renderPlayer(){
   const C=S.C,r=S.run,dain=r.mode==='dain';
   const chips=[];
   if(C.evaB)chips.push(`<span class="chip good">회피 +${C.evaB}</span>`);
-  if(C.pWeak)chips.push(`<span class="chip bad">약화 ${C.pWeak}</span>`);
+  if(C.pWeak)chips.push(`<span class="chip bad">허약 ${C.pWeak}</span>`);
+  if(C.pWkF)chips.push(`<span class="chip bad">약화 ${C.pWkF} · 위력 -${C.pWkF}</span>`);
+  if(C.mk&&C.mk.lv)chips.push(`<span class="chip bad">표식${ROMAN[C.mk.lv]} · 받는 데미지 +${C.mk.lv*10}%${C.mk.lock>=C.turn?' · 유지':''}</span>`);
+  if(expoOn())chips.push(`<span class="chip bad">약점 노출</span>`);
+  if(fracOn())chips.push(`<span class="chip bad">골절 · 턴 시작 코스트 -1 (${C.fracEnd-C.turn+(C.turn>C.fracS?1:0)}턴)</span>`);
+  if(S.run.flags&&S.run.flags.heresy&&(S.run.act||1)===1)chips.push(`<span class="chip bad">이단 표식</span>`);
   if(C.pVuln)chips.push(`<span class="chip bad">취약 ${C.pVuln}</span>`);
   if(C.pEl)chips.push(`<span class="chip bad">전격 ${C.pEl}</span>`);
   if(C.pBurn)chips.push(`<span class="chip bad">소각 ${C.pBurn}</span>`);
@@ -4607,7 +4707,7 @@ function openList(title,cards,note){
 function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';m.classList.remove('scn','scn-sky','scn-dark','scn-lite','side');document.querySelectorAll('.aside').forEach(x=>x.classList.remove('aside'));S.modalLock=false}
 
 /* 적 상태창 (V2.31.55.14) — 적을 누르면 림버스처럼 적이 옆으로 비켜서고 상태창이 열림 */
-function foeOrbs(f){const pip=(n,m,cls)=>`<div class="or ${cls}">${[...Array(Math.max(0,m||0))].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}<b>${Math.max(0,n||0)} / ${m||0}</b></div>`;return`<div class="forbs">${pip(f.c,f.cMax,'c')}${pip(f.ap,f.apMax,'a')}</div>`}
+function foeOrbs(f){if(f.noAct)return'';const pip=(n,m,cls)=>`<div class="or ${cls}">${[...Array(Math.max(0,m||0))].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}<b>${Math.max(0,n||0)} / ${m||0}</b></div>`;return`<div class="forbs">${pip(f.c,f.cMax,'c')}${pip(f.ap,f.apMax,'a')}</div>`}
 const FK_COL={atk:'#a8473b',def:'#3c6a96',sup:'#4c8442'};
 function openFoePanel(f){const C=S.C;if(!C||drag||!f||!alive(f))return;const d=ENEMY[f.key];
   document.querySelectorAll('.aside').forEach(x=>x.classList.remove('aside'));
@@ -5056,6 +5156,7 @@ function askView(E){const C=S.C,V=VIEW_Q[E.key];if(!V||E.asked)return;E.asked=tr
       res()})})}
 /* 적이 쓰러질 때 — 남은 적이 있으면 대상만 바꿈 */
 function foeDown(E){const C=S.C;if(E.dead)return false;E.dead=true;$('#enemy').classList.add('dead');
+  if(E.boss&&C.foes&&C.foes.some(f=>f.knight)){C.foes=C.foes.filter(f=>!f.knight);clog('에인헤랴르가 물러난다','e')}
   const left=liveFoes();if(!left.length){winCombat({});return true}
   clog(`${E.name} 쓰러짐`,'h');toast('처치',`${E.name}`);
   setTimeout(()=>{if(S.C===C&&!C.over){$('#enemy').classList.remove('dead');C.E=alive(C.E)?C.E:liveFoes()[0];renderCombat()}},REDUCED?60:420);return true}
@@ -5610,7 +5711,9 @@ const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','나는 살던
 const S_NORD=['벽에 기대앉은 남자가 숨을 고른다. 붉은 천을 두른 다리에서 피가 배어 나온다.',['부상당한 노르드교 단원','그 검... 우리 쪽 물건이군. 형제여, 이런 곳에서 만나다니.'],'나는 그의 말에 아무것도 답하지 않았다.',['부상당한 노르드교 단원','이 몸으로는 이제 칼을 못 쥐네. 나도 한때는 이 지역에서 제일이었는데 말일세.'],['부상당한 노르드교 단원','자네도 세계수로 가는 길인가? 좋군. 뜻이 같으니 길도 같은 게지.'],['부상당한 노르드교 단원','말이 없군. 좋네, 뜻이 같으면 말은 필요 없지.']];
 const S_TREE=['세계수를 감싼 바벨탑 모양의 교단이 가까워진다.','의심이 확신으로 바뀌고, 심장이 빠르게 뛴다.',['부상당한 노르드교 단원','저걸 태우면 말일세, 형제여. 무엇이 남을지 궁금하지 않나?'],'나는 고개를 들어 세계수를 올려다보았다. 그저 순수한 열망으로.'];
 const S_RUMOR=[['부상당한 노르드교 단원','이상한 말이 돌더군. 형제를 판 놈이 있다고. 헛소리지.'],['부상당한 노르드교 단원','자네는 듣지 말게. 내가 자네를 아니까.']];
-ENEMY.nordJudge={...ENEMY.inquisitor,name:'노르드교 이행자',sub:'노르드교',art:'cultist',lv:35,hpR:undefined};
+ENEMY.nordJudge={name:'노르드교 이행자',sub:'노르드교',tier:'elite',lv:35,hp1:250,st:{hp:[200,300],atk:[45,70],def:[40,65]},acc:90,eva:60,ap:[5,7],art:'cultist',nord:1,
+  deck:{'행동-약점 찢기':3,'행동-표식 강제 부여':2,'행동-파쇄':2,'행동-처형 집행':1},
+  passives:[['표식','노르드교 공통 패시브 — 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 표식 단계가 오름(Ⅰ~Ⅴ), 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐, 단계 1당 표식을 건 쪽에게 받는 데미지 +10%'],['도망 불가','이 전투에서는 도망칠 수 없음']]};
 const RIFT_LINES=['...','아군일세!','더는 그만!','그만하게나'];/* 이별 전투에서는 이 대사만 반복 */
 const S_RIFT=['내가 떠나온 지역의 이행자가 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이행자','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이행자','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
 const S_VOW=[['???','...그에게 보낸 모든 성직자가 연락 두절이네.'],['???','살아 있는지는... 아직 모르지. 알 수가 없어.'],['???','그건 이단이다. 어디에 속해 있지 않든, 지금 그것이 하고 있는 건 교단을 향한 반발일지니.'],['교황','교단에 맞지 않으면 이단이라 하는 건가?'],['교황','글쎄, 그건 그가 어떻게 행동하는지, 손속이 어떤지 보고 판단하겠네.'],['순수유물주의자','곧 교단에 도착합니다. 제가 직접 막겠습니다.'],['교황','...']];
@@ -6193,7 +6296,7 @@ function a2PreAct(E,name){const r=S.run;let x=1;
   E.actX=x;E.actFlat=(name==='무쇠 팬'&&E.sat)?Math.round(r.maxHp*.02*E.sat):0}
 /* 공방렙 차이: 내 공격레벨 − 상대 방어레벨이 3 남을 때마다 공격 위력 +1 (낮아도 위력은 줄지 않음) — 적이 플레이어를 공격할 때도 같음 */
 const gapP=(atk,def)=>Math.max(0,Math.floor((atk-def)/3));
-function pAdj(v,o,hi){const C=S.C,E=C.E;if(o&&o.nul)return 0;const base=masterOn()?hi:v;return base+(C.heat||0)+gapP(o&&o.atk!=null?o.atk:pAtk(),E.def)}
+function pAdj(v,o,hi){const C=S.C,E=C.E;if(o&&o.nul)return 0;const base=masterOn()?hi:v;return Math.max(0,base+(C.heat||0)+gapP(o&&o.atk!=null?o.atk:pAtk(),E.def)-(C.pWkF||0))}
 function eAdj(v){const C=S.C,E=C.E;return Math.round((v+(E.heat||0)+gapP(E.atk,pDef()))*(E.done?3:1)*(C.fleeX||1)*(E.actX||1))}
 /* 적이 여럿일 때 — 위쪽에 적 목록, 누르거나 카드를 끌어 놓으면 대상이 바뀜 */
 /* 여러 적 — 대상은 가운데 큰 그림(#enemy)이 그 자리로 가고, 나머지는 옆자리에 따로 섬 (V26) */
@@ -6201,8 +6304,8 @@ function foeArt(f){return ENEMY_IMG[f.key]?`<img alt="${f.name}" src="${ENEMY_IM
 function renderFoeFigs(){const C=S.C,bx=$('#foefigs');if(!bx)return;const o=L[S.orient];if(o.ex0==null){o.ex0=o.ex;o.ew0=o.ew;o.eh0=o.eh}
   const all=foes(),multi=!!(C&&!C.over&&S.screen==='combat'&&all.length>1);
   if(!multi){if(!bx.hidden||o.ex!==o.ex0){bx.hidden=true;bx.innerHTML='';o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0;positionScene()}return}
-  const n=all.length,land=S.orient==='land',k=land?(n>=3?.8:.9):(n>=3?.62:.76),gap=land?(n>=3?400:460):(n>=3?290:340);
-  o.ew=Math.round(o.ew0*k);o.eh=Math.round(o.eh0*k);const xs=all.map((f,i)=>o.ex0+(i-(n-1)/2)*gap);o.ex=xs[Math.max(0,all.indexOf(C.E))];positionScene();
+  const n=all.length,land=S.orient==='land',k=n>=6?(land?.5:.38):n>=4?(land?.62:.48):land?(n>=3?.8:.9):(n>=3?.62:.76),ew2=Math.round(o.ew0*k),gap=Math.min(land?(n>=3?400:460):(n>=3?290:340),Math.round((o.W-60-ew2)/Math.max(1,n-1)));
+  o.ew=ew2;o.eh=Math.round(o.eh0*k);const xs=all.map((f,i)=>o.ex0+(i-(n-1)/2)*gap);o.ex=xs[Math.max(0,all.indexOf(C.E))];positionScene();
   bx.hidden=false;
   bx.innerHTML=all.map((f,i)=>{if(f===C.E)return'';const pct=clamp(f.hp/f.maxHp*100,0,100),dead=!alive(f);
     return`<div class="ufoe${dead?' dead':''}" data-foe="${i}" role="button" tabindex="${dead?-1:0}" aria-label="${f.name} 상태창" style="left:${xs[i]-o.ew/2}px;top:${o.efeet-o.eh}px;width:${o.ew}px;height:${o.eh}px">
@@ -6220,7 +6323,7 @@ function foeAt(x,y){const all=foes();if(all.length>1&&S.C){const inR=el=>{const 
     const en=$('#enemy');if(en&&inR(en)&&alive(S.C.E))return S.C.E;return null}
   const el=$('#foebar');if(!el||el.hidden)return null;for(const b of el.querySelectorAll('[data-foe]')){const rc=b.getBoundingClientRect();if(x>=rc.left&&x<=rc.right&&y>=rc.top&&y<=rc.bottom){const f=all[+b.dataset.foe];return alive(f)?f:null}}return null}
 function afterReward(){const r=S.run,at=r.at||{};
-  if(at.then==='fall')return a2Begin();
+  if(at.then==='fall')return showA1End();
   if(at.then==='rush'){if(r.m2&&r.m2.inside)r.m2.inside.cur=(at.rush||0)+1;r.at=null;save();return showMap()}
   if(at.then==='laevWin'){r.flags.surtWeak=1;r.at=null;return landDome()}
   showMap()}
