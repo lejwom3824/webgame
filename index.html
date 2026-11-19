@@ -1891,29 +1891,25 @@ function loop(t){drawBG(t);if(!REDUCED)requestAnimationFrame(loop)}
 /* 문서에 없는 특성(전격·소각 부여, 공격 약화, 피해 감소, 낙인, 가중치 감소, 방어도 감소, 패널티 드로우)은 숨김 */
 const PTRAIT={
   atkUp:{n:'폭력',t:'공격 주사위 피해량 +20%',c:3},
-  smite:{n:'파괴',t:'최종 피해량 +25%',c:4},
+  smite:{n:'파괴력',t:'최종 피해량 +25%',c:4},
   sharp:{n:'살점',t:'고정 추가 피해 +3',c:2},
   accUp:{n:'명중',t:'명중률 +10%p',c:2},
   evaUp:{n:'왜 못 맞추겠어?',t:'회피 +10%p',c:3},
   defUp:{n:'방패기사',t:'방어도 획득량 +25%',c:2},
-  pierceDef:{n:'빈!틈!발!견',t:'상대 방어레벨에 의한 피해 감소 무시',c:5},
+  pierceDef:{n:'심장 노리기',t:'상대 방어레벨에 의한 피해 감소 무시',c:5},
   extra:{n:'한대는 아쉽다',t:'기존 공격력의 50%로 공격 주사위 1개 추가',c:5},
   combo:{n:'두대는 정없다',t:'기존 공격력의 25%로 공격 주사위 1개 추가',c:3},
   leech:{n:'광전사',t:'입힌 피해의 10%만큼 체력 회복',c:4},
   hpUp:{n:'튼튼함',t:'최대 체력 +10%',c:2},
   refund:{n:'광기',t:'공격 적중 시 코스트 1 반환',c:5},
-  drawUp:{n:'고지능',t:'카드 사용 후 카드 1장 드로우',c:5},
-  keep:{n:'최상의 질병 5위',t:'턴 종료 시 패에서 버려지지 않음',c:3},
-  weakOn:{n:'약화 부여 효과',t:'공격 적중 시 대상에게 약화 1 부여',c:3},
   vulnOn:{n:'취약 부여 효과',t:'공격 적중 시 대상에게 취약 1 부여',c:4},
-  yuOn:{n:'즐거움',t:'조건 충족 시 유희 1 획득 (임시 조건: 한 턴에 공격 3번 적중)',c:3},
+  yuOn:{n:'즐거움',t:'적을 연속 3회 공격하면 유희 1 획득',c:3},
   elOn:{n:'전격 부여',t:'공격 적중 시 대상에게 전격 3 부여',c:4,hide:1},
   burnOn:{n:'소각 부여',t:'공격 적중 시 대상에게 소각 5 부여',c:3,hide:1},
   wUp:{n:'가중치 증가 효과',t:'가중치 +2',c:3},
-  noExh:{n:'장기기억증',t:'소모한 패가 사라지지 않음 (소멸 효과를 제거하고 사용한 카드를 덱으로 되돌림)',c:5},
   killHeal:{n:'섭취',t:'적 처치 시 체력 5% 회복',c:3},
-  dieMin:{n:'편안',t:'공격 주사위의 최솟값 +1',c:3},
-  dieMax:{n:'만족',t:'공격 주사위의 최댓값 +2',c:3},
+  dieMin:{n:'편안함의 방심',t:'공격 주사위의 최솟값 +1',c:3},
+  dieMax:{n:'만족은 순간',t:'공격 주사위의 최댓값 +2',c:3},
   atkDown:{n:'공격 약화',t:'공격 주사위 피해량 -20%',c:-3,hide:1},
   dmgDown:{n:'피해 감소',t:'최종 피해량 -20%',c:-3,hide:1},
   accDown:{n:'난시',t:'명중률 -10%p',c:-2},
@@ -1924,10 +1920,10 @@ const PTRAIT={
   hpCost:{n:'자해',t:'카드 사용 시 최대 체력의 5% 소모',c:-3},
   costUp:{n:'멍청이',t:'카드 사용 코스트 +1',c:-4},
   drawDown:{n:'바보',t:'카드 사용 후 드로우 -1 (임시: 카드의 드로우 효과 -1)',c:-4},
-  seal:{n:'자폐증',t:'카드 사용 후 1턴 동안 해당 카드 봉인',c:-3},
+  seal:{n:'스스로와의 약속',t:'카드 사용 후 1턴 동안 해당 카드 봉인',c:-3},
   brand:{n:'낙인',t:'카드를 사용할 때마다 체력 3 감소',c:-3,hide:1},
   burnBack:{n:'3도화상',t:'매턴 자신에게 소각 5 부여',c:-3},
-  elBack:{n:'감전',t:'매턴 자신에게 전격 3 부여',c:-4},
+  elBack:{n:'감전',t:'매턴 자신에게 전격 3 부여',c:-3},
   wDown:{n:'가중치 감소',t:'가중치 -2 (등반에서는 효과 없음)',c:-3,hide:1},
   badRoll:{n:'불운',t:'공격 주사위 결과를 불리하게 변경 (두 번 굴려 낮은 값)',c:-2},
   exhAll:{n:'최악의 질병 5위',t:'사용 후 이번 전투 동안 덱에서 제외',c:-2},
@@ -1939,7 +1935,7 @@ const PTRAIT={
   randTgt:{n:'근시',t:'공격 대상이 무작위로 지정됨',c:-3},
   pacifist:{n:'평화주의자',t:'최종 피해량 -50%',c:-10},
 };
-const PT_CONFLICT=[['atkUp','atkDown'],['smite','dmgDown'],['accUp','accDown'],['evaUp','evaDown'],['defUp','defDown'],['hpUp','hpDown'],['drawUp','drawDown'],['wUp','wDown'],['noExh','exhAll']];
+const PT_CONFLICT=[['atkUp','atkDown'],['smite','dmgDown'],['accUp','accDown'],['evaUp','evaDown'],['defUp','defDown'],['hpUp','hpDown'],['wUp','wDown']];
 /* 1레벨 기준: 체력 50~100, 공격·방어레벨 25~50, 명중 80, 회피 70, 재능 10~20 */
 /* 난이도 (세계수 등반만) — 기본 재능: 쉬움 10~20, 보통 5~10, 어려움 0, 매우 어려움 0. 어려움부터 특성이 무작위로 고정됨(고를 수 없음) */
 const CDIFF={veasy:{n:'매우 쉬움',tal:[30,30],em:.75,gm:1.15},easy:{n:'쉬움',tal:[10,20],em:1,gm:1},normal:{n:'보통',tal:[5,10],em:1.1,gm:.85},hard:{n:'어려움',tal:[0,0],em:1.15,gm:.7},vhard:{n:'매우 어려움',tal:[0,0],em:1.3,gm:.55}};
@@ -2018,7 +2014,9 @@ function purgeDeleted(r){if(!r)return r;const okc=c=>c&&CARDS[c.id],LG={"g_lhood
   if(r.jm&&Array.isArray(r.jm.list))r.jm.list=r.jm.list.filter(x=>!(x.k==='noBuy'&&x.t==='gear')&&x.k!=='gearLock');
   return r}
 function migrateRun(r){
-  if(!r)return r;r.store=r.store||[];purgeDeleted(r);ensureGear(r);r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
+  if(!r)return r;r.store=r.store||[];purgeDeleted(r);
+  /* V2.32.61.14: 문서에서 빠진 특성(고지능·최상의 질병 5위·약화 부여 효과·장기기억증)은 저장 기록에서도 지움 */
+  if(r.traits)r.traits=r.traits.filter(k=>PTRAIT[k]);ensureGear(r);r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
   /* V2.29.48.12: 공방 동료(제바르크·오토·견습생) 롤백 — 건넨 카드·장비는 보관함으로, 리테만 남김 */
   {const OUT=['smith','otto','cadet'],back=p=>{if(!p)return;for(const c of p.cards||[])r.store.push(c);r.bag=r.bag||[];for(const g of p.gear||[])r.bag.push(g)};
     if(r.mates){for(const k of OUT)if(r.mates[k]){back(r.mates[k]);delete r.mates[k]}}
@@ -2345,7 +2343,7 @@ function clog(t,cls){const C=S.C;if(!C||!C.log)return;C.log.push([cls||'',t]);if
 async function startPlayerTurn(){
   const C=S.C,r=S.run;if(C.over)return;
   C.tossTurn=0;
-  C.turn++;C.phase='player';C.block=C.hold?C.block:Math.floor(C.block/2);C.hold=false;C.blockGot=false;C.recoil=0;C.freeAP=0;C.discount=false;C.evaB=C.evaNext||0;C.evaNext=0;C.hitsTurn=0;
+  C.turn++;C.phase='player';C.block=C.hold?C.block:Math.floor(C.block/2);C.hold=false;C.blockGot=false;C.recoil=0;C.freeAP=0;C.discount=false;C.evaB=C.evaNext||0;C.evaNext=0;C.hitsTurn=0;C.atkRow=0;
   /* 코스트·드로우 증가는 전투 안에서만 — 전투가 끝나면 기본값으로 */
   r.turns=(r.turns||0)+1;const gr=growth(C.turn);C.maxE=gr.e;C.drawN=gr.d;if(r.mode==='odin'){C.maxE+=2;C.drawN+=3}/* 올파더 */
   clog(`${C.turn}턴 · 코스트 ${C.maxE} · 드로우 ${C.drawN}`,'h');markTick();
@@ -2524,11 +2522,11 @@ async function playCardRaw(uid,o={}){
     if(U)await a2CardFx(c,ctx);
     if(U)switch(c.id){
     }
-    if(U)if(pt('drawUp'))drawN(1);
-    if(pt('yuOn')&&C.hitsTurn>=3&&!C.yuGot){C.yuGot=true;C.yu=Math.min(5,C.yu+1);toast(PTRAIT.yuOn.n,'유희 +1')}
+    /* 즐거움: 공격 카드를 연달아 3번 쓰면 유희 +1 (다른 종류 카드가 끼면 처음부터, 턴이 바뀌면 처음부터) */
+    if(U){if(d.type==='atk'){C.atkRow=(C.atkRow||0)+1;if(pt('yuOn')&&C.atkRow>=3){C.atkRow=0;C.yu=Math.min(5,C.yu+1);toast(PTRAIT.yuOn.n,'유희 +1')}}else C.atkRow=0}
   }
   /* 카드가 가는 곳: 지속 → 지속 더미 / 소멸 → 소멸 더미 / 그 외 → 버린 카드 더미 */
-  const exhaust=(d.exhaust||c.temp||pt('exhAll'))&&!(pt('noExh')&&!c.temp);
+  const exhaust=d.exhaust||c.temp||pt('exhAll');
   if(d.type==='power')C.powers.push(c);
   else if(pt('destroy')&&!c.temp){const i=r.deck.findIndex(x=>x.uid===c.uid);if(i>=0)r.deck.splice(i,1);C.exh.push(c);clog(`${PTRAIT.destroy.n}: 「${CARDS[c.id].name}」 영구 소멸`)}
   else if(exhaust){C.exh.push(c);clog(`「${CARDS[c.id].name}」 소멸`);tutEvent('exh');}
@@ -2643,7 +2641,6 @@ async function pStrike(die,o={}){
   if(E.frozen||E.frozeSkip){E.crack=Math.min(3,(E.crack||0)+2);E.crackT=C.turn;fxAt('enemy',`깨짐 ${E.crack}단계`,'info')}
   if(gs('frostHit')&&rnd()<.5)a2Hit('cool',1);
   if(pt('burnOn')){E.burn=Math.min(100,E.burn+5)}
-  if(pt('weakOn'))applyEnemyStatus('weak',1);
   if(pt('vulnOn'))applyEnemyStatus('vuln',1);
   renderCombat();
   if(checkEnemy())return true;
@@ -2684,7 +2681,7 @@ async function endTurn(){
   clog('턴 종료','h');tutEvent('end');
   if(E&&(E.boss||E.key==='clerk')&&E.pendPhase)await bossPhaseCut();
   if(eqW('st_b')&&C.energy>0&&r.mode!=='dain'){C.steinBlock=C.energy*3;clog(`스타인러 공방: 남은 코스트 ${C.energy} → 다음 턴 방어 ${C.steinBlock}`)}
-  const keepAll=pt('keep'),keepF=x=>keepAll||!!CARDS[x.id].keep;
+  const keepF=x=>!!CARDS[x.id].keep;
   const kept=C.hand.filter(keepF);C.disc.push(...C.hand.filter(x=>!keepF(x)));C.hand=kept;
   if(C.pWeak>0)C.pWeak--;if(C.pVuln>0)C.pVuln--;
   for(const k in C.seal){C.seal[k]--;if(C.seal[k]<=0)delete C.seal[k]}
@@ -3866,6 +3863,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.32.61.14','11/20','주인공 특성을 문서대로 — 이름 변경(파괴 → 파괴력, 빈!틈!발!견 → 심장 노리기, 편안 → 편안함의 방심, 만족 → 만족은 순간, 자폐증 → 스스로와의 약속), 고지능·최상의 질병 5위·약화 부여 효과·장기기억증 삭제, 감전 재능 -4 → -3, 즐거움은 적을 연속 3회 공격하면 유희 1 획득'],
   ['V2.32.60.14','11/20','일섬 — 코스트 0, 코스트 회복과 기본 드로우를 없앰, 치명타(명중 확률의 50%)가 나면 데미지 +50%와 드로우 +1'],
   ['V2.32.59.14','11/20','보스 전투에서 순수유물주의자가 화면 정중앙에 서고, 에인헤랴르는 보스 오른쪽·왼쪽에 번갈아 섬'],
   ['V2.32.58.14','11/20','1장 적을 문서대로 새로 만듦 — 노른교 성직자(막기·말뿐인 저주·훈계·파문 선고), 노르드교 단원(어설픈 베기·숨 고르기·약점 노리기), 이단심문관(명령 이행-베기·내려찍기·처단, 새겨진 본능-단죄), 노르드교 이행자(행동-약점 찢기·표식 강제 부여·파쇄·처형 집행), 레벨·1레벨 스탯·행동 포인트 범위·덱 장수를 문서 값으로 · 순수유물주의자 새로 만듦: 1페이즈는 망치로 직접 공격(행동 포인트 5, 정해진 순서, 뼈와 살의 해체학·으스러트리기·박 살·뜯어지는 강타·망치 돌리기), 2페이즈는 에인헤랴르 지휘(행동 포인트 3, 모든 카드 3코스트, 보존·간절한 기도·행동 예측, 명령-베기·내려찍기·방패 세우기·빈틈 노리기·전열 정리), 에인헤랴르는 직접 공격할 수 있고 2명 수복·턴마다 +1명(최대 7명)·피해를 받은 턴에는 원호 방어만 · 새 키워드: 표식(Ⅰ~Ⅴ)·약점 노출·골절·약화(최종 위력 -1)·이단 표식, 기존 약화는 허약으로 표기 · 이전 보스 특색(분노·광분·감정·낙인·인간의 몸·안 아프게 빨리) 삭제 · 2장은 막음: 1장 보스를 쓰러뜨리면 업데이트 대기 화면, 2장 건너뛰기 버튼 삭제 · 1장 적 피해 보정과 에인헤랴르 피해 보정은 Claude 임시 값'],
