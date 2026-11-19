@@ -1102,10 +1102,10 @@ const CARDS={
   ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'mastery',d:[A(150,200)],draw:1,text:'공격 150~200\n드로우 +1',flavor:'붙어 있는 것을 떨어지게 만드는 감각'},
   ms_flash:{name:'일섬',sword:1,cost:0,type:'atk',rar:'mastery',d:[A(75,95)],text:'공격 75~95\n치명타 시 데미지 +50%, 드로우 +1',flavor:''},
   ms_kendo:{name:'검도',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(100,150),D(5,50)],hold:true,text:'공격 100~150, 방어 5~50\n방어도가 사라지지 않음',flavor:''},
-  ms_kendo2:{name:'발도술',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(50,100)],text:'공격 50~100\n같은 카드가 패에 있으면 행동 포인트 없이 재사용 (재사용할 때마다 코스트 1)',flavor:''},
+  ms_kendo2:{name:'발도술',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(50,100)],text:'공격 50~100\n같은 카드가 패에 있으면 행동 포인트 없이 재사용, 재사용마다 코스트 1',flavor:''},
   f_pi:{name:'피륙',sword:1,cost:3,type:'atk',rar:'uncommon',ap:2,d:[A(200,430)],text:'공격 200~430\n행동 포인트 2 소모',flavor:'투박하지만, 정확히 끊어낸 절단'},
   f_ryeo:{name:'도려내기',sword:1,cost:3,type:'atk',rar:'mastery',ap:2,draw:2,d:[A(150,450)],text:'공격 150~450\n드로우 +2, 행동 포인트 2 소모\n데미지 300 이상이면 코스트 +2',flavor:''},
-  f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'mastery',d:[A(500,750)],text:'공격 500~750\n합성에 쓴 카드는 3턴 뒤 버린 패로 돌아옴\n데미지 1000당 다음 턴 코스트 +1, 드로우 +1 (최대 2)',flavor:''},
+  f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'mastery',d:[A(500,750)],text:'공격 500~750\n합성에 쓴 카드는 3턴 뒤 버린 패로 돌아옴\n데미지 1000당 다음 턴 코스트 +1, 드로우 +1, 최대 2',flavor:''},
   guard:{name:'막기',cost:1,type:'def',rar:'start',d:[D(35,50)],text:'방어 35~50',flavor:'막아내는 것도 살아남는 방법이다.'},
   breath:{name:'숨 고르기',cost:0,type:'skill',rar:'start',draw:1,text:'드로우 +1',flavor:'숨을 쉬는 순간도 허락받아야 한다.'},
   stab:{name:'찌르기',cost:0,type:'atk',rar:'common',d:[A(30,50)],text:'공격 30~50',flavor:'작은 상처도 쌓이면 무너진다.'},
@@ -1122,12 +1122,12 @@ const CARDS={
   c_est:{name:'견적 내기',cost:1,type:'atk',rar:'common',tmp:true,d:[A(30,40)],text:'공격 30~40\n이 카드 적중 시 힘 +20',flavor:''},
   c_stance:{name:'자세잡기',cost:1,type:'def',rar:'common',tmp:true,d:[D(50,50)],text:'방어 50\n사용 시 힘 +20',flavor:''},
   /* V2.33.65.16: 노르드교 원형 카드 — 노르드교 무기 전용 (등급·가격은 문서에 없어 임시) */
-  n_weak:{name:'약점 노리기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n이번 턴 동안 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25 (최대 3회)',flavor:''},
+  n_weak:{name:'약점 노리기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n이번 턴 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25, 최대 3회',flavor:''},
   n_tear:{name:'약점 찢기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(60,90)],xFn:(C,E)=>pExpo(E)?1.25:1,text:'노르드교 무기 전용\n공격 60~90\n대상이 약점 노출이면 데미지 +25%',flavor:''},
   n_force:{name:'표식 강제 부여',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n적중 시 이번 턴부터 대상에게 표식Ⅰ, 이미 표식이 있으면 그 뒤 2턴 동안 맞지 않아도 표식 유지',flavor:''},
   /* V2.33.65.16: 궁극기 — 적이 쓴 궁극기를 맞고 버티면 1장 (황금빛 테두리 · 유일) */
   u_exec:{name:'처형 집행',cost:3,type:'atk',rar:'ult',ult:1,nord:1,sure:true,d:[A(400,600)],text:'궁극기 · 유일 · 노르드교 무기 전용\n대상의 표식이 Ⅴ일 때만 사용\n공격 400~600, 표식을 전부 소모, 회피 불가',flavor:''},
-  u_purge:{name:'처단',cost:4,type:'atk',rar:'ult',ult:1,d:[A(50,100)],xFn:(C,E)=>E&&E.nord?(E.block>0?4.1:5):1,sureFn:(C,E)=>!!(E&&E.nord),text:'궁극기 · 유일\n자신의 공격이 3번 적중하면 사용 (회피나 방어도로 전부 막힌 공격은 세지 않음, 쓰면 0으로)\n공격 50~100, 대상이 노르드교 소속이면 데미지 +400%·회피 불가, 대상에게 방어도가 있으면 증가율 -90%',flavor:''},
+  u_purge:{name:'처단',cost:4,type:'atk',rar:'ult',ult:1,d:[A(50,100)],xFn:(C,E)=>E&&E.nord?(E.block>0?4.1:5):1,sureFn:(C,E)=>!!(E&&E.nord),text:'궁극기 · 유일\n공격으로 3번 피해를 주면 사용\n공격 50~100, 노르드교에게 데미지 +400%, 회피 불가',flavor:''},
   // 임시 카드 — 버리기 계열 (문서에 없음)
   tidy:{name:'정리',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 카드를 최대 3장 골라 버린다\n버린 장수만큼 드로우',flavor:''},
   // 임시 카드 — 조합 (휴식에서 두 장을 합침, 문서에 없음)
@@ -1147,24 +1147,24 @@ const CARDS={
   d_hungry:{name:'굶주린 칼',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120, 이번 전투에서 섭취한 횟수 × 5 추가 피해\nhp소모 10%',flavor:'먹은 만큼 무거워진다.'},
   // 궁니르 (오딘)
   o_mark:{name:'투척-명중',cost:1,type:'atk',rar:'special',d:[A(10,30)],text:'공격 10~30\n궁니르-명중 1부여',flavor:'던지는 것이 아니다. 정하는 것이다.'},
-  o_pierce:{name:'투척-관통',cost:1,type:'atk',rar:'special',d:[A(150,250)],text:'공격 150~250\n가중치(1~10)랜덤',flavor:'꿰뚫어라'},
+  o_pierce:{name:'투척-관통',cost:1,type:'atk',rar:'special',d:[A(150,250)],text:'공격 150~250\n가중치 1~10 랜덤',flavor:'꿰뚫어라'},
   o_mimir:{name:'미미르의 샘',cost:0,type:'skill',rar:'special',text:'드로우 +4, 코스트 +2\n이번 턴 동안 회피 불가',flavor:'대가는 후불이다. 언제나.'},
-  o_recall:{name:'궁니르-회수',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 궁니르당 최대체력의 5%(최대50%)\n드로우: 적중된 궁니르-명중당 투척-명중 카드를 돌려받는다.',flavor:'무슨 방법으로든 돌아온다.'},
+  o_recall:{name:'궁니르-회수',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 궁니르당 최대 체력의 5%, 최대 50%\n적중된 궁니르-명중당 투척-명중 카드를 돌려받음',flavor:'무슨 방법으로든 돌아온다.'},
   o_shatter:{name:'궁니르-파쇄',cost:4,type:'atk',rar:'special',text:'유일\n데미지: 대상에게 적중된 궁니르-명중 수 × 15, 5회로 나뉘어 타격. 사용 후 덱의 투척 카드 전부를 \'파편\' 카드 5장으로 교체.',flavor:''},
-  o_shard:{name:'파편',cost:0,type:'atk',rar:'special',exhaust:true,d:[A(50,70)],text:'일회성\n공격 50~70, 카드 사용시 패에 파편이 존재한다면 카드를 재사용 만약 파편이 패에 존재하지 않는다면 모든 카드를 무작위 투척 카드(투척-명중 또는 투척-관통)로 변경',flavor:''},
+  o_shard:{name:'파편',cost:0,type:'atk',rar:'special',exhaust:true,d:[A(50,70)],text:'일회성\n공격 50~70, 패에 파편이 있으면 재사용, 없으면 모든 카드를 투척-명중이나 투척-관통으로 변경',flavor:''},
   // 묠니르 (토르)
-  t_swing:{name:'휘두르기',cost:0,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n코스트 +1\n(묠니르가 회수되지 않았다면 주먹 휘두르기로 바뀜)',flavor:'맞든 안 맞든, 또 휘두르면 된다.'},
+  t_swing:{name:'휘두르기',cost:0,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n코스트 +1\n묠니르가 회수되지 않았다면 주먹 휘두르기로 바뀜',flavor:'맞든 안 맞든, 또 휘두르면 된다.'},
   t_fist:{name:'주먹 휘두르기',cost:0,type:'atk',rar:'special',d:[A(60,100)],text:'공격 60~100\n드로우 +1',flavor:'주먹맛이 어떤가'},
   t_throw:{name:'던지기',cost:1,type:'atk',rar:'special',d:[A(120,180)],text:'공격 120~180\n패에 회수 카드를 추가함\n이 스킬로 부여하는 전격 2배',flavor:'던지고, 기다리고, 돌아온다.'},
-  t_recall:{name:'회수',cost:0,type:'atk',rar:'special',d:[A(40,60)],text:'공격 40~60\n만약 묠니르가 던지기 상태이고 회수 되지않았을 때 발동가능함\n드로우 +1\n(이 카드로로 전격부여 패시브가 발동하지않음)',flavor:'손이 기억하는 무게.'},
+  t_recall:{name:'회수',cost:0,type:'atk',rar:'special',d:[A(40,60)],text:'공격 40~60\n던진 묠니르가 돌아오지 않았을 때 사용\n드로우 +1\n전격이 붙지 않음',flavor:'손이 기억하는 무게.'},
   t_hunt:{name:'사냥',cost:1,type:'atk',rar:'special',d:[A(100,140)],text:'공격 100~140\n이 공격으로 처치하면 유희 +1 추가, 코스트 1 반환',flavor:'이건 전쟁이 아니다. 사냥이다.'},
-  t_bolt:{name:'전격',cost:2,type:'atk',rar:'special',text:'즉시 전격을 발동시키고(소모로 판정) 전격의 효과 만큼 최대체력의 10%(최대100%)의 데미지를 입힘\n이효과로 전격을 소모할시 마비가 50%확률로 부여된다\n(명중률 무시)\n드로우 +1\n코스트 +1',flavor:'번개는 그의 팔에 처음 닿은 날부터 그의 것이었다.'},
+  t_bolt:{name:'전격',cost:2,type:'atk',rar:'special',text:'쌓인 전격을 터뜨려 1당 최대 체력의 10% 데미지, 최대 100%\n50% 확률로 마비\n명중률 무시\n드로우 +1\n코스트 +1',flavor:'번개는 그의 팔에 처음 닿은 날부터 그의 것이었다.'},
   t_thunder:{name:'천둥',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 전격의 합\n공격 횟수: 전격의 합\n가중치 전격의 합',flavor:'세계수가 부여한 권능이 하늘을 가른다.'},
   // 레바테인 (수르트)
   s_ignite:{name:'점화',cost:0,type:'skill',rar:'special',text:'드로우 +1\n상대에게 소각 10부여',flavor:'처음엔 그저 따뜻한 모닥불이었다.'},
   s_burn:{name:'연소',cost:1,type:'atk',rar:'special',text:'코스트 +1\n상대의 소각의 절반만큼 트루 데미지를 입히고 절반을 자신에게 이완',flavor:'태운 만큼 돌아온다.'},
-  s_chase:{name:'레바테인-추격',cost:2,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n가중치 2~3\n소각 5부여\n이 카드로 적을 처치시 코스트 +1(1턴에 최대 3)',flavor:'도망가게 두어서는 안 된다.'},
-  s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5부여\n이 카드로 적을 처치시 드로우 +1(1턴에 최대 3)',flavor:'짧은 손잡이가 손에 감긴다.'},
+  s_chase:{name:'레바테인-추격',cost:2,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n가중치 2~3\n소각 5부여\n이 카드로 적을 처치하면 코스트 +1, 턴당 최대 3',flavor:'도망가게 두어서는 안 된다.'},
+  s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5부여\n이 카드로 적을 처치하면 드로우 +1, 턴당 최대 3',flavor:'짧은 손잡이가 손에 감긴다.'},
   s_ragnarok:{name:'라그나로크',cost:3,type:'skill',rar:'special',text:'대상에게 소각 +30\n드로우 +2',flavor:'종막이었어야 할 불.'},
 };
 const START_DECK=[['slash',3],['guard',3],['breath',2]];/* V2.33.65.16: 시작 덱 8장 — 어설픈 베기 3 · 막기 3 · 숨 고르기 2 */
@@ -1253,7 +1253,7 @@ const TRAITS={
   '광신':{g:'정신',text:'처치되기 전까지 약화에 걸리지 않음'},
   '광기':{g:'정신',text:'공격 피해 +20%, 매 턴 체력 -3'},
   '침착함':{g:'정신',text:'명중 +10, 첫 턴에 반드시 방어 행동을 함',ap:e=>{e.acc+=10}},
-  '복수심':{g:'정신',text:'플레이어에게 피해를 받을 때마다 다음 공격 피해 +2 (최대 +10)'},
+  '복수심':{g:'정신',text:'플레이어에게 피해를 받을 때마다 다음 공격 피해 +2, 최대 +10'},
   '무모함':{g:'정신',text:'첫 공격 피해 2배, 방어 행동을 하지 않음'},
   '숙련':{g:'소속·경험',text:'공격레벨 +5, 방어레벨 +5',ap:e=>{e.atk+=5;e.def+=5}},
   '신참':{g:'소속·경험',text:'공격레벨 -5, 방어레벨 -5',ap:e=>{e.atk-=5;e.def-=5}},
@@ -1282,20 +1282,20 @@ const ACT={
   '막기':{k:'def',d:[D(35,50)],cost:1},
   '말뿐인 저주':{k:'atk',d:[A(6,10)],cost:1},
   '훈계':{k:'debuff',neg:1,cost:1,desc:'데미지 없음, 대상에게 약화 10',fx:async()=>{pWkAdd(10)}},
-  '파문 선고':{k:'debuff',neg:1,cost:2,desc:'데미지 없음, 대상의 패에서 가장 많이 든 카드(뭉치 전체)에 낙인',fx:async()=>{excommunicate()}},
+  '파문 선고':{k:'debuff',neg:1,cost:2,desc:'대상의 패에서 가장 많이 든 카드 뭉치에 낙인',fx:async()=>{excommunicate()}},
   '어설픈 베기':{k:'atk',d:[A(60,90)],cost:1},
   '숨 고르기':{k:'sup',cost:0,desc:'드로우 +1',fx:async()=>{foeDraw(S.C.E,1)}},
-  '약점 노리기':{k:'atk',d:[A(30,50)],cost:1,wkHunt:1,desc:'이번 턴 동안 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25 (최대 3회)'},
+  '약점 노리기':{k:'atk',d:[A(30,50)],cost:1,wkHunt:1,desc:'이번 턴 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25, 최대 3회'},
   '명령 이행-베기':{k:'atk',d:[A(100,150)],cost:1},
   '명령 이행-내려찍기':{k:'atk',d:[A(130,190)],cost:2},
-  '명령 이행-처단':{k:'atk',d:[A(50,100)],cost:4,purge:1,ult:1,desc:'궁극기 · 자신의 공격이 3번 적중하면 사용 (회피하거나 방어도로 전부 막으면 세지 않음) · 이단 표식이 있으면 데미지 +400%·회피 불가, 대상에게 방어도가 있으면 증가율 -90%'},
+  '명령 이행-처단':{k:'atk',d:[A(50,100)],cost:4,purge:1,ult:1,desc:'궁극기 · 이 공격은 맞으면 아플 것이다'},
   '명령 이행-방패 세우기':{k:'def',d:[D(90,130)],cost:2},
   '명령 이행-빈틈 노리기':{k:'atk',d:[A(50,70)],cost:1,vuln:1},
   '행동-약점 찢기':{k:'atk',d:[A(60,90)],cost:1,expo:.25,desc:'대상이 약점 노출이면 데미지 +25%'},
-  '행동-표식 강제 부여':{k:'atk',d:[A(30,50)],cost:1,forceMark:1,neg:1,desc:'적중 시 이번 턴부터 표식Ⅰ, 이미 표식이 있으면 그 뒤 2턴 동안 맞지 않아도 표식 유지'},
-  '행동-파쇄':{k:'atk',d:[A(120,180)],cost:2,shatter:1,desc:'대상에게 방어도가 있으면 방어도에만 2배 데미지, 남는 데미지는 체력에 들어가지 않음'},
-  '행동-처형 집행':{k:'atk',d:[A(400,600)],cost:3,exec:1,ult:1,desc:'궁극기 · 대상의 표식이 Ⅴ일 때만, 표식을 전부 소모, 회피 불가'},
-  '뼈와 살의 해체학':{k:'atk',d:[A(360,540)],cost:3,burstOnly:1,desc:'특수 카드 · 자신의 턴이 아닐 때 행동 포인트를 다 닳아 행동할 때만 사용'},
+  '행동-표식 강제 부여':{k:'atk',d:[A(30,50)],cost:1,forceMark:1,neg:1,desc:'적중 시 표식Ⅰ, 이미 있으면 2턴 동안 유지'},
+  '행동-파쇄':{k:'atk',d:[A(120,180)],cost:2,shatter:1,desc:'방어도에 2배 데미지, 체력에는 들어가지 않음'},
+  '행동-처형 집행':{k:'atk',d:[A(400,600)],cost:3,exec:1,ult:1,desc:'궁극기 · 표식이 Ⅴ면 온다, 피할 수 없다'},
+  '뼈와 살의 해체학':{k:'atk',d:[A(360,540)],cost:3,burstOnly:1,desc:'특수 카드 · 행동 포인트를 다 닳았을 때만'},
   '으스러트리기':{k:'atk',d:[A(100,150)],cost:2,frac:1,neg:1,desc:'적중 시 대상에게 골절'},
   '박 살':{k:'atk',d:[A(140,210)],cost:2,fracX:.5,desc:'대상이 골절이면 데미지 +50%'},
   '뜯어지는 강타':{k:'atk',d:[A(80,120)],cost:1},
@@ -1304,7 +1304,7 @@ const ACT={
   '명령-내려찍기':{k:'cmd',cost:3,cmd:'명령 이행-내려찍기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-내려찍기를 실행함'},
   '명령-방패 세우기':{k:'cmd',cost:3,cmd:'명령 이행-방패 세우기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-방패 세우기를 실행함, 방어도는 각 에인헤랴르가 얻음'},
   '명령-빈틈 노리기':{k:'cmd',cost:3,cmd:'명령 이행-빈틈 노리기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-빈틈 노리기를 실행함'},
-  '명령-전열 정리':{k:'cmd',cost:3,rally:1,desc:'피해를 받은 에인헤랴르가 다시 모든 명령을 따르게 하고, 에인헤랴르 1명을 추가 소환함 (이미 7명이면 소환하지 않음)'},
+  '명령-전열 정리':{k:'cmd',cost:3,rally:1,desc:'피해를 받은 에인헤랴르가 다시 명령을 따르고, 에인헤랴르 1명을 더 부름'},
 };
 /* hp1 = 1레벨 체력. 같은 체력 공식으로 레벨에 따라 오름 — 문서의 체력 범위에서 거꾸로 구한 값 */
 const ENEMY={
@@ -1957,8 +1957,8 @@ const PTRAIT={
   brand:{n:'낙인',t:'카드를 사용할 때마다 체력 3 감소',c:-3,hide:1},
   burnBack:{n:'3도화상',t:'매턴 자신에게 소각 5 부여',c:-3},
   elBack:{n:'감전',t:'매턴 자신에게 전격 3 부여',c:-3},
-  wDown:{n:'가중치 감소',t:'가중치 -2 (등반에서는 효과 없음)',c:-3,hide:1},
-  badRoll:{n:'불운',t:'공격 주사위 결과를 불리하게 변경 (두 번 굴려 낮은 값)',c:-2},
+  wDown:{n:'가중치 감소',t:'가중치 -2',c:-3,hide:1},
+  badRoll:{n:'불운',t:'공격 주사위 결과를 불리하게 변경',c:-2},
   exhAll:{n:'최악의 질병 5위',t:'사용 후 이번 전투 동안 덱에서 제외',c:-2},
   destroy:{n:'알츠하이머',t:'사용 후 해당 카드 영구 소멸',c:-5},
   blockDebt:{n:'방어도 감소',t:'전투 시작 시 방어도 -5',c:-2,hide:1},
@@ -2477,7 +2477,7 @@ function canPlay(c){
   if(C.noWs&&CARDS[c.id].ws2===C.noWs)return'계약 파기 전투 — 계약한 공방의 카드는 사용할 수 없습니다';
   if(d.nord&&!dagger())return'노르드교 무기가 있어야 쓸 수 있습니다';
   if(c.id==='u_exec'&&!(C.E&&C.E.pmk&&C.E.pmk.lv>=5))return'대상의 표식이 Ⅴ일 때만 사용할 수 있습니다';
-  if(c.id==='u_purge'&&(C.pPurge||0)<3)return`자신의 공격이 3번 적중해야 사용할 수 있습니다 (${Math.min(3,C.pPurge||0)}/3)`;
+  if(c.id==='u_purge'&&(C.pPurge||0)<3)return`아직 쓸 수 없다 · ${Math.min(3,C.pPurge||0)}/3`;
   if(c.id==='t_recall'&&!C.thrown)return'묠니르를 던진 뒤에만 쓸 수 있습니다';
   if(c.id==='d_crumble'&&r.hp>r.maxHp*.25)return'체력이 25% 이하일 때만 사용할 수 있습니다';
   if(c.id==='w_s5'&&(C.pSteam||0)<20)return'증기가 20 미만이면 사용할 수 없습니다';
@@ -3185,20 +3185,20 @@ const WEAPON_DUMMY={
 };
 /* 고유 키워드 — 스타인러 공방 (증기·열기) */
 const KW_UNIQUE_DUMMY={
-  steamKw:{n:'증기',neg:true,t:'스타인러 공방 고유 키워드, 부정적 키워드, 증기 1당 받는 피해 +10%(최대 200%), 취약과는 다른 키워드로 취급, 턴이 끝날 때 증기가 10 이상이라면 증기를 10 소모하고 열기 +1'},
-  heatKw:{n:'열기',t:'스타인러 공방 고유 키워드, 특수 키워드, 열기 1당 공격 주사위의 위력·최솟값·최댓값 +1(최대 2), 턴마다 1 소모'}
+  steamKw:{n:'증기',neg:true,t:'증기 1당 받는 피해 +10%, 최대 200%, 턴이 끝날 때 증기가 10 이상이면 증기 10을 소모하고 열기 +1'},
+  heatKw:{n:'열기',t:'열기 1당 공격 주사위 +1, 최대 2, 턴마다 1 소모'}
 };
 /* 특수무기 사건 — 다인슬레이프만 지금 등장, 나머지는 장소(2장 이후)가 아직 없어 저장만 함 */
 const SPECIAL_EV_DUMMY={
   dropBolt:{place:'asgard',only:'mjolnir',title:'번개를 버리다',text:'번개가 닿지 않는 전장, 망치 하나만 쥔 채 서 있다',choices:[
     {b:'번개를 버린다',s:'이번 회차 동안 전격 부여 불가, 덱의 전격·천둥 카드 삭제, 모든 공격 피해 2배, 가중치 +2, 적중률 +30%'},
-    {b:'번개를 쥔다',s:'이전보다 타격이 잘 들어가는것 같다 (공격 레벨 + 2)'}]},
+    {b:'번개를 쥔다',s:'이전보다 타격이 잘 들어가는 것 같다, 공격레벨 +2'}]},
   getMjolnir:{place:'nidavellir',title:'묠니르',trigger:'어느 공방이든 1% 확률로 발동',text:'',choices:[]},
   getGungnir:{place:'nidavellir',title:'궁니르',trigger:'솜씨 좋은 대장장이(특수 대장장이)를 만났을 때 확정 발동',text:'',choices:[]},
   getLaevateinn:{place:'yggdrasil',title:'레바테인',trigger:'보스를 처치한 뒤, 가지를 타고 다른 지역으로 이동할 때(지역 이동 로딩) 1% 확률로 발동',
     text:'세계수 안쪽이 열리며 뜨거운 열기가 머릿결을 스쳐 간다. 눈앞에 보이는 것은 세계수를 태우고 있는 수르트의 무구, 레바테인이다.',choices:[
-    {b:'멸망이 된다',s:'레바테인 획득(해제불가), 수르트모드(레벨 1500 고정, 절멸전 수르트 1500레벨 스탯으로 절멸전 시작)'},
-    {b:'처분한다',s:'약화된 수르트와 전투(공격레벨 -100, 방어레벨 -100), 승리 시 최종 보스 수르트 공격레벨 -50, 방어레벨 -50'}]}
+    {b:'멸망이 된다',s:'레바테인 획득, 해제 불가, 수르트모드'},
+    {b:'처분한다',s:'약화된 수르트와 전투, 승리 시 최종 보스 수르트가 약해짐'}]}
 };
 /* 장 구성 — 1장 미드가르드(튜토리얼), 2장 니다벨리르, 3장 미드가르드, 4장 아스가르드, 최종 보스 수르트 (장소 추가 예정으로 확정 아님) · 2장부터 재화 단위가 훨씬 높아짐 */
 const ACTS_DUMMY=[{place:'midgard',tut:true,boss:'bishop'},{place:'nidavellir'},{place:'midgard'},{place:'asgard',finalBoss:'surtr'}];
@@ -3324,7 +3324,7 @@ const GEV={
     {b:'거짓으로 고백한다',s:'실링 +40',fx:[['gold',40]]},
     {b:'그냥 나온다',s:'아무 일도 없다',fx:[]}]},
   barracks:{place:'midgard',title:'무너진 군사 기지',text:'라그나로크 때 지어진 병영이 반쯤 무너져 있다.',choices:[
-    {b:'잔해를 뒤진다',chk:{s:'def',d:'normal'},ok:{s:'기본 장비(희귀) 1개 무작위',fx:[['gear','rare']]},ng:{s:'체력 -15',fx:[['hp',-15]]}},
+    {b:'잔해를 뒤진다',chk:{s:'def',d:'normal'},ok:{s:'희귀 기본 장비 1개',fx:[['gear','rare']]},ng:{s:'체력 -15',fx:[['hp',-15]]}},
     {b:'녹슨 표식만 챙긴다',s:'실링 +40',fx:[['gold',40]]}]},
   bread:{place:'midgard',title:'빵을 섬기는 사람들',text:'골목 안쪽에서 갓 구운 빵 앞에 모여 기도하는 무리가 있다. 모이는 날은 그들끼리만 안다. 이것도 종교다.',choices:[
     {b:'빵을 나눠 먹는다',s:'체력 +10, 최대 체력 +3',fx:[['hp',10],['maxHp',3]]},
@@ -3358,8 +3358,8 @@ const GEV={
     {b:'헌금함을 터는다',chk:{s:'acc',d:'hard'},ok:{s:'실링 +120',fx:[['gold',120]]},ng:{s:'이단심문관과 전투',fx:[['fight','inquisitor']]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]},
   peddler:{place:'midgard',title:'떠돌이 행상',text:'낡은 물건을 짊어진 행상이 손짓한다.',choices:[
-    {b:'산다',s:'실링 -50, 기본 장비(일반) 1개 무작위',cost:50,fx:[['gold',-50],['gear','common']]},
-    {b:'흥정한다',cost:20,chk:{s:'acc',d:'normal'},ok:{s:'실링 -20, 기본 장비(일반) 1개 무작위',fx:[['gold',-20],['gear','common']]},ng:{s:'행상이 떠난다',fx:[]}},
+    {b:'산다',s:'실링 -50, 일반 기본 장비 1개',cost:50,fx:[['gold',-50],['gear','common']]},
+    {b:'흥정한다',cost:20,chk:{s:'acc',d:'normal'},ok:{s:'실링 -20, 일반 기본 장비 1개',fx:[['gold',-20],['gear','common']]},ng:{s:'행상이 떠난다',fx:[]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]},
   bonefence:{place:'midgard',title:'거인의 뼈 울타리',text:'라그나로크 때 쓰러진 거인의 뼈로 마을 울타리를 세웠다.',choices:[
     {b:'뼈를 깎아 날을 만든다',chk:{s:'atk',d:'normal'},ok:{s:'아무 일도 없다',fx:[]},ng:{s:'체력 -15',fx:[['hp',-15]]}},
@@ -3404,7 +3404,7 @@ Object.assign(CARDS,{
   k2_break:{name:'얼음 깨기',cost:2,type:'atk',rar:'rare',ws2:'kriv',d:[A(140,190)],text:'공격 140~190, 대상이 냉동이면 깨짐 +2단계',flavor:''},
   a2_stand:{name:'진열대',cost:0,type:'skill',rar:'uncommon',ws2:'ash',draw:2,exhaust:true,text:'예술적 감각 +1, 드로우 +2, 소멸',flavor:''},
   a2_talk:{name:'해설',cost:1,type:'skill',rar:'uncommon',ws2:'ash',draw:2,text:'다음 카드 2장 코스트 -1, 드로우 +2',flavor:''},
-  a2_cert:{name:'감정서',cost:0,type:'skill',rar:'rare',ws2:'ash',exhaust:true,text:'자신의 패에 작품-준비가 있을시 턴마다 50%의 확률로 패에 넣어짐, 50% 확률로 즉시 작품을 완성시켜 작품-완성으로 만듦 (실패하면 변화 없음), 소멸',flavor:''},
+  a2_cert:{name:'감정서',cost:0,type:'skill',rar:'rare',ws2:'ash',exhaust:true,text:'작품-준비가 있으면 턴마다 50% 확률로 패에 들어옴, 50% 확률로 작품-준비를 작품-완성으로 만듦, 소멸',flavor:''},
   a2_copy:{name:'유물 모사화',cost:2,type:'skill',rar:'rare',ws2:'ash',exhaust:true,text:'덱의 특수무기 카드 1장 효과를 그대로 발동, 소멸',flavor:''},
   r2_soup:{name:'고기 수프',cost:1,type:'skill',rar:'uncommon',ws2:'remi',food:2,heal:25,exhaust:true,text:'음식\n체력 25 회복, 먹기 +2, 소멸',flavor:''},
   r2_tea:{name:'진한 차',cost:0,type:'skill',rar:'uncommon',ws2:'remi',food:1,exhaust:true,text:'음식\n코스트 +2, 먹기 +1, 소멸',flavor:''},
@@ -3412,7 +3412,7 @@ Object.assign(CARDS,{
   r2_meal:{name:'레미 정식',cost:2,type:'skill',rar:'rare',ws2:'remi',food:5,exhaust:true,text:'음식\n먹기 +5, 이번 전투 동안 공격레벨 +15, 방어레벨 +15, 소멸',flavor:''},
   m2_bolt:{name:'조잡한 전격',cost:1,type:'skill',rar:'uncommon',ws2:'krim',text:'상대에게 전격 1 부여',flavor:''},
   m2_burn:{name:'조잡한 화염',cost:1,type:'skill',rar:'uncommon',ws2:'krim',text:'상대에게 소각 5 부여',flavor:''},
-  m2_proto:{name:'시제품 덩어리',cost:1,type:'skill',rar:'rare',ws2:'krim',text:'대상에게 무작위 부정적 키워드 3개 (약화, 취약, 전격, 소각, 냉매, 증기 중 랜덤 3)',flavor:''},
+  m2_proto:{name:'시제품 덩어리',cost:1,type:'skill',rar:'rare',ws2:'krim',text:'대상에게 무작위 부정적 키워드 3개',flavor:''},
   m2_sure:{name:'완벽에 가까운 모작품',cost:2,type:'atk',rar:'rare',ws2:'krim',acc:99,d:[A(120,170)],text:'공격 120~170, 명중 + 99%',flavor:''},
   /* 아쉬부티 고유 키워드로 생기는 카드 (전투 안에서만) */
   persuade:{name:'설득하기',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +5~8%, 소멸',flavor:'말로는 모르겠다던 생도가, 그래도 귀를 기울인다.',fx(){cadetWork(ri(5,8),'설득하기')}},
@@ -3440,7 +3440,7 @@ const WCARDS={
  w_s2:WC('stein','증기 밸브 잠금',1,'uncommon',{d:[D(35,50)],text:'방어 35~50, 자신에게 증기 2',fx(){selfSteam(2)}}),
  w_s3:WC('stein','압력계 확인',1,'uncommon',{type:'skill',gainE:1,text:'코스트 회복 1, 자신의 증기가 10 이상일시 해당 증기를 즉시 열기 1로 바꿈',fx(){const C=S.C;if((C.pSteam||0)>=10){C.pSteam-=10;C.heat=Math.min(heatCap(true),(C.heat||0)+1);fxAt('player','증기 10 → 열기 +1','info');clog('압력계 확인: 증기 10 → 열기 +1')}}}),
  w_s4:WC('stein','증기 장막',1,'uncommon',{type:'def',text:'자신의 증기를 전부 소모해 1당 방어 10',fx(){const C=S.C,n=C.pSteam||0;C.pSteam=0;if(n)gainBlock(n*10,0,'증기 장막');else clog('증기 장막: 증기가 없다')}}),
- w_s5:WC('stein','임시 과열',1,'uncommon',{text:'체력 10% 소모, 자신의 증기 20을 소모해 열기 3 획득 (증기가 20 미만이면 사용 불가)',fx(){const C=S.C,r=S.run;r.hp=Math.max(1,r.hp-Math.round(r.maxHp*.1));C.pSteam=Math.max(0,(C.pSteam||0)-20);C.heat=Math.min(heatCap(true),(C.heat||0)+3);fxAt('player','열기 +3','info')}}),
+ w_s5:WC('stein','임시 과열',1,'uncommon',{text:'체력 10% 소모, 증기 20을 소모해 열기 3 획득',fx(){const C=S.C,r=S.run;r.hp=Math.max(1,r.hp-Math.round(r.maxHp*.1));C.pSteam=Math.max(0,(C.pSteam||0)-20);C.heat=Math.min(heatCap(true),(C.heat||0)+3);fxAt('player','열기 +3','info')}}),
  w_s6:WC('stein','증기 분사',1,'uncommon',{d:[A(10,50)],text:'대상에게 증기 5 데미지 10~50',fx(){a2Hit('steam',5)}}),
  w_s7:WC('stein','증기 섭취',0,'uncommon',{gainE:1,text:'코스트 +1, 자신에게 증기 3',fx(){selfSteam(3)}}),
  w_s8:WC('stein','매연 뿜기',0,'uncommon',{draw:1,text:'자신의 증기 -5, 드로우 +1',fx(){lessSteam(5)}}),
@@ -3474,8 +3474,8 @@ const WCARDS={
  w_a8:WC('ash','실 한 가닥',0,'uncommon',{draw:1,text:'드로우 +1, 패에 다른 실 한 가닥이 있으면 드로우 +1',fx(c){if(S.C.hand.some(x=>x.id===c.id&&x.uid!==c.uid))drawN(1)}}),
  w_a9:WC('ash','고증 완료',2,'rare',{d:[A(150,190)],xFn:(C)=>((C.useN&&C.useN.w_a9)||0)===2?2:1,text:'공격 150~190, 이번 전투 세 번째 사용시 피해 2배'}),
  w_a10:WC('ash','실 타기',1,'rare',{type:'def',d:[V(20,20)],draw:1,text:'회피 20, 드로우 +1'}),
- w_a11:WC('ash','실 엮기',0,'rare',{heal:25,text:'체력 25 회복, 실 종류의 카드(이름에 실이 들어간 카드) 랜덤으로 1장 드로우',fx(c){const C=S.C,isT=x=>x.uid!==c.uid&&CARDS[x.id].name.includes('실');let pool=C.draw.filter(isT),from=C.draw;if(!pool.length){pool=C.disc.filter(isT);from=C.disc}if(!pool.length){clog('실 엮기: 뽑을 실 카드가 없다');return}const t=pick(pool);from.splice(from.indexOf(t),1);C.hand.push(t);clog(`실 엮기: 「${CARDS[t.id].name}」 드로우`);settleHand()}}),
- w_a12:WC('ash','전시 개막',2,'rare',{type:'atk',text:'자신의 패에 작품-준비가 있을시 50% 확률로 모든 적에게 데미지 170, 자신의 패에 작품-완성이 있을시 50% 확률로 모든 적에게 데미지 240, 그 턴 동안 받는 피해 증가 50%(취약과 별개로 중첩 가능)',fx(){const C=S.C,h=C.hand;let n=0;if(h.some(x=>x.id==='art_done')&&rnd()<.5)n=240;else if(h.some(x=>x.id==='art_wip')&&rnd()<.5)n=170;C.showT=C.turn;if(n){const E0=C.E;for(const f of liveFoes()){C.E=f;fixedDmg(n,'전시 개막')}if(alive(E0))C.E=E0;else{const lf=liveFoes();if(lf.length)C.E=lf[0]}}else clog('전시 개막: 아무 일도 없었다');fxAt('player','이번 턴 받는 피해 +50%','info')}}),
+ w_a11:WC('ash','실 엮기',0,'rare',{heal:25,text:'체력 25 회복, 실 카드 1장 드로우',fx(c){const C=S.C,isT=x=>x.uid!==c.uid&&CARDS[x.id].name.includes('실');let pool=C.draw.filter(isT),from=C.draw;if(!pool.length){pool=C.disc.filter(isT);from=C.disc}if(!pool.length){clog('실 엮기: 뽑을 실 카드가 없다');return}const t=pick(pool);from.splice(from.indexOf(t),1);C.hand.push(t);clog(`실 엮기: 「${CARDS[t.id].name}」 드로우`);settleHand()}}),
+ w_a12:WC('ash','전시 개막',2,'rare',{type:'atk',text:'작품-준비가 있으면 50% 확률로 모든 적에게 데미지 170, 작품-완성이 있으면 50% 확률로 모든 적에게 데미지 240, 그 턴 동안 받는 피해 +50%',fx(){const C=S.C,h=C.hand;let n=0;if(h.some(x=>x.id==='art_done')&&rnd()<.5)n=240;else if(h.some(x=>x.id==='art_wip')&&rnd()<.5)n=170;C.showT=C.turn;if(n){const E0=C.E;for(const f of liveFoes()){C.E=f;fixedDmg(n,'전시 개막')}if(alive(E0))C.E=E0;else{const lf=liveFoes();if(lf.length)C.E=lf[0]}}else clog('전시 개막: 아무 일도 없었다');fxAt('player','이번 턴 받는 피해 +50%','info')}}),
  w_a13:WC('ash','강제 강의',1,'rare',{vuln:2,text:'대상의 행동 포인트 +3, 취약 2',fx(){S.C.E.ap+=3}}),
  w_a14:WC('ash','선택받은 실',1,'rare',{type:'power',text:'지속\n매 턴 드로우 +1, 코스트 +1',fx(){S.C.threadDraw=(S.C.threadDraw||0)+1}}),
  w_a15:WC('ash','깨끗한 팔레트',1,'rare',{text:'자신의 부정적 키워드를 전부 없앰',fx(){const C=S.C;Object.assign(C,{pWeak:0,pVuln:0,pSteam:0,pCool:0,pEl:0,pBurn:0,pCrack:0})}}),
@@ -3615,45 +3615,45 @@ Object.assign(GEV,{
   /* 기존 사건 구역: 스타인러의 장인(동), 크리뷔스의 냉동 창고(북), 아쉬부티 전시실(남), 크리밀라 시연회·후긴과 무닌의 자명종·아랫지형으로 가는 승강기·비가 내린다(공통) */
   n_artisan:NV('E','스타인러의 장인','노인이 맨손으로 증기 장치를 고친다. 아직 드워프의 손길이 남아 있는 곳이다.',[
     {b:'수리를 돕는다',chk:{s:'atk',d:'normal'},ok:{s:'스타인러 공방의 증기 장치 획득',fx:[['card','steam',1]]},ng:{s:'증기에 데어 체력 -12',fx:[['hp',-12]]}},
-    {b:'장치를 산다',cost:S10,s:'실링 -10000 (10단화), 스타인러 공방의 증기 장치 획득',fx:[['gold',-S10],['card','steam',1]]}]),
+    {b:'장치를 산다',cost:S10,s:'실링 -10000, 스타인러 공방의 증기 장치 획득',fx:[['gold',-S10],['card','steam',1]]}]),
   n_coldstore:NV('N','크리뷔스의 냉동 창고','문틈으로 하얀 냉기가 새어 나온다. 가장 힘들게 만들어지고 가장 빨리 소모되는 것들이 쌓여 있다.',[
     {b:'문을 연다',chk:{s:'def',d:'hard'},ok:{s:'크리뷔스 공방의 냉매 주머니 2장',fx:[['card','frost',2]]},ng:{s:'다음 전투 동안 코스트 -1',fx:[['next','cost',-1]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_gallery:NV('S','아쉬부티 전시실','유물의 파편이 예술품이 되어 유리 안에 걸려 있다. 해설사가 교육 과정을 권한다.',[
-    {b:'파편을 만진다',chk:{s:'acc',d:'hard'},ok:{s:'아쉬부티 공방의 파편 장식 획득',fx:[['card','ornament',1]]},ng:{s:'경비에게 잡혀 실링 -10000 (10단화)',fx:[['gold',-S10]]}},
+    {b:'파편을 만진다',chk:{s:'acc',d:'hard'},ok:{s:'아쉬부티 공방의 파편 장식 획득',fx:[['card','ornament',1]]},ng:{s:'경비에게 잡혀 실링 -10000',fx:[['gold',-S10]]}},
     {b:'해설을 듣는다',s:'아무 일도 없다',fx:[]}]),
   n_demo:NV('C','크리밀라 시연회','인간의 기술로 신의 능력을 흉내 낸 무구를 시연한다. 표적이 되어 줄 자원자를 찾는다.',[
     {b:'표적이 된다',chk:{s:'def',d:'normal'},ok:{s:'크리밀라 공방의 모조 무구 획득',fx:[['card','mimic',1]]},ng:{s:'체력 -25%',fx:[['hpPct',-25]]}},
     {b:'관객석에 남는다',s:'아무 일도 없다',fx:[]}]),
   n_clock:NV('C','후긴과 무닌의 자명종','흑백 까마귀가 튀어나와 무언가를 정의한다. 맞든 틀리든, 그때부터 그것은 그렇게 불린다.',[
     {b:'까마귀에게 내 이름을 묻는다',s:'특성 1개가 무작위 특성으로 바뀜',fx:[['traitSwap']]},
-    {b:'자명종을 멈춘다',chk:{s:'acc',d:'hard'},ok:{s:'실링 +50000 (50단화)',fx:[['gold',S50]]},ng:{s:'이번 장 동안 상점 가격 +25%',fx:[['act','shopUp',.25]]}}]),
+    {b:'자명종을 멈춘다',chk:{s:'acc',d:'hard'},ok:{s:'실링 +50000',fx:[['gold',S50]]},ng:{s:'이번 장 동안 상점 가격 +25%',fx:[['act','shopUp',.25]]}}]),
   n_rain:NV('C','비가 내린다','하늘이라 불리는 철제형 돔 위쪽에서 묽고 투명한 액체가 떨어진다. 곧 방송이 들리고 그것을 비라고 설명한다.',[
     {b:'맞는다',s:'체력 +10%',fx:[['hpPct',10]]},
-    {b:'이것은 샘물이라고 내가 지칭한다',s:'사람들이 그 샘물을 사 갔다, 실링 +10000 (10단화)',fx:[['gold',S10]]}]),
+    {b:'이것은 샘물이라고 내가 지칭한다',s:'사람들이 그 샘물을 사 갔다, 실링 +10000',fx:[['gold',S10]]}]),
   /* 공통 사건 */
   n_naming:NV('C','이름을 정의받는 날','창구 앞에 갓난아이를 안은 부모들이 줄 서 있다. 아이의 이름은 부모가 아니라 창구가 정한다.',[
-    {b:'대신 서류를 써 준다',chk:{s:'acc',d:'normal'},ok:{s:'실링 +10000 (10단화)',fx:[['gold',S10]]},ng:{s:'실링 -10000 (10단화)',fx:[['gold',-S10]]}},
-    {b:'아이의 이름을 묻는다',s:'덱의 카드 1장 이름이 바뀜 (효과는 그대로)',fx:[['rename']]},
+    {b:'대신 서류를 써 준다',chk:{s:'acc',d:'normal'},ok:{s:'실링 +10000',fx:[['gold',S10]]},ng:{s:'실링 -10000',fx:[['gold',-S10]]}},
+    {b:'아이의 이름을 묻는다',s:'덱의 카드 1장 이름이 바뀜',fx:[['rename']]},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_patent:NV('C','특허 출원 창구','사람들이 사소한 손동작 하나에도 특허를 낸다.',[
     {b:'내 기술을 등록한다',s:'덱의 카드 1장 선택, 이번 장 동안 그 카드에는 특허가 걸리지 않음',fx:[['patentFree']]},
-    {b:'남의 특허를 베낀다',chk:{s:'acc',d:'hard'},ok:{s:'무작위 공방 카드 1장',fx:[['wsCard']]},ng:{s:'실링 -50000 (50단화)',fx:[['gold',-S50]]}}]),
+    {b:'남의 특허를 베낀다',chk:{s:'acc',d:'hard'},ok:{s:'무작위 공방 카드 1장',fx:[['wsCard']]},ng:{s:'실링 -50000',fx:[['gold',-S50]]}}]),
   n_sky:NV('C','하늘을 올려다보지 않는 사람들','모두가 하늘이라 부르는 철제 돔이 머리 위를 덮고 있다. 아무도 위를 올려다보지 않는다.',[
     {b:'오래 올려다본다',s:'아무 일도 없다',fx:[]},
     {b:'고개를 숙이고 걷는다',s:'아무 일도 없다',fx:[]}]),
   n_distance:NV('C','닿지 않는 거리','사람들은 팔 하나 거리를 두고 걷는다. 부딪히면 둘 다 사과하고 서둘러 멀어진다.',[
-    {b:'일부러 부딪힌다',chk:{s:'def',d:'normal'},ok:{s:'상대가 떨어뜨린 지갑을 줍는다, 실링 +10000 (10단화)',fx:[['gold',S10]]},ng:{s:'아무 일도 없다',fx:[]}},
+    {b:'일부러 부딪힌다',chk:{s:'def',d:'normal'},ok:{s:'상대가 떨어뜨린 지갑을 줍는다, 실링 +10000',fx:[['gold',S10]]},ng:{s:'아무 일도 없다',fx:[]}},
     {b:'거리를 지킨다',s:'아무 일도 없다',fx:[]}]),
   n_brother:NV('C','서로 모르는 형제','낯선 사람이 암호 같은 말을 건넨다. 노르드교는 여기에도 있다. 서로의 정체는 모른다.',[
     {b:'암호를 받아 준다',s:'이번 장 동안 공방 상점이 경계해 가격 +10%',fx:[['act','shopUp',.1]]},
-    {b:'신고한다',s:'실링 +50000 (50단화)',fx:[['gold',S50]]}]),
+    {b:'신고한다',s:'실링 +50000',fx:[['gold',S50]]}]),
   n_sales:NV('C','영업부서의 사람','명찰을 건 영업 사원이 웃으며 다가온다.',[
-    {b:'계약서에 서명한다',cost:S50,s:'실링 -50000 (50단화), 다음 상점 1회 물건 가격 -30%',fx:[['gold',-S50],['act','nextShop30',1]]},
+    {b:'계약서에 서명한다',cost:S50,s:'실링 -50000, 다음 상점 1회 물건 가격 -30%',fx:[['gold',-S50],['act','nextShop30',1]]},
     {b:'무시한다',s:'아무 일도 없다',fx:[]}]),
   n_hand:NV('C','하층에서 올라온 손','난간 아래에서 누군가 기어오르고 있다. 한 손에 동전 주머니를 쥐고 있다.',[
-    {b:'끌어올린다',cost:S10,s:'실링 -10000 (10단화), 최대 체력 +30',fx:[['gold',-S10],['maxHp',30]]},
-    {b:'주머니를 빼앗고 다시 밀어낸다',s:'실링 +10000 (10단화)',fx:[['gold',S10]]}]),
+    {b:'끌어올린다',cost:S10,s:'실링 -10000, 최대 체력 +30',fx:[['gold',-S10],['maxHp',30]]},
+    {b:'주머니를 빼앗고 다시 밀어낸다',s:'실링 +10000',fx:[['gold',S10]]}]),
   /* 동 · 스타인러 */
   n_pipe:NV('E','터진 배관','골목 배관에서 하얀 증기가 뿜어진다.',[
     {b:'밸브를 잠근다',chk:{s:'def',d:'normal'},ok:{s:'아무 일도 없다',fx:[]},ng:{s:'다음 전투 시작 시 증기 5',fx:[['next','steam',5]]}},
@@ -3665,17 +3665,17 @@ Object.assign(GEV,{
     {b:'대신 깎는다',chk:{s:'atk',d:'normal'},ok:{s:'아무 일도 없다',fx:[]},ng:{s:'체력 -15%',fx:[['hpPct',-15]]}},
     {b:'지켜본다',s:'아무 일도 없다',fx:[]}]),
   n_dark:NV('E','불 꺼진 작업장','기계음이 멈춘 작업장. 문이 반쯤 열려 있다.',[
-    {b:'뒤진다',chk:{s:'acc',d:'hard'},ok:{s:'스타인러 공방 장비 1개 무작위',fx:[['wsGear','stein']]},ng:{s:'실링 -50000 (50단화)',fx:[['gold',-S50]]}},
+    {b:'뒤진다',chk:{s:'acc',d:'hard'},ok:{s:'스타인러 공방 장비 1개 무작위',fx:[['wsGear','stein']]},ng:{s:'실링 -50000',fx:[['gold',-S50]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_bread:NV('E','증기관 위의 빵','노동자들이 증기관 위에 빵을 올려 데워 먹는다.',[
     {b:'함께 먹는다',s:'체력 +15%, 레미 공방의 건빵 1장',fx:[['hpPct',15],['card','hardtack',1]]},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_arm:NV('E','멈춘 의수','노동자의 의수가 움직이지 않는다. 고칠 돈은 없다고 한다.',[
-    {b:'고쳐 준다',chk:{s:'atk',d:'normal'},ok:{s:'실링 +50000 (50단화)',fx:[['gold',S50]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}},
+    {b:'고쳐 준다',chk:{s:'atk',d:'normal'},ok:{s:'실링 +50000',fx:[['gold',S50]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_blueprint:NV('E','손으로 쓴 설계도','바닥에 설계도가 떨어져 있다. 수식 대신 손때 묻은 메모가 빼곡하다.',[
     {b:'가져간다',s:'이번 장 동안 스타인러 공방 정비공 공격레벨 +5',fx:[['act','mechAtk',5]]},
-    {b:'돌려준다',s:'실링 +10000 (10단화)',fx:[['gold',S10]]}]),
+    {b:'돌려준다',s:'실링 +10000',fx:[['gold',S10]]}]),
   n_needle:NV('E','붉은 칸의 바늘','압력계 바늘이 붉은 칸을 넘었다. 주변에 아무도 없다.',[
     {b:'압력을 뺀다',chk:{s:'def',d:'hard'},ok:{s:'다음 전투 첫 턴 열기 +2',fx:[['next','heat',2]]},ng:{s:'체력 -20%',fx:[['hpPct',-20]]}},
     {b:'그대로 둔다',s:'아무 일도 없다',fx:[]}]),
@@ -3687,38 +3687,38 @@ Object.assign(GEV,{
     {b:'장갑을 준다',s:'착용 중인 팔 장비 1개를 잃음, 최대 체력 +30',fx:[['loseArm'],['maxHp',30]]},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_papers:NV('N','천장까지 쌓인 계약서','다른 공방들과 맺은 협업 계약서가 천장까지 쌓여 있다.',[
-    {b:'훑어본다',chk:{s:'acc',d:'normal'},ok:{s:'다음 상점 새로고침 1회 무료',fx:[['act','freeRer',1]]},ng:{s:'실링 -10000 (10단화)',fx:[['gold',-S10]]}},
+    {b:'훑어본다',chk:{s:'acc',d:'normal'},ok:{s:'다음 상점 새로고침 1회 무료',fx:[['act','freeRer',1]]},ng:{s:'실링 -10000',fx:[['gold',-S10]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_frostfloor:NV('N','서리 낀 바닥','냉매관에서 새어 나온 냉기가 바닥을 하얗게 덮었다.',[
-    {b:'관을 막는다',chk:{s:'def',d:'normal'},ok:{s:'실링 +50000 (50단화)',fx:[['gold',S50]]},ng:{s:'다음 전투 시작 시 냉매 2',fx:[['next','cool',2]]}},
+    {b:'관을 막는다',chk:{s:'def',d:'normal'},ok:{s:'실링 +50000',fx:[['gold',S50]]},ng:{s:'다음 전투 시작 시 냉매 2',fx:[['next','cool',2]]}},
     {b:'돌아간다',s:'아무 일도 없다',fx:[]}]),
   n_ledger:NV('N','소모 일지','오늘 쓴 냉매가 어제 만든 양보다 많다. 기록하던 사람이 펜을 멈춘다.',[
-    {b:'숫자를 고쳐 준다',s:'실링 +50000 (50단화)',fx:[['gold',S50]]},
+    {b:'숫자를 고쳐 준다',s:'실링 +50000',fx:[['gold',S50]]},
     {b:'덮어 둔다',s:'아무 일도 없다',fx:[]}]),
   n_ice:NV('N','얼음 속의 것','얼음 덩어리 안에 무언가 갇혀 있다.',[
-    {b:'깨서 꺼낸다',chk:{s:'atk',d:'hard'},ok:{s:'기본 장비(희귀) 1개 무작위',fx:[['gear','rare']]},ng:{s:'체력 -20%',fx:[['hpPct',-20]]}},
+    {b:'깨서 꺼낸다',chk:{s:'atk',d:'hard'},ok:{s:'희귀 기본 장비 1개',fx:[['gear','rare']]},ng:{s:'체력 -20%',fx:[['hpPct',-20]]}},
     {b:'그대로 둔다',s:'아무 일도 없다',fx:[]}]),
   n_shift:NV('N','교대 없는 교대','밤새 일한 운반부가 교대 없이 다시 불려 들어간다.',[
-    {b:'한 시간 대신 일한다',s:'실링 +10000 (10단화), 체력 -10%',fx:[['gold',S10],['hpPct',-10]]},
+    {b:'한 시간 대신 일한다',s:'실링 +10000, 체력 -10%',fx:[['gold',S10],['hpPct',-10]]},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_tower:NV('N','냉각탑 아래','탑에서 차가운 바람이 내려온다. 운반부들이 잠시 숨을 돌리는 곳이다.',[
     {b:'쉬어 간다',s:'체력 +15%',fx:[['hpPct',15]]},
     {b:'바람을 병에 담는다',s:'크리뷔스 공방의 냉매 주머니 1장, 체력 -5%',fx:[['card','frost',1],['hpPct',-5]]}]),
   n_frozen:NV('N','얼어 쓰러진 사람','창고 문 앞에 누군가 얼어서 쓰러져 있다.',[
     {b:'녹여 준다',s:'체력 -10%',fx:[['hpPct',-10]]},
-    {b:'신고한다',s:'실링 +10000 (10단화)',fx:[['gold',S10]]}]),
+    {b:'신고한다',s:'실링 +10000',fx:[['gold',S10]]}]),
   /* 남 · 아쉬부티 */
   n_school:NV('S','입학 권유','해설사가 교육 과정 안내서를 내민다. 수강료는 비싸다.',[
-    {b:'등록한다',cost:S100,s:'실링 -100000 (100단화)',fx:[['gold',-S100]]},
+    {b:'등록한다',cost:S100,s:'실링 -100000',fx:[['gold',-S100]]},
     {b:'거절한다',s:'아무 일도 없다',fx:[]}]),
   n_appraiser:NV('S','감정사','유물을 보는 눈을 가졌다는 감정사가 물건을 보여 달라고 한다.',[
     {b:'장비를 맡긴다',s:'장비 1개를 원래 가격 100%로 판매',fx:[['sellFull']]},
     {b:'거절한다',s:'아무 일도 없다',fx:[]}]),
   n_carver:NV('S','파편을 깎는 사람','조각가가 유물 파편을 깎아 장식품을 만든다.',[
     {b:'지켜본다',s:'아무 일도 없다',fx:[]},
-    {b:'조각을 산다',cost:S50,s:'실링 -50000 (50단화), 아쉬부티 공방의 파편 장식 1장',fx:[['gold',-S50],['card','ornament',1]]}]),
+    {b:'조각을 산다',cost:S50,s:'실링 -50000, 아쉬부티 공방의 파편 장식 1장',fx:[['gold',-S50],['card','ornament',1]]}]),
   n_fake:NV('S','진품이라는 모작','상인은 이것이 진품이라고 우긴다.',[
-    {b:'산다',chk:{s:'acc',d:'normal'},ok:{s:'무작위 희귀 카드 1장',fx:[['rareCard']]},ng:{s:'실링 -50000 (50단화)',fx:[['gold',-S50]]}},
+    {b:'산다',chk:{s:'acc',d:'normal'},ok:{s:'무작위 희귀 카드 1장',fx:[['rareCard']]},ng:{s:'실링 -50000',fx:[['gold',-S50]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_empty:NV('S','관람객 없는 미술관','불은 켜져 있지만 아무도 없다.',[
     {b:'혼자 오래 본다',s:'다음 전투 시작 시 예술적 감각 +1',fx:[['next','art',1]]},
@@ -3730,12 +3730,12 @@ Object.assign(GEV,{
     {b:'수식을 읽는다',chk:{s:'acc',d:'normal'},ok:{s:'아무 일도 없다',fx:[]},ng:{s:'아무 일도 없다',fx:[]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_model:NV('S','졸업 작품의 모델','학생이 작품 모델이 되어 줄 사람을 찾는다.',[
-    {b:'서 준다',s:'체력 -10%, 실링 +10000 (10단화), 다음 전투 시작 시 예술적 감각 +1',fx:[['hpPct',-10],['gold',S10],['next','art',1]]},
+    {b:'서 준다',s:'체력 -10%, 실링 +10000, 다음 전투 시작 시 예술적 감각 +1',fx:[['hpPct',-10],['gold',S10],['next','art',1]]},
     {b:'거절한다',s:'아무 일도 없다',fx:[]}]),
   /* 서 · 레미 */
   n_cargo:NV('W','배급 화물','레미 공방의 화물이 식품업체로 실려 간다.',[
     {b:'짐을 내려 준다',s:'레미 공방의 건빵 2장',fx:[['card','hardtack',2]]},
-    {b:'한 상자 챙긴다',chk:{s:'acc',d:'normal'},ok:{s:'레미 공방의 건빵 4장',fx:[['card','hardtack',4]]},ng:{s:'실링 -50000 (50단화)',fx:[['gold',-S50]]}}]),
+    {b:'한 상자 챙긴다',chk:{s:'acc',d:'normal'},ok:{s:'레미 공방의 건빵 4장',fx:[['card','hardtack',4]]},ng:{s:'실링 -50000',fx:[['gold',-S50]]}}]),
   n_tasting:NV('W','시식대','새 메뉴를 내놓은 시식대에 사람이 몰려 있다.',[
     {b:'먹어 본다',s:'체력 +10%, 다음 전투 시작 시 먹기 +3',fx:[['hpPct',10],['next','food',3]]},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
@@ -3743,10 +3743,10 @@ Object.assign(GEV,{
     {b:'주워 먹는다',chk:{s:'def',d:'normal'},ok:{s:'체력 +20%',fx:[['hpPct',20]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_queue:NV('W','납품 줄','식품업체 사람들이 물자를 받으려고 줄을 섰다.',[
-    {b:'대신 줄을 선다',s:'실링 +10000 (10단화)',fx:[['gold',S10]]},
-    {b:'새치기한다',chk:{s:'atk',d:'normal'},ok:{s:'실링 +50000 (50단화)',fx:[['gold',S50]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}}]),
+    {b:'대신 줄을 선다',s:'실링 +10000',fx:[['gold',S10]]},
+    {b:'새치기한다',chk:{s:'atk',d:'normal'},ok:{s:'실링 +50000',fx:[['gold',S50]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}}]),
   n_dinner:NV('W','가장 비싼 한 끼','니다벨리르에서 가장 비싸다는 식당이다.',[
-    {b:'사 먹는다',cost:S100,s:'실링 -100000 (100단화), 최대 체력 +50',fx:[['gold',-S100],['maxHp',50]]},
+    {b:'사 먹는다',cost:S100,s:'실링 -100000, 최대 체력 +50',fx:[['gold',-S100],['maxHp',50]]},
     {b:'냄새만 맡는다',s:'아무 일도 없다',fx:[]}]),
   n_leftover:NV('W','남은 음식','식당 뒷문에서 남은 음식을 버린다. 빈곤 시민이 그걸 바라보고 있다.',[
     {b:'나눠 준다',s:'아무 일도 없다',fx:[]},
@@ -3756,12 +3756,12 @@ Object.assign(GEV,{
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_knife:NV('W','칼 가는 보조 요리사','주방 뒤편에서 보조 요리사가 칼을 간다.',[
     {b:'칼을 빌린다',s:'아무 일도 없다',fx:[]},
-    {b:'숫돌을 산다',cost:S10,s:'실링 -10000 (10단화), 이번 장 동안 공격 카드 피해 +2',fx:[['gold',-S10],['act','atkFlat',2]]}]),
+    {b:'숫돌을 산다',cost:S10,s:'실링 -10000, 이번 장 동안 공격 카드 피해 +2',fx:[['gold',-S10],['act','atkFlat',2]]}]),
   n_table:NV('W','배부른 사람들의 식탁','배불리 먹은 사람들이 웃고 있다. 빈자리는 없다.',[
     {b:'끼어 앉는다',s:'체력 +15%',fx:[['hpPct',15]]},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
   n_rat:NV('W','창고의 쥐','식자재 창고에 쥐가 들끓는다. 잡으면 돈을 준다고 한다.',[
-    {b:'잡는다',chk:{s:'atk',d:'normal'},ok:{s:'실링 +50000 (50단화)',fx:[['gold',S50]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}},
+    {b:'잡는다',chk:{s:'atk',d:'normal'},ok:{s:'실링 +50000',fx:[['gold',S50]]},ng:{s:'체력 -10%',fx:[['hpPct',-10]]}},
     {b:'지나친다',s:'아무 일도 없다',fx:[]}]),
 });
 /* '막을 통과하다'는 2장이 돔 위에 떨어진 채로 시작해 글이 맞지 않아 아직 넣지 않음 (문서에서 처리 미정) */
@@ -3949,6 +3949,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.33.66.17','11/20','카드·적 카드·키워드·특성·사건 설명의 괄호를 없애고 짧게 바꿈, 처단 조건은 공격으로 3번 피해를 주면'],
   ['V2.33.65.17','11/20','게임 화면에 남아 있던 작업용 메모 삭제 — 특성 설명의 괄호 메모, 상점·카드의 임시 표시, 무기 칸 문구(지금 무기 이름으로), 사건·적 이름 옆 메모, 패치 내역의 작업 메모'],
   ['V2.33.65.16','11/20','시작 덱 8장(어설픈 베기 3 · 막기 3 · 숨 고르기 2), 시작 덱 고르기(덱 편성) 삭제, 튜토리얼 꺼짐. 무기 노르드교 조잡한 단검 — 모든 데미지 흡혈 +5%, 공격레벨 +2, 무기 특수 효과 표식(적에게 표식Ⅰ~Ⅴ와 약점 노출, 단계 1당 받는 데미지 +10%), 노르드교 전용 카드. 노르드교 원형 카드 3장(약점 노리기 · 약점 찢기 · 표식 강제 부여)이 상점과 보상에 나옴. 궁극기 획득 — 적이 쓴 궁극기를 맞고 버티면(회피 · 방어로 버텨도) 1장: 처단 · 처형 집행, 황금빛 테두리 · 유일. 뼈와 살의 해체학은 궁극기가 아닌 특수 카드(예고 연출 없음, 쓸 때 망치에서 칼날이 나옴). 궁극기 예고의 눈빛은 오른쪽 눈 하나, 캐릭터 퍼스널 컬러(이단심문관 황금빛 아이보리 · 노르드교 검붉은 색). 흘려 베기 패링(이번 턴 회피 +10, 회피에 성공하면 90~120으로 반격), 견적 내기 · 자세잡기(힘 +20)와 힘 키워드. 카드 종류는 공격 · 방어 · 지원. 1장을 끝낸 뒤 막 골라 이어하기. 버그 수정 — 훈계의 약화가 실제 공격에 적용되지 않던 문제'],
   ['V2.32.64.15','11/20','숙련도 — 자세를 고르면 그 자세 카드 3장이 덱에 더해지고 이전 카드는 그대로 남음, 자세 베기 삭제, 검도-정석 → 검도(공격 100~150 · 방어 5~50 · 방어도 유지), 검도-변화 → 발도술(공격 50~100 · 재사용할 때마다 코스트 1), 선택창 2줄(발도술·검도 / 일섬·갈라내기)과 새 선택지 문장. 베기는 일반 카드, 피륙은 희귀 카드(코스트 3). 궁극기 — 명령 이행-처단 궁극기(자신의 공격이 3번 적중하면, 쓰면 0으로), 행동-처형 집행(표식 Ⅴ), 뼈와 살의 해체학(행동 포인트를 다 닳아 행동할 때만), 조건이 충족되면 화면이 어두워지고 적의 눈빛이 십자로 빛나며 카드가 타오르고 적의 모습이 바뀜(처단: 검을 위로, 해체학: 망치 손잡이가 갈라지며 칼날), 적을 누르면 궁극기 미리 보기. 버그 수정 — 침착함 특성이 붙은 1장 적과 싸우면 멈추던 문제, 적이 드로우 카드를 끝없이 내며 적 턴이 멈추던 문제'],
@@ -4498,7 +4499,7 @@ function renderPlayer(){
   if(C.pWkF)chips.push(`<span class="chip bad">약화 ${C.pWkF} · 위력 -${C.pWkF}</span>`);
   if(C.pStr)chips.push(`<span class="chip good">힘 ${C.pStr} · 위력 +${C.pStr}</span>`);
   if(C.parryN)chips.push(`<span class="chip good">흘려 베기 · 반격 ${C.parryN}</span>`);
-  if(r.ults&&r.ults.includes('u_purge')&&C.pPurge)chips.push(`<span class="chip brass">처단 적중 ${Math.min(3,C.pPurge)}/3</span>`);
+  if(r.ults&&r.ults.includes('u_purge')&&C.pPurge)chips.push(`<span class="chip brass">처단 ${Math.min(3,C.pPurge)}/3</span>`);
   if(dagger())chips.push(`<span class="chip brass">노르드교 조잡한 단검</span>`);
   if(C.mk&&C.mk.lv)chips.push(`<span class="chip bad">표식${ROMAN[C.mk.lv]} · 받는 데미지 +${C.mk.lv*10}%${C.mk.lock>=C.turn?' · 유지':''}</span>`);
   if(expoOn())chips.push(`<span class="chip bad">약점 노출</span>`);
@@ -5592,7 +5593,7 @@ function gokStall(){const r=S.run,F=r.flags,G='곡해파 예술가',i=(F.gokTalk
   showScene([F.gokTalk?'아쉬부티 공방 바로 옆 가판대. 오늘도 그가 있다.':'아쉬부티 공방 바로 옆 가판대에, 누구도 감히 입에 올리지 못할 그림들이 걸려 있다. 지나가는 사람들이 얼굴을 찌푸리면서도 걸음을 늦춘다.',
     {c:[{b:'가판대의 작품을 본다',f:()=>{F.gokTalk=(F.gokTalk||0)+1},then:[[G,GOK_TALK[i]]]},{b:'지나간다'}]}],sceneDone)}
 /* ================= 지역 필드 (11/6) — 그 공방 구역 안에서 막을 옮길 때마다 발동, 필드 이름은 같은 이름의 키워드와 별개 ================= */
-const FIELD={N:{n:'냉기 필드',t:'움직일 때마다 최대 체력의 5%씩 체력 감소, 이것으로 쓰러질 수 있음'},S:{n:'예술 필드',t:'어느 막에 가든 이벤트가 먼저 발동할 확률 10% (납치가 많음)'},E:{n:'열기 필드',t:'움직일 때마다 증기 +1, 최대 10, 다음 전투에 적용'}};
+const FIELD={N:{n:'냉기 필드',t:'움직일 때마다 최대 체력의 5%씩 체력 감소, 이것으로 쓰러질 수 있음'},S:{n:'예술 필드',t:'어느 막에 가든 10% 확률로 이벤트가 먼저 발동'},E:{n:'열기 필드',t:'움직일 때마다 증기 +1, 최대 10, 다음 전투에 적용'}};
 function artEvent(){const ks=Object.keys(GEV).filter(k=>GEV[k].zone==='S'),kid=ks.filter(k=>/납치/.test(GEV[k].title)),thr=ks.filter(k=>/(^|\s)실(\s|$)/.test(GEV[k].title));const pool=rnd()<.7?kid:thr;return pool.length?pick(pool):(kid[0]||thr[0]||null)}
 function fieldStep(n,id,first){const r=S.run,F=FIELD[n.reg];if(!F||n.kind==='center')return false;
   r.flags.fld=r.flags.fld||{};if(!r.flags.fld[n.reg]){r.flags.fld[n.reg]=1;toast(F.n,F.t)}
@@ -6094,7 +6095,7 @@ function openPalTab(){const r=S.run,p=r.pal,m=$('#modal'),fight=S.screen==='comb
 /* ---- 전투 버튼: 세로 화면에서 체력창 바로 밑 ---- */
 function dockFit(){requestAnimationFrame(()=>{const a=$('#dockL'),b=$('#dockR'),pp=$('#ppanel');if(!a||!b||!pp)return;const on=S.orient==='port'&&S.screen==='combat';for(const e of[a,b]){if(on){const o=stage.getBoundingClientRect(),sc=S.scale||1,t=(pp.getBoundingClientRect().bottom-o.top)/sc+8;e.style.top=t/UIZ+'px';e.style.bottom='auto'}else{e.style.top='';e.style.bottom=''}}})}
 /* ---- 상태이상 설명 창 ---- */
-const STATUS_INFO=[[/노르드교 조잡한 단검/,WEAPON.n_dagger.t],[/^표식/,'노르드교 무기의 특수 효과. 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 단계가 오름(Ⅰ~Ⅴ). 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐. 단계 1당 표식을 건 쪽에게 받는 데미지 +10%.'],[/약점 노출/,'표식이 붙은 턴에 공격을 맞으면 걸림. 그 턴 동안만 유지.'],[/^힘/,'최종 위력 +1. 이번 전투 동안 유지.'],[/흘려 베기/,'패링 — 이번 턴 회피에 성공하면 공격 90~120으로 반격.'],[/처단 적중/,'자신의 공격이 3번 적중하면 처단을 쓸 수 있다. 회피나 방어도로 전부 막힌 공격은 세지 않는다.'],[/방어도 감소/,'턴마다 얻는 방어도가 줄어든다.'],[/방어도/,'피해를 먼저 대신 맞는다. 다음 턴 시작 시 50%만 남는다.'],[/회피/,'회피가 높을수록 공격이 덜 맞는다. 회피 주사위는 한 턴 최대 +30.'],[/약화/,'주는 피해가 줄어든다. 턴마다 1 감소.'],[/취약/,'받는 피해가 커진다. 턴마다 1 감소.'],[/전격/,'쌓인 만큼 고정 피해를 받는다.'],[/소각/,'턴마다 불타는 피해를 받는다. 냉매가 중화한다.'],[/증기/,'증기 1당 받는 피해 +10%. 턴이 끝날 때 10 이상이면 10을 소모해 열기 1이 된다.'],[/열기/,'열기 1당 공격 주사위 +1. 턴마다 1 감소. 증기 10으로만 얻는다.'],[/냉동/,'1턴 동안 행동할 수 없다. 얼어 있을 때 공격받으면 깨짐이 2단계 오른다.'],[/냉매/,'냉매 1당 행동 포인트 +1, 코스트 -1. 3 이상이면 냉동된다. 소각을 중화한다.'],[/깨짐/,'1단계당 받는 피해 +50%.'],[/먹기/,'먹기 1당 최대 체력 +5%. 10이면 배부름(최대 체력 +50%), 배부름이 3턴 이어지면 포화가 쌓여 모든 카드에 최대 체력 비례 피해가 붙는다.'],[/예술적 감각/,'같은 카드 또는 다른 카드를 3번 연속 쓰면 오른다. 1당 드로우 +1, 코스트 +1. 3이면 작품 준비 카드가 생긴다.'],[/작품 준비/,'턴마다 5~20% 확률로 작품-완성이 된다. 턴이 지나도 사라지지 않는다.'],[/작품/,'패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2.'],[/송출 대기/,'다음 행동 위력 +50%.'],[/버팀/,'방어도가 다음 턴에도 전부 남는다.'],[/마비/,'명중 -10.'],[/궁니르-명중/,'쌓인 만큼 궁니르의 공격이 이어진다.'],[/복수심/,'맞을수록 공격이 강해진다.'],[/유희/,'쌓인 만큼 피해가 커진다.'],[/단련/,'방패 찍기의 고정 피해가 커진다.'],[/반동/,'공격받으면 그만큼 되돌려 준다.'],[/명령-보호|은빛 기사/,'은빛 기사는 살아 있는 동안 순수유물주의자의 피해를 대신 맞는다. 50%는 전부, 50%는 75%를 대신 맞고 나머지만 보스가 받는다. 대신 맞은 기사는 다음 턴에 움직이지 않는다. 기사는 대상으로 지정할 수 없다.'],[/페이즈/,'보스의 현재 단계.'],[/분노/,'특수무기를 쓸 때마다 오른다. 3이면 이성을 잃는다.']];
+const STATUS_INFO=[[/노르드교 조잡한 단검/,WEAPON.n_dagger.t],[/^표식/,'맞힐수록 단계가 오른다. 단계 1당 받는 데미지 +10%. 한 턴 동안 맞지 않으면 사라진다.'],[/약점 노출/,'이번 턴 동안 약점이 드러났다.'],[/^힘/,'위력 +1.'],[/흘려 베기/,'피하면 반격한다.'],[/^처단/,'세 번 피해를 주면 처단을 쓸 수 있다.'],[/방어도 감소/,'턴마다 얻는 방어도가 줄어든다.'],[/방어도/,'피해를 먼저 대신 맞는다. 다음 턴 시작 시 50%만 남는다.'],[/회피/,'회피가 높을수록 공격이 덜 맞는다. 회피 주사위는 한 턴 최대 +30.'],[/약화/,'주는 피해가 줄어든다. 턴마다 1 감소.'],[/취약/,'받는 피해가 커진다. 턴마다 1 감소.'],[/전격/,'쌓인 만큼 고정 피해를 받는다.'],[/소각/,'턴마다 불타는 피해를 받는다. 냉매가 중화한다.'],[/증기/,'증기 1당 받는 피해 +10%. 턴이 끝날 때 10 이상이면 10을 소모해 열기 1이 된다.'],[/열기/,'열기 1당 공격 주사위 +1. 턴마다 1 감소. 증기 10으로만 얻는다.'],[/냉동/,'1턴 동안 행동할 수 없다. 얼어 있을 때 공격받으면 깨짐이 2단계 오른다.'],[/냉매/,'냉매 1당 행동 포인트 +1, 코스트 -1. 3 이상이면 냉동된다. 소각을 중화한다.'],[/깨짐/,'1단계당 받는 피해 +50%.'],[/먹기/,'먹기 1당 최대 체력 +5%. 10이면 배부름, 배부름이 3턴 이어지면 포화가 쌓인다.'],[/예술적 감각/,'같은 카드 또는 다른 카드를 3번 연속 쓰면 오른다. 1당 드로우 +1, 코스트 +1. 3이면 작품 준비 카드가 생긴다.'],[/작품 준비/,'턴마다 5~20% 확률로 작품-완성이 된다. 턴이 지나도 사라지지 않는다.'],[/작품/,'패에 있으면 공격 위력 +200%, 드로우 +3, 코스트 +2.'],[/송출 대기/,'다음 행동 위력 +50%.'],[/버팀/,'방어도가 다음 턴에도 전부 남는다.'],[/마비/,'명중 -10.'],[/궁니르-명중/,'쌓인 만큼 궁니르의 공격이 이어진다.'],[/복수심/,'맞을수록 공격이 강해진다.'],[/유희/,'쌓인 만큼 피해가 커진다.'],[/단련/,'방패 찍기의 고정 피해가 커진다.'],[/반동/,'공격받으면 그만큼 되돌려 준다.'],[/명령-보호|은빛 기사/,'은빛 기사는 살아 있는 동안 순수유물주의자의 피해를 대신 맞는다. 50%는 전부, 50%는 75%를 대신 맞고 나머지만 보스가 받는다. 대신 맞은 기사는 다음 턴에 움직이지 않는다. 기사는 대상으로 지정할 수 없다.'],[/페이즈/,'보스의 현재 단계.'],[/분노/,'특수무기를 쓸 때마다 오른다. 3이면 이성을 잃는다.']];
 function statusRule(t){if(TRAITS[t])return TRAITS[t].text;for(const[re,x]of STATUS_INFO)if(re.test(t))return x;return''}
 function stSheet(items,anchor){let b=$('#stsheet');if(!items){if(b)b.hidden=true;return}if(!b){b=document.createElement('div');b.id='stsheet';stage.appendChild(b);b.addEventListener('pointerdown',e=>e.stopPropagation())}
   b.innerHTML=items.map(([n,x])=>`<div><b>${n}</b><span>${x||'설명이 아직 없습니다.'}</span></div>`).join('');b.hidden=false;b.scrollTop=0;
