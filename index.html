@@ -2474,15 +2474,18 @@ function canPlay(c){
   {const jw=jcDeny(c);if(jw)return jw}
   if(C.pFrozen&&C.turn>=C.pFrozenTurn)return'냉동 — 이번 턴에는 행동할 수 없습니다';
   if(C.noWs&&CARDS[c.id].ws2===C.noWs)return'계약 파기 전투 — 계약한 공방의 카드는 사용할 수 없습니다';
+  const trF=!!(r&&r.train&&r.tFree);
+  if(!trF){
   if(d.nord&&!dagger())return'노르드교 무기가 있어야 쓸 수 있습니다';
   if(c.id==='u_exec'&&!(C.E&&C.E.pmk&&C.E.pmk.lv>=5))return'대상의 표식이 Ⅴ일 때만 사용할 수 있습니다';
   if(c.id==='u_purge'&&(C.pPurge||0)<3)return`아직 쓸 수 없다 · ${Math.min(3,C.pPurge||0)}/3`;
   if(c.id==='t_recall'&&!C.thrown)return'묠니르를 던진 뒤에만 쓸 수 있습니다';
   if(c.id==='d_crumble'&&r.hp>r.maxHp*.25)return'체력이 25% 이하일 때만 사용할 수 있습니다';
   if(c.id==='w_s5'&&(C.pSteam||0)<20)return'증기가 20 미만이면 사용할 수 없습니다';
+  }
   const k=costOf(c);
   if(k.hp!=null){const brand=C.brand.includes(c.uid)?3:0;if(r.hp<=k.hp+brand)return'체력이 부족합니다';}
-  else if(k.e>C.energy&&!C.flaskArm)return'코스트가 부족합니다';
+  else if(k.e>C.energy&&!C.flaskArm&&!(r.train&&r.tInf))return'코스트가 부족합니다';
   return null;
 }
 function removeHandEl(uid){const el=stackOf(uid);if(!el)return;el._uids=el._uids.filter(x=>x!==uid);if(!el._uids.length){el.classList.add('gone');setTimeout(()=>el.remove(),220);for(const[k,v]of handEls)if(v===el)handEls.delete(k)}}
@@ -2505,7 +2508,7 @@ async function playCardRaw(uid,o={}){
   if(C.flaskArm&&!c.free&&((k.hp!=null&&k.hp>0)||(k.hp==null&&k.e>0))){C.flaskArm=false;
     if(k.hp!=null){C.flaskHp=(C.flaskHp||0)+k.hp*2;clog(`미미르의 물병: 체력 소모 없이 사용 — 다음 턴 체력 ${k.hp*2} 지불`)}
     else{C.flaskDebt=(C.flaskDebt||0)+k.e*2;clog(`미미르의 물병: 코스트 없이 사용 — 다음 턴 코스트 ${k.e*2} 지불`)}fxAt('player','미미르의 물병','info')}
-  else if(k.hp!=null){if(!c.free){r.hp-=k.hp;if(k.hp)fxAt('player',`-${k.hp}`,'self')}}else if(!c.free)C.energy-=k.e;
+  else if(k.hp!=null){if(!c.free){r.hp-=k.hp;if(k.hp)fxAt('player',`-${k.hp}`,'self')}}else if(!c.free&&!(r.train&&r.tInf))C.energy-=k.e;
   if(U&&C.talkDisc&&c.id!=='a2_talk')C.talkDisc--;
   if(U&&C.patent&&C.patent[c.id]>=2&&C.patentFree!==c.uid&&liveFoes().some(f=>f.key==='examiner')&&!c.free){palBark('patent','방금 돈이 나갔어요! 왜요?');if(r.gold>=10000){r.gold-=10000;fxAt('player','특허 -10000실링','self');clog('특허: 10000실링 지불')}else{const l=Math.max(1,Math.round(r.maxHp*.04));r.hp=Math.max(1,r.hp-l);fxAt('player',`특허 -${l}`,'self');clog(`특허: 실링이 모자라 체력 ${l} (최대 체력 4%) 지불`)}}
   if(U&&C.spinArm){C.spinArm=false;C.spinNow=true}
@@ -2529,6 +2532,7 @@ async function playCardRaw(uid,o={}){
   if(first&&d.type==='atk'){if(pt('extra'))dice.push({...first,lb:PTRAIT.extra.n,sc:.5});if(pt('combo'))dice.push({...first,lb:PTRAIT.combo.n,sc:.25})}
   if(c.id==='c_whirl'){const n=await pickToss(3,'잿빛 회오리');const x=dice[0];for(let i=0;i<n;i++)dice.push({...x,lb:'재사용'})}
   let hadAtk=false,hitAny=false,gained=0;C.cardDmg=0;
+  const ultFx=U&&d.rar==='ult'&&!nul;if(ultFx)await ultDash(c.id);
   /* 일섬 치명타: 명중 확률의 50% — 미리 굴려 두고, 적중했을 때만 발동(데미지 +50%, 드로우 +1) */
   const crit=c.id==='ms_flash'&&!nul&&rnd()<.5;
   const onHit=c.id==='d_glutton'?(l=>heal(l*.3)):c.id==='d_cannibal'?(()=>{C.eat++;fxAt('enemy','섭취','info')}):null;
@@ -2543,7 +2547,7 @@ async function playCardRaw(uid,o={}){
     else{const v=nul?0:rollDie(x),add=Math.min(v,Math.max(0,EVA_DICE_CAP-C.evaB));C.evaB+=add;
       clog(`회피 주사위 ${v} → 회피 +${add}${add<v?' (한 턴 최대 +30)':''} · 적의 적중률 ${hitChance(enemyAcc(),pEva())}%`);fxAt('player',`회피 +${add}`,'info');renderCombat()}
   }
-  C.spinNow=false;
+  C.spinNow=false;if(ultFx)await ultBack();
   const silent=false;
   if(!C.over&&!silent){
     const ok=!hadAtk||hitAny;
@@ -2611,7 +2615,7 @@ async function playCardRaw(uid,o={}){
 const MS_STEP=[10,20,30,40,50];
 const STANCE=[{id:'ms_kendo2',k:'발도술',q:'목덜미를 세워 턱을 아래로 당겨 검을 뽑아낸다'},{id:'ms_kendo',k:'검도',q:'검을 비스듬히 하여 몸을 보호하게 검을 잡는다'},{id:'ms_flash',k:'일섬',q:'자세를 당장이라도 뛰쳐나갈수있게 다리에 힘을 준상태로 검을 역수로 쥔다'},{id:'ms_split',k:'갈라내기',q:'팔을 강하게 핀상태로 손잡이가 으스러질정도로 검을 강하게 잡는다'}];
 const msOf=r=>r.ms||(r.ms={uses:0,step:0,got:[],stance:null});
-async function masteryUse(){const r=S.run;if(r.mode!=='human'||r.lvl!==1)return;if(r.tutB)return;const m=msOf(r);m.uses++;
+async function masteryUse(){const r=S.run;if(r.mode!=='human'||r.lvl!==1)return;if(r.tutB||r.train)return;const m=msOf(r);m.uses++;
   while(m.step<5&&m.uses>=MS_STEP[m.step]){m.step++;r.atk++;r.def++;const a=Math.round(r.base1*.01);r.maxHp+=a;r.hp+=a;save();
     if(m.step<=4)await stanceWindow(m.step);else await fuseOpenWindow();if(S.C&&!S.C.over)renderCombat()}}
 /* V2.32.64.15: 자세를 고르면 그 자세 카드 3장이 덱에 새로 추가되고, 이전 자세 카드는 덱에 그대로 남음 */
@@ -2847,11 +2851,11 @@ const pmkOf=E=>E.pmk||(E.pmk={lv:0,setT:-9,expT:-9,hitT:-9,lock:-9});
 const pExpo=E=>{const C=S.C;return!!(C&&E&&E.pmk&&E.pmk.lv>0&&E.pmk.expT===C.turn)};
 const pMarkMul=E=>E&&E.pmk&&E.pmk.lv?1+.1*E.pmk.lv:1;
 function pMarkHit(E){const C=S.C;if(!E||C.phase!=='player')return;const m=pmkOf(E);if(m.lv>0&&m.expT!==C.turn){m.expT=C.turn;fxAt('enemy','약점 노출','info');clog(`${E.name}: 표식이 붙은 턴에 다시 맞음 → 약점 노출`)}m.hitT=C.turn}
-function pForceMark(E){const C=S.C,m=pmkOf(E);if(m.lv<=0){m.lv=1;m.setT=C.turn;fxAt('enemy','표식Ⅰ','info');clog(`표식 강제 부여: ${E.name}에게 이번 턴부터 표식Ⅰ`)}else{m.lock=C.turn+2;clog('표식 강제 부여: 그 뒤 2턴 동안 맞지 않아도 표식 유지')}}
-function pMarkTick(){const C=S.C,P=C.turn-1;if(!dagger())return;for(const E of liveFoes()){const m=pmkOf(E);
-  if(m.lv<=0){if(m.hitT===P){m.lv=1;m.setT=C.turn;clog(`${E.name}에게 표식Ⅰ이 붙었다`)}continue}
-  if(m.expT===P||m.lock>=P||m.setT===P&&m.lock>=C.turn){m.lv=Math.min(5,m.lv+1);clog(`${E.name}: 표식 단계 상승 → 표식${ROMAN[m.lv]}`)}
-  else{m.lv=0;m.lock=-9;clog(`${E.name}: 표식이 붙은 턴에 맞지 않아 표식이 사라졌다`)}}}
+function pForceMark(E){const C=S.C,m=pmkOf(E);if(m.lv<=0){m.lv=1;m.setT=C.turn;markChime(1);fxAt('enemy','표식Ⅰ','info');clog(`표식 강제 부여: ${E.name}에게 이번 턴부터 표식Ⅰ`)}else{m.lock=C.turn+2;clog('표식 강제 부여: 그 뒤 2턴 동안 맞지 않아도 표식 유지')}}
+function pMarkTick(){const C=S.C,P=C.turn-1;if(!dagger())return;let up=0;for(const E of liveFoes()){const m=pmkOf(E);
+  if(m.lv<=0){if(m.hitT===P){m.lv=1;m.setT=C.turn;up=Math.max(up,1);clog(`${E.name}에게 표식Ⅰ이 붙었다`)}continue}
+  if(m.expT===P||m.lock>=P||m.setT===P&&m.lock>=C.turn){const o=m.lv;m.lv=Math.min(5,m.lv+1);if(m.lv>o)up=Math.max(up,m.lv);clog(`${E.name}: 표식 단계 상승 → 표식${ROMAN[m.lv]}`)}
+  else{m.lv=0;m.lock=-9;clog(`${E.name}: 표식이 붙은 턴에 맞지 않아 표식이 사라졌다`)}}if(up)setTimeout(()=>markChime(up),350)}
 /* V2.33.65.16: 궁극기 획득 — 적이 쓴 궁극기를 맞고 버티면(회피·방어로 버텨도) 1장, 같은 궁극기는 1장만 */
 const ULT_GET={'행동-처형 집행':'u_exec','명령 이행-처단':'u_purge'};
 function ultGain(name){const r=S.run,id=ULT_GET[name];if(!id||!r||r.mode!=='human')return;r.ults=r.ults||[];if(r.ults.includes(id))return;r.ults.push(id);addToDeck(id);clog(`궁극기 「${name}」을(를) 버텼다 → 「${CARDS[id].name}」 획득`,'h');toast('궁극기',`「${CARDS[id].name}」 — 맞고 버텨 얻었다 · 카드 보관함으로`);save()}
@@ -3027,8 +3031,13 @@ function enterPhase2(why,silent){
 }
 
 /* ================= combat end ================= */
-function winCombat(res){
-  const C=S.C,r=S.run;if(C.over)return;C.over=true;C.phase='over';
+function winCombat(res){const C=S.C,r=S.run;if(C.over)return;
+  const back=ULT_ON?ultBack():Promise.resolve();
+  if(!r.tutB&&foes().some(f=>f.tier==='boss')&&!REDUCED){C.over=true;C.phase='over';S.busy=true;back.then(bossFinish).then(()=>{S.busy=false;r.train?trEnd():winCombatGo(res)});return}
+  if(r.train){C.over=true;C.phase='over';back.then(()=>setTimeout(trEnd,REDUCED?100:700));$('#enemy').classList.add('dead');return}
+  winCombatGo(res)}
+function winCombatGo(res){
+  const C=S.C,r=S.run;C.over=true;C.phase='over';
   if(r.tutB){S.busy=false;$('#enemy').classList.add('dead');setTimeout(()=>{hideCombatUI();tbAfterWin()},REDUCED?100:1100);return}
   S.busy=false;a2CombatEnd(C);setTimeout(()=>palEv('win'),500);
   const lines=[];r.next=null;
@@ -3919,6 +3928,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
       ${slotCount()?`<button class="mbtn" id="mCont">이어하기<small>저장 기록 ${slotCount()} / ${SLOT_MAX}</small></button>`:''}
       ${false&&cs?`<button class="mbtn" id="mContC">이어하기 · 세계수 등반<small>${(CDIFF[cs.diff]||CDIFF.easy).n} · ${cs.act===2?`2장 니다벨리르 · ${cs.floor||0}막`:`${cs.floor} / ${ROWS}막`} · ${cs.mode==='dain'?'다인모드':`Lv ${cs.lvl}`}</small></button>`:''}
       <button class="mbtn" id="mClimb">세계수 등반<small>일반인으로 시작해 세계수를 오른다</small></button>
+      <button class="mbtn" id="mTrain">훈련장<small>모든 카드를 써 볼 수 있다 · 본 게임과 별개</small></button>
       <button class="mbtn" id="mVault">보관함<small>${memoSeen().length?`${memoSeen().length}장`:'아직 모은 것이 없다...'}</small></button>
       <button class="mbtn" id="mSet">설정<small>${PATCH[0][0]} · 패치 내역은 설정에서</small></button></div>`:`<div class="ttl-tap" id="ttlTap">게임 시작</div>`}</div>`,{full:true});
   if(!menu){
@@ -3927,13 +3937,14 @@ function showTitle(o={}){setTimeout(guideShow,0);
     el.addEventListener('click',go);
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
   }else{
-    $('#mClimb').onclick=()=>{endTitleScene();if(!tutDone())return tbBasic(null);transition(showClimbPrep)};$('#mSet').onclick=openSettings;$('#mVault').onclick=()=>openVault();
+    $('#mClimb').onclick=()=>{endTitleScene();tbAsk()};$('#mTrain').onclick=()=>{endTitleScene();openTrain()};$('#mSet').onclick=openSettings;$('#mVault').onclick=()=>openVault();
     if($('#mCont'))$('#mCont').onclick=()=>{endTitleScene();openSlots('load')};
     if(false)$('#mContC').onclick=()=>{S.run=migrateRun(cs);syncUID();transition(resumeAt)};
   }
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.35.71.19','11/21','훈련장 — 시작 화면에서 들어가 모든 카드를 골라 덱을 짜고 허수아비나 1장 적과 싸움, 쓰러지지 않음, 코스트 무한·사용 조건 무시 켬/끔 / 세계수 등반을 누를 때마다 튜토리얼 진행을 네·아니오로 물음, 특성 뒤 질문과 설정의 튜토리얼 다시 보기 없앰 / 튜토리얼에서 누를 곳은 황금빛 파문, 끌 곳은 카드에서 적으로 금빛 점, 글상자에 할 동작 / 표식이 오를 때마다 종소리가 높아지고 Ⅴ에서 화음과 금빛, 쓸 수 있는 궁극기 카드는 금빛으로 숨 쉼, 처형 집행·처단은 흑백으로 멈췄다가 1인칭으로 돌진, 보스를 쓰러뜨리면 멈춤·번쩍임·무릎 꿇음·화면 틀이 깨졌다 맞춰지고 제압'],
   ['V2.34.70.19','11/20','카드 뒷면의 플레이버 텍스트를 모두 없앰'],
   ['V2.34.69.19','11/20','튜토리얼 속도 — 문장은 1.2초 뒤부터 넘어가고 넘어갈 수 있으면 ▼, 저절로 넘어가는 장면 없앰, 카드를 내면 결과를 본 뒤 1초 쉬고 다음 설명, 뒤집기·확대가 끝난 뒤 글상자, 튜토리얼에서 적은 한 장씩 쉬며 내고 주사위 연출도 천천히'],
   ['V2.34.68.19','11/20','튜토리얼 새로 만듦 — 처음 시작하면 기초 튜토리얼 전투 2번(내가 때리는 법과 힘, 적이 나를 때리는 법), 특성을 고른 뒤 튜토리얼을 볼지 물음, 본다를 고르면 기초 전투와 상황 튜토리얼(노르드교 단원의 패시브). 내 캐릭터를 누르면 내 상태창. 적 상태창에 공격레벨·방어레벨·명중률·회피·내 적중률·패. 힘·약화·허약·취약은 걸린 쪽의 턴이 끝나면 사라짐. 행동 포인트로 몰아서 낸 턴에는 최대 행동 포인트 ÷ 3만큼 코스트 회복. 덱·보관함·카드 더미를 공격·방어·지원으로 나눠 보기, 지금 무기로 쓸 수 없는 카드는 보관함에서 회색. 미드가르드 상점 5번째 칸은 지금 무기로 쓸 수 없는 카드. 카드 글자 크기 일정하게. 디버프가 걸리면 화면 연출, 사라질 때 아이콘이 부서짐. 도망치는 단원 연출. 고침: 허약이 약화로 보이던 것, 보관함에 지원 카드가 안 보이던 것'],
@@ -4075,7 +4086,6 @@ function openEnvSettings(){
       <button class="choice" id="sShake"><b>화면 흔들림 · ${SET.shake?'켬':'끔'}</b><span>큰 피해를 주고받을 때 화면이 흔들림</span></button>
       <button class="choice" id="sDfocus"><b>주사위 연출 · ${SET.dfocus===false?'끔':'켬'}</b><span>공격 전에 주사위 · 위력 · 피해를 가운데에 보여 줌</span></button>
       <button class="choice" id="sTips"><b>전환 팁 · ${SET.tips?'켬':'끔'}</b><span>화면이 바뀔 때 게임 팁과 세계관 한 줄을 보여줌</span></button>
-      <button class="choice" id="sTut"><b>튜토리얼 다시 보기 · ${tutDone()?'끔':'켬'}</b><span>${tutDone()?'켜면 다음에 세계수 등반을 누를 때 기초 튜토리얼이 다시 나옴':'다음에 세계수 등반을 누를 때 기초 튜토리얼이 나옴'}</span></button>
     </div></div>`;
   $('#mClose').onclick=openSettings;
   $('#sUi').onclick=()=>{SET.ui=UI_NEXT[SET.ui]||'l';saveSet();applyUI();openEnvSettings()};
@@ -4083,13 +4093,12 @@ function openEnvSettings(){
   $('#sSound').onclick=()=>{SET.sound=!SET.sound;saveSet();if(SET.sound)sfx('hit');openEnvSettings()};
   $('#sShake').onclick=()=>{SET.shake=!SET.shake;saveSet();openEnvSettings()};
   $('#sTips').onclick=()=>{SET.tips=!SET.tips;saveSet();openEnvSettings()};
-  $('#sTut').onclick=()=>{setTutDone(!tutDone());openEnvSettings()};
 }
 /* ================= 튜토리얼 — 세계수 등반 첫 런의 첫 전투에서만 (설정에서 다시 보기) ================= */
 /* ================= 튜토리얼 (V2.34.68.19) — 문서 화면과 튜토리얼 탭 =================
-   기초 튜토리얼: 처음 시작하면 강제로 나옴, 특성·덱 없이 튜토리얼 전용 주인공·덱·적, 전투 2번
+   기초 튜토리얼: 세계수 등반을 누를 때마다 진행할지 물음, 네를 고르면 특성·덱 없이 튜토리얼 전용 주인공·덱·적, 전투 2번
      (전투 1 내가 때리는 법과 버프, 전투 2 적이 나를 때리는 방법), 패·뽑는 순서·주사위·적의 행동 전부 고정
-   상황 튜토리얼: 특성을 고른 뒤 본다를 고른 판에서만, 그 상황이 처음 생길 때 한 번씩
+   상황 튜토리얼: 튜토리얼 진행에 네를 고른 판에서만, 그 상황이 처음 생길 때 한 번씩
    보여 주는 방식: 설명하는 줄은 그 자리만 반짝이고 작은 글상자, 눌러야 하는 곳은 그곳만 반짝이고 나머지는 어둡게, 지시하는 글은 쓰지 않음 */
 const TB_KEY='ash-midgard-basic-v1',SIT_KEY='ash-midgard-sit-v1';
 const tutDone=()=>{try{return localStorage.getItem(TB_KEY)==='1'}catch(e){return false}};
@@ -4112,18 +4121,27 @@ const TH={
 };
 function tbRect(el){const o=stage.getBoundingClientRect(),a=el.getBoundingClientRect(),sc=S.scale||1;return{x:(a.left-o.left)/sc,y:(a.top-o.top)/sc,w:a.width/sc,h:a.height/sc}}
 const tbEls=st=>{if(!st||!st.hl)return[];let v=st.hl();if(!Array.isArray(v))v=[v];return v.filter(Boolean)};
-/* 반짝임·어둡게·글상자 */
+/* 누를 곳은 황금빛 파문 — 누르기는 그 자리에서 퍼지고, 끌기는 카드에서 적으로 금빛 점이 건너가 다시 퍼짐 */
+const TB_VERB={click:'누르세요.',flip:'카드를 눌러 뒤집으세요.',play:'카드를 적에게 끌어 놓으세요.',end:'누르세요.'};
+const tbVerb=st=>st&&!st.t&&TB_VERB[st.m]?{...st,t:TB_VERB[st.m]}:st;
+let tbRpKey='',tbRpHtml='';
+function tbRipple(st,rs,pad){const R=r=>({x:r.x-pad,y:r.y-pad,w:r.w+pad*2,h:r.h+pad*2}),box=r=>`left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`;
+  const drag=stage.classList.contains('tbdrag'),act=['click','flip','play','end'].includes(st.m);let h='';
+  if(!act)h=rs.map(r=>`<i class="tbmark" style="${box(R(r))}"></i>`).join('');
+  else if(st.m==='play'&&rs.length>1&&!drag){const a=R(rs[0]),b=R(rs[1]),ax=a.x+a.w/2,ay=a.y+a.h/2,bx=b.x+b.w/2,by=b.y+b.h/2;
+    h=`<i class="tbmark" style="${box(a)}"></i><b class="tbrp d0" style="${box(a)}"></b><s class="tbdot" style="left:${ax}px;top:${ay}px;--dx:${bx-ax}px;--dy:${by-ay}px"></s><b class="tbrp d1" style="${box(b)}"></b><em class="tbtap d1" style="left:${bx}px;top:${by}px"></em>`}
+  else{const list=st.m==='play'&&drag?rs.slice(1):rs;h=list.map(r0=>{const r=R(r0);return`<i class="tbmark" style="${box(r)}"></i><b class="tbrp" style="${box(r)}"></b><b class="tbrp late" style="${box(r)}"></b><em class="tbtap" style="left:${r.x+r.w/2}px;top:${r.y+r.h/2}px"></em>`}).join('')}
+  const key=st.m+(drag?1:0)+h.replace(/\d+(\.\d+)?px/g,m=>Math.round(parseFloat(m)/6)+'');if(key===tbRpKey)return tbRpHtml;tbRpKey=key;tbRpHtml=h;return h}
 function tbDraw(){
-  let ov=$('#tbov');const st=tbStep(),T=S.tb;
+  let ov=$('#tbov');let st=tbStep();const T=S.tb;
   if(!st||!T.armed||T.paused){if(ov)ov.hidden=true;return}
   if(!ov){ov=document.createElement('div');ov.id='tbov';ov.innerHTML='<svg class="tbdim" preserveAspectRatio="none"><path fill-rule="evenodd"/></svg><div class="tbrings"></div><div class="tbtx"></div>';stage.appendChild(ov)}
   ov.hidden=false;const o=L[S.orient],W=o.W,H=o.H,els=tbEls(st),rs=els.map(tbRect).filter(r=>r.w>0&&r.h>0),pad=8;
   const dim=['click','flip','play','end'].includes(st.m)&&!stage.classList.contains('tbdrag');
   const svg=ov.querySelector('svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.style.opacity=dim?1:0;
   svg.querySelector('path').setAttribute('d',`M0 0H${W}V${H}H0Z`+rs.map(r=>`M${r.x-pad} ${r.y-pad}h${r.w+pad*2}v${r.h+pad*2}h${-(r.w+pad*2)}Z`).join(''));
-  const rg=ov.querySelector('.tbrings');const ringsFor=st.m==='play'&&stage.classList.contains('tbdrag')?rs.slice(1):rs;
-  rg.innerHTML=ringsFor.map(r=>`<i style="left:${r.x-pad}px;top:${r.y-pad}px;width:${r.w+pad*2}px;height:${r.h+pad*2}px"></i>`).join('');
-  const tx=ov.querySelector('.tbtx');
+  const rg=ov.querySelector('.tbrings'),rh=tbRipple(st,rs,pad);if(rg._h!==rh){rg._h=rh;rg.innerHTML=rh}
+  const tx=ov.querySelector('.tbtx');st=tbVerb(st);
   const rdy=st.m==='say'&&Date.now()-T.at>=TB_MIN;tx.classList.toggle('ready',rdy);tx.classList.toggle('empty',st.m==='say'&&!st.t);
   if(st.m==='say'&&!st.t&&rs.length){tx.hidden=false;tx.dataset.t='';tx.textContent='';const r=rs[0];tx.style.width='48px';tx.style.left=clamp(r.x+r.w+12,10,W-60)+'px';tx.style.top=clamp(r.y+r.h/2-20,64,H-60)+'px'}
   else if(st.t&&rs.length){tx.hidden=false;if(tx.dataset.t!==st.t){tx.dataset.t=st.t;tx.textContent=st.t}
@@ -4247,10 +4265,44 @@ function tbBattle(n){const r=S.run;r.hp=r.maxHp;S.tbN=n;r.at={kind:'combat',enem
 function tbTurn(){const C=S.C;if(!S.run||!S.run.tutB||!S.tbHands)return;const h=S.tbHands[C.turn];if(!h)return;C.draw.push(...C.hand);C.hand=h.map(id=>({uid:UID++,id,mods:[]}));C.maxE=C.energy=5}
 function tbAfterWin(){const n=S.tbN;S.tb=null;tbDraw();if(n===1)return tbBattle(2);
   setTutDone(true);S.run=null;S.C=null;S.tbHands=null;S.hero=S.hero0;S.hero0=null;const f=S.tbDone;S.tbDone=null;f?f():transition(showClimbPrep)}
-/* 특성을 고른 뒤 — 튜토리얼을 볼지 물음 */
-function tbAsk(go){const m=$('#modal');m.hidden=false;
-  m.innerHTML=`<div class="panel" style="width:min(460px,100%)"><div class="ptitle">튜토리얼</div><div class="choices" style="flex-direction:row;justify-content:center"><button class="plate-btn" id="tbYes">본다</button><button class="plate-btn" id="tbNo">보지 않는다</button></div></div>`;
-  $('#tbYes').onclick=()=>{closeModal();sitReset();tbBasic(()=>go(true))};$('#tbNo').onclick=()=>{closeModal();go(false)}}
+/* ================= 훈련장 (V2.35.71.19) — 본 게임과 별개, 모든 카드를 골라 쓰고 쓰러지지 않음 ================= */
+const TR_KEY='ash-midgard-train-v1';
+const TR_FOES=[['dummy','허수아비'],['priest','노른교 성직자'],['cultist','노르드교 단원'],['inquisitor','이단심문관'],['bishop','순수유물주의자']];
+function trState(){if(!S.trS){let o=null;try{o=JSON.parse(localStorage.getItem(TR_KEY)||'null')}catch(e){}S.trS=Object.assign({deck:{},foe:'dummy',inf:true,free:true,f:'전체'},o||{});for(const k in S.trS.deck)if(!CARDS[k])delete S.trS.deck[k]}return S.trS}
+const trSave=()=>{try{const T=trState();localStorage.setItem(TR_KEY,JSON.stringify({deck:T.deck,foe:T.foe,inf:T.inf,free:T.free}))}catch(e){}};
+const trIds=()=>Object.keys(CARDS).filter(id=>{const d=CARDS[id];return d&&d.name&&!d.unplayable});
+const trN=()=>Object.values(trState().deck).reduce((a,b)=>a+b,0);
+function openTrain(){const T=trState(),m=$('#modal');m.hidden=false;m.classList.add('scn','scn-dark');
+  const ids=trIds().filter(id=>cfPass({id},T.f)),n=trN();
+  const dk=Object.entries(T.deck).filter(([,v])=>v>0);
+  m.innerHTML=`<div class="panel trn" style="width:min(1300px,100%);height:100%"><div class="maphead"><div><div class="ptitle">훈련장</div><div class="psub">모든 카드를 쓸 수 있고 쓰러지지 않는다 · 카드를 누르면 뒤집힌다</div></div><button class="btn-ghost" id="trBack">처음으로</button></div>
+    <div class="trrow"><span class="trlb">상대</span>${TR_FOES.map(([k,v])=>`<button class="cfb${T.foe===k?' on':''}" data-trf="${k}">${v}</button>`).join('')}</div>
+    <div class="trrow"><span class="trlb">규칙</span><button class="cfb${T.inf?' on':''}" id="trInf">코스트 무한 · ${T.inf?'켬':'끔'}</button><button class="cfb${T.free?' on':''}" id="trFree">사용 조건 무시 · ${T.free?'켬':'끔'}</button></div>
+    <div class="trrow trdeck"><span class="trlb">덱 ${n}장</span>${dk.length?dk.map(([id,v])=>`<button class="trchip" data-trm="${id}">${CARDS[id].name} ×${v}</button>`).join(''):'<span class="hint">아래 카드의 + 를 눌러 넣는다</span>'}</div>
+    <div class="trrow">${cfBar(T.f)}<button class="cfb" id="trStart8">시작 덱</button><button class="cfb" id="trClear">비우기</button><button class="plate-btn trgo" id="trGo">훈련 시작</button></div>
+    <div class="cardgrid trgrid">${ids.map(id=>`<div class="trcell">${staticCard(id,false)}<div class="trctl"><button data-trm="${id}">−</button><b>${T.deck[id]||0}</b><button data-trp="${id}">+</button></div></div>`).join('')}</div></div>`;
+  bindStatic(m);const re=()=>{trSave();const sc=m.querySelector('.trgrid').scrollTop;openTrain();m.querySelector('.trgrid').scrollTop=sc};
+  $('#trBack').onclick=()=>{closeModal();showTitle({menu:true})};
+  m.querySelectorAll('[data-trf]').forEach(b=>b.onclick=()=>{T.foe=b.dataset.trf;re()});
+  $('#trInf').onclick=()=>{T.inf=!T.inf;re()};$('#trFree').onclick=()=>{T.free=!T.free;re()};
+  m.querySelectorAll('[data-cf]').forEach(b=>b.onclick=()=>{T.f=b.dataset.cf;re()});
+  m.querySelectorAll('[data-trp]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.trp;T.deck[k]=(T.deck[k]||0)+1;re()});
+  m.querySelectorAll('[data-trm]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.trm;T.deck[k]=Math.max(0,(T.deck[k]||0)-1);if(!T.deck[k])delete T.deck[k];re()});
+  $('#trStart8').onclick=()=>{T.deck={};for(const[k,v]of START_DECK)T.deck[k]=v;re()};$('#trClear').onclick=()=>{T.deck={};re()};
+  $('#trGo').onclick=()=>{if(!trN())return toast('훈련장','카드를 한 장 이상 넣어야 한다');closeModal();trStart()}}
+function trFoe(k){if(k==='dummy'){const E=makeEnemy('priest');Object.assign(E,{name:'허수아비',sub:'',traits:[],noAct:true,dummy:true,maxHp:5000,hp:5000,block:0});return E}const E=makeEnemy(k);E.hp=E.maxHp;return E}
+function trStart(){const T=trState(),r=tbHero();delete r.tutB;r.train=true;r.tInf=T.inf;r.tFree=T.free;r.weapon='n_dagger';r.deck=[];
+  for(const[id,v]of Object.entries(T.deck))for(let i=0;i<v;i++)r.deck.push({uid:UID++,id});
+  let hp=r.hp;Object.defineProperty(r,'hp',{enumerable:true,configurable:true,get(){return hp},set(v){if(v<1){v=r.maxHp;setTimeout(()=>{if(S.C&&!S.C.over){fxAt('player','회복','heal');toast('훈련장','쓰러지지 않는다 · 체력 회복')}},0)}hp=v}});
+  S.run=r;const E=trFoe(T.foe);r.at={kind:'combat',enemy:E};transition(()=>startCombat(E))}
+function trEnd(){const C=S.C;if(C)C.over=true;S.busy=false;hideCombatUI();const m=$('#modal');m.hidden=false;
+  m.innerHTML=`<div class="panel" style="width:min(480px,100%)"><div class="ptitle" style="text-align:center">훈련 끝</div><div class="choices"><button class="choice" id="trAgain"><b>다시</b><span>같은 덱과 상대로 한 번 더</span></button><button class="choice" id="trPick"><b>카드 고르기</b><span>훈련장으로</span></button><button class="choice" id="trOut"><b>처음으로</b><span>시작 화면으로</span></button></div></div>`;
+  $('#trAgain').onclick=()=>{closeModal();trStart()};$('#trPick').onclick=()=>{closeModal();trLeave(openTrain)};$('#trOut').onclick=()=>{closeModal();trLeave()}}
+function trLeave(then){S.run=null;S.C=null;S.busy=false;transition(()=>{showTitle({menu:true});if(then){endTitleScene();then()}})}
+/* 세계수 등반을 누를 때마다 — 튜토리얼을 진행할지 물음 */
+function tbAsk(){const m=$('#modal');m.hidden=false;
+  m.innerHTML=`<div class="panel" style="width:min(480px,100%)"><div class="ptitle" style="text-align:center">튜토리얼을 진행하시겠습니까?</div><div class="choices" style="flex-direction:row;justify-content:center;gap:18px;margin-top:10px"><button class="plate-btn tbyn" id="tbYes">네</button><button class="plate-btn tbyn" id="tbNo">아니오</button></div></div>`;
+  $('#tbYes').onclick=()=>{closeModal();sitReset();S.sitOn=true;tbBasic(()=>transition(showClimbPrep))};$('#tbNo').onclick=()=>{closeModal();S.sitOn=false;transition(showClimbPrep)}}
 /* 상황 튜토리얼 — 적의 패시브 (처음 노르드교 단원과 싸울 때) */
 function sitCheck(){const r=S.run,C=S.C;if(!r||!r.sit||!C||S.tb)return;
   if(!sitSeen('passive')&&liveFoes().some(f=>f.key==='cultist')){sitMark('passive');const f=liveFoes().find(x=>x.key==='cultist');
@@ -4324,7 +4376,7 @@ function showClimbPrep(){
   $('#pBack').onclick=()=>{S.hero=null;transition(()=>showTitle({menu:true}))};
   const go=sit=>{sc.style.top='';h.deck=START_DECK.map(x=>x.slice());S.run=newRun(h);S.run.sit=!!sit;S.hero=null;transition(showMap)};
   setTimeout(guideShow,0);
-  $('#pClimb').onclick=()=>{if(heroTalentLeft(h)<0&&!FR)return;tbAsk(sit=>slotStart(()=>go(sit)))};
+  $('#pClimb').onclick=()=>{if(heroTalentLeft(h)<0&&!FR)return;slotStart(()=>go(S.sitOn))};
 }
 function openCard(id){
   const m=$('#modal');m.hidden=false;
@@ -4620,7 +4672,7 @@ function openLog(){
     <div class="logl" id="logl">${C.log.map(([c,t])=>`<div class="${c}">${t}</div>`).join('')}</div></div>`;
   $('#mClose').onclick=closeModal;const l=$('#logl');l.scrollTop=l.scrollHeight;
 }
-function renderCombat(){if(!S.C||S.screen!=='combat')return;settleHand();renderEnemy();ultCheck();renderPlayer();renderHand();renderTop();showSelectPrompt();dainCheck()}
+function renderCombat(){if(!S.C||S.screen!=='combat')return;setTimeout(ultReadyMark,0);settleHand();renderEnemy();ultCheck();renderPlayer();renderHand();renderTop();showSelectPrompt();dainCheck()}
 
 /* ================= hand ================= */
 const handEls=new Map();
@@ -4951,6 +5003,12 @@ function sfx(kind,amt=1){
     [0,.09,.15,.27,.36,.52,.6].forEach((dl,i)=>at(dl,.16+rnd()*.14,900+rnd()*1400,2+rnd()*3,.55-.04*i));
     at(.05,.7,420,.8,.6,'lowpass');at(.4,.9,260,.7,.5,'lowpass');
     tone(70,26,.9,.9,'sine',.02);tone(140,40,.35,.35,'triangle',.3)}
+  else if(kind==='chime'){const f=[523.25,587.33,659.25,783.99,880][Math.max(0,Math.min(4,Math.round(amt)-1))];tone(f,f*.998,1.2,.16,'sine');tone(f*2,f*2,.8,.05,'sine');tone(f*3,f*3,.45,.025,'triangle')}
+  else if(kind==='chord'){[523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,f*.997,1.8,.1,'sine',i*.07));tone(261.63,261.4,2,.09,'triangle')}
+  else if(kind==='lock'){tone(1900,1300,.05,.12,'square');noise(.05,4200,4,.28);tone(640,640,.12,.08,'triangle',.04)}
+  else if(kind==='rise'){tone(70,300,.32,.22,'sawtooth');noise(.32,700,.8,.22)}
+  else if(kind==='ultHit'){noise(.2,1900,.6,.65);noise(.7,320,.5,.75,'lowpass');tone(92,24,.85,.95,'triangle');tone(46,20,1.1,.6,'sine',.03);[523.25,783.99,1046.5].forEach(f=>tone(f,f*.5,.45,.06,'sawtooth'))}
+  else if(kind==='shatter'){for(let i=0;i<6;i++)tone(2400+rnd()*2600,1800+rnd()*900,.25+rnd()*.3,.045,'triangle',i*.035);noise(.4,5200,1.2,.45,'highpass');noise(.5,380,.6,.5,'lowpass');tone(70,30,.6,.6,'sine')}
 }
 /* ================= 카드로 베기 · 카드별 모션과 소리 (V2.30.52.14) =================
    공격 카드는 눕혀져 칼날처럼 적을 베고 지나감. 검 카드는 한 장씩, 공방 카드는 공방별 움직임 × 타격 순서·위력.
@@ -5068,6 +5126,38 @@ function impactEnemy(loss,bl,CK){
   if(CK){cutHitSfx(CK.kind,tier,CK.n,CK.id);$('#enemy').style.setProperty('--kx',CK.dirx)}else sfx(tier>=3?'big':'hit',.8+tier*.25);if(tier>=3)shake(.9);
   return tier;
 }
+/* ===== 결정적인 순간 연출 (V2.35.71.19) — 표식 종소리 · 내 궁극기 1인칭 돌진 · 보스 제압 ===== */
+/* 표식이 오를 때마다 종소리가 한 음씩 높아지고, Ⅴ에서 화음이 완성되며 표식이 금빛으로 잠김 */
+function markChime(lv){try{sfx('chime',lv)}catch(e){}if(lv<5||REDUCED)return;
+  setTimeout(()=>{try{sfx('lock');sfx('chord')}catch(e){}const en=$('#enemy');if(en){en.classList.remove('mk5');void en.offsetWidth;en.classList.add('mk5');setTimeout(()=>en.classList.remove('mk5'),1500)}
+    const o=L[S.orient];fxEl('mk5ring',o.ex,o.efeet-o.eh*.55,{},1300);fxAt('enemy','표식Ⅴ','info')},260)}
+/* 패의 궁극기 카드가 쓸 수 있게 되면 금빛으로 숨 쉼 */
+function ultReadyMark(){const C=S.C;if(!C)return;for(const el of handEls.values()){const c=el._uids&&C.hand.find(x=>x.uid===el._uids[0]);el.classList.toggle('ultok',!!(c&&CARDS[c.id]&&CARDS[c.id].rar==='ult'&&!canPlay(c)))}}
+/* 내 궁극기 — 흑백으로 멈추고 카드 이름, 표식(처단은 칼날 셋)이 빨려 든 뒤 적에게 돌진 */
+let ULT_ON=false;
+async function ultDash(id){if(REDUCED)return;const C=S.C,E=C.E,o=L[S.orient],x=o.ex,y=o.efeet-o.eh*.55,W=o.W,H=o.H;ULT_ON=true;
+  stage.classList.add('ultme');const nm=document.createElement('div');nm.className='ultname';nm.textContent=CARDS[id].name;$('#fx').appendChild(nm);
+  const cx=W/2,cy=H*.42;
+  if(id==='u_exec'){const n=Math.max(1,Math.min(5,(E&&E.pmk&&E.pmk.lv)||5));for(let i=1;i<=n;i++){setTimeout(()=>{const g=fxEl('ultmk',x+(i-3)*34,y-40,{'--tx':(cx-x-(i-3)*34)+'px','--ty':(cy-y+40)+'px'},900);g.textContent=ROMAN[i];try{sfx('chime',i)}catch(e){}},120+i*110)}await wait(260+n*110+420)}
+  else{for(let i=0;i<3;i++)setTimeout(()=>{const g=fxEl('ultblade',cx+(i-1)*90,cy+160,{'--r':((i-1)*18)+'deg'},900);try{sfx('chime',3+i)}catch(e){}},150+i*140);await wait(900)}
+  try{sfx('rise')}catch(e){}
+  for(const el of[$('#scene'),$('#bg')]){el.style.transformOrigin=`${x/W*100}% ${y/H*100}%`;el.animate([{transform:'scale(1)'},{transform:'scale(1.5)'}],{duration:230,easing:'cubic-bezier(.65,0,.95,.45)',fill:'forwards'})}
+  await wait(220);fxEl('ultline',W/2,y,{},700);try{sfx('ultHit')}catch(e){}shake(1.5);nm.classList.add('out');setTimeout(()=>nm.remove(),600)}
+async function ultBack(){if(!ULT_ON)return;ULT_ON=false;const els=[$('#scene'),$('#bg')];
+  const an=els.map(el=>el.animate([{transform:'scale(1.5)'},{transform:'scale(.95)',offset:.65},{transform:'scale(1)'}],{duration:440,easing:'ease-out',fill:'forwards'}));
+  await wait(450);an.forEach(a=>a.cancel());els.forEach(el=>el.style.transformOrigin='');stage.classList.remove('ultme')}
+/* 보스 제압 — 마지막 일격 뒤 멈춤, 하얗게 번쩍, 무릎 꿇음, 화면 틀이 깨졌다가 맞춰지고 글자 */
+async function bossFinish(){if(REDUCED)return;const o=L[S.orient],x=o.ex,y=o.efeet-o.eh*.55,W=o.W,H=o.H;let skip=false;const sk=()=>{skip=true};
+  const w2=ms=>skip?Promise.resolve():wait(ms);setTimeout(()=>stage.addEventListener('pointerdown',sk,{once:true}),300);
+  const en=$('#enemy');stage.classList.add('finning');en.classList.remove('dead');en.classList.add('hstop');const fl=document.createElement('div');fl.className='finflash';stage.appendChild(fl);try{sfx('ultHit')}catch(e){}
+  await w2(650);en.classList.remove('hstop');en.classList.add('kneel');await w2(500);
+  const sh=document.createElement('div');sh.className='finshatter';const R=Math.hypot(W,H);let p='';
+  for(let i=0;i<11;i++){const a=i/11*Math.PI*2+rnd()*.35;let px=x,py=y,d='M'+x+' '+y;for(let k=1;k<=5;k++){const rr=R*k/5,aa=a+(rnd()-.5)*.28;px=x+Math.cos(aa)*rr;py=y+Math.sin(aa)*rr;d+=' L'+px.toFixed(0)+' '+py.toFixed(0)}p+=`<path d="${d}"/>`}
+  for(let k=1;k<=3;k++){const rr=60*k+rnd()*30;let d='';for(let i=0;i<=12;i++){const a=i/12*Math.PI*2,q=rr*(.8+rnd()*.4);d+=(i?' L':'M')+(x+Math.cos(a)*q).toFixed(0)+' '+(y+Math.sin(a)*q).toFixed(0)}p+=`<path d="${d}Z" class="ring"/>`}
+  sh.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${p}</svg>`;stage.appendChild(sh);try{sfx('shatter')}catch(e){}shake(1.8);stage.classList.add('fincrack');
+  await w2(900);sh.classList.add('mend');stage.classList.remove('fincrack');
+  const t=document.createElement('div');t.className='finword';t.textContent=((S.run&&S.run.act)||1)===1?'제압':'처치';stage.appendChild(t);try{sfx('chord')}catch(e){}
+  await w2(1500);[fl,sh,t].forEach(e=>e.remove());en.classList.add('dead');en.classList.remove('kneel');stage.classList.remove('fincrack','finning');stage.removeEventListener('pointerdown',sk)}
 async function hitStop(tier,ex=0){if((tier<2&&!ex)||REDUCED)return;const en=$('#enemy');en.classList.add('hstop');await wait((tier>=3?60:tier>=2?30:0)+ex);en.classList.remove('hstop')}
 function toast(title,msg){
   const t=$('#toast');const el=document.createElement('div');el.className='tmsg';el.innerHTML=(title?`<b>${title}</b>`:'')+(msg||'');
@@ -5319,7 +5409,7 @@ function askView(E){const C=S.C,V=VIEW_Q[E.key];if(!V||E.asked)return;E.asked=tr
         fxAt('enemy',`분노 · 위력 +${Math.round((k-1)*100)}%`,'info');toast('분노',`${E.name}이(가) 예술적 감각 ${n}을(를) 모두 태워 분노했다 — 공격 위력 +${Math.round((k-1)*100)}%`);renderCombat()}
       res()})})}
 /* 적이 쓰러질 때 — 남은 적이 있으면 대상만 바꿈 */
-function foeDown(E){const C=S.C;if(E.dead)return false;E.dead=true;$('#enemy').classList.add('dead');
+function foeDown(E){const C=S.C;if(E.dead)return false;if(E.dummy&&S.run&&S.run.train){E.hp=E.maxHp;E.block=0;fxAt('enemy','복구','heal');renderCombat();return false}E.dead=true;$('#enemy').classList.add('dead');
   if(E.boss&&C.foes&&C.foes.some(f=>f.knight)){C.foes=C.foes.filter(f=>!f.knight);clog('에인헤랴르가 물러난다','e')}
   const left=liveFoes();if(!left.length){winCombat({});return true}
   clog(`${E.name} 쓰러짐`,'h');toast('처치',`${E.name}`);
@@ -5393,7 +5483,7 @@ function thorSwap(){const C=S.C;for(const a of[C.hand,C.draw,C.disc])for(const c
    성공률 = 100 − ((상대 명중 − 20) − ((내 회피 + 20) − 50)) — 두 값을 합치는 식은 문서에 없어 적중률 공식을 뒤집어 씀 (임시), 5~95% */
 function fleeChance(){const C=S.C;const acc=Math.max(...liveFoes().map(f=>{const pv=C.E;C.E=f;const a=enemyAcc();C.E=pv;return a}));
   return clamp(Math.round(100-((acc-20)-((pEva()+20)-50))),5,95)}
-function canFlee(){const C=S.C;if(C&&C.atInfo&&C.atInfo.spar)return!C.over;return!!(C&&!C.over&&!C.noFlee&&!(C.E&&C.E.rift)&&liveFoes().every(f=>f.tier==='normal')&&!C.rush&&!S.tb&&!S.run.tutB)}
+function canFlee(){const C=S.C;if(S.run&&S.run.train)return false;if(C&&C.atInfo&&C.atInfo.spar)return!C.over;return!!(C&&!C.over&&!C.noFlee&&!(C.E&&C.E.rift)&&liveFoes().every(f=>f.tier==='normal')&&!C.rush&&!S.tb&&!S.run.tutB)}
 function fleeTry(){const C=S.C;if(!canFlee()||C.phase!=='player'||S.busy||C.select)return;
   if(C.atInfo&&C.atInfo.spar)return confirmBox('대련을 그만둘까요?','보상 없이 대련장을 나간다. 깎인 체력은 그대로 남는다.','그만둔다',sparLeave);
   confirmBox('도망칠까요?',`이번 턴을 쓰고 주사위를 굴린다. 성공 ${fleeChance()}% — 성공하면 보상 없이 도망치고 이 막은 미개척으로 남는다. 실패하면 이번 턴 상대 카드 값이 2배가 된다.`,'도망친다',()=>{C.fleeTry=true;endTurn()})}
@@ -6536,7 +6626,7 @@ function slotCount(){return slotAll().filter(Boolean).length}
   const c=localStorage.getItem(SAVE_KEY);if(c){const i=slotFree();if(i!=null){const d=JSON.parse(c);d.slot=i;slotWrite(i,'climb',d)}localStorage.removeItem(SAVE_KEY)}
   for(let i=0;i<SLOT_MAX;i++){const x=slotRead(i);if(x&&x.kind!=='climb')slotDel(i)}
 }catch(e){}})();
-save=function(){const r=S.run;if(!r||r.tutB)return;if(autoSlotFor(r)==null)return;slotWrite(r.slot,'climb',r)};
+save=function(){const r=S.run;if(!r||r.tutB||r.train)return;if(autoSlotFor(r)==null)return;slotWrite(r.slot,'climb',r)};
 loadSave=function(){const r=S.run;if(r&&r.slot!=null){const x=slotRead(r.slot);return x&&x.kind==='climb'?x.data:null}return null};
 clearSave=function(){const r=S.run;if(r&&r.slot!=null){const x=slotRead(r.slot);if(x&&x.kind==='climb'&&!x.manual)slotDel(r.slot)}};
 function slotDesc(x){const d=x.data||{};
@@ -6578,6 +6668,16 @@ function leaveToTitle(){S.setBack=null;closeModal();
   transition(()=>{S.busy=false;if(S.C){S.C.over=true}S.C=null;showTitle({menu:true})})}
 function openGameMenu(){if(!inGame())return;
   if(S.busy){toast('메뉴','행동이 끝난 뒤에 열 수 있다');return}
+  if(S.run&&S.run.train){const m=$('#modal');m.hidden=false;S.setBack=null;
+    m.innerHTML=`<div class="panel" style="width:min(560px,100%)"><div class="maphead"><div><div class="psub">훈련장</div><div class="ptitle">메뉴</div></div></div>
+      <div class="choices"><button class="choice" id="gmCont"><b>계속하기</b><span>훈련으로 돌아간다</span></button>
+      <button class="choice" id="gmAgain"><b>다시 시작</b><span>같은 덱과 상대로 처음부터</span></button>
+      <button class="choice" id="gmPick"><b>카드 고르기</b><span>훈련장으로</span></button>
+      <button class="choice" id="gmSet"><b>설정</b><span>UI 크기 · 효과음 · 화면 흔들림 · 패치 내역</span></button>
+      <button class="choice" id="gmQuit"><b>처음으로</b><span>시작 화면으로</span></button></div></div>`;
+    const stop=()=>{closeModal();if(S.C)S.C.over=true;hideCombatUI()};
+    $('#gmCont').onclick=closeModal;$('#gmAgain').onclick=()=>{stop();trStart()};$('#gmPick').onclick=()=>{stop();trLeave(openTrain)};
+    $('#gmSet').onclick=()=>{S.setBack=openGameMenu;openSettings()};$('#gmQuit').onclick=()=>{stop();trLeave()};return}
   if(S.run&&S.run.tutB){const m=$('#modal');m.hidden=false;S.setBack=null;if(S.tb){S.tb.paused=true;tbDraw()}
     m.innerHTML=`<div class="panel" style="width:min(560px,100%)"><div class="maphead"><div><div class="psub">튜토리얼</div><div class="ptitle">메뉴</div></div></div>
       <div class="choices"><button class="choice" id="gmCont"><b>계속하기</b><span>튜토리얼로 돌아간다</span></button>
@@ -6687,10 +6787,70 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 #saylayer .sb i.sbface{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;background:#241b17;border:2px solid #8a4a2a}
 
 /* V2.34.68.19 튜토리얼 · 내 상태창 · 분류 · 디버프 연출 */
+/* V2.35.71.19 결정적인 순간 연출 */
+#hand .card.ultok{animation:ultOk 1.7s ease-in-out infinite}
+@keyframes ultOk{0%,100%{filter:brightness(1);box-shadow:0 0 0 0 #f0b95a00}50%{filter:brightness(1.18);box-shadow:0 0 26px 8px #f0b95acc}}
+#enemy.mk5 #eart{animation:mk5 1.4s ease-out}
+@keyframes mk5{0%{filter:brightness(1)}15%{filter:brightness(1.9) sepia(.8) saturate(2.2)}100%{filter:brightness(1)}}
+.mk5ring{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:4px solid #ffd98a;box-shadow:0 0 24px 6px #f0b95aaa,inset 0 0 18px #f0b95a88;animation:mk5r 1.2s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes mk5r{0%{transform:scale(.4);opacity:1}100%{transform:scale(7);opacity:0}}
+#stage.ultme #scene,#stage.ultme #bg{filter:grayscale(1) brightness(.62) contrast(1.15);transition:filter .18s}
+#stage.ultme #cui,#stage.ultme #topbar{filter:grayscale(1) brightness(.5);transition:filter .18s}
+.ultname{position:absolute;left:0;right:0;top:34%;text-align:center;font-family:var(--f-serif);font-size:96px;font-weight:700;letter-spacing:.18em;color:#ffe3a6;text-shadow:0 0 24px #f0b95a,0 0 60px #c98a2a,0 4px 0 #3a2508;animation:ultNm .45s cubic-bezier(.2,.9,.3,1) both}
+.port .ultname{font-size:110px;top:30%}
+.ultname.out{animation:ultNmOut .45s ease-in forwards}
+@keyframes ultNm{0%{transform:scale(1.8);opacity:0;filter:blur(8px)}100%{transform:scale(1);opacity:1;filter:blur(0)}}
+@keyframes ultNmOut{to{transform:scale(1.3);opacity:0}}
+.ultmk{position:absolute;margin:-24px 0 0 -24px;width:48px;height:48px;display:grid;place-items:center;font-family:var(--f-serif);font-size:34px;font-weight:700;color:#fff3cf;text-shadow:0 0 14px #f0b95a,0 0 30px #f0b95a;animation:ultMk .8s cubic-bezier(.5,0,.8,.4) forwards}
+@keyframes ultMk{0%{transform:translate(0,0) scale(1.4);opacity:0}25%{opacity:1;transform:translate(0,-20px) scale(1.2)}100%{transform:translate(var(--tx),var(--ty)) scale(.3);opacity:0}}
+.ultblade{position:absolute;width:16px;height:150px;margin:-75px 0 0 -8px;background:linear-gradient(#fff6d8,#f3c46a 40%,#a8742a);clip-path:polygon(50% 0,100% 18%,70% 100%,30% 100%,0 18%);filter:drop-shadow(0 0 12px #f0b95a);transform:rotate(var(--r));animation:ultBl .8s cubic-bezier(.3,.8,.4,1) forwards}
+@keyframes ultBl{0%{transform:rotate(var(--r)) translateY(120px);opacity:0}35%{opacity:1;transform:rotate(var(--r)) translateY(-20px)}100%{transform:rotate(var(--r)) translateY(-180px) scale(.6);opacity:0}}
+.ultline{position:absolute;width:150%;height:6px;margin:-3px 0 0 -75%;background:linear-gradient(90deg,transparent,#fff7da 30%,#ffd98a 50%,#fff7da 70%,transparent);box-shadow:0 0 30px 10px #f0b95acc;transform:rotate(-8deg) scaleX(0);animation:ultLn .6s cubic-bezier(.1,.8,.2,1) forwards}
+@keyframes ultLn{0%{transform:rotate(-8deg) scaleX(0);opacity:1}30%{transform:rotate(-8deg) scaleX(1);opacity:1}100%{transform:rotate(-8deg) scaleX(1) scaleY(.2);opacity:0}}
+.finflash{position:absolute;inset:0;z-index:13;pointer-events:none;background:#fffaf0;animation:finFl 1.1s ease-out forwards}
+@keyframes finFl{0%{opacity:.95}100%{opacity:0}}
+#enemy.kneel #eart{transform-origin:50% 100%;transition:transform .6s cubic-bezier(.5,0,.6,1),filter .6s;transform:translateY(9%) scaleY(.86) rotate(-3deg);filter:brightness(.55) saturate(.6)}
+#stage.finning #eplate,#stage.finning #intent,#stage.finning #echips,#stage.finning #foebar{opacity:0;transition:opacity .3s}
+.finshatter{position:absolute;inset:0;z-index:13;pointer-events:none}
+.finshatter svg{width:100%;height:100%}
+.finshatter path{fill:none;stroke:#fff4d6;stroke-width:2.4;filter:drop-shadow(0 0 6px #f0b95a);stroke-dasharray:3000;stroke-dashoffset:3000;animation:finCr .35s ease-out forwards}
+.finshatter path.ring{stroke-width:1.6;opacity:.8}
+.finshatter.mend path{animation:finMend .6s ease-in forwards}
+@keyframes finCr{to{stroke-dashoffset:0}}
+@keyframes finMend{from{stroke-dashoffset:0;opacity:1}to{stroke-dashoffset:0;opacity:0}}
+#stage.fincrack #cui,#stage.fincrack #topbar,#stage.fincrack #hand{animation:finJolt .9s cubic-bezier(.2,.8,.3,1)}
+@keyframes finJolt{0%{transform:none}12%{transform:translate(-14px,10px) rotate(-1.2deg)}30%{transform:translate(10px,-6px) rotate(.8deg)}55%{transform:translate(-4px,3px)}100%{transform:none}}
+.finword{position:absolute;left:0;right:0;top:36%;z-index:14;text-align:center;pointer-events:none;font-family:var(--f-serif);font-size:120px;font-weight:700;letter-spacing:.3em;color:#f4ead2;text-shadow:0 0 30px #000,0 0 50px #c98a2a88;animation:finW 1.5s ease-out both}
+@keyframes finW{0%{opacity:0;transform:scale(1.15);letter-spacing:.6em}30%{opacity:1;transform:scale(1);letter-spacing:.3em}80%{opacity:1}100%{opacity:0}}
+/* 튜토리얼 진행 묻기 */
+.tbyn{min-width:140px;font-size:21px;padding:12px 26px;border:2px solid var(--brass);color:var(--brass-hi)}
+/* 훈련장 */
+.trn .trrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0}
+.trn .trlb{min-width:64px;color:var(--brass-hi);font-size:15px}
+.trn .trdeck{max-height:92px;overflow:auto}
+.trn .trchip{font-size:14px;padding:5px 10px;border-radius:8px;border:1px solid var(--brass);background:#1d2127;color:var(--bone)}
+.trn .trgo{margin-left:auto;font-size:19px;padding:10px 26px;border:2px solid var(--brass);color:var(--brass-hi)}
+.trn .trcell{display:flex;flex-direction:column;align-items:center;gap:6px}
+.trn .trctl{display:flex;align-items:center;gap:10px}
+.trn .trctl button{width:40px;height:34px;border-radius:8px;border:1px solid var(--brass);background:#1d2127;color:var(--brass-hi);font-size:20px}
+.trn .trctl b{min-width:24px;text-align:center;color:var(--bone);font-size:17px}
 #tbov{position:absolute;inset:0;z-index:12;pointer-events:none}
 #tbov svg.tbdim{position:absolute;inset:0;width:100%;height:100%;transition:opacity .25s}
 #tbov svg path{fill:rgba(5,7,10,.66)}
-#tbov .tbrings i{position:absolute;border-radius:12px;border:3px solid #f3cf86;box-shadow:0 0 18px 5px #f0b95a99,inset 0 0 12px #f0b95a55;animation:tbGlow 1.15s ease-in-out infinite}
+#tbov .tbrings i.tbmark{position:absolute;border-radius:12px;border:2px solid #f3cf86cc;box-shadow:0 0 10px 2px #f0b95a55}
+#tbov .tbrings b.tbrp{position:absolute;border-radius:14px;border:3px solid #ffd98a;box-shadow:0 0 16px 3px #f0b95acc;opacity:0;animation:tbRp 1.4s cubic-bezier(.2,.6,.3,1) infinite}
+#tbov .tbrings b.tbrp.late{animation-delay:.45s}
+#tbov .tbrings em.tbtap{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(#fff6d8,#f3c46a 55%,#f0b95a00 72%);box-shadow:0 0 14px 4px #f0b95aaa;animation:tbTap 1.4s ease-out infinite}
+#tbov .tbrings b.tbrp.d0{animation:tbRpA 2.2s cubic-bezier(.2,.6,.3,1) infinite}
+#tbov .tbrings b.tbrp.d1{animation:tbRpB 2.2s cubic-bezier(.2,.6,.3,1) infinite}
+#tbov .tbrings em.tbtap.d1{animation:tbTapB 2.2s ease-out infinite}
+#tbov .tbrings s.tbdot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:radial-gradient(#fffbe8,#f6cd78 50%,#f0b95a00 72%);box-shadow:0 0 18px 6px #f0b95acc;opacity:0;animation:tbDot 2.2s ease-in-out infinite}
+@keyframes tbRp{0%{transform:scale(1);opacity:.95}70%{opacity:.25}100%{transform:scale(1.22);opacity:0}}
+@keyframes tbTap{0%{transform:scale(.6);opacity:1}60%{transform:scale(3.4);opacity:0}100%{transform:scale(3.4);opacity:0}}
+@keyframes tbRpA{0%{transform:scale(1);opacity:.95}30%{transform:scale(1.2);opacity:0}100%{opacity:0}}
+@keyframes tbDot{0%,12%{transform:translate(0,0) scale(.6);opacity:0}20%{transform:translate(0,0) scale(1);opacity:1}62%{transform:translate(var(--dx),var(--dy)) scale(1);opacity:1}72%,100%{transform:translate(var(--dx),var(--dy)) scale(.5);opacity:0}}
+@keyframes tbRpB{0%,62%{transform:scale(1);opacity:0}64%{opacity:.95}92%,100%{transform:scale(1.22);opacity:0}}
+@keyframes tbTapB{0%,62%{transform:scale(.6);opacity:0}64%{opacity:1}88%,100%{transform:scale(3.4);opacity:0}}
 @keyframes tbGlow{50%{opacity:.35}}
 #tbov .tbtx{position:absolute;box-sizing:border-box;padding:14px 20px;border-radius:10px;background:linear-gradient(#262c33f7,#171b20f7);border:1px solid var(--brass);box-shadow:0 12px 30px #000b;font-size:24px;line-height:1.45;color:var(--bone);word-break:keep-all;text-align:center}
 .port #tbov .tbtx{font-size:28px}
