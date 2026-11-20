@@ -489,7 +489,6 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .bname{font-family:var(--f-display);font-size:1.9em;padding:1.1em 1em .2em;text-align:center;line-height:1.15;text-wrap:balance;color:var(--brass-hi)}
 .btext{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:block;text-align:center;padding:.4em .9em;font-size:2.2em;line-height:1.4;font-weight:500;text-wrap:pretty;word-break:keep-all}
 .rule{width:70%;height:1px;flex:0 0 auto;background:linear-gradient(90deg,transparent,#b8925a88,transparent)}
-.flavor{padding:.7em 1.2em 1.5em;font-family:var(--f-serif);font-size:1.55em;line-height:1.5;color:var(--bone-dim);text-align:center;text-wrap:pretty;word-break:keep-all}
 
 /* static cards (reward, shop, deck) */
 .scard{position:relative;width:16.8em;height:23.6em;font-size:11.5px;cursor:pointer;flex:0 0 auto}
@@ -698,8 +697,6 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .gname{font-family:var(--f-display);font-size:30px;position:relative}
 .wname{font-size:14px;color:var(--bone-dim);letter-spacing:.18em;position:relative}
 .port .gname{font-size:32px}.port .wname{font-size:17px;letter-spacing:.06em}
-.ap-flavor{font-family:var(--f-serif);font-size:18px;color:var(--bone-dim);text-align:center;text-wrap:balance}
-.port .ap-flavor{font-size:23px}
 .ap-cols{display:grid;grid-template-columns:270px minmax(0,1fr) 380px;gap:30px;flex:1;min-height:0;overflow:auto;align-content:start}
 .port .ap-cols{grid-template-columns:1fr;gap:22px;overflow:visible;flex:0 0 auto}
 .ap-h{font-size:13px;letter-spacing:.14em;color:var(--brass);margin-bottom:8px}
@@ -1098,24 +1095,24 @@ const EVA_DICE_CAP=30;      // 회피 주사위로 얻는 회피는 한 턴에 �
 /* ================= card data (웹게임 문서 기준) ================= */
 const ultMk=()=>{const C=S.C,E=C&&!C.over&&C.E,l=E&&E.pmk?E.pmk.lv:0;return l?ROMAN[l]:'0'},ultPurge=()=>{const C=S.C;return C&&!C.over?Math.min(3,C.pPurge||0):0};
 const CARDS={
-  slash:{name:'어설픈 베기',sword:1,cost:1,type:'atk',rar:'start',d:[A(60,90)],text:'공격 60~90',flavor:'누구나 처음엔 이렇게 휘두른다.'},
-  ms_slash:{name:'베기',sword:1,cost:1,type:'atk',rar:'common',d:[A(100,150)],text:'공격 100~150',flavor:'깔끔해 보이는 절단'},
-  ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'mastery',d:[A(150,200)],draw:1,text:'공격 150~200\n드로우 1',flavor:'붙어 있는 것을 떨어지게 만드는 감각'},
+  slash:{name:'어설픈 베기',sword:1,cost:1,type:'atk',rar:'start',d:[A(60,90)],text:'공격 60~90',flavor:''},
+  ms_slash:{name:'베기',sword:1,cost:1,type:'atk',rar:'common',d:[A(100,150)],text:'공격 100~150',flavor:''},
+  ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'mastery',d:[A(150,200)],draw:1,text:'공격 150~200\n드로우 1',flavor:''},
   ms_flash:{name:'일섬',sword:1,cost:0,type:'atk',rar:'mastery',d:[A(75,95)],text:'공격 75~95\n치명타 시 데미지 +50%, 드로우 1',flavor:''},
   ms_kendo:{name:'검도',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(100,150),D(5,50)],hold:true,text:'공격 100~150\n방어 5~50\n방어도 유지',flavor:''},
   ms_kendo2:{name:'발도술',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(50,100)],text:'공격 50~100\n패에 같은 카드가 있으면 코스트 1을 소모해 재사용\n재사용은 행동 포인트 소모 없음',flavor:''},
-  f_pi:{name:'피륙',sword:1,cost:3,type:'atk',rar:'uncommon',ap:2,d:[A(200,430)],text:'공격 200~430\n행동 포인트 2 소모',flavor:'투박하지만, 정확히 끊어낸 절단'},
+  f_pi:{name:'피륙',sword:1,cost:3,type:'atk',rar:'uncommon',ap:2,d:[A(200,430)],text:'공격 200~430\n행동 포인트 2 소모',flavor:''},
   f_ryeo:{name:'도려내기',sword:1,cost:3,type:'atk',rar:'mastery',ap:2,draw:2,d:[A(150,450)],text:'공격 150~450\n드로우 2, 행동 포인트 2 소모\n데미지 300 이상이면 코스트 2 회복',flavor:''},
   f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'mastery',d:[A(500,750)],text:'공격 500~750\n재사용까지 3턴\n데미지 1000당 다음 턴 코스트 1, 드로우 1, 최대 2',flavor:''},
-  guard:{name:'막기',cost:1,type:'def',rar:'start',d:[D(35,50)],text:'방어 35~50',flavor:'막아내는 것도 살아남는 방법이다.'},
-  breath:{name:'숨 고르기',cost:0,type:'skill',rar:'start',draw:1,text:'드로우 1',flavor:'숨을 쉬는 순간도 허락받아야 한다.'},
-  stab:{name:'찌르기',cost:0,type:'atk',rar:'common',d:[A(30,50)],text:'공격 30~50',flavor:'작은 상처도 쌓이면 무너진다.'},
-  double:{name:'연속 베기',cost:1,type:'atk',rar:'common',d:[A(40,55),A(40,55)],text:'공격 40~55 × 2',flavor:'한 번에 안 되면 두 번.'},
-  smash:{name:'내려찍기',cost:2,type:'atk',rar:'common',d:[A(130,190)],text:'공격 130~190',flavor:'세계수 아래에서는 위에서 떨어지는 것이 가장 무섭다.'},
-  shield:{name:'방패 세우기',cost:2,type:'def',rar:'common',d:[D(90,130)],text:'방어 90~130',flavor:'위를 향해 몸을 움츠리는 자세'},
-  gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(50,70)],vuln:1,text:'공격 50~70\n적중 시 취약 1',flavor:'광신도도 숨을 쉰다.'},
+  guard:{name:'막기',cost:1,type:'def',rar:'start',d:[D(35,50)],text:'방어 35~50',flavor:''},
+  breath:{name:'숨 고르기',cost:0,type:'skill',rar:'start',draw:1,text:'드로우 1',flavor:''},
+  stab:{name:'찌르기',cost:0,type:'atk',rar:'common',d:[A(30,50)],text:'공격 30~50',flavor:''},
+  double:{name:'연속 베기',cost:1,type:'atk',rar:'common',d:[A(40,55),A(40,55)],text:'공격 40~55 × 2',flavor:''},
+  smash:{name:'내려찍기',cost:2,type:'atk',rar:'common',d:[A(130,190)],text:'공격 130~190',flavor:''},
+  shield:{name:'방패 세우기',cost:2,type:'def',rar:'common',d:[D(90,130)],text:'방어 90~130',flavor:''},
+  gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(50,70)],vuln:1,text:'공격 50~70\n적중 시 취약 1',flavor:''},
   hardtack:{name:'딱딱한 건빵',cost:0,type:'skill',rar:'common',heal:14,gainE:1,text:'체력 14 회복\n코스트 1 회복',flavor:''},
-  prayer:{name:'닿지 않는 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45\n드로우 1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
+  prayer:{name:'닿지 않는 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45\n드로우 1',flavor:''},
   // 임시 카드 — 문서 일반덱에 회피 주사위 카드가 없어 시험용으로 넣음
   duck:{name:'몸 낮추기',cost:1,type:'def',rar:'common',d:[V(10,16),D(15,25)],text:'회피 10~16\n방어 15~25',flavor:''},
   parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',text:'패링\n이번 턴 회피 +10\n회피 성공 시 공격 90~120',flavor:''},
@@ -1136,36 +1133,36 @@ const CARDS={
   steam:{name:'어딘가의 뜨거움',cost:1,type:'skill',rar:'uncommon',text:'다음 턴 코스트 +2',flavor:''},
   mimic:{name:'어딘가의 무구',cost:2,type:'atk',rar:'uncommon',acc:-40,d:[A(140,190)],text:'명중 -40%\n공격 140~190\n적중 실패 시 방어도 100',flavor:''},
   ornament:{name:'파편 장식',cost:0,type:'skill',rar:'uncommon',text:'이번 턴 다음 카드 코스트 -1',flavor:''},
-  hook:{name:'등반가의 갈고리',cost:1,type:'atk',rar:'uncommon',d:[A(70,105)],text:'공격 70~105\n이번 턴 방어 카드로 방어도를 얻었으면 데미지 2배',flavor:'니플헤임에서 돌아온 사람은 없었다. 거의.'},
+  hook:{name:'등반가의 갈고리',cost:1,type:'atk',rar:'uncommon',d:[A(70,105)],text:'공격 70~105\n이번 턴 방어 카드로 방어도를 얻었으면 데미지 2배',flavor:''},
   temper:{name:'단련',cost:1,type:'power',rar:'uncommon',text:'지속\n이번 전투 동안 공격 카드 데미지 +25',flavor:''},
   // 다인슬레이프 (특수무기)
-  d_dirty:{name:'더러운 참격',type:'atk',rar:'special',hpCost:5,d:[A(110,170)],text:'공격 110~170',flavor:'날이 나가도, 베인 상처는 돌아오지 않는다.'},
-  d_cannibal:{name:'동족 포식',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120\n대상 현재 체력의 10% 섭취',flavor:'먹는다. 무엇이든.'},
-  d_giant:{name:'거인 베기',type:'atk',rar:'special',hpCost:10,d:[A(140,220)],text:'공격 140~220\n대상의 현재 체력이 더 높으면 데미지 +50%',flavor:'세상에서 가장 많은 거인을 죽인 자의 검.'},
-  d_glutton:{name:'탐식',type:'atk',rar:'special',hpCost:15,d:[A(40,60),A(40,60),A(40,60)],text:'공격 40~60 × 3\n타격마다 입힌 데미지의 30% 회복',flavor:'배가 고프다. 아직도.'},
-  d_crumble:{name:'바스라지는 날',type:'atk',rar:'special',hpCost:5,d:[A(240,360)],exhaust:true,text:'체력 25% 이하일 때 사용\n공격 240~360\n소멸',flavor:'신념이 부서지면, 칼날도 부서진다.'},
-  d_hungry:{name:'굶주린 칼',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120\n이번 전투 섭취 횟수 × 5 추가 데미지',flavor:'먹은 만큼 무거워진다.'},
+  d_dirty:{name:'더러운 참격',type:'atk',rar:'special',hpCost:5,d:[A(110,170)],text:'공격 110~170',flavor:''},
+  d_cannibal:{name:'동족 포식',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120\n대상 현재 체력의 10% 섭취',flavor:''},
+  d_giant:{name:'거인 베기',type:'atk',rar:'special',hpCost:10,d:[A(140,220)],text:'공격 140~220\n대상의 현재 체력이 더 높으면 데미지 +50%',flavor:''},
+  d_glutton:{name:'탐식',type:'atk',rar:'special',hpCost:15,d:[A(40,60),A(40,60),A(40,60)],text:'공격 40~60 × 3\n타격마다 입힌 데미지의 30% 회복',flavor:''},
+  d_crumble:{name:'바스라지는 날',type:'atk',rar:'special',hpCost:5,d:[A(240,360)],exhaust:true,text:'체력 25% 이하일 때 사용\n공격 240~360\n소멸',flavor:''},
+  d_hungry:{name:'굶주린 칼',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120\n이번 전투 섭취 횟수 × 5 추가 데미지',flavor:''},
   // 궁니르 (오딘)
-  o_mark:{name:'투척-명중',cost:1,type:'atk',rar:'special',d:[A(10,30)],text:'공격 10~30\n궁니르-명중 1',flavor:'던지는 것이 아니다. 정하는 것이다.'},
-  o_pierce:{name:'투척-관통',cost:1,type:'atk',rar:'special',d:[A(150,250)],text:'공격 150~250\n가중치 1~10',flavor:'꿰뚫어라'},
-  o_mimir:{name:'미미르의 샘',cost:0,type:'skill',rar:'special',text:'드로우 4, 코스트 +2\n이번 턴 회피 불가',flavor:'대가는 후불이다. 언제나.'},
-  o_recall:{name:'궁니르-회수',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n궁니르당 최대 체력의 5% 추가, 최대 50%\n적중된 궁니르-명중마다 투척-명중 1장 회수',flavor:'무슨 방법으로든 돌아온다.'},
+  o_mark:{name:'투척-명중',cost:1,type:'atk',rar:'special',d:[A(10,30)],text:'공격 10~30\n궁니르-명중 1',flavor:''},
+  o_pierce:{name:'투척-관통',cost:1,type:'atk',rar:'special',d:[A(150,250)],text:'공격 150~250\n가중치 1~10',flavor:''},
+  o_mimir:{name:'미미르의 샘',cost:0,type:'skill',rar:'special',text:'드로우 4, 코스트 +2\n이번 턴 회피 불가',flavor:''},
+  o_recall:{name:'궁니르-회수',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n궁니르당 최대 체력의 5% 추가, 최대 50%\n적중된 궁니르-명중마다 투척-명중 1장 회수',flavor:''},
   o_shatter:{name:'궁니르-파쇄',cost:4,type:'atk',rar:'special',text:'유일\n적중된 궁니르-명중 × 15 데미지, 5회 타격\n덱의 투척 카드를 전부 파편 5장으로 교체',flavor:''},
   o_shard:{name:'파편',cost:0,type:'atk',rar:'special',exhaust:true,d:[A(50,70)],text:'일회성\n공격 50~70\n패에 파편이 있으면 재사용\n없으면 모든 카드를 투척-명중이나 투척-관통으로 변경',flavor:''},
   // 묠니르 (토르)
-  t_swing:{name:'휘두르기',cost:0,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n코스트 +1\n묠니르가 없으면 주먹 휘두르기로 바뀜',flavor:'맞든 안 맞든, 또 휘두르면 된다.'},
-  t_fist:{name:'주먹 휘두르기',cost:0,type:'atk',rar:'special',d:[A(60,100)],text:'공격 60~100\n드로우 1',flavor:'주먹맛이 어떤가'},
-  t_throw:{name:'던지기',cost:1,type:'atk',rar:'special',d:[A(120,180)],text:'공격 120~180\n패에 회수 추가\n부여하는 전격 2배',flavor:'던지고, 기다리고, 돌아온다.'},
-  t_recall:{name:'회수',cost:0,type:'atk',rar:'special',d:[A(40,60)],text:'묠니르를 던졌을 때 사용\n공격 40~60\n드로우 1\n전격 없음',flavor:'손이 기억하는 무게.'},
-  t_hunt:{name:'사냥',cost:1,type:'atk',rar:'special',d:[A(100,140)],text:'공격 100~140\n처치 시 유희 +1, 코스트 1 회복',flavor:'이건 전쟁이 아니다. 사냥이다.'},
-  t_bolt:{name:'전격',cost:2,type:'atk',rar:'special',text:'전격을 전부 소모해 1당 최대 체력의 10% 데미지, 최대 100%\n50% 확률로 마비\n명중률 무시\n드로우 1, 코스트 +1',flavor:'번개는 그의 팔에 처음 닿은 날부터 그의 것이었다.'},
-  t_thunder:{name:'천둥',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 전격의 합\n공격 횟수와 가중치는 전격의 합',flavor:'세계수가 부여한 권능이 하늘을 가른다.'},
+  t_swing:{name:'휘두르기',cost:0,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n코스트 +1\n묠니르가 없으면 주먹 휘두르기로 바뀜',flavor:''},
+  t_fist:{name:'주먹 휘두르기',cost:0,type:'atk',rar:'special',d:[A(60,100)],text:'공격 60~100\n드로우 1',flavor:''},
+  t_throw:{name:'던지기',cost:1,type:'atk',rar:'special',d:[A(120,180)],text:'공격 120~180\n패에 회수 추가\n부여하는 전격 2배',flavor:''},
+  t_recall:{name:'회수',cost:0,type:'atk',rar:'special',d:[A(40,60)],text:'묠니르를 던졌을 때 사용\n공격 40~60\n드로우 1\n전격 없음',flavor:''},
+  t_hunt:{name:'사냥',cost:1,type:'atk',rar:'special',d:[A(100,140)],text:'공격 100~140\n처치 시 유희 +1, 코스트 1 회복',flavor:''},
+  t_bolt:{name:'전격',cost:2,type:'atk',rar:'special',text:'전격을 전부 소모해 1당 최대 체력의 10% 데미지, 최대 100%\n50% 확률로 마비\n명중률 무시\n드로우 1, 코스트 +1',flavor:''},
+  t_thunder:{name:'천둥',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 전격의 합\n공격 횟수와 가중치는 전격의 합',flavor:''},
   // 레바테인 (수르트)
-  s_ignite:{name:'점화',cost:0,type:'skill',rar:'special',text:'드로우 1\n소각 10',flavor:'처음엔 그저 따뜻한 모닥불이었다.'},
-  s_burn:{name:'연소',cost:1,type:'atk',rar:'special',text:'코스트 +1\n대상 소각의 절반만큼 트루 데미지, 나머지 절반은 자신에게 이완',flavor:'태운 만큼 돌아온다.'},
-  s_chase:{name:'레바테인-추격',cost:2,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n가중치 2~3\n소각 5\n처치 시 코스트 +1, 턴당 최대 3',flavor:'도망가게 두어서는 안 된다.'},
-  s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5\n처치 시 드로우 1, 턴당 최대 3',flavor:'짧은 손잡이가 손에 감긴다.'},
-  s_ragnarok:{name:'라그나로크',cost:3,type:'skill',rar:'special',text:'소각 30\n드로우 2',flavor:'종막이었어야 할 불.'},
+  s_ignite:{name:'점화',cost:0,type:'skill',rar:'special',text:'드로우 1\n소각 10',flavor:''},
+  s_burn:{name:'연소',cost:1,type:'atk',rar:'special',text:'코스트 +1\n대상 소각의 절반만큼 트루 데미지, 나머지 절반은 자신에게 이완',flavor:''},
+  s_chase:{name:'레바테인-추격',cost:2,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n가중치 2~3\n소각 5\n처치 시 코스트 +1, 턴당 최대 3',flavor:''},
+  s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5\n처치 시 드로우 1, 턴당 최대 3',flavor:''},
+  s_ragnarok:{name:'라그나로크',cost:3,type:'skill',rar:'special',text:'소각 30\n드로우 2',flavor:''},
 };
 const START_DECK=[['slash',3],['guard',3],['breath',2]];/* V2.33.65.16: 시작 덱 8장 — 어설픈 베기 3 · 막기 3 · 숨 고르기 2 */
 const POOL={common:['ms_slash','stab','double','smash','shield','gap','hardtack','prayer','duck','parry','tidy','c_est','c_stance','n_weak','n_tear','n_force'],uncommon:['steam','mimic','f_pi','ornament','hook','temper']};
@@ -3403,8 +3400,8 @@ Object.assign(CARDS,{
   m2_proto:{name:'시제품 덩어리',cost:1,type:'skill',rar:'rare',ws2:'krim',text:'대상에게 무작위 부정적 키워드 3개',flavor:''},
   m2_sure:{name:'완벽에 가까운 모작품',cost:2,type:'atk',rar:'rare',ws2:'krim',acc:99,d:[A(120,170)],text:'공격 120~170, 명중 + 99%',flavor:''},
   /* 아쉬부티 고유 키워드로 생기는 카드 (전투 안에서만) */
-  persuade:{name:'설득하기',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +5~8%, 소멸',flavor:'말로는 모르겠다던 생도가, 그래도 귀를 기울인다.',fx(){cadetWork(ri(5,8),'설득하기')}},
-  opinion:{name:'의견제시',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +10~20%, 소멸',flavor:'예술적 감각이 있는 사람의 말은 조금 더 깊이 박힌다.',fx(){cadetWork(ri(10,20),'의견제시')}},
+  persuade:{name:'설득하기',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +5~8%, 소멸',flavor:'',fx(){cadetWork(ri(5,8),'설득하기')}},
+  opinion:{name:'의견제시',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +10~20%, 소멸',flavor:'',fx(){cadetWork(ri(10,20),'의견제시')}},
   art_wip:{name:'작품-준비',type:'skill',rar:'common',unplayable:true,gen:true,keep:true,text:'사용 불가 · 보존\n턴이 지나도 사라지지 않음, 턴이 지날 때마다 5~20% 확률로 소멸하고 작품-완성 카드를 패에 추가, 전투가 끝나면 사라짐',flavor:''},
   art_done:{name:'작품-완성',type:'skill',rar:'common',unplayable:true,gen:true,keep:true,text:'사용 불가 · 보존\n패에 있으면 공격 위력 +200%, 공격 위력 최대치, 드로우 3, 코스트 +2\n예술적 감각이 다시 쌓이거나 전투가 끝나면 사라짐',flavor:''},
 });
@@ -3937,6 +3934,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.34.70.19','11/20','카드 뒷면의 플레이버 텍스트를 모두 없앰'],
   ['V2.34.69.19','11/20','튜토리얼 속도 — 문장은 1.2초 뒤부터 넘어가고 넘어갈 수 있으면 ▼, 저절로 넘어가는 장면 없앰, 카드를 내면 결과를 본 뒤 1초 쉬고 다음 설명, 뒤집기·확대가 끝난 뒤 글상자, 튜토리얼에서 적은 한 장씩 쉬며 내고 주사위 연출도 천천히'],
   ['V2.34.68.19','11/20','튜토리얼 새로 만듦 — 처음 시작하면 기초 튜토리얼 전투 2번(내가 때리는 법과 힘, 적이 나를 때리는 법), 특성을 고른 뒤 튜토리얼을 볼지 물음, 본다를 고르면 기초 전투와 상황 튜토리얼(노르드교 단원의 패시브). 내 캐릭터를 누르면 내 상태창. 적 상태창에 공격레벨·방어레벨·명중률·회피·내 적중률·패. 힘·약화·허약·취약은 걸린 쪽의 턴이 끝나면 사라짐. 행동 포인트로 몰아서 낸 턴에는 최대 행동 포인트 ÷ 3만큼 코스트 회복. 덱·보관함·카드 더미를 공격·방어·지원으로 나눠 보기, 지금 무기로 쓸 수 없는 카드는 보관함에서 회색. 미드가르드 상점 5번째 칸은 지금 무기로 쓸 수 없는 카드. 카드 글자 크기 일정하게. 디버프가 걸리면 화면 연출, 사라질 때 아이콘이 부서짐. 도망치는 단원 연출. 고침: 허약이 약화로 보이던 것, 보관함에 지원 카드가 안 보이던 것'],
   ['V2.33.67.18','11/20','스토리 삭제 — 대화 장면, 노르드교 동료와 동료 대사, 휴식 대화. 11막 노르드교 이행자 전투는 동료 없이 그대로 나옴. 속사 삭제. 카드 설명을 짧게 정리 — 공격 60~90, 적중 시, 적중 실패 시, 드로우 1, 처단은 피해 n/3, 처형 집행은 표식 n/Ⅴ로 진행도 표시, 대절단은 재사용까지 3턴'],
@@ -4646,7 +4644,7 @@ function facesHTML(id,costBlock,inst,n=1){
   const tl=(d.rar==='special'?`특수무기 · ${TYPE_LABEL[d.type]}`:RAR_LABEL[d.rar]?`${RAR_LABEL[d.rar]} · ${TYPE_LABEL[d.type]}`:TYPE_LABEL[d.type]);
   return`<div class="lift"><div class="inner">
     <div class="face front r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}">${costBlock}<div class="cname${long?' long':''}"><span>${nm}</span></div><div class="art">${CARD_ART[id]?`<img src="${CARD_ART[id]}" alt="">`:''}</div><div class="ctext"><div>${frontOf(d)}</div></div><div class="ctype">${tl}</div><div class="marks"></div></div>
-    <div class="face back r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}"><div class="bname">${nm}</div><div class="btext${dense?' dense':''}"><div>${txt}</div></div><div class="rule"></div><div class="flavor">${d.flavor}</div></div>
+    <div class="face back r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}"><div class="bname">${nm}</div><div class="btext${dense?' dense':''}"><div>${txt}</div></div></div>
   </div></div>`;
 }
 /* 카드 앞면 주사위 — 전투 중이면 예상 피해 범위와 적중률을 함께 표시 */
@@ -6725,7 +6723,6 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 .ctext{font-size:1.6em}
 .btext,.btext.dense{font-size:1.6em;line-height:1.4;padding:.3em .8em;flex:1 1 auto;min-height:4.6em}
 .bname{font-size:1.75em}
-.face.back .flavor{flex:0 1 auto;min-height:0;max-height:30%;overflow:hidden}
 
 #tbov .tbtx.ready::after{content:'▼';position:absolute;right:10px;bottom:4px;font-size:13px;line-height:1;color:var(--brass-hi);animation:tbGlow 1s ease-in-out infinite}
 #tbov .tbtx.empty{padding:0;height:40px;background:#171b20e6}
