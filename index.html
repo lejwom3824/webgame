@@ -1096,79 +1096,79 @@ const MAX_HAND=12;          // 패 최대 12장 — 넘으면 플레이어가 �
 const EVA_DICE_CAP=30;      // 회피 주사위로 얻는 회피는 한 턴에 최대 +30
 
 /* ================= card data (웹게임 문서 기준) ================= */
+const ultMk=()=>{const C=S.C,E=C&&!C.over&&C.E,l=E&&E.pmk?E.pmk.lv:0;return l?ROMAN[l]:'0'},ultPurge=()=>{const C=S.C;return C&&!C.over?Math.min(3,C.pPurge||0):0};
 const CARDS={
   slash:{name:'어설픈 베기',sword:1,cost:1,type:'atk',rar:'start',d:[A(60,90)],text:'공격 60~90',flavor:'누구나 처음엔 이렇게 휘두른다.'},
   ms_slash:{name:'베기',sword:1,cost:1,type:'atk',rar:'common',d:[A(100,150)],text:'공격 100~150',flavor:'깔끔해 보이는 절단'},
-  ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'mastery',d:[A(150,200)],draw:1,text:'공격 150~200\n드로우 +1',flavor:'붙어 있는 것을 떨어지게 만드는 감각'},
-  ms_flash:{name:'일섬',sword:1,cost:0,type:'atk',rar:'mastery',d:[A(75,95)],text:'공격 75~95\n치명타 시 데미지 +50%, 드로우 +1',flavor:''},
-  ms_kendo:{name:'검도',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(100,150),D(5,50)],hold:true,text:'공격 100~150, 방어 5~50\n방어도가 사라지지 않음',flavor:''},
-  ms_kendo2:{name:'발도술',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(50,100)],text:'공격 50~100\n같은 카드가 패에 있으면 행동 포인트 없이 재사용, 재사용마다 코스트 1',flavor:''},
+  ms_split:{name:'갈라내기',sword:1,cost:2,type:'atk',rar:'mastery',d:[A(150,200)],draw:1,text:'공격 150~200\n드로우 1',flavor:'붙어 있는 것을 떨어지게 만드는 감각'},
+  ms_flash:{name:'일섬',sword:1,cost:0,type:'atk',rar:'mastery',d:[A(75,95)],text:'공격 75~95\n치명타 시 데미지 +50%, 드로우 1',flavor:''},
+  ms_kendo:{name:'검도',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(100,150),D(5,50)],hold:true,text:'공격 100~150\n방어 5~50\n방어도 유지',flavor:''},
+  ms_kendo2:{name:'발도술',sword:1,cost:1,type:'atk',rar:'mastery',d:[A(50,100)],text:'공격 50~100\n패에 같은 카드가 있으면 코스트 1을 소모해 재사용\n재사용은 행동 포인트 소모 없음',flavor:''},
   f_pi:{name:'피륙',sword:1,cost:3,type:'atk',rar:'uncommon',ap:2,d:[A(200,430)],text:'공격 200~430\n행동 포인트 2 소모',flavor:'투박하지만, 정확히 끊어낸 절단'},
-  f_ryeo:{name:'도려내기',sword:1,cost:3,type:'atk',rar:'mastery',ap:2,draw:2,d:[A(150,450)],text:'공격 150~450\n드로우 +2, 행동 포인트 2 소모\n데미지 300 이상이면 코스트 +2',flavor:''},
-  f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'mastery',d:[A(500,750)],text:'공격 500~750\n합성에 쓴 카드는 3턴 뒤 버린 패로 돌아옴\n데미지 1000당 다음 턴 코스트 +1, 드로우 +1, 최대 2',flavor:''},
+  f_ryeo:{name:'도려내기',sword:1,cost:3,type:'atk',rar:'mastery',ap:2,draw:2,d:[A(150,450)],text:'공격 150~450\n드로우 2, 행동 포인트 2 소모\n데미지 300 이상이면 코스트 2 회복',flavor:''},
+  f_dae:{name:'대절단',sword:1,cost:5,type:'atk',rar:'mastery',d:[A(500,750)],text:'공격 500~750\n재사용까지 3턴\n데미지 1000당 다음 턴 코스트 1, 드로우 1, 최대 2',flavor:''},
   guard:{name:'막기',cost:1,type:'def',rar:'start',d:[D(35,50)],text:'방어 35~50',flavor:'막아내는 것도 살아남는 방법이다.'},
-  breath:{name:'숨 고르기',cost:0,type:'skill',rar:'start',draw:1,text:'드로우 +1',flavor:'숨을 쉬는 순간도 허락받아야 한다.'},
+  breath:{name:'숨 고르기',cost:0,type:'skill',rar:'start',draw:1,text:'드로우 1',flavor:'숨을 쉬는 순간도 허락받아야 한다.'},
   stab:{name:'찌르기',cost:0,type:'atk',rar:'common',d:[A(30,50)],text:'공격 30~50',flavor:'작은 상처도 쌓이면 무너진다.'},
   double:{name:'연속 베기',cost:1,type:'atk',rar:'common',d:[A(40,55),A(40,55)],text:'공격 40~55 × 2',flavor:'한 번에 안 되면 두 번.'},
   smash:{name:'내려찍기',cost:2,type:'atk',rar:'common',d:[A(130,190)],text:'공격 130~190',flavor:'세계수 아래에서는 위에서 떨어지는 것이 가장 무섭다.'},
   shield:{name:'방패 세우기',cost:2,type:'def',rar:'common',d:[D(90,130)],text:'방어 90~130',flavor:'위를 향해 몸을 움츠리는 자세'},
-  gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(50,70)],vuln:1,text:'공격 50~70, 적중 시 취약 1부여',flavor:'광신도도 숨을 쉰다.'},
-  hardtack:{name:'딱딱한 건빵',cost:0,type:'skill',rar:'common',heal:14,gainE:1,text:'체력 14 회복, 코스트 회복 1',flavor:''},
-  prayer:{name:'닿지 않는 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45, 드로우 +1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
+  gap:{name:'빈틈 노리기',cost:1,type:'atk',rar:'common',d:[A(50,70)],vuln:1,text:'공격 50~70\n적중 시 취약 1',flavor:'광신도도 숨을 쉰다.'},
+  hardtack:{name:'딱딱한 건빵',cost:0,type:'skill',rar:'common',heal:14,gainE:1,text:'체력 14 회복\n코스트 1 회복',flavor:''},
+  prayer:{name:'닿지 않는 기도',cost:1,type:'def',rar:'common',d:[D(30,45)],draw:1,text:'방어 30~45\n드로우 1',flavor:'기도가 닿았는지는 아무도 모른다. 그래도 사람들은 기도한다.'},
   // 임시 카드 — 문서 일반덱에 회피 주사위 카드가 없어 시험용으로 넣음
-  duck:{name:'몸 낮추기',cost:1,type:'def',rar:'common',d:[V(10,16),D(15,25)],text:'회피 10~16, 방어 15~25',flavor:''},
-  parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',text:'패링\n이번 턴 회피 +10\n회피에 성공하면 공격 90~120으로 반격',flavor:''},
+  duck:{name:'몸 낮추기',cost:1,type:'def',rar:'common',d:[V(10,16),D(15,25)],text:'회피 10~16\n방어 15~25',flavor:''},
+  parry:{name:'흘려 베기',cost:1,type:'atk',rar:'common',text:'패링\n이번 턴 회피 +10\n회피 성공 시 공격 90~120',flavor:''},
   /* V2.33.65.16: 힘을 얻는 카드 (코스트는 문서에 없어 임시 1) */
-  c_est:{name:'견적 내기',cost:1,type:'atk',rar:'common',tmp:true,d:[A(30,40)],text:'공격 30~40\n이 카드 적중 시 힘 +20',flavor:''},
-  c_stance:{name:'자세잡기',cost:1,type:'def',rar:'common',tmp:true,d:[D(50,50)],text:'방어 50\n사용 시 힘 +20',flavor:''},
+  c_est:{name:'견적 내기',cost:1,type:'atk',rar:'common',tmp:true,d:[A(30,40)],text:'공격 30~40\n적중 시 힘 +20',flavor:''},
+  c_stance:{name:'자세잡기',cost:1,type:'def',rar:'common',tmp:true,d:[D(50,50)],text:'방어 50\n힘 +20',flavor:''},
   /* V2.33.65.16: 노르드교 원형 카드 — 노르드교 무기 전용 (등급·가격은 문서에 없어 임시) */
-  n_weak:{name:'약점 노리기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n이번 턴 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25, 최대 3회',flavor:''},
-  n_tear:{name:'약점 찢기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(60,90)],xFn:(C,E)=>pExpo(E)?1.25:1,text:'노르드교 무기 전용\n공격 60~90\n대상이 약점 노출이면 데미지 +25%',flavor:''},
-  n_force:{name:'표식 강제 부여',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n적중 시 이번 턴부터 대상에게 표식Ⅰ, 이미 표식이 있으면 그 뒤 2턴 동안 맞지 않아도 표식 유지',flavor:''},
+  n_weak:{name:'약점 노리기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n약점 노출 대상에게 이번 턴 카드를 쓸 때마다 추가타 15~25, 최대 3회',flavor:''},
+  n_tear:{name:'약점 찢기',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(60,90)],xFn:(C,E)=>pExpo(E)?1.25:1,text:'노르드교 무기 전용\n공격 60~90\n약점 노출 대상에게 데미지 +25%',flavor:''},
+  n_force:{name:'표식 강제 부여',cost:1,type:'atk',rar:'common',tmp:true,nord:1,d:[A(30,50)],text:'노르드교 무기 전용\n공격 30~50\n적중 시 표식Ⅰ\n표식이 있으면 2턴 동안 유지',flavor:''},
   /* V2.33.65.16: 궁극기 — 적이 쓴 궁극기를 맞고 버티면 1장 (황금빛 테두리 · 유일) */
-  u_exec:{name:'처형 집행',cost:3,type:'atk',rar:'ult',ult:1,nord:1,sure:true,d:[A(400,600)],text:'궁극기 · 유일 · 노르드교 무기 전용\n대상의 표식이 Ⅴ일 때만 사용\n공격 400~600, 표식을 전부 소모, 회피 불가',flavor:''},
-  u_purge:{name:'처단',cost:4,type:'atk',rar:'ult',ult:1,d:[A(50,100)],xFn:(C,E)=>E&&E.nord?(E.block>0?4.1:5):1,sureFn:(C,E)=>!!(E&&E.nord),text:'궁극기 · 유일\n공격으로 3번 피해를 주면 사용\n공격 50~100, 노르드교에게 데미지 +400%, 회피 불가',flavor:''},
+  u_exec:{name:'처형 집행',cost:3,type:'atk',rar:'ult',ult:1,nord:1,sure:true,d:[A(400,600)],get text(){return`유일 · 노르드교 무기 전용\n표식 ${ultMk()}/Ⅴ\n표식을 전부 소모해 공격 400~600\n회피 불가`},flavor:''},
+  u_purge:{name:'처단',cost:4,type:'atk',rar:'ult',ult:1,d:[A(50,100)],xFn:(C,E)=>E&&E.nord?(E.block>0?4.1:5):1,sureFn:(C,E)=>!!(E&&E.nord),get text(){return`유일\n피해 ${ultPurge()}/3\n공격 50~100\n노르드교에게 데미지 +400%\n회피 불가`},flavor:''},
   // 임시 카드 — 버리기 계열 (문서에 없음)
-  tidy:{name:'정리',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 카드를 최대 3장 골라 버린다\n버린 장수만큼 드로우',flavor:''},
+  tidy:{name:'정리',cost:0,type:'skill',rar:'common',tmp:true,text:'패에서 최대 3장 버림\n버린 장수만큼 드로우',flavor:''},
   // 임시 카드 — 조합 (휴식에서 두 장을 합침, 문서에 없음)
   // 임시 카드 — 뭉치 합성 (같은 카드 3장이 패에 모이면 바뀜, 문서에 없음)
   steam:{name:'어딘가의 뜨거움',cost:1,type:'skill',rar:'uncommon',text:'다음 턴 코스트 +2',flavor:''},
-  mimic:{name:'어딘가의 무구',cost:2,type:'atk',rar:'uncommon',acc:-40,d:[A(140,190)],text:'명중 -40%, 공격 140~190, 공격 적중 실패시 방어도 100',flavor:''},
-  ornament:{name:'파편 장식',cost:0,type:'skill',rar:'uncommon',text:'이번 턴 다음에 사용하는 카드의 코스트 -1',flavor:''},
-  quick:{name:'속사',cost:0,type:'skill',rar:'uncommon',exhaust:true,text:'일회성\n이번 턴 동안 다음 카드 2장은 상대방의 행동 포인트를 소모하지 않음',flavor:''},
-  hook:{name:'등반가의 갈고리',cost:1,type:'atk',rar:'uncommon',d:[A(70,105)],text:'공격 70~105, 이번 턴 방어 카드로 방어도를 얻었으면 피해 2배',flavor:'니플헤임에서 돌아온 사람은 없었다. 거의.'},
-  temper:{name:'단련',cost:1,type:'power',rar:'uncommon',text:'지속\n이번 전투 동안 모든 공격 카드 피해 +25',flavor:''},
+  mimic:{name:'어딘가의 무구',cost:2,type:'atk',rar:'uncommon',acc:-40,d:[A(140,190)],text:'명중 -40%\n공격 140~190\n적중 실패 시 방어도 100',flavor:''},
+  ornament:{name:'파편 장식',cost:0,type:'skill',rar:'uncommon',text:'이번 턴 다음 카드 코스트 -1',flavor:''},
+  hook:{name:'등반가의 갈고리',cost:1,type:'atk',rar:'uncommon',d:[A(70,105)],text:'공격 70~105\n이번 턴 방어 카드로 방어도를 얻었으면 데미지 2배',flavor:'니플헤임에서 돌아온 사람은 없었다. 거의.'},
+  temper:{name:'단련',cost:1,type:'power',rar:'uncommon',text:'지속\n이번 전투 동안 공격 카드 데미지 +25',flavor:''},
   // 다인슬레이프 (특수무기)
-  d_dirty:{name:'더러운 참격',type:'atk',rar:'special',hpCost:5,d:[A(110,170)],text:'공격 110~170\nhp소모 5%',flavor:'날이 나가도, 베인 상처는 돌아오지 않는다.'},
-  d_cannibal:{name:'동족 포식',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120 + 상대방 현재체력의 10%섭취\nhp소모 10%',flavor:'먹는다. 무엇이든.'},
-  d_giant:{name:'거인 베기',type:'atk',rar:'special',hpCost:10,d:[A(140,220)],text:'공격 140~220, 대상의 현재 체력이 자신보다 높으면 피해 +50%\nhp소모 10%',flavor:'세상에서 가장 많은 거인을 죽인 자의 검.'},
-  d_glutton:{name:'탐식',type:'atk',rar:'special',hpCost:15,d:[A(40,60),A(40,60),A(40,60)],text:'공격 40~60 × 3회, 타격마다 입힌 피해의 30% 회복\nhp소모 15%',flavor:'배가 고프다. 아직도.'},
-  d_crumble:{name:'바스라지는 날',type:'atk',rar:'special',hpCost:5,d:[A(240,360)],exhaust:true,text:'체력 25% 이하일 때만 사용 가능, 공격 240~360, 사용 후 소멸\nhp소모 5%',flavor:'신념이 부서지면, 칼날도 부서진다.'},
-  d_hungry:{name:'굶주린 칼',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120, 이번 전투에서 섭취한 횟수 × 5 추가 피해\nhp소모 10%',flavor:'먹은 만큼 무거워진다.'},
+  d_dirty:{name:'더러운 참격',type:'atk',rar:'special',hpCost:5,d:[A(110,170)],text:'공격 110~170',flavor:'날이 나가도, 베인 상처는 돌아오지 않는다.'},
+  d_cannibal:{name:'동족 포식',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120\n대상 현재 체력의 10% 섭취',flavor:'먹는다. 무엇이든.'},
+  d_giant:{name:'거인 베기',type:'atk',rar:'special',hpCost:10,d:[A(140,220)],text:'공격 140~220\n대상의 현재 체력이 더 높으면 데미지 +50%',flavor:'세상에서 가장 많은 거인을 죽인 자의 검.'},
+  d_glutton:{name:'탐식',type:'atk',rar:'special',hpCost:15,d:[A(40,60),A(40,60),A(40,60)],text:'공격 40~60 × 3\n타격마다 입힌 데미지의 30% 회복',flavor:'배가 고프다. 아직도.'},
+  d_crumble:{name:'바스라지는 날',type:'atk',rar:'special',hpCost:5,d:[A(240,360)],exhaust:true,text:'체력 25% 이하일 때 사용\n공격 240~360\n소멸',flavor:'신념이 부서지면, 칼날도 부서진다.'},
+  d_hungry:{name:'굶주린 칼',type:'atk',rar:'special',hpCost:10,d:[A(80,120)],text:'공격 80~120\n이번 전투 섭취 횟수 × 5 추가 데미지',flavor:'먹은 만큼 무거워진다.'},
   // 궁니르 (오딘)
-  o_mark:{name:'투척-명중',cost:1,type:'atk',rar:'special',d:[A(10,30)],text:'공격 10~30\n궁니르-명중 1부여',flavor:'던지는 것이 아니다. 정하는 것이다.'},
-  o_pierce:{name:'투척-관통',cost:1,type:'atk',rar:'special',d:[A(150,250)],text:'공격 150~250\n가중치 1~10 랜덤',flavor:'꿰뚫어라'},
-  o_mimir:{name:'미미르의 샘',cost:0,type:'skill',rar:'special',text:'드로우 +4, 코스트 +2\n이번 턴 동안 회피 불가',flavor:'대가는 후불이다. 언제나.'},
-  o_recall:{name:'궁니르-회수',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 궁니르당 최대 체력의 5%, 최대 50%\n적중된 궁니르-명중당 투척-명중 카드를 돌려받음',flavor:'무슨 방법으로든 돌아온다.'},
-  o_shatter:{name:'궁니르-파쇄',cost:4,type:'atk',rar:'special',text:'유일\n데미지: 대상에게 적중된 궁니르-명중 수 × 15, 5회로 나뉘어 타격. 사용 후 덱의 투척 카드 전부를 \'파편\' 카드 5장으로 교체.',flavor:''},
-  o_shard:{name:'파편',cost:0,type:'atk',rar:'special',exhaust:true,d:[A(50,70)],text:'일회성\n공격 50~70, 패에 파편이 있으면 재사용, 없으면 모든 카드를 투척-명중이나 투척-관통으로 변경',flavor:''},
+  o_mark:{name:'투척-명중',cost:1,type:'atk',rar:'special',d:[A(10,30)],text:'공격 10~30\n궁니르-명중 1',flavor:'던지는 것이 아니다. 정하는 것이다.'},
+  o_pierce:{name:'투척-관통',cost:1,type:'atk',rar:'special',d:[A(150,250)],text:'공격 150~250\n가중치 1~10',flavor:'꿰뚫어라'},
+  o_mimir:{name:'미미르의 샘',cost:0,type:'skill',rar:'special',text:'드로우 4, 코스트 +2\n이번 턴 회피 불가',flavor:'대가는 후불이다. 언제나.'},
+  o_recall:{name:'궁니르-회수',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n궁니르당 최대 체력의 5% 추가, 최대 50%\n적중된 궁니르-명중마다 투척-명중 1장 회수',flavor:'무슨 방법으로든 돌아온다.'},
+  o_shatter:{name:'궁니르-파쇄',cost:4,type:'atk',rar:'special',text:'유일\n적중된 궁니르-명중 × 15 데미지, 5회 타격\n덱의 투척 카드를 전부 파편 5장으로 교체',flavor:''},
+  o_shard:{name:'파편',cost:0,type:'atk',rar:'special',exhaust:true,d:[A(50,70)],text:'일회성\n공격 50~70\n패에 파편이 있으면 재사용\n없으면 모든 카드를 투척-명중이나 투척-관통으로 변경',flavor:''},
   // 묠니르 (토르)
-  t_swing:{name:'휘두르기',cost:0,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n코스트 +1\n묠니르가 회수되지 않았다면 주먹 휘두르기로 바뀜',flavor:'맞든 안 맞든, 또 휘두르면 된다.'},
-  t_fist:{name:'주먹 휘두르기',cost:0,type:'atk',rar:'special',d:[A(60,100)],text:'공격 60~100\n드로우 +1',flavor:'주먹맛이 어떤가'},
-  t_throw:{name:'던지기',cost:1,type:'atk',rar:'special',d:[A(120,180)],text:'공격 120~180\n패에 회수 카드를 추가함\n이 스킬로 부여하는 전격 2배',flavor:'던지고, 기다리고, 돌아온다.'},
-  t_recall:{name:'회수',cost:0,type:'atk',rar:'special',d:[A(40,60)],text:'공격 40~60\n던진 묠니르가 돌아오지 않았을 때 사용\n드로우 +1\n전격이 붙지 않음',flavor:'손이 기억하는 무게.'},
-  t_hunt:{name:'사냥',cost:1,type:'atk',rar:'special',d:[A(100,140)],text:'공격 100~140\n이 공격으로 처치하면 유희 +1 추가, 코스트 1 반환',flavor:'이건 전쟁이 아니다. 사냥이다.'},
-  t_bolt:{name:'전격',cost:2,type:'atk',rar:'special',text:'쌓인 전격을 터뜨려 1당 최대 체력의 10% 데미지, 최대 100%\n50% 확률로 마비\n명중률 무시\n드로우 +1\n코스트 +1',flavor:'번개는 그의 팔에 처음 닿은 날부터 그의 것이었다.'},
-  t_thunder:{name:'천둥',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 전격의 합\n공격 횟수: 전격의 합\n가중치 전격의 합',flavor:'세계수가 부여한 권능이 하늘을 가른다.'},
+  t_swing:{name:'휘두르기',cost:0,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n코스트 +1\n묠니르가 없으면 주먹 휘두르기로 바뀜',flavor:'맞든 안 맞든, 또 휘두르면 된다.'},
+  t_fist:{name:'주먹 휘두르기',cost:0,type:'atk',rar:'special',d:[A(60,100)],text:'공격 60~100\n드로우 1',flavor:'주먹맛이 어떤가'},
+  t_throw:{name:'던지기',cost:1,type:'atk',rar:'special',d:[A(120,180)],text:'공격 120~180\n패에 회수 추가\n부여하는 전격 2배',flavor:'던지고, 기다리고, 돌아온다.'},
+  t_recall:{name:'회수',cost:0,type:'atk',rar:'special',d:[A(40,60)],text:'묠니르를 던졌을 때 사용\n공격 40~60\n드로우 1\n전격 없음',flavor:'손이 기억하는 무게.'},
+  t_hunt:{name:'사냥',cost:1,type:'atk',rar:'special',d:[A(100,140)],text:'공격 100~140\n처치 시 유희 +1, 코스트 1 회복',flavor:'이건 전쟁이 아니다. 사냥이다.'},
+  t_bolt:{name:'전격',cost:2,type:'atk',rar:'special',text:'전격을 전부 소모해 1당 최대 체력의 10% 데미지, 최대 100%\n50% 확률로 마비\n명중률 무시\n드로우 1, 코스트 +1',flavor:'번개는 그의 팔에 처음 닿은 날부터 그의 것이었다.'},
+  t_thunder:{name:'천둥',cost:3,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120 + 전격의 합\n공격 횟수와 가중치는 전격의 합',flavor:'세계수가 부여한 권능이 하늘을 가른다.'},
   // 레바테인 (수르트)
-  s_ignite:{name:'점화',cost:0,type:'skill',rar:'special',text:'드로우 +1\n상대에게 소각 10부여',flavor:'처음엔 그저 따뜻한 모닥불이었다.'},
-  s_burn:{name:'연소',cost:1,type:'atk',rar:'special',text:'코스트 +1\n상대의 소각의 절반만큼 트루 데미지를 입히고 절반을 자신에게 이완',flavor:'태운 만큼 돌아온다.'},
-  s_chase:{name:'레바테인-추격',cost:2,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n가중치 2~3\n소각 5부여\n이 카드로 적을 처치하면 코스트 +1, 턴당 최대 3',flavor:'도망가게 두어서는 안 된다.'},
-  s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5부여\n이 카드로 적을 처치하면 드로우 +1, 턴당 최대 3',flavor:'짧은 손잡이가 손에 감긴다.'},
-  s_ragnarok:{name:'라그나로크',cost:3,type:'skill',rar:'special',text:'대상에게 소각 +30\n드로우 +2',flavor:'종막이었어야 할 불.'},
+  s_ignite:{name:'점화',cost:0,type:'skill',rar:'special',text:'드로우 1\n소각 10',flavor:'처음엔 그저 따뜻한 모닥불이었다.'},
+  s_burn:{name:'연소',cost:1,type:'atk',rar:'special',text:'코스트 +1\n대상 소각의 절반만큼 트루 데미지, 나머지 절반은 자신에게 이완',flavor:'태운 만큼 돌아온다.'},
+  s_chase:{name:'레바테인-추격',cost:2,type:'atk',rar:'special',d:[A(80,120)],text:'공격 80~120\n가중치 2~3\n소각 5\n처치 시 코스트 +1, 턴당 최대 3',flavor:'도망가게 두어서는 안 된다.'},
+  s_strike:{name:'레바테인-타격',cost:2,type:'atk',rar:'special',d:[A(160,240)],text:'공격 160~240\n소각 5\n처치 시 드로우 1, 턴당 최대 3',flavor:'짧은 손잡이가 손에 감긴다.'},
+  s_ragnarok:{name:'라그나로크',cost:3,type:'skill',rar:'special',text:'소각 30\n드로우 2',flavor:'종막이었어야 할 불.'},
 };
 const START_DECK=[['slash',3],['guard',3],['breath',2]];/* V2.33.65.16: 시작 덱 8장 — 어설픈 베기 3 · 막기 3 · 숨 고르기 2 */
-const POOL={common:['ms_slash','stab','double','smash','shield','gap','hardtack','prayer','duck','parry','tidy','c_est','c_stance','n_weak','n_tear','n_force'],uncommon:['steam','mimic','f_pi','ornament','hook','temper','quick']};
+const POOL={common:['ms_slash','stab','double','smash','shield','gap','hardtack','prayer','duck','parry','tidy','c_est','c_stance','n_weak','n_tear','n_force'],uncommon:['steam','mimic','f_pi','ornament','hook','temper']};
 /* 신화 빌드 — 다인 시작 덱 10장 (문서 장수) */
 const DAIN_DECK=[['d_dirty',3],['d_cannibal',2],['d_giant',2],['d_glutton',1],['d_crumble',1],['d_hungry',1]];
 const TYPE_LABEL={atk:'공격',def:'방어',skill:'지원',power:'지원',curse:'저주'};/* 카드 종류: 공격 · 방어 · 지원 */
@@ -1281,25 +1281,25 @@ const ACT={
   /* ===== 1장 적 카드 (V2.32.58.14, 문서 카드 탭) ===== */
   '막기':{k:'def',d:[D(35,50)],cost:1},
   '말뿐인 저주':{k:'atk',d:[A(6,10)],cost:1},
-  '훈계':{k:'debuff',neg:1,cost:1,desc:'데미지 없음, 대상에게 약화 10',fx:async()=>{pWkAdd(10)}},
-  '파문 선고':{k:'debuff',neg:1,cost:2,desc:'대상의 패에서 가장 많이 든 카드 뭉치에 낙인',fx:async()=>{excommunicate()}},
+  '훈계':{k:'debuff',neg:1,cost:1,desc:'약화 10',fx:async()=>{pWkAdd(10)}},
+  '파문 선고':{k:'debuff',neg:1,cost:2,desc:'대상의 패에서 가장 많은 카드 뭉치에 낙인',fx:async()=>{excommunicate()}},
   '어설픈 베기':{k:'atk',d:[A(60,90)],cost:1},
-  '숨 고르기':{k:'sup',cost:0,desc:'드로우 +1',fx:async()=>{foeDraw(S.C.E,1)}},
-  '약점 노리기':{k:'atk',d:[A(30,50)],cost:1,wkHunt:1,desc:'이번 턴 대상이 약점 노출이면 다른 카드를 쓸 때마다 추가타 15~25, 최대 3회'},
+  '숨 고르기':{k:'sup',cost:0,desc:'드로우 1',fx:async()=>{foeDraw(S.C.E,1)}},
+  '약점 노리기':{k:'atk',d:[A(30,50)],cost:1,wkHunt:1,desc:'약점 노출 대상에게 이번 턴 카드를 쓸 때마다 추가타 15~25, 최대 3회'},
   '명령 이행-베기':{k:'atk',d:[A(100,150)],cost:1},
   '명령 이행-내려찍기':{k:'atk',d:[A(130,190)],cost:2},
   '명령 이행-처단':{k:'atk',d:[A(50,100)],cost:4,purge:1,ult:1,desc:'궁극기'},
   '명령 이행-방패 세우기':{k:'def',d:[D(90,130)],cost:2},
   '명령 이행-빈틈 노리기':{k:'atk',d:[A(50,70)],cost:1,vuln:1},
-  '행동-약점 찢기':{k:'atk',d:[A(60,90)],cost:1,expo:.25,desc:'대상이 약점 노출이면 데미지 +25%'},
-  '행동-표식 강제 부여':{k:'atk',d:[A(30,50)],cost:1,forceMark:1,neg:1,desc:'적중 시 표식Ⅰ, 이미 있으면 2턴 동안 유지'},
+  '행동-약점 찢기':{k:'atk',d:[A(60,90)],cost:1,expo:.25,desc:'약점 노출 대상에게 데미지 +25%'},
+  '행동-표식 강제 부여':{k:'atk',d:[A(30,50)],cost:1,forceMark:1,neg:1,desc:'적중 시 표식Ⅰ\n표식이 있으면 2턴 동안 유지'},
   '행동-파쇄':{k:'atk',d:[A(120,180)],cost:2,shatter:1,desc:'방어도에 2배 데미지, 체력에는 들어가지 않음'},
   '행동-처형 집행':{k:'atk',d:[A(400,600)],cost:3,exec:1,ult:1,desc:'궁극기'},
   '뼈와 살의 해체학':{k:'atk',d:[A(360,540)],cost:3,burstOnly:1,desc:'특수 카드'},
-  '으스러트리기':{k:'atk',d:[A(100,150)],cost:2,frac:1,neg:1,desc:'적중 시 대상에게 골절'},
-  '박 살':{k:'atk',d:[A(140,210)],cost:2,fracX:.5,desc:'대상이 골절이면 데미지 +50%'},
+  '으스러트리기':{k:'atk',d:[A(100,150)],cost:2,frac:1,neg:1,desc:'적중 시 골절'},
+  '박 살':{k:'atk',d:[A(140,210)],cost:2,fracX:.5,desc:'골절 대상에게 데미지 +50%'},
   '뜯어지는 강타':{k:'atk',d:[A(80,120)],cost:1},
-  '망치 돌리기':{k:'sup',cost:0,desc:'드로우 +1',fx:async()=>{foeDraw(S.C.E,1)}},
+  '망치 돌리기':{k:'sup',cost:0,desc:'드로우 1',fx:async()=>{foeDraw(S.C.E,1)}},
   '명령-베기':{k:'cmd',cost:3,cmd:'명령 이행-베기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-베기를 실행함'},
   '명령-내려찍기':{k:'cmd',cost:3,cmd:'명령 이행-내려찍기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-내려찍기를 실행함'},
   '명령-방패 세우기':{k:'cmd',cost:3,cmd:'명령 이행-방패 세우기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-방패 세우기를 실행함, 방어도는 각 에인헤랴르가 얻음'},
@@ -1312,10 +1312,10 @@ const ENEMY={
     deck:{'막기':3,'말뿐인 저주':2,'훈계':3,'파문 선고':1},passives:[]},
   cultist:{name:'노르드교 단원',tier:'normal',lv:[10,20],hp1:85,st:{hp:[60,110],atk:[30,55],def:[25,50]},acc:85,eva:75,ap:[5,7],art:'cultist',nord:1,
     deck:{'어설픈 베기':3,'숨 고르기':1,'약점 노리기':2},
-    passives:[['점조직','턴 종료 시 체력이 50% 이하라면 도망침. 도망치면 보상 실링 없음'],['표식','노르드교 공통 패시브 — 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 표식 단계가 오름(Ⅰ~Ⅴ), 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐, 단계 1당 표식을 건 쪽에게 받는 데미지 +10%']]},
+    passives:[['점조직','턴 종료 시 체력이 50% 이하라면 도망침. 도망치면 보상 실링 없음'],['표식','노르드교 공통 패시브 — 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 표식 단계가 오름, 최대 Ⅴ, 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐, 단계 1당 표식을 건 쪽에게 받는 데미지 +10%']]},
   inquisitor:{name:'이단심문관',sub:'에인헤랴르',tier:'elite',lv:[20,30],hp1:200,st:{hp:[150,250],atk:[40,65],def:[40,65]},acc:100,eva:0,ap:[7,9],art:'inquisitor',
     deck:{'명령 이행-베기':3,'명령 이행-내려찍기':2,'명령 이행-처단':1},
-    passives:[['새겨진 본능-단죄','이단을 심문할 때만 발동 — 이단 표식이 있는 대상(주인공)에게 데미지 +25%, 명중률 +10%'],['새겨진 본능-보호','순수유물주의자를 보호할 때만 발동']]},
+    passives:[['새겨진 본능-단죄','이단을 심문할 때만 발동 — 이단 표식이 있는 대상에게 데미지 +25%, 명중률 +10%'],['새겨진 본능-보호','순수유물주의자를 보호할 때만 발동']]},
   bishop:{name:'순수유물주의자',sub:'주교',tier:'boss',lv:45,hp1:160,acc:80,eva:45,art:'bishop',
     deck1:{'뼈와 살의 해체학':1,'으스러트리기':2,'박 살':2,'뜯어지는 강타':3,'망치 돌리기':2},
     deck2:{'명령-베기':3,'명령-내려찍기':2,'명령-방패 세우기':2,'명령-빈틈 노리기':2,'명령-전열 정리':1},
@@ -1326,7 +1326,7 @@ const ENEMY={
       ['행동 예측','페이즈 2: 상대방의 패를 읽음 — 피해를 받은 에인헤랴르가 있으면 명령-전열 정리, 상대가 낼 수 있는 공격 카드를 들고 있으면 방어도 없는 에인헤랴르가 있을 때 명령-방패 세우기 · 아니면 명령-빈틈 노리기, 그 밖에는 공격 명령'],
       ['새겨진 본능-보호','페이즈 2: 살아 있는 무작위 에인헤랴르가 보스가 받을 데미지를 50% 확률로 대신 맞거나 50% 확률로 75%만 대신 맞음, 에인헤랴르가 전부 쓰러지면 보스가 데미지를 입음']]},
   einherjar:{name:'에인헤랴르',sub:'명령-보호',tier:'elite',lv:[20,30],hp1:200,st:{hp:[150,250],atk:[40,65],def:[40,65]},acc:100,eva:0,art:'inquisitor',knight:1,deck:{},
-    passives:[['새겨진 본능-보호','순수유물주의자가 받을 데미지를 대신 받음'],['명령','행동 포인트와 카드가 없음, 순수유물주의자가 명령한 카드만 에인헤랴르 본연의 스탯으로 사용'],['원호 방어','피해를 받은 턴에는 어떤 명령을 받아도 명령 이행-방패 세우기만 함'],['퇴각과 교대','턴 종료 시 체력이 50% 이하인 처음 2명(수복으로 채운 에인헤랴르 포함)은 퇴각함, 늘어난 에인헤랴르는 처치되지 않으면 퇴각하지 않음']]},
+    passives:[['새겨진 본능-보호','순수유물주의자가 받을 데미지를 대신 받음'],['명령','행동 포인트와 카드가 없음, 순수유물주의자가 명령한 카드만 에인헤랴르 본연의 스탯으로 사용'],['원호 방어','피해를 받은 턴에는 어떤 명령을 받아도 명령 이행-방패 세우기만 함'],['퇴각과 교대','턴 종료 시 체력이 50% 이하인 처음 2명은 퇴각함, 수복으로 채운 에인헤랴르도 포함, 늘어난 에인헤랴르는 처치되지 않으면 퇴각하지 않음']]},
 };
 
 const BOSS_LINES={};/* 보스 대사 없음 — 글은 문서 보류 탭 */
@@ -2049,7 +2049,7 @@ function purgeDeleted(r){if(!r)return r;const okc=c=>c&&CARDS[c.id],LG={"g_lhood
 function migrateRun(r){
   if(!r)return r;r.store=r.store||[];purgeDeleted(r);
   /* V2.32.61.14: 문서에서 빠진 특성(고지능·최상의 질병 5위·약화 부여 효과·장기기억증)은 저장 기록에서도 지움 */
-  if(r.traits)r.traits=r.traits.filter(k=>PTRAIT[k]);ensureGear(r);if(r.mode==='human'&&!r.weapon)r.weapon='n_dagger';r.ults=r.ults||[];r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
+  if(r.traits)r.traits=r.traits.filter(k=>PTRAIT[k]);ensureGear(r);if(r.mode==='human'&&!r.weapon)r.weapon='n_dagger';r.ults=r.ults||[];if(r.pal&&r.pal.k==='nord')r.pal=null;r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
   /* V2.29.48.12: 공방 동료(제바르크·오토·견습생) 롤백 — 건넨 카드·장비는 보관함으로, 리테만 남김 */
   {const OUT=['smith','otto','cadet'],back=p=>{if(!p)return;for(const c of p.cards||[])r.store.push(c);r.bag=r.bag||[];for(const g of p.gear||[])r.bag.push(g)};
     if(r.mates){for(const k of OUT)if(r.mates[k]){back(r.mates[k]);delete r.mates[k]}}
@@ -2113,7 +2113,7 @@ function genOpts(r,row){
   if(row>BOSS_ROW)return[];
   if(row===BOSS_ROW)return['boss'];
   if(ELITE_ROWS.includes(row))return['elite'];
-  if(r.pal&&r.pal.k==='nord'&&row===11)return['rift'];
+  if(r.mode==='human'&&(!r.act||r.act===1)&&row===11)return['rift'];
   if(r.mode==='dain')return[0,1,2].map(()=>rnd()<.25?'elite':'battle');
   if(row===1)return['battle','battle','battle'];
   /* 튜토리얼: 휴식과 상점에 한 번씩 꼭 들름 (건너뛰면 일반 지도) */
@@ -2180,8 +2180,7 @@ function enterNode(i){
   /* 특수무기 사건은 1%, 나머지 일반 사건 99% */
   else at={kind:'event',ev:pickEvent()};
   r.at=at;if(at.kind==='shop')genShop();
-  if(at.kind==='shop'&&r.tut&&tutOn()&&r.pal){r.shop.free=true;save();return showScene(S_FREE,()=>transition(resumeAt))}
-  save();if(t==='rift')return showScene(S_RIFT,()=>transition(resumeAt));if(t==='boss'&&r.mode==='human')return showScene(S_BOSS,()=>transition(resumeAt));transition(resumeAt);
+  save();transition(resumeAt);
 }
 /* 곡해파 첫 만남 (V28) — 전투에 들어가기 전 그림과 선택지만. 반응은 각 50% */
 const GOK_FIRST={q:'신화 원전은 잔혹한가? 신성한가? 어떤 게 정론인가?',
@@ -2207,7 +2206,7 @@ function gokFirst(at){const r=S.run;r.flags.gokMet=true;at.gokDone=true;save();
 const A2_KINDS=['fall','land','dir','a2first','a2rain','shop2','contract','inn','a1end'];
 function showA1End(){const r=S.run;if(r){r.at={kind:'a1end'};save()}S.screen='a1end';try{hideCombatUI()}catch(e){}renderTop();
   const sc=openScreen('',{full:true});sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center;max-width:720px;margin:auto"><div class="psub">1장 · 미드가르드</div><div class="ptitle">순수유물주의자를 넘어섰다</div>
-    <p style="opacity:.85;line-height:1.7">세계수 아래, 니다벨리르로 가는 길은 아직 열리지 않았다.<br>2장은 다음 업데이트를 기다려 주세요.</p>
+    <p style="opacity:.85;line-height:1.7">2장은 다음 업데이트를 기다려 주세요.</p>
     <div class="choices" style="width:100%">${r&&r.map&&r.mode==='human'?'<button class="choice" id="a1Stage"><b>막 골라 이어하기</b><span>1장의 원하는 막으로 돌아가 다시 오른다 · 덱·체력·카드는 지금 그대로</span></button>':''}<button class="choice" id="a1Title"><b>타이틀로</b><span>저장 기록은 이 자리에 남는다</span></button></div></div>`;
   if($('#a1Stage'))$('#a1Stage').onclick=showStagePick;
   $('#a1Title').onclick=()=>{S.run=null;showTitle()}}
@@ -2502,7 +2501,6 @@ async function playCardRaw(uid,o={}){
   const why=canPlay(c);if(why){toast('',why);layoutHand();return}
   S.busy=true;
   const d=cdef(c),k=costOf(c),ctx={killed:false},U=!o.reuse;/* U: 사용시 효과는 카드를 낼 때 한 번만, 재사용은 타격시 효과만 */
-  if(E&&E.rift&&!r.flags.riftDone&&(d.type==='atk'||(d.d||[]).some(x=>x.t==='atk'))){r.flags.riftDone='left';palSay('...형제여.',true);palRender()}
   if(pt('randTgt')&&d.type==='atk'&&liveFoes().length>1){C.E=pick(liveFoes());clog(`근시: 대상이 「${C.E.name}」(으)로 정해짐`)}
   if(C.flaskArm&&!c.free&&((k.hp!=null&&k.hp>0)||(k.hp==null&&k.e>0))){C.flaskArm=false;
     if(k.hp!=null){C.flaskHp=(C.flaskHp||0)+k.hp*2;clog(`미미르의 물병: 체력 소모 없이 사용 — 다음 턴 체력 ${k.hp*2} 지불`)}
@@ -2562,7 +2560,6 @@ async function playCardRaw(uid,o={}){
     if(U)switch(c.id){
       case'steam':C.nextEnergy+=2;break;
       case'mimic':if(!hitAny)gainBlock(100,0,'어딘가의 무구');break;
-      case'quick':C.freeAP=2;toast('속사','다음 카드 2장은 행동 포인트를 소모하지 않음');break;
       case'ornament':C.discount=true;break;
       case'temper':C.temper++;break;
       case'tidy':{const n=await pickToss(3,'정리');if(n)drawN(n);tutEvent('toss');break}
@@ -2731,7 +2728,6 @@ async function endTurn(){
   const C=S.C,r=S.run;if(!C||C.phase!=='player'||S.busy||C.over||C.select||tutLocked('end'))return;
   C.phase='enemy';S.busy=true;C.ultDark=null;ultCheck();
   const E=C.E;
-  if(E&&E.rift&&!r.flags.riftDone){r.flags.riftDone='dead';C.palShield=true;r.keep=[...(r.keep||[]),'nred'];palSay('아군...일세...',true);fxAt('player','대신 맞음','info');toast('노르드교의 붉은 천','귀속 — 버릴 수 없다');palRender();save()}
   clog('턴 종료','h');tutEvent('end');
   if(E&&(E.boss||E.key==='clerk')&&E.pendPhase)await bossPhaseCut();
   if(eqW('st_b')&&C.energy>0&&r.mode!=='dain'){C.steinBlock=C.energy*3;clog(`스타인러 공방: 남은 코스트 ${C.energy} → 다음 턴 방어 ${C.steinBlock}`)}
@@ -3073,7 +3069,7 @@ function winCombat(res){
   const chase=fled.length&&r.mode!=='dain'?JSON.parse(JSON.stringify(fled)):null;
   setTimeout(()=>{
     hideCombatUI();
-    if(top.tut&&top.tutN<4&&tutOn()){const nx=top.tutN+1;r.tutStep=TUT_START[nx-1];r.hp=r.maxHp;r.at={kind:'combat',enemy:tutEnemy(nx)};save();return showScene(S_TUT[nx],()=>transition(resumeAt))}
+    if(top.tut&&top.tutN<4&&tutOn()){const nx=top.tutN+1;r.tutStep=TUT_START[nx-1];r.hp=r.maxHp;r.at={kind:'combat',enemy:tutEnemy(nx)};save();return transition(resumeAt)}
     if(then==='win2')return showAct2Victory(gold,lines,loot[0]);
     if(evb)runFx(evb,()=>{});r.at={kind:'reward',gold,lines,loot,then,rush:info.rush,chase,node:info.node,killEx,cards:evb?[]:spar?sparCards(spar.ws,spar.elite):rewardCards()};save();
     showReward(gold,lines,loot);
@@ -3121,7 +3117,7 @@ function showRest(){
 </div>`;
   $('#rHeal').onclick=()=>{r.hp=Math.min(r.maxHp,r.hp+amt);showMap()};
   tutShow();
-  restIdle();palEv('rest',true);
+  palEv('rest',true);
 }
 /* V32 휴식 화면: 모닥불가에 먼저 앉아 있던 사람(남자 또는 여자 무작위)과 이제 막 앉은 주인공 */
 function restScene(fem){
@@ -3138,28 +3134,6 @@ function restScene(fem){
     <g class="rs-other" fill="#060708" transform="translate(206 176)">${sit}${stand}</g>
     <g class="rs-me" fill="#060708" transform="translate(452 176) scale(-1 1)"><circle cx="0" cy="-70" r="13"/><path d="M-17 -56 Q-24 -28 -22 -6 L22 -6 Q24 -28 17 -56 Q0 -62 -17 -56 Z"/><path d="M-20 -8 Q8 -12 30 -2 L32 6 L-22 6 Z"/></g>
   </svg>`;
-}
-/* V32 이스터에그: 휴식 화면에서 아무 행동도 클릭도 없이 30초가 지나면 대화가 나오고, 그 사람이 일어나 모닥불을 끄면 휴식에서 벗어남 */
-const REST_TALK=[['me','왜 모닥불에 앉아 있는 겁니까?'],['other','추워서.'],['me','지금 이렇게나 더운데도요?'],['other','그래도 마음속 어딘가가 시리고 굳어 가서, 따뜻한 모닥불에 앉아 있는 거야.'],['me','그렇다면 꼭 모닥불일 필요는 없지 않나요?'],['other','그런가?'],['me','그렇게나 춥다면, 꺼지지 않는 불이 아닌 이상 모닥불이 항상 따뜻하지만은 않으니까요. 꺼지면 원래 따뜻했을 때보다 더더욱 차갑게 느껴지니, 모닥불이 아닌 따뜻한 마음을 받는 건 어때요?'],['me','예를 들어, 인간의 미덕 같은 거요.'],['other','미덕이라...']];
-let restIdleT=0;
-function restIdle(){
-  clearTimeout(restIdleT);document.removeEventListener('pointerdown',restPoke,true);document.removeEventListener('keydown',restPoke,true);
-  if(S.screen!=='rest')return;
-  document.addEventListener('pointerdown',restPoke,true);document.addEventListener('keydown',restPoke,true);
-  restIdleT=setTimeout(restTalk,30000);
-}
-function restPoke(){if(S.screen!=='rest'||S.restTalking){document.removeEventListener('pointerdown',restPoke,true);document.removeEventListener('keydown',restPoke,true);clearTimeout(restIdleT);return}clearTimeout(restIdleT);restIdleT=setTimeout(restTalk,30000)}
-async function restTalk(){
-  if(S.screen!=='rest'||!$('#rChat'))return;
-  S.restTalking=true;document.removeEventListener('pointerdown',restPoke,true);document.removeEventListener('keydown',restPoke,true);
-  const box=$('#rChat'),ch=$('#rChoices');box.hidden=false;if(ch)ch.hidden=true;
-  for(const[k,t]of REST_TALK){if(S.screen!=='rest'){S.restTalking=false;return}
-    const p=document.createElement('p');p.className=k;p.innerHTML=`<b>${k==='me'?'나':'모닥불가의 사람'}</b>${t}`;box.appendChild(p);box.scrollTop=box.scrollHeight;
-    await wait(Math.max(2200,t.length*70))}
-  const sv=$('#rScene');if(sv){sv.classList.add('standing');await wait(1200);sv.classList.add('out')}
-  const p=document.createElement('p');p.className='note';p.textContent='모닥불가의 사람이 일어나 모닥불을 끈다.';box.appendChild(p);box.scrollTop=box.scrollHeight;
-  await wait(2600);S.restTalking=false;
-  if(S.screen==='rest')transition(()=>showMap());
 }
 /* 상점 (웹게임 문서: 상점 · 상점 종류 · 카드•장비 탭)
    카드 구매 · 장비 구매 · 새로고침 — 상점 등급 이하만 진열
@@ -3395,15 +3369,15 @@ const GEV={
 /* 공방 카드 (니다벨리르) — 희귀(고급)·영웅(희귀) 등급. ws: 어느 공방의 카드인지 (계약 파기 전투에서 사용 금지 판정) */
 Object.assign(CARDS,{
   s2_vent:{name:'압력 배출',cost:1,type:'skill',rar:'uncommon',ws2:'stein',text:'자신의 증기를 전부 없애고, 없앤 증기 1당 방어 20',flavor:''},
-  s2_over:{name:'과열 가동',cost:0,type:'skill',rar:'uncommon',ws2:'stein',draw:1,text:'자신에게 증기 10, 드로우 +1',flavor:''},
+  s2_over:{name:'과열 가동',cost:0,type:'skill',rar:'uncommon',ws2:'stein',draw:1,text:'자신에게 증기 10, 드로우 1',flavor:''},
   s2_valve:{name:'냉각수 밸브',cost:1,type:'skill',rar:'rare',ws2:'stein',text:'대상에게 냉매 3, 자신의 증기 -10, 코스트 +1',flavor:''},
   s2_piston:{name:'수동 피스톤',cost:2,type:'atk',rar:'rare',ws2:'stein',d:[A(45,65),A(45,65),A(45,65)],text:'공격 45~65 × 3, 자신에게 열기가 있으면 × 5',flavor:''},
-  k2_spray:{name:'냉기 분사',cost:1,type:'skill',rar:'uncommon',ws2:'kriv',draw:1,text:'대상에게 냉매 3, 드로우 +1',flavor:''},
-  k2_warm:{name:'온기 주머니',cost:0,type:'skill',rar:'uncommon',ws2:'kriv',draw:2,exhaust:true,text:'자신의 냉매·냉동을 모두 없앰, 드로우 +2, 코스트 +1, 소멸',flavor:''},
+  k2_spray:{name:'냉기 분사',cost:1,type:'skill',rar:'uncommon',ws2:'kriv',draw:1,text:'대상에게 냉매 3, 드로우 1',flavor:''},
+  k2_warm:{name:'온기 주머니',cost:0,type:'skill',rar:'uncommon',ws2:'kriv',draw:2,exhaust:true,text:'자신의 냉매·냉동을 모두 없앰, 드로우 2, 코스트 +1, 소멸',flavor:''},
   k2_keep:{name:'체온 유지',cost:1,type:'power',rar:'rare',ws2:'kriv',text:'지속\n매 턴 시작 시 자신의 냉매 -1, 방어 35~50',flavor:''},
   k2_break:{name:'얼음 깨기',cost:2,type:'atk',rar:'rare',ws2:'kriv',d:[A(140,190)],text:'공격 140~190, 대상이 냉동이면 깨짐 +2단계',flavor:''},
-  a2_stand:{name:'진열대',cost:0,type:'skill',rar:'uncommon',ws2:'ash',draw:2,exhaust:true,text:'예술적 감각 +1, 드로우 +2, 소멸',flavor:''},
-  a2_talk:{name:'해설',cost:1,type:'skill',rar:'uncommon',ws2:'ash',draw:2,text:'다음 카드 2장 코스트 -1, 드로우 +2',flavor:''},
+  a2_stand:{name:'진열대',cost:0,type:'skill',rar:'uncommon',ws2:'ash',draw:2,exhaust:true,text:'예술적 감각 +1, 드로우 2, 소멸',flavor:''},
+  a2_talk:{name:'해설',cost:1,type:'skill',rar:'uncommon',ws2:'ash',draw:2,text:'다음 카드 2장 코스트 -1, 드로우 2',flavor:''},
   a2_cert:{name:'감정서',cost:0,type:'skill',rar:'rare',ws2:'ash',exhaust:true,text:'작품-준비가 있으면 턴마다 50% 확률로 패에 들어옴, 50% 확률로 작품-준비를 작품-완성으로 만듦, 소멸',flavor:''},
   a2_copy:{name:'유물 모사화',cost:2,type:'skill',rar:'rare',ws2:'ash',exhaust:true,text:'덱의 특수무기 카드 1장 효과를 그대로 발동, 소멸',flavor:''},
   r2_soup:{name:'고기 수프',cost:1,type:'skill',rar:'uncommon',ws2:'remi',food:2,heal:25,exhaust:true,text:'음식\n체력 25 회복, 먹기 +2, 소멸',flavor:''},
@@ -3418,7 +3392,7 @@ Object.assign(CARDS,{
   persuade:{name:'설득하기',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +5~8%, 소멸',flavor:'말로는 모르겠다던 생도가, 그래도 귀를 기울인다.',fx(){cadetWork(ri(5,8),'설득하기')}},
   opinion:{name:'의견제시',cost:0,type:'skill',rar:'common',gen:true,exhaust:true,text:'견습생의 작품 제작 +10~20%, 소멸',flavor:'예술적 감각이 있는 사람의 말은 조금 더 깊이 박힌다.',fx(){cadetWork(ri(10,20),'의견제시')}},
   art_wip:{name:'작품-준비',type:'skill',rar:'common',unplayable:true,gen:true,keep:true,text:'사용 불가 · 보존\n턴이 지나도 사라지지 않음, 턴이 지날 때마다 5~20% 확률로 소멸하고 작품-완성 카드를 패에 추가, 전투가 끝나면 사라짐',flavor:''},
-  art_done:{name:'작품-완성',type:'skill',rar:'common',unplayable:true,gen:true,keep:true,text:'사용 불가 · 보존\n패에 있으면 공격 위력 +200%, 공격 위력 최대치, 드로우 +3, 코스트 +2\n예술적 감각이 다시 쌓이거나 전투가 끝나면 사라짐',flavor:''},
+  art_done:{name:'작품-완성',type:'skill',rar:'common',unplayable:true,gen:true,keep:true,text:'사용 불가 · 보존\n패에 있으면 공격 위력 +200%, 공격 위력 최대치, 드로우 3, 코스트 +2\n예술적 감각이 다시 쌓이거나 전투가 끝나면 사라짐',flavor:''},
 });
 CARDS.hardtack.food=1;CARDS.hardtack.ws2='remi';CARDS.steam.ws2='stein';CARDS.ornament.ws2='ash';CARDS.mimic.ws2='krim';
 const WS2={stein:{n:'스타인러 공방',dir:'E',cards:['steam','s2_vent','s2_over','s2_valve','s2_piston']},
@@ -3443,20 +3417,20 @@ const WCARDS={
  w_s5:WC('stein','임시 과열',1,'uncommon',{text:'체력 10% 소모, 증기 20을 소모해 열기 3 획득',fx(){const C=S.C,r=S.run;r.hp=Math.max(1,r.hp-Math.round(r.maxHp*.1));C.pSteam=Math.max(0,(C.pSteam||0)-20);C.heat=Math.min(heatCap(true),(C.heat||0)+3);fxAt('player','열기 +3','info')}}),
  w_s6:WC('stein','증기 분사',1,'uncommon',{d:[A(10,50)],text:'대상에게 증기 5 데미지 10~50',fx(){a2Hit('steam',5)}}),
  w_s7:WC('stein','증기 섭취',0,'uncommon',{gainE:1,text:'코스트 +1, 자신에게 증기 3',fx(){selfSteam(3)}}),
- w_s8:WC('stein','매연 뿜기',0,'uncommon',{draw:1,text:'자신의 증기 -5, 드로우 +1',fx(){lessSteam(5)}}),
+ w_s8:WC('stein','매연 뿜기',0,'uncommon',{draw:1,text:'자신의 증기 -5, 드로우 1',fx(){lessSteam(5)}}),
  w_s9:WC('stein','뚝딱',2,'rare',{d:[A(150,190)],flatFn:C=>(C.heat||0)*30,text:'공격 150~190, 열기 1당 피해 +30'}),
  w_s10:WC('stein','망치질은 이렇게',3,'rare',{d:[A(260,340)],flatFn:C=>(C.heat||0)*50,text:'공격 260~340, 열기를 전부 소모해 1당 피해 +50',fx(){S.C.heat=0}}),
  w_s11:WC('stein','증기 갑주',2,'rare',{type:'power',text:'지속\n턴이 끝날 때 증기 5당 방어 20',fx(){S.C.steamArmor=(S.C.steamArmor||0)+1}}),
  w_s12:WC('stein','연막 배출',1,'rare',{type:'def',d:[V(20,26)],text:'회피 20~26, 자신의 증기 -5',fx(){lessSteam(5)}}),
  w_s13:WC('stein','장인의 휴식',1,'rare',{heal:25,exhaust:true,text:'체력 25 회복, 자신에게 증기 3, 소멸',fx(){selfSteam(3)}}),
- w_s14:WC('stein','엘더의 조언',1,'rare',{draw:3,exhaust:true,text:'드로우 +3, 자신에게 증기 3, 소멸',fx(){selfSteam(3)}}),
+ w_s14:WC('stein','엘더의 조언',1,'rare',{draw:3,exhaust:true,text:'드로우 3, 자신에게 증기 3, 소멸',fx(){selfSteam(3)}}),
  w_s15:WC('stein','장인의 고집',2,'rare',{type:'power',text:'지속\n열기 최대치 +2, 열기가 턴마다 줄지 않음',fx(){const C=S.C;C.heatHold=1;C.heatCapAdd=(C.heatCapAdd||0)+2}}),
  w_k1:WC('kriv','고드름 던지기',1,'uncommon',{d:[A(65,90)],xFn:(C,E)=>(E.frozen||E.frozeSkip)?2:1,text:'공격 65~90, 대상이 냉동이면 피해 2배'}),
  w_k2:WC('kriv','눈벽 쌓기',1,'uncommon',{d:[D(35,50)],text:'방어 35~50, 대상에게 냉매 1',fx(){a2Hit('cool',1)}}),
  w_k3:WC('kriv','냉각관 연결',1,'uncommon',{d:[D(20,30)],text:'방어 20~30, 대상에게 냉매 2',fx(){a2Hit('cool',2)}}),
  w_k4:WC('kriv','눈보라 속으로',1,'uncommon',{type:'def',d:[V(12,18)],text:'회피 12~18, 대상에게 냉매 1',fx(){a2Hit('cool',1)}}),
  w_k5:WC('kriv','얼음 찜질',1,'uncommon',{heal:12,text:'체력 12 회복, 자신의 냉매 -1',fx(){lessCool(1)}}),
- w_k7:WC('kriv','연차 수당',0,'uncommon',{text:'3턴째부터 코스트 +1, 드로우 +1',fx(){const C=S.C;if(C.turn>=3){C.energy+=1;drawN(1)}}}),
+ w_k7:WC('kriv','연차 수당',0,'uncommon',{text:'3턴째부터 코스트 +1, 드로우 1',fx(){const C=S.C;if(C.turn>=3){C.energy+=1;drawN(1)}}}),
  w_k8:WC('kriv','따뜻한 한마디',0,'uncommon',{heal:5,text:'자신의 냉매 -2, 체력 5 회복',fx(){lessCool(2)}}),
  w_k9:WC('kriv','화가 난 고참',2,'rare',{d:[A(150,190)],xFn:(C,E)=>1+(E.cool||0)*.1,text:'공격 150~190, 대상의 냉매 1당 피해 +10%'}),
  w_k10:WC('kriv','눈사태',3,'rare',{d:[A(240,320)],xFn:(C,E)=>1+.5*(E.crack||0),text:'공격 240~320, 대상의 깨짐을 전부 소모해 단계당 피해 +50%',fx(){if(S.C.E)S.C.E.crack=0}}),
@@ -3471,13 +3445,13 @@ const WCARDS={
  w_a5:WC('ash','치유의 실',1,'uncommon',{text:'자신의 예술적 감각당 체력 25 회복, 작품-완성이나 작품-준비가 있으면 대신 체력 100 회복',fx(){const C=S.C,w=C.hand.some(x=>x.id==='art_wip'||x.id==='art_done');const n=w?100:(C.art||0)*25;if(n)heal(n);else clog('치유의 실: 예술적 감각이 없다')}}),
  w_a6:WC('ash','곡해 주입',1,'uncommon',{text:'대상의 행동 포인트 +3, 대상의 코스트 -1',fx(){const E=S.C.E;E.ap+=3;E.c=Math.max(0,(E.c||0)-1);fxAt('enemy','행동 포인트 +3 · 코스트 -1','info')}}),
  w_a7:WC('ash','억지 해석',0,'uncommon',{text:'예술적 감각 +1, 패 1장 버림',async fx(){artUp(1);await pickToss(1,'억지 해석')}}),
- w_a8:WC('ash','실 한 가닥',0,'uncommon',{draw:1,text:'드로우 +1, 패에 다른 실 한 가닥이 있으면 드로우 +1',fx(c){if(S.C.hand.some(x=>x.id===c.id&&x.uid!==c.uid))drawN(1)}}),
+ w_a8:WC('ash','실 한 가닥',0,'uncommon',{draw:1,text:'드로우 1, 패에 다른 실 한 가닥이 있으면 드로우 1',fx(c){if(S.C.hand.some(x=>x.id===c.id&&x.uid!==c.uid))drawN(1)}}),
  w_a9:WC('ash','고증 완료',2,'rare',{d:[A(150,190)],xFn:(C)=>((C.useN&&C.useN.w_a9)||0)===2?2:1,text:'공격 150~190, 이번 전투 세 번째 사용시 피해 2배'}),
- w_a10:WC('ash','실 타기',1,'rare',{type:'def',d:[V(20,20)],draw:1,text:'회피 20, 드로우 +1'}),
+ w_a10:WC('ash','실 타기',1,'rare',{type:'def',d:[V(20,20)],draw:1,text:'회피 20, 드로우 1'}),
  w_a11:WC('ash','실 엮기',0,'rare',{heal:25,text:'체력 25 회복, 실 카드 1장 드로우',fx(c){const C=S.C,isT=x=>x.uid!==c.uid&&CARDS[x.id].name.includes('실');let pool=C.draw.filter(isT),from=C.draw;if(!pool.length){pool=C.disc.filter(isT);from=C.disc}if(!pool.length){clog('실 엮기: 뽑을 실 카드가 없다');return}const t=pick(pool);from.splice(from.indexOf(t),1);C.hand.push(t);clog(`실 엮기: 「${CARDS[t.id].name}」 드로우`);settleHand()}}),
  w_a12:WC('ash','전시 개막',2,'rare',{type:'atk',text:'작품-준비가 있으면 50% 확률로 모든 적에게 데미지 170, 작품-완성이 있으면 50% 확률로 모든 적에게 데미지 240, 그 턴 동안 받는 피해 +50%',fx(){const C=S.C,h=C.hand;let n=0;if(h.some(x=>x.id==='art_done')&&rnd()<.5)n=240;else if(h.some(x=>x.id==='art_wip')&&rnd()<.5)n=170;C.showT=C.turn;if(n){const E0=C.E;for(const f of liveFoes()){C.E=f;fixedDmg(n,'전시 개막')}if(alive(E0))C.E=E0;else{const lf=liveFoes();if(lf.length)C.E=lf[0]}}else clog('전시 개막: 아무 일도 없었다');fxAt('player','이번 턴 받는 피해 +50%','info')}}),
  w_a13:WC('ash','강제 강의',1,'rare',{vuln:2,text:'대상의 행동 포인트 +3, 취약 2',fx(){S.C.E.ap+=3}}),
- w_a14:WC('ash','선택받은 실',1,'rare',{type:'power',text:'지속\n매 턴 드로우 +1, 코스트 +1',fx(){S.C.threadDraw=(S.C.threadDraw||0)+1}}),
+ w_a14:WC('ash','선택받은 실',1,'rare',{type:'power',text:'지속\n매 턴 드로우 1, 코스트 +1',fx(){S.C.threadDraw=(S.C.threadDraw||0)+1}}),
  w_a15:WC('ash','깨끗한 팔레트',1,'rare',{text:'자신의 부정적 키워드를 전부 없앰',fx(){const C=S.C;Object.assign(C,{pWeak:0,pVuln:0,pSteam:0,pCool:0,pEl:0,pBurn:0,pCrack:0})}}),
  w_r1:WC('remi','국자 들기',1,'uncommon',{d:[A(60,85)],flatFn:C=>(C.food||0)*10,text:'공격 60~85, 먹기 1당 피해 +10'}),
  w_r2:WC('remi','식감 찍어내기',1,'uncommon',{d:[D(35,50)],text:'방어 35~50, 먹기 +1',fx(){foodGain(null,1,true)}}),
@@ -3485,11 +3459,11 @@ const WCARDS={
  w_r4:WC('remi','퇴비 수프',1,'uncommon',{food:3,heal:15,exhaust:true,text:'음식\n체력 15 회복, 먹기 +3, 소멸'}),
  w_r5:WC('remi','진흙 경단',0,'uncommon',{food:1,heal:3,exhaust:true,text:'음식\n체력 3 회복, 먹기 +1, 소멸'}),
  w_r6:WC('remi','불량 식품',0,'uncommon',{food:3,exhaust:true,text:'음식\n먹기 +3, 다음 턴 코스트 -1, 소멸',fx(){S.C.nextEnergy-=1}}),
- w_r8:WC('remi','야간 교대',1,'uncommon',{draw:2,text:'드로우 +2, 체력 5 소모',fx(){const r=S.run;r.hp=Math.max(1,r.hp-5)}}),
+ w_r8:WC('remi','야간 교대',1,'uncommon',{draw:2,text:'드로우 2, 체력 5 소모',fx(){const r=S.run;r.hp=Math.max(1,r.hp-5)}}),
  w_r9:WC('remi','공방 없는 노동',3,'rare',{d:[A(70,95),A(70,95),A(70,95)],moreHits:C=>C.sat||0,text:'공격 70~95 × 3, 포화 1당 타격 +1'}),
  w_r10:WC('remi','무쇠 솥',2,'rare',{d:[D(100,130)],defFn:(C,v)=>v+(C.food||0)*10,text:'방어 100~130, 먹기 1당 방어 +10'}),
  w_r11:WC('remi','몸 낮춘 노동',1,'rare',{type:'def',d:[V(20,26)],heal:8,text:'회피 20~26, 체력 8 회복'}),
- w_r12:WC('remi','경험 찍어내기',1,'rare',{food:3,heal:10,draw:1,exhaust:true,text:'음식\n체력 10 회복, 먹기 +3, 드로우 +1, 소멸'}),
+ w_r12:WC('remi','경험 찍어내기',1,'rare',{food:3,heal:10,draw:1,exhaust:true,text:'음식\n체력 10 회복, 먹기 +3, 드로우 1, 소멸'}),
  w_r14:WC('remi','과식',1,'rare',{exhaust:true,text:'먹기 +10, 체력 10% 소모, 소멸',fx(){const r=S.run;foodGain(null,10,true);r.hp=Math.max(1,r.hp-Math.round(r.maxHp*.1))}}),
  w_r15:WC('remi','쉬지 않는 노동',2,'rare',{type:'power',text:'지속\n매 턴 먹기 +1',fx(){S.C.foodAuto=(S.C.foodAuto||0)+1}}),
 };
@@ -3949,6 +3923,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.33.67.18','11/20','스토리 삭제 — 대화 장면, 노르드교 동료와 동료 대사, 휴식 대화. 11막 노르드교 이행자 전투는 동료 없이 그대로 나옴. 속사 삭제. 카드 설명을 짧게 정리 — 공격 60~90, 적중 시, 적중 실패 시, 드로우 1, 처단은 피해 n/3, 처형 집행은 표식 n/Ⅴ로 진행도 표시, 대절단은 재사용까지 3턴'],
   ['V2.33.66.18','11/20','궁극기·특수 카드 설명에 잘못 넣은 문장 삭제'],
   ['V2.33.66.17','11/20','카드·적 카드·키워드·특성·사건 설명의 괄호를 없애고 짧게 바꿈, 처단 조건은 공격으로 3번 피해를 주면'],
   ['V2.33.65.17','11/20','게임 화면에 남아 있던 작업용 메모 삭제 — 특성 설명의 괄호 메모, 상점·카드의 임시 표시, 무기 칸 문구(지금 무기 이름으로), 사건·적 이름 옆 메모, 패치 내역의 작업 메모'],
@@ -5799,21 +5774,9 @@ function showScene(list,done,opt){opt=opt||{};let vnL='',vnR='',vnLast='',vnHist
     vnHist.push([who,tx]);vnPrev=[who,tx];m.innerHTML=`<div class="vn">${vnTop()}${vnStage(who)}<div class="vn-box">${who?`<div class="vn-name">${who}</div>`:''}<div class="scn-t">${tx}</div><div class="scn-b"><button class="btn-ghost" id="scSkip">건너뛰기</button><button class="btn-main" id="scNext">다음</button></div></div></div>`;
     const go=()=>{clearTimeout(tmr);i++;draw()};$('#scNext').onclick=go;m.querySelector('.scn-t').onclick=go;vnBind(()=>{clearTimeout(tmr);tmr=setTimeout(go,1600+String(tx).length*45)});if(vnAuto)tmr=setTimeout(go,1600+String(tx).length*45);$('#scSkip').onclick=()=>{clearTimeout(tmr);/* 스토리 전부 건너뛰기 — 선택지는 맨 위의 것으로 */for(let j=i+1;j<list.length;j++){const x=list[j];if(x&&x.c){const c0=x.c[0];if(c0.f)c0.f();if(c0.then)list.splice(j+1,0,...c0.then)}}i=list.length;end()}};
   draw()}
-const S_OPEN=['나는 꿈에서 하늘이 되었다.','푸르디푸른 하늘이 되어, 전에 겪어 본 적 없는 더없이 자유로운 감각.','하지만 그 감각은 일어나는 순간 없어졌다.','창밖은 오늘도 붉었다.','노크가 울린다.','문을 열자 사제가 서 있다.',['사제','얼마 전, 부모님께서 사상하셨습니다. 그 노고에 진심으로 감사드립니다.'],'사제가 봉투를 내민다. 기억 속 부모의 전부였던, 묵직한 봉투.',['사제','이것이 마지막 번제비입니다.'],'나는 봉투를 받아 들었다. 이번에도 만나지 못하고 끝나 버렸다.','사제의 시선이 내 허리춤에 멈춘다. 조잡한 철제검.',['사제','그 검은... 이단의 길을 걷는 겁니까?'],'나는 오해를 풀고 싶지도 않았다. 어차피 맞닥뜨려야 할 문제였다.','나는 말없이 검을 쥐었다.'];
-const S_TUT={2:['사제는 쓰러진 채 일어나지 못한다.','나는 살던 집을 떠나, 세계수를 중심축으로 잡고 나아가기 시작했다.','골목에서 성직자가 나를 불러 세운다.',['성직자','통보하러 간 사제가 돌아오지 않았습니다. 혹시 보셨습니까?'],'성직자의 눈이 철제검으로 내려간다.'],
-  3:['길목의 벽보에 새 글이 붙어 있다.','이단, 그들은 나를 그렇게 불렀다.'],
-  4:['좁은 길 끝에서 성직자가 다리를 끄는 사람을 몰아붙이고 있다.','성직자가 고개를 돌린다.',['성직자','너도 한패구나.']]};
-const S_NORD=['벽에 기대앉은 남자가 숨을 고른다. 붉은 천을 두른 다리에서 피가 배어 나온다.',['부상당한 노르드교 단원','그 검... 우리 쪽 물건이군. 형제여, 이런 곳에서 만나다니.'],'나는 그의 말에 아무것도 답하지 않았다.',['부상당한 노르드교 단원','이 몸으로는 이제 칼을 못 쥐네. 나도 한때는 이 지역에서 제일이었는데 말일세.'],['부상당한 노르드교 단원','자네도 세계수로 가는 길인가? 좋군. 뜻이 같으니 길도 같은 게지.'],['부상당한 노르드교 단원','말이 없군. 좋네, 뜻이 같으면 말은 필요 없지.']];
-const S_TREE=['세계수를 감싼 바벨탑 모양의 교단이 가까워진다.','의심이 확신으로 바뀌고, 심장이 빠르게 뛴다.',['부상당한 노르드교 단원','저걸 태우면 말일세, 형제여. 무엇이 남을지 궁금하지 않나?'],'나는 고개를 들어 세계수를 올려다보았다. 그저 순수한 열망으로.'];
-const S_RUMOR=[['부상당한 노르드교 단원','이상한 말이 돌더군. 형제를 판 놈이 있다고. 헛소리지.'],['부상당한 노르드교 단원','자네는 듣지 말게. 내가 자네를 아니까.']];
 ENEMY.nordJudge={name:'노르드교 이행자',sub:'노르드교',tier:'elite',lv:35,hp1:250,st:{hp:[200,300],atk:[45,70],def:[40,65]},acc:90,eva:60,ap:[5,7],art:'cultist',nord:1,
   deck:{'행동-약점 찢기':3,'행동-표식 강제 부여':2,'행동-파쇄':2,'행동-처형 집행':1},
-  passives:[['표식','노르드교 공통 패시브 — 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 표식 단계가 오름(Ⅰ~Ⅴ), 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐, 단계 1당 표식을 건 쪽에게 받는 데미지 +10%'],['도망 불가','이 전투에서는 도망칠 수 없음']]};
-const RIFT_LINES=['...','아군일세!','더는 그만!','그만하게나'];/* 이별 전투에서는 이 대사만 반복 */
-const S_RIFT=['내가 떠나온 지역의 이행자가 길을 막는다. 찢어 버린 붉은 망토를 기억하는 사람이다.',['노르드교 이행자','찾았다. 검만 받고 도망친 배신자.'],['부상당한 노르드교 단원','무슨 짓인가! 이 사람은 형제일세!'],['노르드교 이행자','비키시오. 그자가 배신자요.'],['부상당한 노르드교 단원','아니네... 아군일세.']];
-const S_VOW=[['???','...그에게 보낸 모든 성직자가 연락 두절이네.'],['???','살아 있는지는... 아직 모르지. 알 수가 없어.'],['???','그건 이단이다. 어디에 속해 있지 않든, 지금 그것이 하고 있는 건 교단을 향한 반발일지니.'],['교황','교단에 맞지 않으면 이단이라 하는 건가?'],['교황','글쎄, 그건 그가 어떻게 행동하는지, 손속이 어떤지 보고 판단하겠네.'],['순수유물주의자','곧 교단에 도착합니다. 제가 직접 막겠습니다.'],['교황','...']];
-const S_BOSS=['은빛 기사들이 길을 메운다. 그 앞에 붉은 휘장의 주교가 서 있다.','그녀는 기사의 어깨를 거칠게 밀어내면서도, 그 은빛 갑주의 흠집을 손끝으로 쓸었다.'];
-const S_FREE=['상점 문이 열려 있다. 안에는 아무도 없다.','주인은 물건도 두고 도망친 모양이다.',['부상당한 노르드교 단원','주인이 없군. 양심껏 챙기게나, 형제여.']];
+  passives:[['표식','노르드교 공통 패시브 — 한 턴에 대상을 공격으로 맞히면 다음 턴에 표식Ⅰ, 표식이 붙은 턴에 다시 맞히면 약점 노출, 그다음 턴에 표식 단계가 오름, 최대 Ⅴ, 표식이 붙은 턴에 한 번도 맞히지 못하면 사라짐, 단계 1당 표식을 건 쪽에게 받는 데미지 +10%'],['도망 불가','이 전투에서는 도망칠 수 없음']]};
 const ZONE_TXT={N:'이전에 느껴본 적 없는 종류의 추위가 살결을 얼린다. 이번 거대 공방은 멈춤의 공방인 것 같다.',E:'매캐한 연기와 습한 분위기, 익숙한 분위기가 나를 반긴다. 이번 공방은 압력의 공방인 것 같다.',W:'역겨우면서도 달콤한 냄새가 코를 강타한다. 이번 공방은 배부름의 공방인 것 같다.',S:'이해할 수 없는 알 수 없는 무언가들이 나를 환영한다. 이번 공방은 교육과 예술의 공방인 것 같다.'};
 const DIR_VIRTUE={N:'본능',E:'욕구',S:'갈망',W:'허기'};
 const PAL_REGION={N:'차가워요... 들은 얘긴데, 여기선 마음보다 손가락이 먼저 언대요.',E:'여기 사람들은 전부 손으로 한대요. 증기에 데면 손가락부터 세어 보래요.',S:'여기선 작품을 보면 \'오...\'라고만 하래요. 왜인지는 저도 몰라요.',W:'재료만 안 물어보면 다들 친절하대요. 뭔가 엄청난 냄새!'};
@@ -5851,18 +5814,10 @@ function showA2First(){const r=S.run,at=r.at;if(at.node!=null&&r.m2){const n=r.m
   showScene(list.filter(x=>!(x&&x.fx==='none')),()=>{r.at=null;save();transition(()=>showMap())})}
 function showA2Rain(){const r=S.run,at=r.at;if(at&&at.node!=null&&r.m2){const n=r.m2.nodes[at.node];if(n)n.cleared=true}S.screen='event';renderTop();
   showScene(sceneRain(!!(r.pal&&r.pal.k==='girl')),()=>{r.at=null;save();transition(()=>showMap())})}
-function storyMap(){const r=S.run,M=r.map,F=r.flags;if(r.mode!=='human'||!M)return false;
-  const go=l=>{save();showScene(l,()=>showMap());return true};
-  if(!F.sOpen&&M.row===0){F.sOpen=1;save();showScene(S_OPEN,()=>enterNode(0));return true}F.sOpen=1;
-  if(F.riftDone&&!F.sRift){F.sRift=1;const l=F.riftDone==='dead'?'노르드교의 붉은 천만 남아 있다.':'그가 앉아 있던 자리에는 아무도 없었다.';r.pal=null;return go([l])}
-  if(!F.sNord&&M.row>=1&&M.row<11){F.sNord=1;r.pal={k:'nord'};return go(S_NORD)}
-  if(r.pal&&r.pal.k==='nord'){if(!F.sTree&&M.row>=3){F.sTree=1;return go(S_TREE)}if(!F.s5&&M.row>=5){F.s5=1;return go([['부상당한 노르드교 단원','역시 내 눈이 틀리지 않았어. 자네는 우리 사람이야.']])}if(!F.sRumor&&M.row>=9){F.sRumor=1;return go(S_RUMOR)}}
-  if(!F.sVow&&M.row>=12){F.sVow=1;return go(S_VOW)}
-  return false}
+function storyMap(){const r=S.run;if(r&&r.pal&&r.pal.k==='nord')r.pal=null;return false}
 /* ---- 동료 ---- */
 const PAL_FIG='<svg viewBox="0 0 48 64" aria-hidden="true"><circle cx="24" cy="15" r="10" fill="#14171b" stroke="#6b7178" stroke-width="1.5"/><path d="M6 62 C6 40 14 28 24 28 C34 28 42 40 42 62Z" fill="#14171b" stroke="#6b7178" stroke-width="1.5"/></svg>';
-const PAL_LINES={nord:{hurt:'형제여 칼을 왜 피하지 않는겐가? 그렇다면 맞을것인데?',dodge:'형제여 잘했다 이번엔 멋지게 피했군',hit:'멋진 공격이다!',big:'감탄스러운 실력이군',stance:'자네한테 맞는 자세를 찾았나 보군',block:'잘 막았네. 살아 있어야 태울 수도 있지 않겠나.',miss:'허공을 베었군. 괜찮네, 나무는 도망가지 않으니.',low:'형제여, 뒤로 물러나는 것도 칼질일세.',sub:'죽이지 않는 겐가? 자네도 참 다정하군.',rest:'오늘도 불빛이 붉군. 곧 전부 재가 될 걸세.'},
-  girl:{rest:'편하네요~'},smith:{rest:'망치는 쉬어도 손은 안 쉰다.'},otto:{rest:'불 쬐어라. 얼기 전에.'},cadet:{rest:'잠깐 스케치 좀 할게요.'}};
+const PAL_LINES={girl:{rest:'편하네요~'},smith:{rest:'망치는 쉬어도 손은 안 쉰다.'},otto:{rest:'불 쬐어라. 얼기 전에.'},cadet:{rest:'잠깐 스케치 좀 할게요.'}};
 /* ================= 동료 대사 (V2.28) — 상황마다 확률 없이 매번, 여러 줄 중 하나 ================= */
 const PAL_TALK={
  girl:{
@@ -6046,7 +6001,7 @@ function sayShow(who,t){let L=$('#saylayer');if(!L){L=document.createElement('di
     document.addEventListener('pointerdown',()=>{const l=$('#saylayer');if(l&&!l.hidden&&Date.now()-(l._t||0)>250)sayHide()},true)}
   L.innerHTML=`<div class="sb" role="button" tabindex="0"><i class="sbface">${faceHTML(who)}</i><div><b>${who}</b><span>${t}</span></div></div>`;L.hidden=false;L._t=Date.now();clearTimeout(palHide);palHide=setTimeout(sayHide,Math.min(6500,2400+t.length*55))}
 function sayHide(){clearTimeout(palHide);const L=$('#saylayer');if(L)L.hidden=true}
-function palEv(k){const r=S.run;if(!r||!r.pal)return;if(S.C&&S.C.E&&S.C.E.rift&&!S.C.over){if(!r.flags.riftDone)palSay(pick(RIFT_LINES));return}if(r.pal.away&&S.C&&!S.C.over&&k!=='back'&&k!=='out')return;const L=PAL_LINES[r.pal.k],v=L&&L[k];if(!v)return;palSay(Array.isArray(v)?pick(v):v)}
+function palEv(k){const r=S.run;if(!r||!r.pal)return;if(r.pal.away&&S.C&&!S.C.over&&k!=='back'&&k!=='out')return;const L=PAL_LINES[r.pal.k],v=L&&L[k];if(!v)return;palSay(Array.isArray(v)?pick(v):v)}
 function bagTalk(){const n=Date.now();if(n-(S.bagT||0)>10000){S.bagT=n;palEv('bag')}}
 function palBark(key,line,kw){const r=S.run;if(!r||!r.pal||r.pal.k!=='girl')return;r.flags.barks=r.flags.barks||{};if(r.flags.barks[key])return;r.flags.barks[key]=1;palSay(line,true);if(kw)setTimeout(()=>{document.querySelectorAll('.chip').forEach(c=>{if(c.textContent.includes(kw)){c.classList.add('pulse');setTimeout(()=>c.classList.remove('pulse'),2600)}});if(kw==='행동'){const i=$('#intent');i.classList.add('pulse');setTimeout(()=>i.classList.remove('pulse'),2600)}},60)}
 function palWatch(){const C=S.C,r=S.run;if(!C||!r||!r.pal||C.over)return;if(isMate(r.pal)&&r.pal.k!=='girl')return;if(r.pal.k!=='girl')return;const E=C.E;
