@@ -2652,7 +2652,7 @@ async function apTick(n=1){
 let DF_T=0,DF_SKIP=false;
 async function diceFocus(o){
   if(REDUCED||SET.dfocus===false||S.screen!=='combat')return;
-  const now=performance.now(),fast=now-DF_T<1400;DF_SKIP=false;const w=ms=>DF_SKIP?Promise.resolve():wait(ms);
+  const now=performance.now(),tbS=!!(S.run&&S.run.tutB),fast=!tbS&&now-DF_T<1400,K=tbS?2.3:1;DF_SKIP=false;const w=ms=>DF_SKIP?Promise.resolve():wait(ms);
   let el=$('#dfocus');if(!el){el=document.createElement('div');el.id='dfocus';stage.appendChild(el);el.addEventListener('pointerdown',()=>{DF_SKIP=true})}
   el.hidden=false;el.className='dfocus '+(o.foe?'foe':'me');
   el.innerHTML=`<div class="df-lb">${o.lb}</div><div class="df-row"><div class="df-die">${d36SVG(o.a,'rolling')}</div><div class="df-info"><div class="df-pow"></div><div class="df-res"></div></div></div>`;
@@ -2660,11 +2660,11 @@ async function diceFocus(o){
   for(let i=0,n=fast?3:7;i<n;i++){die.innerHTML=d36SVG(ri(o.a,o.b),'rolling');if(i%2===0)sfx('miss',.2);await w(fast?40:50)}
   die.innerHTML=d36SVG(o.r0,o.hit?'ok':'ng');
   el.querySelector('.df-pow').innerHTML=`<span>주사위 ${o.r0}${o.a!==o.b?` <small>(${o.a}~${o.b})</small>`:''}</span><span>위력 <b>${o.pow}</b></span>`;
-  await w(fast?150:280);
+  await w((fast?150:280)*K);
   const res=el.querySelector('.df-res');res.className='df-res '+(o.hit?(o.dmg>0?'hit':'blk'):'miss');
   res.innerHTML=o.hit?`<em>적중률 ${o.ch}%</em><b>${o.dmg>0?o.dmg:`막힘 ${o.bl}`}</b><em>${o.dmg>0?(o.bl?`피해 · 방어도 ${o.bl} 흡수`:'피해'):'방어도가 모두 막음'}</em>`:`<em>적중률 ${o.ch}%</em><b>빗나감</b>`;
   sfx(o.hit?(o.dmg>0?'hit':'block'):'miss',.5);
-  await w(fast?280:520);
+  await w((fast?280:520)*K);
   el.classList.add('out');DF_T=performance.now();await wait(120);el.hidden=true;el.classList.remove('out');
 }
 async function pStrike(die,o={}){
@@ -2831,7 +2831,7 @@ async function foeBurst(){const C=S.C,E=C.E,r=S.run;if(!E.hand)foeRefill(E);
     if(E.stun){E.stun=false;toast('…!',`${E.name}이(가) 말문이 막혀 「${name}」 취소`);clog(`말문이 막힘: 「${name}」 취소`,'e');continue}
     const isUlt=!!(ACT[name]&&ACT[name].ult);if(isUlt){E.ultArmed=null;E._burstArmed=false;ultCheck()}
     if(name==='뼈와 살의 해체학'&&!REDUCED){const en=$('#enemy');en.classList.add('hmopen');setTimeout(()=>en.classList.remove('hmopen'),1900);await wait(650)}
-    await execAct(name);if(isUlt&&name==='명령 이행-처단')E.purgeHits=0;if(C.over||r.hp<=0)return;if(isUlt)ultGain(name)}
+    await execAct(name);if(isUlt&&name==='명령 이행-처단')E.purgeHits=0;if(C.over||r.hp<=0)return;if(isUlt)ultGain(name);if(r.tutB)await wait(1100)}
   if(!n)clog(`${E.name}: 남은 코스트로 낼 수 있는 카드가 없다`,'e');
   renderCombat()}
 
@@ -3937,6 +3937,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.34.69.19','11/20','튜토리얼 속도 — 문장은 1.2초 뒤부터 넘어가고 넘어갈 수 있으면 ▼, 저절로 넘어가는 장면 없앰, 카드를 내면 결과를 본 뒤 1초 쉬고 다음 설명, 뒤집기·확대가 끝난 뒤 글상자, 튜토리얼에서 적은 한 장씩 쉬며 내고 주사위 연출도 천천히'],
   ['V2.34.68.19','11/20','튜토리얼 새로 만듦 — 처음 시작하면 기초 튜토리얼 전투 2번(내가 때리는 법과 힘, 적이 나를 때리는 법), 특성을 고른 뒤 튜토리얼을 볼지 물음, 본다를 고르면 기초 전투와 상황 튜토리얼(노르드교 단원의 패시브). 내 캐릭터를 누르면 내 상태창. 적 상태창에 공격레벨·방어레벨·명중률·회피·내 적중률·패. 힘·약화·허약·취약은 걸린 쪽의 턴이 끝나면 사라짐. 행동 포인트로 몰아서 낸 턴에는 최대 행동 포인트 ÷ 3만큼 코스트 회복. 덱·보관함·카드 더미를 공격·방어·지원으로 나눠 보기, 지금 무기로 쓸 수 없는 카드는 보관함에서 회색. 미드가르드 상점 5번째 칸은 지금 무기로 쓸 수 없는 카드. 카드 글자 크기 일정하게. 디버프가 걸리면 화면 연출, 사라질 때 아이콘이 부서짐. 도망치는 단원 연출. 고침: 허약이 약화로 보이던 것, 보관함에 지원 카드가 안 보이던 것'],
   ['V2.33.67.18','11/20','스토리 삭제 — 대화 장면, 노르드교 동료와 동료 대사, 휴식 대화. 11막 노르드교 이행자 전투는 동료 없이 그대로 나옴. 속사 삭제. 카드 설명을 짧게 정리 — 공격 60~90, 적중 시, 적중 실패 시, 드로우 1, 처단은 피해 n/3, 처형 집행은 표식 n/Ⅴ로 진행도 표시, 대절단은 재사용까지 3턴'],
   ['V2.33.66.18','11/20','궁극기·특수 카드 설명에 잘못 넣은 문장 삭제'],
@@ -4100,6 +4101,7 @@ const sitMark=k=>{try{const o=JSON.parse(localStorage.getItem(SIT_KEY)||'{}');o[
 const sitReset=()=>{try{localStorage.removeItem(SIT_KEY)}catch(e){}};
 const tutOn=()=>!!S.tb;
 const tbStep=()=>S.tb&&S.tb.list[S.tb.i];
+const TB_MIN=1200,TB_DELAY={played:1000,turn:900,ap0:600,end:300};
 /* 화면에서 짚을 곳 */
 const TH={
   card:id=>{if(!S.C)return null;for(const el of handEls.values()){const c=el._uids&&S.C.hand.find(x=>x.uid===el._uids[0]);if(c&&c.id===id&&!el._fuse)return el}return null},
@@ -4124,7 +4126,9 @@ function tbDraw(){
   const rg=ov.querySelector('.tbrings');const ringsFor=st.m==='play'&&stage.classList.contains('tbdrag')?rs.slice(1):rs;
   rg.innerHTML=ringsFor.map(r=>`<i style="left:${r.x-pad}px;top:${r.y-pad}px;width:${r.w+pad*2}px;height:${r.h+pad*2}px"></i>`).join('');
   const tx=ov.querySelector('.tbtx');
-  if(st.t&&rs.length){tx.hidden=false;if(tx.dataset.t!==st.t){tx.dataset.t=st.t;tx.textContent=st.t}
+  const rdy=st.m==='say'&&Date.now()-T.at>=TB_MIN;tx.classList.toggle('ready',rdy);tx.classList.toggle('empty',st.m==='say'&&!st.t);
+  if(st.m==='say'&&!st.t&&rs.length){tx.hidden=false;tx.dataset.t='';tx.textContent='';const r=rs[0];tx.style.width='48px';tx.style.left=clamp(r.x+r.w+12,10,W-60)+'px';tx.style.top=clamp(r.y+r.h/2-20,64,H-60)+'px'}
+  else if(st.t&&rs.length){tx.hidden=false;if(tx.dataset.t!==st.t){tx.dataset.t=st.t;tx.textContent=st.t}
     const host=els[0].closest&&(els[0].closest('.card.zoom')||els[0].closest('#modal .fpanel'));
     const u=rs.reduce((a,r)=>({x:Math.min(a.x,r.x),y:Math.min(a.y,r.y),x2:Math.max(a.x2,r.x+r.w),y2:Math.max(a.y2,r.y+r.h)}),{x:1e9,y:1e9,x2:-1e9,y2:-1e9}),r={x:u.x,y:u.y,w:u.x2-u.x,h:u.y2-u.y};
     let tw=Math.min(560,W-40),x,y;tx.style.width=tw+'px';let th=tx.offsetHeight||70;
@@ -4146,11 +4150,11 @@ async function tbNext(){const T=S.tb;if(!T)return;const cur=T.list[T.i];
   if(S.tb!==T||T.list[T.i]!==st)return;
   T.armed=true;T.at=Date.now();tbDraw();
   if(st.m==='auto')setTimeout(()=>{if(tbStep()===st&&S.tb.armed)tbNext()},st.ms||1800);
-  const fv=T.fired&&T.fired[st.w];if(st.w&&fv&&(!st.id||fv===1||fv===st.id)){T.fired={};T.armed=false;setTimeout(()=>{if(tbStep()===st)tbNext()},st.delay||250)}}
+  const fv=T.fired&&T.fired[st.w];if(st.w&&fv&&(!st.id||fv===1||fv===st.id)){T.fired={};T.armed=false;setTimeout(()=>{if(tbStep()===st)tbNext()},st.delay||TB_DELAY[st.w]||400)}}
 function tbStart(list,o={}){S.tb={list,i:-1,fired:{},...o};tbNext()}
 /* 게임에서 일어난 일을 알림 — 지금 단계가 기다리던 일이면 다음으로 */
 function tbEv(ev,x){const T=S.tb;if(!T)return;const st=tbStep();
-  if(st&&T.armed&&st.w===ev&&(!st.id||x===undefined||st.id===x)){T.armed=false;T.fired={};setTimeout(()=>{if(tbStep()===st)tbNext()},st.delay||250);return}
+  if(st&&T.armed&&st.w===ev&&(!st.id||x===undefined||st.id===x)){T.armed=false;T.fired={};setTimeout(()=>{if(tbStep()===st)tbNext()},st.delay||TB_DELAY[ev]||400);return}
   if(st&&!T.armed)(T.fired||(T.fired={}))[ev]=x||1}
 const tutEvent=ev=>tbEv(ev);
 /* 행동 포인트 0 — 설명을 다 볼 때까지 적의 행동을 멈춤 */
@@ -4164,7 +4168,7 @@ function tutLocked(act,c){const T=S.tb,st=tbStep();if(!T||T.paused)return false;
   if(act==='drag')return st.m!=='play';
   if(act==='card')return!(st.m==='flip'||st.m==='play')||(st.id&&c&&c.id!==st.id);return true}
 for(const k of['pointerdown','click'])window.addEventListener(k,e=>{const T=S.tb;if(!T||T.paused)return;const st=tbStep();
-  if(k==='pointerdown'&&st&&T.armed&&st.m==='say'&&Date.now()-T.at>250){e.stopPropagation();e.preventDefault();T.swallow=true;tbNext();return}
+  if(k==='pointerdown'&&st&&T.armed&&st.m==='say'&&Date.now()-T.at>=TB_MIN){e.stopPropagation();e.preventDefault();T.swallow=true;tbNext();return}
   if(k==='click'&&T.swallow){T.swallow=false;e.stopPropagation();e.preventDefault();return}
   if(!tbAllow(e)){e.stopPropagation();e.preventDefault();if(k==='pointerdown')T.swallow=true}},true);
 const tutForce=()=>{const T=S.tb;return T&&T.q&&T.q.length?T.q.shift():null};
@@ -4172,10 +4176,10 @@ function tutShow(){if(S.tb)return tbDraw();const ov=$('#tbov');if(ov)ov.hidden=t
 function tutFinish(){S.tb=null;tbDraw()}
 /* 카드 뒤집기·카드를 적에게 가져다 대기 */
 async function tbFlip(id,on){const el=TH.card(id);if(!el)return;
-  if(on){if(!el.classList.contains('flipped')){flipCard(el);await wait(330)}zoomCard(el,true);await wait(420)}
+  if(on){if(!el.classList.contains('flipped')){flipCard(el);await wait(450)}zoomCard(el,true);await wait(700)}
   else{if(el.classList.contains('zoom')){zoomCard(el,false);await wait(260)}if(el.classList.contains('flipped')){flipCard(el);await wait(330)}}}
 async function tbAim(id){const el=TH.card(id),C=S.C;if(!el)return;const c=C.hand.find(x=>x.uid===el._uids[0]),o=L[S.orient],cw=16.8*o.cfs,ch=23.6*o.cfs,R=tbRect($('#eart')||$('#enemy'));
-  el.classList.add('dragging');el.style.transition='transform .45s ease';el.style.transform=`translate(${R.x+R.w/2-cw/2}px,${R.y+R.h*.62-ch*.55}px)`;$('#enemy').classList.add('target');await wait(480);hpPreview(c,1,C.E)}
+  el.classList.add('dragging');el.style.transition='transform .55s ease';el.style.transform=`translate(${R.x+R.w/2-cw/2}px,${R.y+R.h*.62-ch*.55}px)`;$('#enemy').classList.add('target');await wait(650);hpPreview(c,1,C.E);await wait(250)}
 function tbUnaim(){document.querySelectorAll('#hand .card.dragging').forEach(el=>{el.classList.remove('dragging');el.style.transition=''});hpPreview(null);$('#enemy').classList.remove('target');layoutHand()}
 const tbClose=()=>{closeModal();stSheet(null)};
 /* 튜토리얼 전용 주인공·적 */
@@ -4207,7 +4211,7 @@ const TB1=[
   {m:'play',pre:()=>{S.tb.q=[{hit:false}]},hl:()=>[TH.card('gap'),$('#enemy')],id:'gap',w:'played'},
   {m:'say',pre:()=>wait(200),hl:()=>$('#enemy'),t:'빗나가서 취약이 붙지 않았습니다.'},
   {m:'play',pre:()=>{S.tb.q=[{hit:true}]},hl:()=>[TH.card('gap'),$('#enemy')],id:'gap',w:'played'},
-  {m:'auto',ms:2400,pre:async()=>{await wait(300);await tbAim('slash')},hl:()=>[...document.querySelectorAll('#echips .chip')].find(x=>/^취약/.test(x.textContent))||$('#eplate .ebar'),post:tbUnaim},
+  {m:'say',pre:async()=>{await wait(300);await tbAim('slash')},hl:()=>[...document.querySelectorAll('#echips .chip')].find(x=>/^취약/.test(x.textContent))||$('#eplate .ebar'),post:tbUnaim},
   {m:'say',pre:()=>wait(300),hl:()=>TH.card('c_stance'),t:'이 카드를 사용하면 힘을 얻습니다.'},
   {m:'play',hl:()=>TH.card('c_stance'),id:'c_stance',w:'played'},
   {m:'click',pre:()=>wait(300),hl:()=>TH.chip(/^힘/),w:'sheet'},
@@ -4226,7 +4230,7 @@ const TB2=[
   {m:'play',pre:()=>{S.tb.q=[{hit:true}]},hl:()=>[TH.card('slash'),$('#enemy')],id:'slash',w:'ap0'},
   {m:'say',pre:()=>wait(350),hl:()=>$('#eplate .forbs .or.a'),t:'행동 포인트가 0이 되면 상대는 코스트가 0이 될 때까지 카드를 냅니다.',release:true},
   {m:'wait',w:'played'},
-  {m:'auto',ms:2600,pre:async()=>{await wait(300);await tbFlip('slash',true)},hl:()=>TH.q('slash','.face.back .rng'),post:()=>tbFlip('slash',false)},
+  {m:'say',pre:async()=>{await wait(300);await tbFlip('slash',true)},hl:()=>TH.q('slash','.face.back .rng'),post:()=>tbFlip('slash',false)},
   {m:'say',pre:()=>wait(200),hl:()=>$('#eplate .forbs .or.a'),t:'행동 포인트가 0이 된 뒤에 턴을 종료하면 상대는 한 번 더 행동할 수 있습니다. 행동 포인트가 1 이상일 때 턴을 종료하는 것을 추천합니다.'},
   {m:'click',hl:()=>$('#enemy'),w:'foePanel'},
   {m:'say',pre:()=>wait(300),hl:()=>TH.mp('hand'),t:'이건 적이 낼 카드입니다.'},
@@ -6722,5 +6726,9 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 .btext,.btext.dense{font-size:1.6em;line-height:1.4;padding:.3em .8em;flex:1 1 auto;min-height:4.6em}
 .bname{font-size:1.75em}
 .face.back .flavor{flex:0 1 auto;min-height:0;max-height:30%;overflow:hidden}
+
+#tbov .tbtx.ready::after{content:'▼';position:absolute;right:10px;bottom:4px;font-size:13px;line-height:1;color:var(--brass-hi);animation:tbGlow 1s ease-in-out infinite}
+#tbov .tbtx.empty{padding:0;height:40px;background:#171b20e6}
+#tbov .tbtx.empty.ready::after{right:17px;bottom:13px}
 </style>
 </body></html>
