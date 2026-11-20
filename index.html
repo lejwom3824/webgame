@@ -3944,7 +3944,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
-  ['V2.35.71.19','11/21','훈련장 — 시작 화면에서 들어가 모든 카드를 골라 덱을 짜고 허수아비나 1장 적과 싸움, 쓰러지지 않음, 코스트 무한·사용 조건 무시 켬/끔 / 세계수 등반을 누를 때마다 튜토리얼 진행을 네·아니오로 물음, 특성 뒤 질문과 설정의 튜토리얼 다시 보기 없앰 / 튜토리얼에서 누를 곳은 황금빛 파문, 끌 곳은 카드에서 적으로 금빛 점, 글상자에 할 동작 / 표식이 오를 때마다 종소리가 높아지고 Ⅴ에서 화음과 금빛, 쓸 수 있는 궁극기 카드는 금빛으로 숨 쉼, 처형 집행·처단은 흑백으로 멈췄다가 1인칭으로 돌진, 보스를 쓰러뜨리면 멈춤·번쩍임·무릎 꿇음·화면 틀이 깨졌다 맞춰지고 제압'],
+  ['V2.35.71.19','11/21','훈련장 — 시작 화면에서 들어가 모든 카드를 골라 덱을 짜고 허수아비나 1장 적과 싸움, 쓰러지지 않음, 코스트 무한·사용 조건 무시 켬/끔 / 세계수 등반을 누를 때마다 튜토리얼 진행을 네·아니오로 물음, 특성 뒤 질문과 설정의 튜토리얼 다시 보기 없앰 / 튜토리얼에서 누를 곳은 황금빛 파문, 끌 곳은 카드에서 적으로 금빛 점 / 표식이 오를 때마다 종소리가 높아지고 Ⅴ에서 화음과 금빛, 쓸 수 있는 궁극기 카드는 금빛으로 숨 쉼, 처형 집행·처단은 흑백으로 멈췄다가 1인칭으로 돌진, 보스를 쓰러뜨리면 멈춤·번쩍임·무릎 꿇음·화면 틀이 깨졌다 맞춰지고 제압'],
   ['V2.34.70.19','11/20','카드 뒷면의 플레이버 텍스트를 모두 없앰'],
   ['V2.34.69.19','11/20','튜토리얼 속도 — 문장은 1.2초 뒤부터 넘어가고 넘어갈 수 있으면 ▼, 저절로 넘어가는 장면 없앰, 카드를 내면 결과를 본 뒤 1초 쉬고 다음 설명, 뒤집기·확대가 끝난 뒤 글상자, 튜토리얼에서 적은 한 장씩 쉬며 내고 주사위 연출도 천천히'],
   ['V2.34.68.19','11/20','튜토리얼 새로 만듦 — 처음 시작하면 기초 튜토리얼 전투 2번(내가 때리는 법과 힘, 적이 나를 때리는 법), 특성을 고른 뒤 튜토리얼을 볼지 물음, 본다를 고르면 기초 전투와 상황 튜토리얼(노르드교 단원의 패시브). 내 캐릭터를 누르면 내 상태창. 적 상태창에 공격레벨·방어레벨·명중률·회피·내 적중률·패. 힘·약화·허약·취약은 걸린 쪽의 턴이 끝나면 사라짐. 행동 포인트로 몰아서 낸 턴에는 최대 행동 포인트 ÷ 3만큼 코스트 회복. 덱·보관함·카드 더미를 공격·방어·지원으로 나눠 보기, 지금 무기로 쓸 수 없는 카드는 보관함에서 회색. 미드가르드 상점 5번째 칸은 지금 무기로 쓸 수 없는 카드. 카드 글자 크기 일정하게. 디버프가 걸리면 화면 연출, 사라질 때 아이콘이 부서짐. 도망치는 단원 연출. 고침: 허약이 약화로 보이던 것, 보관함에 지원 카드가 안 보이던 것'],
@@ -4121,9 +4121,7 @@ const TH={
 };
 function tbRect(el){const o=stage.getBoundingClientRect(),a=el.getBoundingClientRect(),sc=S.scale||1;return{x:(a.left-o.left)/sc,y:(a.top-o.top)/sc,w:a.width/sc,h:a.height/sc}}
 const tbEls=st=>{if(!st||!st.hl)return[];let v=st.hl();if(!Array.isArray(v))v=[v];return v.filter(Boolean)};
-/* 누를 곳은 황금빛 파문 — 누르기는 그 자리에서 퍼지고, 끌기는 카드에서 적으로 금빛 점이 건너가 다시 퍼짐 */
-const TB_VERB={click:'누르세요.',flip:'카드를 눌러 뒤집으세요.',play:'카드를 적에게 끌어 놓으세요.',end:'누르세요.'};
-const tbVerb=st=>st&&!st.t&&TB_VERB[st.m]?{...st,t:TB_VERB[st.m]}:st;
+/* 누를 곳은 황금빛 파문 — 누르기는 그 자리에서 퍼지고, 끌기는 카드에서 적으로 금빛 점이 건너가 다시 퍼짐, 지시는 글로 쓰지 않음 */
 let tbRpKey='',tbRpHtml='';
 function tbRipple(st,rs,pad){const R=r=>({x:r.x-pad,y:r.y-pad,w:r.w+pad*2,h:r.h+pad*2}),box=r=>`left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`;
   const drag=stage.classList.contains('tbdrag'),act=['click','flip','play','end'].includes(st.m);let h='';
@@ -4141,7 +4139,7 @@ function tbDraw(){
   const svg=ov.querySelector('svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.style.opacity=dim?1:0;
   svg.querySelector('path').setAttribute('d',`M0 0H${W}V${H}H0Z`+rs.map(r=>`M${r.x-pad} ${r.y-pad}h${r.w+pad*2}v${r.h+pad*2}h${-(r.w+pad*2)}Z`).join(''));
   const rg=ov.querySelector('.tbrings'),rh=tbRipple(st,rs,pad);if(rg._h!==rh){rg._h=rh;rg.innerHTML=rh}
-  const tx=ov.querySelector('.tbtx');st=tbVerb(st);
+  const tx=ov.querySelector('.tbtx');
   const rdy=st.m==='say'&&Date.now()-T.at>=TB_MIN;tx.classList.toggle('ready',rdy);tx.classList.toggle('empty',st.m==='say'&&!st.t);
   if(st.m==='say'&&!st.t&&rs.length){tx.hidden=false;tx.dataset.t='';tx.textContent='';const r=rs[0];tx.style.width='48px';tx.style.left=clamp(r.x+r.w+12,10,W-60)+'px';tx.style.top=clamp(r.y+r.h/2-20,64,H-60)+'px'}
   else if(st.t&&rs.length){tx.hidden=false;if(tx.dataset.t!==st.t){tx.dataset.t=st.t;tx.textContent=st.t}
@@ -6837,7 +6835,7 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 #tbov{position:absolute;inset:0;z-index:12;pointer-events:none}
 #tbov svg.tbdim{position:absolute;inset:0;width:100%;height:100%;transition:opacity .25s}
 #tbov svg path{fill:rgba(5,7,10,.66)}
-#tbov .tbrings i.tbmark{position:absolute;border-radius:12px;border:2px solid #f3cf86cc;box-shadow:0 0 10px 2px #f0b95a55}
+#tbov .tbrings i.tbmark{position:absolute;border-radius:12px;border:2px solid #f3cf86cc;box-shadow:0 0 10px 2px #f0b95a55;animation:tbGlow 1.15s ease-in-out infinite}
 #tbov .tbrings b.tbrp{position:absolute;border-radius:14px;border:3px solid #ffd98a;box-shadow:0 0 16px 3px #f0b95acc;opacity:0;animation:tbRp 1.4s cubic-bezier(.2,.6,.3,1) infinite}
 #tbov .tbrings b.tbrp.late{animation-delay:.45s}
 #tbov .tbrings em.tbtap{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(#fff6d8,#f3c46a 55%,#f0b95a00 72%);box-shadow:0 0 14px 4px #f0b95aaa;animation:tbTap 1.4s ease-out infinite}
