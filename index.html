@@ -327,6 +327,7 @@ button:focus-visible{outline:3px solid var(--brass-hi);outline-offset:3px}
 .ult-eye::before{width:44px;height:3px}.ult-eye::after{width:3px;height:44px;background:linear-gradient(180deg,transparent,var(--ec,#ff6a4a) 30%,#fff 50%,var(--ec,#ff6a4a) 70%,transparent)}
 #enemy.ult .ult-eye{animation:ultEye 1.5s ease-in-out infinite;filter:drop-shadow(0 0 6px var(--ec,#ff3b2f))}
 @keyframes ultEye{0%,100%{transform:scale(.65) rotate(0);opacity:.75}50%{transform:scale(1.15) rotate(10deg);opacity:1}}
+svg .pt{transform-box:view-box}
 #eart svg .wpn{transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-box:fill-box;transform-origin:50% 50%}
 #eart svg .inq-sword{transform:rotate(180deg)}
 #enemy.ult #eart svg .inq-sword{transform:none}
@@ -1401,64 +1402,28 @@ const ENEMY_SVG={
 priest:`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><defs>
 <linearGradient id="prR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8d1c1"/><stop offset=".5" stop-color="#9b9383"/><stop offset="1" stop-color="#47433b"/></linearGradient>
 <radialGradient id="prS" cx=".42" cy=".28" r=".8"><stop offset=".3" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></radialGradient></defs>
-<ellipse cx="120" cy="350" rx="96" ry="10" fill="#000" opacity=".5"/>
-<rect x="183" y="46" width="6" height="304" rx="3" fill="#4d3c28"/>
-<path d="M186 18c-15 6-15 27 0 32 15-5 15-26 0-32z" fill="none" stroke="#c8a56c" stroke-width="3"/>
-<path d="M181 50q-7 34-2 66M186 52q0 38 2 70M191 50q7 34 2 62" stroke="#d4c19a" stroke-width="1.6" fill="none"/>
-<path d="M120 28C87 28 73 62 75 97 57 131 49 212 38 348h164c-10-136-18-217-36-251 2-35-12-69-46-69z" fill="url(#prR)"/>
-<path d="M120 28C87 28 73 62 75 97 57 131 49 212 38 348h164c-10-136-18-217-36-251 2-35-12-69-46-69z" fill="url(#prS)"/>
-<path d="M120 54c-21 0-28 23-26 44 4 19 48 19 52 0 2-21-5-44-26-44z" fill="#08090b"/>
-<path d="M82 152c-15 40-10 70 14 82l24-6 24 6c24-12 29-42 14-82" fill="#7e786b"/>
-<ellipse cx="186" cy="176" rx="11" ry="9" fill="#8a8273"/>
-<g stroke="#5e4b2f" stroke-width="2.6"><path d="M108 254v58M120 248v70M132 254v58"/></g>
-<path d="M98 240 88 348M142 240l12 108M120 262v86" stroke="#2d2b27" stroke-width="2" opacity=".5"/></svg>`,
+<ellipse class="pt-shadow" cx="120" cy="350" rx="96" ry="10" fill="#000" opacity=".5"/>
+<g class="pt pt-body" style="transform-origin:120px 348px"><g class="pt pt-armR pt-back" style="transform-origin:160px 140px"><g class="pt pt-wpn" style="transform-origin:186px 176px"><rect x="183" y="46" width="6" height="304" rx="3" fill="#4d3c28"/><path d="M186 18c-15 6-15 27 0 32 15-5 15-26 0-32z" fill="none" stroke="#c8a56c" stroke-width="3"/><path d="M181 50q-7 34-2 66M186 52q0 38 2 70M191 50q7 34 2 62" stroke="#d4c19a" stroke-width="1.6" fill="none"/></g></g><path d="M120 28C87 28 73 62 75 97 57 131 49 212 38 348h164c-10-136-18-217-36-251 2-35-12-69-46-69z" fill="url(#prR)"/><path d="M120 28C87 28 73 62 75 97 57 131 49 212 38 348h164c-10-136-18-217-36-251 2-35-12-69-46-69z" fill="url(#prS)"/><g class="pt pt-head" style="transform-origin:120px 104px"><path d="M120 54c-21 0-28 23-26 44 4 19 48 19 52 0 2-21-5-44-26-44z" fill="#08090b"/></g><g class="pt pt-armL" style="transform-origin:120px 158px"><path d="M82 152c-15 40-10 70 14 82l24-6 24 6c24-12 29-42 14-82" fill="#7e786b"/></g><g class="pt pt-armR" style="transform-origin:160px 140px"><ellipse cx="186" cy="176" rx="11" ry="9" fill="#8a8273"/></g><g stroke="#5e4b2f" stroke-width="2.6"><path d="M108 254v58M120 248v70M132 254v58"/></g><path d="M98 240 88 348M142 240l12 108M120 262v86" stroke="#2d2b27" stroke-width="2" opacity=".5"/></g></svg>`,
 cultist:`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><defs>
 <linearGradient id="cuR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3b30"/><stop offset=".6" stop-color="#2f211d"/><stop offset="1" stop-color="#140e0c"/></linearGradient>
 <radialGradient id="cuE"><stop offset="0" stop-color="#ffd08a"/><stop offset=".4" stop-color="#e4793a"/><stop offset="1" stop-color="#e4793a" stop-opacity="0"/></radialGradient>
 <linearGradient id="cuB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8ecef"/><stop offset="1" stop-color="#6c747c"/></linearGradient></defs>
-<ellipse cx="120" cy="350" rx="100" ry="10" fill="#000" opacity=".5"/>
-<path d="M120 92c-28 0-40 26-38 50-24 32-42 102-54 200l14-10 12 12 14-12 14 12 12-10 14 12 12-12 14 12 12-12 14 10 14-12 14 12c-12-96-28-168-52-202 2-24-10-50-38-50z" fill="url(#cuR)"/>
-<path d="M120 112c-18 0-24 18-22 34 3 15 41 15 44 0 2-16-4-34-22-34z" fill="#060505"/>
-<circle cx="111" cy="134" r="9" fill="url(#cuE)"/><circle cx="129" cy="134" r="9" fill="url(#cuE)"/>
-<path d="M62 230 30 258l6 6 34-24z" fill="url(#cuB)"/><path d="M66 222l-8 20 14 4z" fill="#3a2a22"/>
-<path d="M176 232l40 18-3 8-42-14z" fill="url(#cuB)"/><path d="M172 222l6 22-14 2z" fill="#3a2a22"/>
-<path d="M92 196q28 18 56 0" stroke="#7a4a38" stroke-width="3" fill="none"/>
-<path d="M150 150c18 6 26 20 30 40" stroke="#1a1210" stroke-width="3" fill="none" opacity=".7"/></svg>`,
+<ellipse class="pt-shadow" cx="120" cy="350" rx="100" ry="10" fill="#000" opacity=".5"/>
+<g class="pt pt-body" style="transform-origin:120px 345px"><path d="M120 92c-28 0-40 26-38 50-24 32-42 102-54 200l14-10 12 12 14-12 14 12 12-10 14 12 12-12 14 12 12-12 14 10 14-12 14 12c-12-96-28-168-52-202 2-24-10-50-38-50z" fill="url(#cuR)"/><g class="pt pt-head" style="transform-origin:120px 124px"><path d="M120 112c-18 0-24 18-22 34 3 15 41 15 44 0 2-16-4-34-22-34z" fill="#060505"/><circle cx="111" cy="134" r="9" fill="url(#cuE)"/><circle cx="129" cy="134" r="9" fill="url(#cuE)"/></g><g class="pt pt-armL" style="transform-origin:92px 160px"><g class="pt pt-wpn pt-wpnL" style="transform-origin:65px 236px"><path d="M62 230 30 258l6 6 34-24z" fill="url(#cuB)"/><path d="M66 222l-8 20 14 4z" fill="#3a2a22"/></g></g><g class="pt pt-armR" style="transform-origin:148px 160px"><g class="pt pt-wpn pt-wpnR" style="transform-origin:171px 238px"><path d="M176 232l40 18-3 8-42-14z" fill="url(#cuB)"/><path d="M172 222l6 22-14 2z" fill="#3a2a22"/></g></g><path d="M92 196q28 18 56 0" stroke="#7a4a38" stroke-width="3" fill="none"/><path d="M150 150c18 6 26 20 30 40" stroke="#1a1210" stroke-width="3" fill="none" opacity=".7"/></g></svg>`,
 inquisitor:`<svg viewBox="0 0 240 380" preserveAspectRatio="xMidYMax meet"><defs>
 <linearGradient id="inS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f3f5"/><stop offset=".45" stop-color="#a7b0b9"/><stop offset="1" stop-color="#3b4249"/></linearGradient>
 <linearGradient id="inT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4456"/><stop offset="1" stop-color="#1b1820"/></linearGradient></defs>
-<ellipse cx="118" cy="370" rx="92" ry="10" fill="#000" opacity=".5"/>
-<g class="wpn inq-sword"><rect x="196" y="8" width="7" height="362" rx="3" fill="#2d2a26"/>
-<path d="M199 10c22 8 30 30 24 52l-24-12zM199 10c-14 10-16 30-8 44l8-6z" fill="url(#inS)"/></g>
-<path d="M120 14c-22 0-30 22-28 46l2 32h52l2-32c2-24-6-46-28-46z" fill="url(#inS)"/>
-<path d="M104 52h12M124 52h12" stroke="#0b0c0e" stroke-width="4" stroke-linecap="round"/>
-<path d="M120 22v60" stroke="#ffffff55" stroke-width="1.5"/>
-<path d="M86 96h68l10 16H76z" fill="#6f7780"/>
-<ellipse cx="72" cy="122" rx="28" ry="20" fill="url(#inS)"/><ellipse cx="168" cy="122" rx="28" ry="20" fill="url(#inS)"/>
-<path d="M82 112h76l-6 100H88z" fill="url(#inS)"/>
-<path d="M92 200h56l14 120h-84z" fill="url(#inT)"/>
-<path d="M120 226c-10 14-10 26 0 40 10-14 10-26 0-40z" fill="#eef2f6" opacity=".85"/>
-<path class="inq-armL" d="M52 130l-10 90 18 4 12-90z" fill="#8a929b"/>
-<g class="inq-armR"><path d="M188 130l10 86-16 6-8-88z" fill="#8a929b"/>
-<rect x="186" y="208" width="20" height="16" rx="4" fill="#9aa3ac"/></g>
-<path d="M94 320l-6 46h22l4-46zM126 320l2 46h22l-4-46z" fill="#5f666e"/></svg>`,
+<ellipse class="pt-shadow" cx="118" cy="370" rx="92" ry="10" fill="#000" opacity=".5"/>
+<g class="pt pt-body" style="transform-origin:120px 366px"><g class="pt pt-armR pt-back" style="transform-origin:181px 134px"><g class="pt pt-wpn" style="transform-origin:199px 216px"><g class="wpn inq-sword"><rect x="196" y="8" width="7" height="362" rx="3" fill="#2d2a26"/>
+<path d="M199 10c22 8 30 30 24 52l-24-12zM199 10c-14 10-16 30-8 44l8-6z" fill="url(#inS)"/></g></g></g><g class="pt pt-head" style="transform-origin:120px 94px"><path d="M120 14c-22 0-30 22-28 46l2 32h52l2-32c2-24-6-46-28-46z" fill="url(#inS)"/><path d="M104 52h12M124 52h12" stroke="#0b0c0e" stroke-width="4" stroke-linecap="round"/><path d="M120 22v60" stroke="#ffffff55" stroke-width="1.5"/></g><path d="M86 96h68l10 16H76z" fill="#6f7780"/><ellipse cx="72" cy="122" rx="28" ry="20" fill="url(#inS)"/><ellipse cx="168" cy="122" rx="28" ry="20" fill="url(#inS)"/><path d="M82 112h76l-6 100H88z" fill="url(#inS)"/><path d="M92 200h56l14 120h-84z" fill="url(#inT)"/><path d="M120 226c-10 14-10 26 0 40 10-14 10-26 0-40z" fill="#eef2f6" opacity=".85"/><g class="pt pt-armL" style="transform-origin:63px 134px"><path d="M52 130l-10 90 18 4 12-90z" fill="#8a929b"/></g><g class="pt pt-armR" style="transform-origin:181px 134px"><path d="M188 130l10 86-16 6-8-88z" fill="#8a929b"/>
+<rect x="186" y="208" width="20" height="16" rx="4" fill="#9aa3ac"/></g><g class="pt pt-legs" style="transform-origin:120px 320px"><path d="M94 320l-6 46h22l4-46zM126 320l2 46h22l-4-46z" fill="#5f666e"/></g></g></svg>`,
 bishop:`<svg viewBox="0 0 260 400" preserveAspectRatio="xMidYMax meet"><defs>
 <linearGradient id="biR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f2ee"/><stop offset=".55" stop-color="#c6c9cd"/><stop offset="1" stop-color="#6d7279"/></linearGradient>
 <linearGradient id="biG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8c98e"/><stop offset="1" stop-color="#8d6a37"/></linearGradient>
 <radialGradient id="biF"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#dfeaf5" stop-opacity=".9"/><stop offset="1" stop-color="#bcd3ea" stop-opacity="0"/></radialGradient>
 <radialGradient id="biSh" cx=".4" cy=".25" r=".85"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient></defs>
-<ellipse cx="130" cy="390" rx="110" ry="11" fill="#000" opacity=".5"/>
-<path d="M130 0l-26 44 2 40h48l2-40z" fill="url(#biR)"/><path d="M130 0v84" stroke="url(#biG)" stroke-width="6"/><path d="M106 70h48" stroke="url(#biG)" stroke-width="5"/>
-<ellipse cx="130" cy="104" rx="22" ry="26" fill="#2a2c30"/><path d="M114 100q16 10 32 0" stroke="#0e0f11" stroke-width="2" fill="none"/>
-<path d="M84 128c-30 40-52 140-66 262h224c-14-122-36-222-66-262-14-6-26-8-46-8s-32 2-46 8z" fill="url(#biR)"/>
-<path d="M84 128c-30 40-52 140-66 262h224c-14-122-36-222-66-262-14-6-26-8-46-8s-32 2-46 8z" fill="url(#biSh)"/>
-<path d="M112 124l-8 266h20l6-240 6 240h20l-8-266z" fill="url(#biG)" opacity=".9"/>
-<path d="M84 132c-18 20-30 44-34 66l20 8c6-22 16-42 30-58z" fill="#d6d8db"/>
-<ellipse cx="52" cy="214" rx="11" ry="10" fill="#cfc6b6"/>
-<circle cx="50" cy="176" r="46" fill="url(#biF)"/>
-<path d="M50 140c-14 18-18 30-10 46 4 8 16 8 20 0 6-14 2-30-10-46z" fill="#fff"/>
-<path d="M176 132c10 30 12 70 8 110" stroke="#9aa0a7" stroke-width="2" fill="none" opacity=".6"/>
-<g class="hammer"><path class="hm-blade" d="M195.5 336h7l-3.5 54z" fill="#e4eaef" stroke="#8d969e" stroke-width="1"/><rect class="hm-l" x="195" y="148" width="4.5" height="190" fill="#5a4630"/><rect class="hm-r" x="199.5" y="148" width="4.5" height="190" fill="#463622"/><rect x="176" y="122" width="48" height="30" rx="4" fill="#8f9297" stroke="#55585d" stroke-width="2"/><path d="M180 128h40" stroke="#c9ccd1" stroke-width="2"/><ellipse cx="200" cy="240" rx="10" ry="9" fill="#cfc6b6"/></g></svg>`,
+<ellipse class="pt-shadow" cx="130" cy="390" rx="110" ry="11" fill="#000" opacity=".5"/>
+<g class="pt pt-body" style="transform-origin:130px 390px"><g class="pt pt-head" style="transform-origin:130px 126px"><path d="M130 0l-26 44 2 40h48l2-40z" fill="url(#biR)"/><path d="M130 0v84" stroke="url(#biG)" stroke-width="6"/><path d="M106 70h48" stroke="url(#biG)" stroke-width="5"/><ellipse cx="130" cy="104" rx="22" ry="26" fill="#2a2c30"/><path d="M114 100q16 10 32 0" stroke="#0e0f11" stroke-width="2" fill="none"/></g><path d="M84 128c-30 40-52 140-66 262h224c-14-122-36-222-66-262-14-6-26-8-46-8s-32 2-46 8z" fill="url(#biR)"/><path d="M84 128c-30 40-52 140-66 262h224c-14-122-36-222-66-262-14-6-26-8-46-8s-32 2-46 8z" fill="url(#biSh)"/><path d="M112 124l-8 266h20l6-240 6 240h20l-8-266z" fill="url(#biG)" opacity=".9"/><g class="pt pt-armL" style="transform-origin:92px 136px"><path d="M84 132c-18 20-30 44-34 66l20 8c6-22 16-42 30-58z" fill="#d6d8db"/><ellipse cx="52" cy="214" rx="11" ry="10" fill="#cfc6b6"/><g class="pt pt-fx" style="transform-origin:50px 176px"><circle cx="50" cy="176" r="46" fill="url(#biF)"/><path d="M50 140c-14 18-18 30-10 46 4 8 16 8 20 0 6-14 2-30-10-46z" fill="#fff"/></g></g><path d="M176 132c10 30 12 70 8 110" stroke="#9aa0a7" stroke-width="2" fill="none" opacity=".6"/><g class="pt pt-armR" style="transform-origin:176px 136px"><g class="pt pt-wpn" style="transform-origin:200px 240px"><g class="hammer"><path class="hm-blade" d="M195.5 336h7l-3.5 54z" fill="#e4eaef" stroke="#8d969e" stroke-width="1"/><rect class="hm-l" x="195" y="148" width="4.5" height="190" fill="#5a4630"/><rect class="hm-r" x="199.5" y="148" width="4.5" height="190" fill="#463622"/><rect x="176" y="122" width="48" height="30" rx="4" fill="#8f9297" stroke="#55585d" stroke-width="2"/><path d="M180 128h40" stroke="#c9ccd1" stroke-width="2"/><ellipse cx="200" cy="240" rx="10" ry="9" fill="#cfc6b6"/></g></g></g></g></svg>`,
 };
 
 /* ================= layout ================= */
@@ -3947,6 +3912,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.35.75.20','11/21','적 캐릭터 그림을 머리·팔·무기·다리 부위로 분리 — 겉모습은 그대로, 무기는 손을 따라 움직임'],
   ['V2.35.74.20','11/21','적 카드 순서 — 예고한 궁극기 → 나에게 거는 카드 → 이로운 카드(낸 뒤 공격 한 장 낼 코스트가 남을 때) → 공격 → 방어, 같은 종류는 코스트 큰 것부터, 같으면 패 왼쪽부터 / 적 궁극기 연출 — 카드가 떠올라 뒤집힌 뒤 처형 집행은 표식 수만큼 베고 마지막에 가로로 베기, 처단은 검을 들어 올렸다 내려 베고 다시 꽂는 자세로, 적은 다가오지 않음 / 훈련장 연출 보기'],
   ['V2.35.73.20','11/21','이단심문관이 처단을 쓰지 않던 버그 수정 — 궁극기는 조건이 차면 가장 먼저 쓰고, 코스트가 모자라면 남은 코스트를 전부 써서 냄 / 턴 시작 때 표식 종소리를 낮고 짧은 쇳소리로 바꿈'],
   ['V2.35.72.19','11/21','상태 설명을 짧게 — 턴 종료 시 소멸처럼 끝맺음, 카드·패시브 설명의 사라짐도 소멸로'],
@@ -5292,16 +5258,11 @@ function weightTargets(c){const C=S.C,w=cardWeight(c);if(!w)return{tg:[C.E],wb:0
 /* 적 그림 — 2장 공방 사람 · 경비원 · 공무원 (임시 실루엣) */
 function a2SVG(art){
   const col={w_stein:'#b9703f',w_kriv:'#7fb0d6',w_remi:'#c9a35c',w_krim:'#a57fc9',w_ash:'#d6c27a',poor:'#7a746a',e_sender:'#8f8f8f',e_exam:'#b8b0a0',e_guard:'#5d7389',clerk:'#9a8a6a',surt:'#e0582c'}[art]||'#888';
-  if(art==='clerk')return`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><ellipse cx="120" cy="350" rx="100" ry="10" fill="#000" opacity=".5"/>
-    <path d="M70 120C40 110 20 70 30 40M170 120c30-10 50-50 40-80" stroke="#8a6a3a" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="30" cy="38" r="12" fill="#a07a44"/><circle cx="210" cy="38" r="12" fill="#a07a44"/>
-    <path d="M120 40c-26 0-36 24-34 52-20 30-26 120-34 256h136c-8-136-14-226-34-256 2-28-8-52-34-52z" fill="${col}"/><path d="M120 60c-17 0-23 18-21 36 3 15 39 15 42 0 2-18-4-36-21-36z" fill="#0b0b0d"/>
-    <rect x="96" y="150" width="48" height="60" rx="4" fill="#e8dfca" opacity=".8"/><path d="M104 165h32M104 178h32M104 191h24" stroke="#5b4f3a" stroke-width="3"/></svg>`;
+  if(art==='clerk')return`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><ellipse class="pt-shadow" cx="120" cy="350" rx="100" ry="10" fill="#000" opacity=".5"/>
+    <g class="pt pt-body" style="transform-origin:120px 348px"><g class="pt pt-armL" style="transform-origin:70px 120px"><path d="M70 120C40 110 20 70 30 40" stroke="#8a6a3a" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="30" cy="38" r="12" fill="#a07a44"/></g><g class="pt pt-armR" style="transform-origin:170px 120px"><path d="M170 120c30-10 50-50 40-80" stroke="#8a6a3a" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="210" cy="38" r="12" fill="#a07a44"/></g><path d="M120 40c-26 0-36 24-34 52-20 30-26 120-34 256h136c-8-136-14-226-34-256 2-28-8-52-34-52z" fill="${col}"/><g class="pt pt-head" style="transform-origin:120px 100px"><path d="M120 60c-17 0-23 18-21 36 3 15 39 15 42 0 2-18-4-36-21-36z" fill="#0b0b0d"/></g><g class="pt pt-item" style="transform-origin:120px 180px"><rect x="96" y="150" width="48" height="60" rx="4" fill="#e8dfca" opacity=".8"/><path d="M104 165h32M104 178h32M104 191h24" stroke="#5b4f3a" stroke-width="3"/></g></g></svg>`;
   const hat=art==='e_guard'?'<path d="M82 52h76l-8-20H90z" fill="#2b3644"/>':art==='e_exam'?'<rect x="92" y="34" width="56" height="14" rx="3" fill="#3e3a33"/>':art.startsWith('w_')?'<path d="M86 60c4-24 64-24 68 0z" fill="#3a3530"/>':'';
-  return`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><ellipse cx="120" cy="350" rx="90" ry="10" fill="#000" opacity=".5"/>
-    <path d="M120 36c-28 0-38 26-36 56-22 34-30 122-40 256h152c-10-134-18-222-40-256 2-30-8-56-36-56z" fill="${col}"/>
-    <path d="M120 36c-28 0-38 26-36 56-22 34-30 122-40 256h152c-10-134-18-222-40-256 2-30-8-56-36-56z" fill="#000" opacity=".28"/>
-    <path d="M120 58c-18 0-24 20-22 38 3 16 41 16 44 0 2-18-4-38-22-38z" fill="#0b0b0d"/>${hat}
-    <path d="M84 150c-14 40-8 72 16 82l20-6 20 6c24-10 30-42 16-82" fill="#000" opacity=".2"/></svg>`;
+  return`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><ellipse class="pt-shadow" cx="120" cy="350" rx="90" ry="10" fill="#000" opacity=".5"/>
+    <g class="pt pt-body" style="transform-origin:120px 348px"><path d="M120 36c-28 0-38 26-36 56-22 34-30 122-40 256h152c-10-134-18-222-40-256 2-30-8-56-36-56z" fill="${col}"/><path d="M120 36c-28 0-38 26-36 56-22 34-30 122-40 256h152c-10-134-18-222-40-256 2-30-8-56-36-56z" fill="#000" opacity=".28"/><g class="pt pt-head" style="transform-origin:120px 100px"><path d="M120 58c-18 0-24 20-22 38 3 16 41 16 44 0 2-18-4-38-22-38z" fill="#0b0b0d"/>${hat}</g><g class="pt pt-arms" style="transform-origin:120px 160px"><path d="M84 150c-14 40-8 72 16 82l20-6 20 6c24-10 30-42 16-82" fill="#000" opacity=".2"/></g></g></svg>`;
 }
 /* ================= 니다벨리르 공방 고유 키워드 (증기·열기·냉매·냉동·깨짐·예술적 감각·작품·먹기·배부름·포화) =================
    플레이어 쪽 값은 S.C(p…), 적 쪽 값은 적 객체에 둠 */
@@ -6898,14 +6859,13 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 .tbyn{min-width:140px;font-size:21px;padding:12px 26px;border:2px solid var(--brass);color:var(--brass-hi)}
 /* 적 궁극기 연출 V2.35.74.20 */
 #eart svg{overflow:visible}
-#eart svg .inq-armL{transform-box:fill-box;transform-origin:70% 4%;transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
-#eart svg .inq-armR{transform-box:fill-box;transform-origin:30% 4%;transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
-#enemy.inq-raise #eart svg .inq-armL{transform:rotate(152deg)}
-#enemy.inq-raise #eart svg .inq-armR{transform:rotate(-152deg)}
-#enemy.inq-raise #eart svg .inq-sword{transform:translate(-76px,-168px) rotate(-14deg)!important;transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
-#enemy.inq-cut #eart svg .inq-armL{transform:rotate(28deg);transition:transform .09s ease-in}
-#enemy.inq-cut #eart svg .inq-armR{transform:rotate(-28deg);transition:transform .09s ease-in}
-#enemy.inq-cut #eart svg .inq-sword{transform:translate(-78px,96px) rotate(-178deg) scale(1.08)!important;transition:transform .09s cubic-bezier(.7,0,1,.6)}
+#eart svg .pt-armL,#eart svg .pt-armR,#eart svg .pt-wpn{transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
+#enemy.inq-raise #eart svg .pt-armL{transform:rotate(152deg)}
+#enemy.inq-raise #eart svg .pt-armR{transform:rotate(-152deg)}
+#enemy.inq-raise #eart svg .pt-wpn{transform:rotate(138deg)}
+#enemy.inq-cut #eart svg .pt-armL{transform:rotate(28deg);transition:transform .09s ease-in}
+#enemy.inq-cut #eart svg .pt-armR{transform:rotate(-28deg);transition:transform .09s ease-in}
+#enemy.inq-cut #eart svg .pt-wpn{transform:rotate(-140deg);transition:transform .09s cubic-bezier(.7,0,1,.6)}
 #enemy.inq-raise #eart,#enemy.inq-cut #eart{filter:none}
 .fucard{position:absolute;width:170px;height:238px;margin:-119px 0 0 -85px;z-index:13;perspective:900px;pointer-events:none}
 .fucard .fu-in{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(180deg);transition:transform .5s cubic-bezier(.3,1.3,.5,1)}
