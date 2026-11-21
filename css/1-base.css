@@ -1,0 +1,32 @@
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}#introFilm.tscene{z-index:0}
+/* UI 크기 (설정) — 작게 1 · 크게 1.2 · 매우 크게 1.4 */
+#topbar,#dockL,#dockR,#ppanel,#piles,#foebar,#eplate,#intent,#toast,#tut,#prompt,#screen>*,#modal>*{zoom:var(--uiz,1)}
+#stage #screen{top:calc(56px*var(--uiz,1))}
+#stage #prompt{top:calc(590px/var(--uiz,1))}
+#screen>.mappanel{zoom:var(--uim,1)}
+#stage.port #intent{zoom:1.1}
+.port .mappanel{padding-bottom:84px}
+#stage.port[data-ui] .pp-hp{flex:1 1 110px}#stage.port[data-ui] .pp-name{flex-direction:column;flex:0 0 auto}#stage.port[data-ui] #ppanel{flex-wrap:nowrap}#stage.port[data-ui] .shield{font-size:0}
+#hand .card{font-size:calc(12.5px*var(--uic,1))}#stage.port #hand .card{font-size:calc(13.5px*var(--uip,1))}
+#stage.port #ppanel{top:calc((808px - (var(--uiz,1) - 1)*60px)/var(--uiz,1))}
+#dockL,#dockR{position:absolute;z-index:8;display:flex;gap:10px;bottom:34px}
+#dockL{left:44px}#dockR{right:44px}
+#dockL.fight{bottom:206px}#dockR.fight{bottom:186px}
+.port #dockL.fight{bottom:calc(430px/var(--uiz,1));left:24px}.port #dockR.fight{bottom:calc(430px/var(--uiz,1));right:24px}
+.port #dockL,.port #dockR{bottom:30px}
+#ttlTap{font-size:32px;letter-spacing:.1em;color:#e7e0d2;animation:none;cursor:pointer;bottom:100px}
+.port #ttlTap{font-size:38px;bottom:240px}
+.panel.stance{width:min(1040px,100%);gap:18px}
+.st-h{text-align:center}
+.st-cross{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.st-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.st-opt{display:flex;flex-direction:column;gap:8px;min-height:170px;padding:18px;text-align:left;background:#191b1f;border:1px solid #4a4436;border-radius:8px;color:var(--bone,#e7e0d2);cursor:pointer;font:inherit}
+.st-cross .st-opt:nth-child(even){text-align:right;align-items:flex-end}
+.st-opt:hover:not(:disabled){border-color:var(--brass,#c9a35a)}
+.st-opt:disabled{opacity:.5;cursor:default}
+.st-opt b{font-family:var(--f-serif);font-size:24px}
+.st-q{font-family:var(--f-serif);font-size:17px;line-height:1.5}
+.st-c{font-size:14px;color:var(--bone-dim,#aaa)}
+.st-opt em{font-style:normal;font-size:14px;color:var(--brass,#c9a35a)}
+.st-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92px;height:92px;border-radius:50%;background:#101114;border:1px solid var(--brass,#c9a35a);display:grid;place-items:center;font-family:var(--f-serif);font-size:18px;pointer-events:none}
+.port .st-cross{gap:18px}

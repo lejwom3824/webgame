@@ -1,0 +1,13 @@
+/* V29.1 카드 후광: 공격 빨강 · 방어 파랑 · 지원 초록 · 저주 보라 · 사용불가 없음 */
+.card[data-gl=atk]{--gl:#e5483b;--gl2:#e5483b99}.card[data-gl=def]{--gl:#4a90ea;--gl2:#4a90ea99}.card[data-gl=sup]{--gl:#4cc866;--gl2:#4cc86699}.card[data-gl=curse]{--gl:#a65ae6;--gl2:#a65ae699}
+.card[data-gl] .face.front{box-shadow:0 .8em 1.8em #0000008c,inset 0 0 0 .4em #0d0f12,inset 0 0 0 .5em var(--fr2),0 0 0 .2em var(--gl),0 0 1.4em .3em var(--gl2)}
+.card.armed[data-gl] .face.front{box-shadow:inset 0 0 0 .4em #0d0f12,inset 0 0 0 .5em var(--fr2),0 0 0 .3em var(--gl),0 0 2.4em .6em var(--gl2)}
+.card.zoom[data-gl] .face.front{box-shadow:0 1.6em 4em #000d,inset 0 0 0 .4em #0d0f12,inset 0 0 0 .5em var(--fr2),0 0 0 .2em var(--gl),0 0 1.4em .3em var(--gl2)}
+
+.hppv{position:absolute;top:0;bottom:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(135deg,#ffd98fcc 0 4px,#ffd98f55 4px 8px);animation:hppvb 1s ease-in-out infinite alternate}
+.hppv.sure{background:#fff3d0e0;animation:none}
+@keyframes hppvb{from{opacity:.55}to{opacity:1}}
+.ebar span,.fhp em{z-index:3}
+.hppvt{margin-top:4px;font-size:14px;color:var(--bone);text-shadow:0 1px 3px #000;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hppvt b{font-family:var(--f-display);font-weight:400;font-size:19px;color:#ffd98f}.hppvt em{font-style:normal;font-weight:700;color:#f29a8a}
+.port .hppvt{font-size:17px}.port .hppvt b{font-size:23px}

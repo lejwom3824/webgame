@@ -1,0 +1,8 @@
+.slotlist{display:flex;flex-direction:column;gap:8px;overflow:auto;min-height:0}
+.slotrow{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:8px;border:1px solid #5d5547;background:linear-gradient(#262c33,#171b20)}
+.slotrow.empty{opacity:.45;border-style:dashed}.slotrow.empty i{font-style:normal;color:var(--bone-dim)}
+.slotno{font-family:var(--f-display);font-size:24px;color:var(--brass-hi);min-width:1.4em;text-align:center}
+.slotinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.slotinfo b{font-family:var(--f-display);font-weight:400;font-size:20px}
+.slotinfo span{font-size:14px;color:var(--bone)}.slotinfo i{font-style:normal;font-size:12px;color:var(--bone-dim)}
+.slotbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.port .slotinfo b{font-size:24px}.port .slotinfo span{font-size:18px}.port .slotinfo i{font-size:15px}.port .slotrow{flex-wrap:wrap}
