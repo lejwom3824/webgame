@@ -2233,7 +2233,7 @@ function makeEnemy(key){
 }
 /* 은빛 기사가 살아 있으면 보스가 받는 피해를 기사가 대신 받음 (전투 시작 때 적을 복사하므로 여기서 연결) */
 function bossGuard(E){let _hp=E.hp;Object.defineProperty(E,'hp',{enumerable:true,configurable:true,get(){return _hp},set(v){if(v<_hp&&knAlive(E).length){_hp-=knightTake(_hp-v);return}_hp=v}})}
-function startCombat(E0){
+function startCombat(E0){try{ultReset()}catch(e){}
   const r=S.run;
   const draw=shuffle(r.deck.map(c=>({uid:c.uid,id:c.id})));
   const foeList=Array.isArray(E0)?E0:[typeof E0==='string'?makeEnemy(E0):E0];
@@ -3912,6 +3912,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.35.75.21','11/21','내 궁극기를 쓴 뒤 화면이 확대된 채 남던 버그 수정'],
   ['V2.35.75.20','11/21','적 캐릭터 그림을 머리·팔·무기·다리 부위로 분리 — 겉모습은 그대로, 무기는 손을 따라 움직임'],
   ['V2.35.74.20','11/21','적 카드 순서 — 예고한 궁극기 → 나에게 거는 카드 → 이로운 카드(낸 뒤 공격 한 장 낼 코스트가 남을 때) → 공격 → 방어, 같은 종류는 코스트 큰 것부터, 같으면 패 왼쪽부터 / 적 궁극기 연출 — 카드가 떠올라 뒤집힌 뒤 처형 집행은 표식 수만큼 베고 마지막에 가로로 베기, 처단은 검을 들어 올렸다 내려 베고 다시 꽂는 자세로, 적은 다가오지 않음 / 훈련장 연출 보기'],
   ['V2.35.73.20','11/21','이단심문관이 처단을 쓰지 않던 버그 수정 — 궁극기는 조건이 차면 가장 먼저 쓰고, 코스트가 모자라면 남은 코스트를 전부 써서 냄 / 턴 시작 때 표식 종소리를 낮고 짧은 쇳소리로 바꿈'],
@@ -4519,7 +4520,7 @@ function openPrep(v,anchor){if(!S.prepOpenT||Date.now()-S.prepOpenT>1500)bagTalk
     save();openPrep(view,to==='deck')});
   if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
-function hideCombatUI(){{const b=document.getElementById('trFxBtn');if(b)b.remove()}stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{document.querySelectorAll('.knfig').forEach(k=>k.hidden=true)}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
+function hideCombatUI(){try{ultReset()}catch(e){}{const b=document.getElementById('trFxBtn');if(b)b.remove()}stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{document.querySelectorAll('.knfig').forEach(k=>k.hidden=true)}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
 const EFEET0={land:L.land.efeet,port:L.port.efeet};
 function positionScene(){
   const o=L[S.orient],en=$('#enemy');
@@ -5138,7 +5139,9 @@ async function ultDash(id){if(REDUCED)return;const C=S.C,E=C.E,o=L[S.orient],x=o
   await wait(220);fxEl('ultline',W/2,y,{},700);try{sfx('ultHit')}catch(e){}shake(1.5);nm.classList.add('out');setTimeout(()=>nm.remove(),600)}
 async function ultBack(){if(!ULT_ON)return;ULT_ON=false;const els=[$('#scene'),$('#bg')];
   const an=els.map(el=>el.animate([{transform:'scale(1.5)'},{transform:'scale(.95)',offset:.65},{transform:'scale(1)'}],{duration:440,easing:'ease-out',fill:'forwards'}));
-  await wait(450);an.forEach(a=>a.cancel());els.forEach(el=>el.style.transformOrigin='');stage.classList.remove('ultme')}
+  await wait(450);ultReset()}
+/* 궁극기 돌진의 확대를 완전히 걷어 냄 — 앞으로 당긴 확대(fill forwards)까지 지워야 화면이 원래대로 돌아옴 */
+function ultReset(){ULT_ON=false;for(const el of[$('#scene'),$('#bg')]){if(!el)continue;el.getAnimations().forEach(a=>{if(!(window.CSSAnimation&&a instanceof CSSAnimation)&&!(window.CSSTransition&&a instanceof CSSTransition))a.cancel()});el.style.transformOrigin=''}stage.classList.remove('ultme');document.querySelectorAll('#fx .ultname').forEach(x=>x.remove())}
 /* 보스 제압 — 마지막 일격 뒤 멈춤, 하얗게 번쩍, 무릎 꿇음, 화면 틀이 깨졌다가 맞춰지고 글자 */
 async function bossFinish(){if(REDUCED)return;const o=L[S.orient],x=o.ex,y=o.efeet-o.eh*.55,W=o.W,H=o.H;let skip=false;const sk=()=>{skip=true};
   const w2=ms=>skip?Promise.resolve():wait(ms);setTimeout(()=>stage.addEventListener('pointerdown',sk,{once:true}),300);
