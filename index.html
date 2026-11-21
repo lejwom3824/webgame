@@ -1438,8 +1438,9 @@ inquisitor:`<svg viewBox="0 0 240 380" preserveAspectRatio="xMidYMax meet"><defs
 <path d="M82 112h76l-6 100H88z" fill="url(#inS)"/>
 <path d="M92 200h56l14 120h-84z" fill="url(#inT)"/>
 <path d="M120 226c-10 14-10 26 0 40 10-14 10-26 0-40z" fill="#eef2f6" opacity=".85"/>
-<path d="M52 130l-10 90 18 4 12-90zM188 130l10 86-16 6-8-88z" fill="#8a929b"/>
-<rect x="186" y="208" width="20" height="16" rx="4" fill="#9aa3ac"/>
+<path class="inq-armL" d="M52 130l-10 90 18 4 12-90z" fill="#8a929b"/>
+<g class="inq-armR"><path d="M188 130l10 86-16 6-8-88z" fill="#8a929b"/>
+<rect x="186" y="208" width="20" height="16" rx="4" fill="#9aa3ac"/></g>
 <path d="M94 320l-6 46h22l4-46zM126 320l2 46h22l-4-46z" fill="#5f666e"/></svg>`,
 bishop:`<svg viewBox="0 0 260 400" preserveAspectRatio="xMidYMax meet"><defs>
 <linearGradient id="biR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f2ee"/><stop offset=".55" stop-color="#c6c9cd"/><stop offset="1" stop-color="#6d7279"/></linearGradient>
@@ -2784,9 +2785,9 @@ function ultCheck(){const C=S.C;if(!C||C.over)return;let any=false;
     if(u&&!E.ultArmed&&C.phase==='player'){E.ultArmed=u;C.ultDark=C.turn;clog(`${E.name}: 궁극기 「${u}」 준비`,'e');try{sfx('ult')}catch(e){}}
     else if(!u&&E.ultArmed)E.ultArmed=null;if(E.ultArmed)any=true}
   const E=C.E,el=$('#enemy'),dark=any&&C.ultDark===C.turn;
-  $('#ultShade').classList.toggle('on',dark);el.classList.toggle('ult',!!(E&&E.ultArmed));el.classList.toggle('ultdark',dark&&!!(E&&E.ultArmed));$('#hand').classList.toggle('ult-burn',any);
+  $('#ultShade').classList.toggle('on',dark);el.classList.toggle('ult',!!(E&&(E.ultArmed||E.ulting)));el.classList.toggle('ultdark',dark&&!!(E&&E.ultArmed));$('#hand').classList.toggle('ult-burn',any);
   const art=E&&ENEMY[E.key]&&ENEMY_SVG[ENEMY[E.key].art]?ENEMY[E.key].art:null,ey=art&&ULT_EYES[art];
-  el.querySelectorAll('.ult-eye').forEach((x,i)=>{if(!ey||!E.ultArmed||i>0){x.hidden=true;return}x.style.setProperty('--ec',ey[3]);const a=$('#eart'),W=a.offsetWidth,H=a.offsetHeight,sc=Math.min(W/ey[0],H/ey[1]),ox=(W-ey[0]*sc)/2,oy=H-ey[1]*sc,pt=ey[2][i];x.hidden=false;x.style.left=(ox+pt[0]*sc)+'px';x.style.top=(oy+pt[1]*sc)+'px'})}
+  el.querySelectorAll('.ult-eye').forEach((x,i)=>{if(!ey||!(E.ultArmed||E.ulting)||i>0){x.hidden=true;return}x.style.setProperty('--ec',ey[3]);const a=$('#eart'),W=a.offsetWidth,H=a.offsetHeight,sc=Math.min(W/ey[0],H/ey[1]),ox=(W-ey[0]*sc)/2,oy=H-ey[1]*sc,pt=ey[2][i];x.hidden=false;x.style.left=(ox+pt[0]*sc)+'px';x.style.top=(oy+pt[1]*sc)+'px'})}
 function actText(n){const a=ACT[n];if(!a)return'';const p=[];if(a.d&&a.d.length)p.push(a.d.map(x=>`${DIE_NAME[x.t]} ${x.a===x.b?x.a:`${x.a}~${x.b}`}`).join(', '));
   if(a.vuln)p.push(`적중 시 취약 ${a.vuln}`);if(a.strip)p.push('방어도와 지속 효과 제거');if(a.gim&&GIM[a.gim])p.push(`${GIM[a.gim].n}: ${GIM[a.gim].t}`);if(a.tag)p.push(a.tag);if(a.desc)p.push(a.desc);if(a.mercy)p.push('남은 체력만큼');return p.join(' · ')}
 const FOE_SEEN_K='midgard_foeSeen';let FOE_SEEN={};try{FOE_SEEN=JSON.parse(localStorage.getItem(FOE_SEEN_K)||'{}')||{}}catch(e){FOE_SEEN={}}
@@ -2812,15 +2813,15 @@ function foeRefill(E){const C=S.C;if(E.noAct){E.c=0;E.cMax=0;E.ap=0;E.apMax=0;E.
 /* V2.32.64.15 버그 수정: 뽑을 카드가 하나도 없을 때 드로우 카드(숨 고르기·망치 돌리기)를 내면 자기 자신을 다시 뽑아 끝없이 반복하며 적 턴이 멈추던 문제 */
 const FOE_DRAW=new Set(['숨 고르기','망치 돌리기']);const foeDrawOk=(E,n)=>!FOE_DRAW.has(n)||(E.fdeck||[]).length+(E.fdisc||[]).length>0;
 function foePick(E){if(E.key==='bishop')return bishopPick(E);const h=E.hand,c=E.c,isU=n=>!!(ACT[n]&&ACT[n].ult),ok=i=>(actCost(h[i])<=c||isU(h[i])&&c>0&&c>=Math.min(actCost(h[i]),E.cMax||0))&&actReady(E,h[i])&&foeDrawOk(E,h[i]);const idx=h.map((_,i)=>i).filter(ok);if(!idx.length)return-1;
-  {const u=idx.find(i=>isU(h[i]));if(u!=null)return u}/* 궁극기는 조건이 차면 가장 먼저 씀 */
-  const T=i=>actType(h[i]);
-  if(has(E,'침착함')&&E.turn<=1){const d=idx.find(i=>T(i)==='def');if(d!=null)return d}
-  const neg=idx.filter(i=>T(i)!=='def'&&actNeg(h[i]));if(neg.length)return neg[0];
-  const atk=idx.filter(i=>T(i)==='atk');
-  for(const i of idx.filter(i=>T(i)==='sup')){const rest=h.filter((_,j)=>j!==i&&actType(h[j])==='atk').map(actCost);if(rest.length&&c-actCost(h[i])>=Math.min(...rest))return i}
-  if(atk.length)return atk[0];
-  const sup=idx.filter(i=>T(i)==='sup');if(sup.length)return sup[0];
-  const def=idx.filter(i=>T(i)==='def');return def.length?def[0]:-1}
+  /* V2.35.74.20 카드 내는 순서: 예고한 궁극기 → 나에게 거는 카드 → 이로운 카드(낸 뒤 공격 한 장 낼 코스트가 남을 때) → 공격 → 방어, 같은 종류는 코스트 큰 것부터, 같으면 패 왼쪽부터 */
+  {const u=idx.find(i=>isU(h[i]));if(u!=null)return u}
+  const T=i=>actType(h[i]),big=a=>a.sort((x,y)=>actCost(h[y])-actCost(h[x])||x-y);
+  if(has(E,'침착함')&&E.turn<=1){const d=big(idx.filter(i=>T(i)==='def'))[0];if(d!=null)return d}
+  const neg=big(idx.filter(i=>T(i)!=='def'&&actNeg(h[i])));if(neg.length)return neg[0];
+  const atkAll=h.map((_,i)=>i).filter(i=>T(i)==='atk'&&!actNeg(h[i])&&actReady(E,h[i])&&!isU(h[i]));
+  for(const i of big(idx.filter(i=>T(i)==='sup'))){const rest=atkAll.map(j=>actCost(h[j]));if(!rest.length||c-actCost(h[i])>=Math.min(...rest))return i}
+  const atk=big(idx.filter(i=>T(i)==='atk'));if(atk.length)return atk[0];
+  const def=big(idx.filter(i=>T(i)==='def'));return def.length?def[0]:-1}
 async function foeBurst(){const C=S.C,E=C.E,r=S.run;if(!E.hand)foeRefill(E);
   if((E.deckPh||1)!==(E.phase||1))foeRedeal(E);
   E._burstArmed=!!E.ultArmed&&!!ultCond(E);
@@ -2831,9 +2832,9 @@ async function foeBurst(){const C=S.C,E=C.E,r=S.run;if(!E.hand)foeRefill(E);
     if(name==='견해 묻기'&&E.asked){E.fdisc.push(name);continue}
     E.c=Math.max(0,E.c-actCost(name));E.fdisc.push(name);E.intent=name;n++;foeSee(name);E.used.push({t:C.turn,n:name});renderCombat();
     if(E.stun){E.stun=false;toast('…!',`${E.name}이(가) 말문이 막혀 「${name}」 취소`);clog(`말문이 막힘: 「${name}」 취소`,'e');continue}
-    const isUlt=!!(ACT[name]&&ACT[name].ult);if(isUlt){E.ultArmed=null;E._burstArmed=false;ultCheck()}
+    const isUlt=!!(ACT[name]&&ACT[name].ult);if(isUlt){E.ulting=true;try{await foeUltFx(E,name)}catch(e){console.error(e)}E.ultArmed=null;E._burstArmed=false;ultCheck()}
     if(name==='뼈와 살의 해체학'&&!REDUCED){const en=$('#enemy');en.classList.add('hmopen');setTimeout(()=>en.classList.remove('hmopen'),1900);await wait(650)}
-    await execAct(name);if(isUlt&&name==='명령 이행-처단')E.purgeHits=0;if(C.over||r.hp<=0)return;if(isUlt)ultGain(name);if(r.tutB)await wait(1100)}
+    try{await execAct(name)}finally{if(isUlt)await foeUltEnd(E,name)}if(isUlt&&name==='명령 이행-처단')E.purgeHits=0;if(C.over||r.hp<=0)return;if(isUlt)ultGain(name);if(r.tutB)await wait(1100)}
   if(!n)clog(`${E.name}: 남은 코스트로 낼 수 있는 카드가 없다`,'e');
   renderCombat()}
 
@@ -2958,7 +2959,7 @@ async function enemyStrike(die,o={}){
   const C=S.C,E=C.E,r=S.run;
   if(C.palShield){C.palShield=false;await wait(500);fxAt('player','대신 맞음','info');clog('부상당한 노르드교 단원이 대신 맞고 쓰러졌다','e');return 0}
   if(palUp()&&!o.mercy&&rnd()<.25)return palHurt(die);
-  if(E.key!=='bishop'&&!REDUCED){const en=$('#enemy');en.classList.remove('lunge');void en.offsetWidth;en.classList.add('lunge');await wait(150);setTimeout(()=>en.classList.remove('lunge'),200)}
+  if(E.key!=='bishop'&&!REDUCED&&!C.ultFx){const en=$('#enemy');en.classList.remove('lunge');void en.offsetWidth;en.classList.add('lunge');await wait(150);setTimeout(()=>en.classList.remove('lunge'),200)}
   const gm=o.gim&&GIM[o.gim];let ch=hitChance(enemyAcc(),pEva());const roll=E.tut?1:ri(1,100);
   if(gm&&o.gim==='read')ch=gm.ok()?0:100;
   const her=!!(S.run.flags&&S.run.flags.heresy);if(o.exec||(o.purge&&her))ch=100;
@@ -2975,6 +2976,7 @@ async function enemyStrike(die,o={}){
     if(E.key==='inquisitor'&&her){M*=1.25;tg.push('새겨진 본능-단죄 +25%')}
     if(M!==1){dmg=Math.round(dmg*M);txt=`[${tg.join(' · ')}] `+txt}}
   {const hit=roll<=ch,bb=Math.min(C.block,dmg);await diceFocus({foe:true,lb:o.mercy?`${E.name} · 안 아프게 빨리`:`${E.name} · 공격 주사위${gm?` · ${gm.n} ${gm.ok()?'성공':'실패'}`:''}`,a:o.mercy?0:die.a,b:o.mercy?0:die.b,r0:o.mercy?'—':r0,pow:o.mercy?'남은 체력':v,hit,ch,dmg:hit?dmg-bb:0,bl:hit?bb:0})}
+  if(C.ultFx&&!C.ultFx.hitDone){C.ultFx.hitDone=true;try{await C.ultFx.impact()}catch(e){}}
   if(roll>ch){fxAt('player','빗나감','miss');sfx('miss');swayFx();clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);if(C.parryN>0&&!C.over&&alive(E)){C.parryN--;clog('흘려 베기: 회피 성공 → 반격');C.fxCard='parry';await pStrike(A(90,120),{atk:pAtk(),label:'흘려 베기 반격'})}return false}
   if(!o.mercy&&dmg>0&&dmg<5&&eq('shell')){clog(`${txt} · 적중 → 막의 껍질이 튕겨냄 (5 미만)`,'e');fxAt('player','튕겨냄','block');await wait(200);return 0}
   if(E.nord)markHit();
@@ -3945,6 +3947,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
 }
 /* ================= 패치 내역 (v1부터 통산 번호) ================= */
 const PATCH=[
+  ['V2.35.74.20','11/21','적 카드 순서 — 예고한 궁극기 → 나에게 거는 카드 → 이로운 카드(낸 뒤 공격 한 장 낼 코스트가 남을 때) → 공격 → 방어, 같은 종류는 코스트 큰 것부터, 같으면 패 왼쪽부터 / 적 궁극기 연출 — 카드가 떠올라 뒤집힌 뒤 처형 집행은 표식 수만큼 베고 마지막에 가로로 베기, 처단은 검을 들어 올렸다 내려 베고 다시 꽂는 자세로, 적은 다가오지 않음 / 훈련장 연출 보기'],
   ['V2.35.73.20','11/21','이단심문관이 처단을 쓰지 않던 버그 수정 — 궁극기는 조건이 차면 가장 먼저 쓰고, 코스트가 모자라면 남은 코스트를 전부 써서 냄 / 턴 시작 때 표식 종소리를 낮고 짧은 쇳소리로 바꿈'],
   ['V2.35.72.19','11/21','상태 설명을 짧게 — 턴 종료 시 소멸처럼 끝맺음, 카드·패시브 설명의 사라짐도 소멸로'],
   ['V2.35.71.19','11/21','훈련장 — 시작 화면에서 들어가 모든 카드를 골라 덱을 짜고 허수아비나 1장 적과 싸움, 쓰러지지 않음, 코스트 무한·사용 조건 무시 켬/끔 / 세계수 등반을 누를 때마다 튜토리얼 진행을 네·아니오로 물음, 특성 뒤 질문과 설정의 튜토리얼 다시 보기 없앰 / 튜토리얼에서 누를 곳은 황금빛 파문, 끌 곳은 카드에서 적으로 금빛 점 / 표식이 오를 때마다 종소리가 높아지고 Ⅴ에서 화음과 금빛, 쓸 수 있는 궁극기 카드는 금빛으로 숨 쉼, 처형 집행·처단은 흑백으로 멈췄다가 1인칭으로 돌진, 보스를 쓰러뜨리면 멈춤·번쩍임·무릎 꿇음·화면 틀이 깨졌다 맞춰지고 제압'],
@@ -4280,7 +4283,7 @@ function openTrain(){const T=trState(),m=$('#modal');m.hidden=false;m.classList.
     <div class="trrow"><span class="trlb">상대</span>${TR_FOES.map(([k,v])=>`<button class="cfb${T.foe===k?' on':''}" data-trf="${k}">${v}</button>`).join('')}</div>
     <div class="trrow"><span class="trlb">규칙</span><button class="cfb${T.inf?' on':''}" id="trInf">코스트 무한 · ${T.inf?'켬':'끔'}</button><button class="cfb${T.free?' on':''}" id="trFree">사용 조건 무시 · ${T.free?'켬':'끔'}</button></div>
     <div class="trrow trdeck"><span class="trlb">덱 ${n}장</span>${dk.length?dk.map(([id,v])=>`<button class="trchip" data-trm="${id}">${CARDS[id].name} ×${v}</button>`).join(''):'<span class="hint">아래 카드의 + 를 눌러 넣는다</span>'}</div>
-    <div class="trrow">${cfBar(T.f)}<button class="cfb" id="trStart8">시작 덱</button><button class="cfb" id="trClear">비우기</button><button class="plate-btn trgo" id="trGo">훈련 시작</button></div>
+    <div class="trrow">${cfBar(T.f)}<button class="cfb" id="trStart8">시작 덱</button><button class="cfb" id="trClear">비우기</button><button class="cfb" id="trFxGo">연출 보기</button><button class="plate-btn trgo" id="trGo">훈련 시작</button></div>
     <div class="cardgrid trgrid">${ids.map(id=>`<div class="trcell">${staticCard(id,false)}<div class="trctl"><button data-trm="${id}">−</button><b>${T.deck[id]||0}</b><button data-trp="${id}">+</button></div></div>`).join('')}</div></div>`;
   bindStatic(m);const re=()=>{trSave();const sc=m.querySelector('.trgrid').scrollTop;openTrain();m.querySelector('.trgrid').scrollTop=sc};
   $('#trBack').onclick=()=>{closeModal();showTitle({menu:true})};
@@ -4290,16 +4293,36 @@ function openTrain(){const T=trState(),m=$('#modal');m.hidden=false;m.classList.
   m.querySelectorAll('[data-trp]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.trp;T.deck[k]=(T.deck[k]||0)+1;re()});
   m.querySelectorAll('[data-trm]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.trm;T.deck[k]=Math.max(0,(T.deck[k]||0)-1);if(!T.deck[k])delete T.deck[k];re()});
   $('#trStart8').onclick=()=>{T.deck={};for(const[k,v]of START_DECK)T.deck[k]=v;re()};$('#trClear').onclick=()=>{T.deck={};re()};
+  $('#trFxGo').onclick=()=>{closeModal();trStart('inquisitor',trFxPanel)};
   $('#trGo').onclick=()=>{if(!trN())return toast('훈련장','카드를 한 장 이상 넣어야 한다');closeModal();trStart()}}
 function trFoe(k){if(k==='dummy'){const E=makeEnemy('priest');Object.assign(E,{name:'허수아비',sub:'',traits:[],noAct:true,dummy:true,maxHp:5000,hp:5000,block:0});return E}const E=makeEnemy(k);E.hp=E.maxHp;return E}
-function trStart(){const T=trState(),r=tbHero();delete r.tutB;r.train=true;r.tInf=T.inf;r.tFree=T.free;r.weapon='n_dagger';r.deck=[];
+function trStart(fk,then){const T=trState(),r=tbHero();delete r.tutB;r.train=true;r.tInf=T.inf;r.tFree=T.free;r.weapon='n_dagger';r.deck=[];
   for(const[id,v]of Object.entries(T.deck))for(let i=0;i<v;i++)r.deck.push({uid:UID++,id});
   let hp=r.hp;Object.defineProperty(r,'hp',{enumerable:true,configurable:true,get(){return hp},set(v){if(v<1){v=r.maxHp;setTimeout(()=>{if(S.C&&!S.C.over){fxAt('player','회복','heal');toast('훈련장','쓰러지지 않는다 · 체력 회복')}},0)}hp=v}});
-  S.run=r;const E=trFoe(T.foe);r.at={kind:'combat',enemy:E};transition(()=>startCombat(E))}
+  if(!r.deck.length)for(const[id,v]of START_DECK)for(let i=0;i<v;i++)r.deck.push({uid:UID++,id});
+  S.run=r;const E=trFoe(fk||T.foe);r.at={kind:'combat',enemy:E};transition(()=>{startCombat(E);trFxBtn();if(then)trWhenReady(then)})}
 function trEnd(){const C=S.C;if(C)C.over=true;S.busy=false;hideCombatUI();const m=$('#modal');m.hidden=false;
   m.innerHTML=`<div class="panel" style="width:min(480px,100%)"><div class="ptitle" style="text-align:center">훈련 끝</div><div class="choices"><button class="choice" id="trAgain"><b>다시</b><span>같은 덱과 상대로 한 번 더</span></button><button class="choice" id="trPick"><b>카드 고르기</b><span>훈련장으로</span></button><button class="choice" id="trOut"><b>처음으로</b><span>시작 화면으로</span></button></div></div>`;
   $('#trAgain').onclick=()=>{closeModal();trStart()};$('#trPick').onclick=()=>{closeModal();trLeave(openTrain)};$('#trOut').onclick=()=>{closeModal();trLeave()}}
 function trLeave(then){S.run=null;S.C=null;S.busy=false;transition(()=>{showTitle({menu:true});if(then){endTitleScene();then()}})}
+/* 훈련장 연출 보기 (V2.35.74.20) — 피해 없이 연출만 다시 본다 */
+function trWhenReady(fn,k=0){const C=S.C;if(C&&C.phase==='player'&&!S.busy&&C.E&&C.E.hand&&document.querySelector('#enemy'))return setTimeout(fn,500);if(k<60)setTimeout(()=>trWhenReady(fn,k+1),200)}
+function trFxBtn(){let b=$('#trFxBtn');if(!(S.run&&S.run.train)){if(b)b.remove();return}if(!b){b=document.createElement('button');b.id='trFxBtn';b.textContent='연출';stage.appendChild(b);b.onclick=e=>{e.stopPropagation();trFxPanel()}}b.hidden=false}
+const TR_FX=[['chime','표식 종소리 Ⅰ→Ⅴ'],['p_exec','내 처형 집행'],['p_purge','내 처단'],['e_exec1','적 처형 집행 · 표식Ⅰ'],['e_exec2','적 처형 집행 · 표식Ⅱ'],['e_exec3','적 처형 집행 · 표식Ⅲ'],['e_exec4','적 처형 집행 · 표식Ⅳ'],['e_exec5','적 처형 집행 · 표식Ⅴ'],['e_purge','적 처단'],['fin','보스 제압']];
+function trFxPanel(){if(!(S.run&&S.run.train&&S.C))return;const m=$('#modal');m.hidden=false;
+  m.innerHTML=`<div class="panel" style="width:min(620px,100%)"><div class="maphead"><div><div class="psub">훈련장</div><div class="ptitle">연출 보기</div></div><button class="btn-ghost" id="trFxX">닫기</button></div><div class="trfxg">${TR_FX.map(([k,v])=>`<button class="cfb" data-fx="${k}">${v}</button>`).join('')}</div></div>`;
+  $('#trFxX').onclick=closeModal;m.querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{closeModal();trFxPlay(b.dataset.fx)})}
+async function trFxPlay(k){const C=S.C;if(!C||S.busy||C.phase!=='player')return toast('연출','지금은 볼 수 없다');
+  const need=k==='e_purge'?'inquisitor':k.startsWith('e_exec')?'cultist':null;
+  if(need&&C.E.key!==need){C.over=true;hideCombatUI();return trStart(need,()=>trFxPlay(k))}
+  S.busy=true;const E=C.E;
+  try{
+    if(k==='chime'){for(let i=1;i<=5;i++){markChime(i);await wait(i<5?520:1600)}}
+    else if(k==='p_exec'||k==='p_purge'){const id=k==='p_exec'?'u_exec':'u_purge';if(id==='u_exec'){E.pmk=pmkOf(E);E.pmk.lv=5}await ultDash(id);await wait(500);await ultBack();if(E.pmk)E.pmk.lv=0}
+    else if(k.startsWith('e_')){const name=k==='e_purge'?'명령 이행-처단':'행동-처형 집행',n=k==='e_purge'?0:+k.slice(-1),keep=C.mk.lv;C.mk.lv=n;renderCombat();
+      E.ulting=true;ultCheck();await foeUltFx(E,name);if(C.ultFx)await C.ultFx.impact();await wait(450);await foeUltEnd(E,name);C.mk.lv=keep;renderCombat()}
+    else if(k==='fin'){await bossFinish();$('#enemy').classList.remove('dead','kneel')}
+  }finally{S.busy=false;renderCombat()}}
 /* 세계수 등반을 누를 때마다 — 튜토리얼을 진행할지 물음 */
 function tbAsk(){const m=$('#modal');m.hidden=false;
   m.innerHTML=`<div class="panel" style="width:min(480px,100%)"><div class="ptitle" style="text-align:center">튜토리얼을 진행하시겠습니까?</div><div class="choices" style="flex-direction:row;justify-content:center;gap:18px;margin-top:10px"><button class="plate-btn tbyn" id="tbYes">네</button><button class="plate-btn tbyn" id="tbNo">아니오</button></div></div>`;
@@ -4530,7 +4553,7 @@ function openPrep(v,anchor){if(!S.prepOpenT||Date.now()-S.prepOpenT>1500)bagTalk
     save();openPrep(view,to==='deck')});
   if(v&&typeof v.top==='number'){const a=$('#prepScroll'),h=$('#prepStoreH');if(a&&h)a.scrollTop=v.top+(anchor?h.offsetTop-v.h:0)}}
 function showCombatUI(){$('#cui').hidden=false;$('#enemy').hidden=false;$('#enemy').className='';positionScene()}
-function hideCombatUI(){stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{document.querySelectorAll('.knfig').forEach(k=>k.hidden=true)}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
+function hideCombatUI(){{const b=document.getElementById('trFxBtn');if(b)b.remove()}stSheet(null);palRender(false);for(const k of['#dockL','#dockR']){const e=$(k);if(e){e.style.top='';e.style.bottom=''}}if(S.screen!=='title')endTitleScene();{document.querySelectorAll('.knfig').forEach(k=>k.hidden=true)}$('#foebar').hidden=true;{const bx=$('#foefigs');if(bx){bx.hidden=true;bx.innerHTML=''}const o=L[S.orient];if(o.ex0!=null){o.ex=o.ex0;o.ew=o.ew0;o.eh=o.eh0}}const df=$('#dfocus');if(df)df.hidden=true;$('#tut').hidden=true;stage.removeAttribute('data-tut');$('#cui').hidden=true;$('#enemy').hidden=true;$('#hand').innerHTML='';handEls.clear();hideSpeech();$('#prompt').hidden=true}
 const EFEET0={land:L.land.efeet,port:L.port.efeet};
 function positionScene(){
   const o=L[S.orient],en=$('#enemy');
@@ -5004,6 +5027,9 @@ function sfx(kind,amt=1){
     [0,.09,.15,.27,.36,.52,.6].forEach((dl,i)=>at(dl,.16+rnd()*.14,900+rnd()*1400,2+rnd()*3,.55-.04*i));
     at(.05,.7,420,.8,.6,'lowpass');at(.4,.9,260,.7,.5,'lowpass');
     tone(70,26,.9,.9,'sine',.02);tone(140,40,.35,.35,'triangle',.3)}
+  else if(kind==='slashEx'){noise(.12,2600+amt*300,1.4,.32,'bandpass');tone(1800+amt*120,500,.12,.05,'sawtooth');noise(.05,6000,4,.12,'highpass')}
+  else if(kind==='cleave'){noise(.35,1500,.7,.6,'bandpass');noise(.8,260,.5,.75,'lowpass');tone(160,40,.9,.8,'sawtooth');tone(60,22,1.2,.7,'sine',.04)}
+  else if(kind==='clank'){tone(420,380,.25,.18,'triangle');tone(1260,1180,.18,.06,'square');noise(.12,900,1.5,.25,'bandpass');tone(70,40,.3,.35,'sine')}
   else if(kind==='chime'){const f=[220,261.63,293.66,329.63,392][Math.max(0,Math.min(4,Math.round(amt)-1))];noise(.02,5200,3,.08,'highpass');tone(f,f*.995,.55,.1,'sine');tone(f*2.76,f*2.74,.32,.035,'triangle');tone(f*5.4,f*5.3,.14,.015,'sine')}
   else if(kind==='chord'){[220,261.63,329.63,440].forEach((f,i)=>{tone(f,f*.996,1.3,.075,'sine',i*.05);tone(f*2.76,f*2.74,.4,.02,'triangle',i*.05)});tone(110,109.5,1.5,.08,'triangle')}
   else if(kind==='lock'){tone(1900,1300,.05,.12,'square');noise(.05,4200,4,.28);tone(640,640,.12,.08,'triangle',.04)}
@@ -5159,6 +5185,50 @@ async function bossFinish(){if(REDUCED)return;const o=L[S.orient],x=o.ex,y=o.efe
   await w2(900);sh.classList.add('mend');stage.classList.remove('fincrack');
   const t=document.createElement('div');t.className='finword';t.textContent=((S.run&&S.run.act)||1)===1?'제압':'처치';stage.appendChild(t);try{sfx('chord')}catch(e){}
   await w2(1500);[fl,sh,t].forEach(e=>e.remove());en.classList.add('dead');en.classList.remove('kneel');stage.classList.remove('fincrack','finning');stage.removeEventListener('pointerdown',sk)}
+/* ===== 적 궁극기 연출 (V2.35.74.20) — 카드가 떠올라 뒤집힌 뒤, 처형 집행은 표식 수만큼 베고 가로로 베기, 처단은 상단 자세 → 내려 베기 → 검을 꽂은 자세 ===== */
+const EXEC_CUTS=[[[-1,.8],[.3,.5],[.6,-1]],[[.7,-.8],null,[-.7,.9]],[[0,-1],null,[0,1]],[[-1,.06],null,[1,-.06]],[[-.9,-.5],null,[.9,.55]]];
+function stXY(el){const o=stage.getBoundingClientRect(),a=el.getBoundingClientRect(),sc=S.scale||1;return{x:(a.left-o.left+a.width/2)/sc,y:(a.top-o.top+a.height/2)/sc}}
+/* 칼날 궤적 — 가운데가 두껍고 양 끝이 가는 초승달, 휘두르는 방향으로 훑고 지나간 뒤 상처로 남음 */
+function bladeArc(x,y,len,th,ang,bend,dur,kind=''){const d=document.createElement('div');d.className='fublade '+kind;const L=len,k=th*2.4*bend,h=Math.abs(k)+th*2;
+  d.style.cssText=`left:${x}px;top:${y}px;width:${L}px;height:${h}px;margin:${-h/2}px 0 0 ${-L/2}px;transform:rotate(${ang}deg);--dur:${dur}ms`;
+  const m=h/2+k/2,id='fb'+(UID++);
+  d.innerHTML=`<svg viewBox="0 0 ${L} ${h}" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-opacity="0"/><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-opacity="0"/></linearGradient></defs><path class="glow" d="M0 ${m} Q${L/2} ${m-k} ${L} ${m} Q${L/2} ${m-k+th*bend*2} 0 ${m}Z"/><path class="core" fill="url(#${id})" d="M0 ${m} Q${L/2} ${m-k} ${L} ${m} Q${L/2} ${m-k+th*bend*.9} 0 ${m}Z"/><path class="scar" d="M${L*.06} ${m} Q${L/2} ${m-k+th*bend*.35} ${L*.94} ${m}"/></svg>`;
+  $('#fx').appendChild(d);requestAnimationFrame(()=>d.classList.add('go'));setTimeout(()=>d.classList.add('rest'),dur+60);setTimeout(()=>d.remove(),6000);return d}
+function sparks(x,y,ang,n,spread=0,kind=''){const a0=ang*Math.PI/180;for(let i=0;i<n;i++){const t=(rnd()-.5)*2,px=x+Math.cos(a0)*t*(spread||120),py=y+Math.sin(a0)*t*(spread||120),side=rnd()<.5?1:-1,dir=a0+side*(Math.PI/2)+(rnd()-.5)*.9,dist=40+rnd()*120;
+  fxEl('fuspark '+kind,px,py,{'--x':(Math.cos(dir)*dist).toFixed(0)+'px','--y':(Math.sin(dir)*dist).toFixed(0)+'px','--r':(dir*180/Math.PI).toFixed(0)+'deg','--t':(260+rnd()*260|0)+'ms'},700)}}
+async function foeUltFx(E,name){const C=S.C;if(REDUCED||!C)return;const o=L[S.orient],W=o.W,H=o.H,ex=o.ex,ey=o.efeet-o.eh*.6;let fast=false;const sk=()=>{fast=true};stage.addEventListener('pointerdown',sk);
+  const w2=ms=>wait(fast?ms*.3:ms);const done=()=>stage.removeEventListener('pointerdown',sk);
+  const fx=C.ultFx={name,hitDone:false,impact:async()=>{}};
+  /* 카드가 떠올라 가운데로 와서 뒤집힘 */
+  const cd=document.createElement('div');cd.className='fucard';cd.style.left=ex+'px';cd.style.top=ey+'px';
+  cd.innerHTML=`<div class="fu-in"><div class="fu-f fu-back"></div><div class="fu-f fu-front">${name.includes('-')?`<small>${name.split('-')[0]}</small><b>${name.split('-').slice(1).join('-')}</b>`:`<b>${name}</b>`}<em>궁극기</em><i>${actText(name).replace(' · 궁극기','')}</i></div></div>`;$('#fx').appendChild(cd);
+  try{sfx('ult')}catch(e){}
+  cd.animate([{transform:'translate(0,0) scale(.25)',opacity:0},{transform:'translate(0,-20px) scale(.45)',opacity:1,offset:.25},{transform:`translate(${W/2-ex}px,${H*.4-ey}px) scale(1)`,opacity:1}],{duration:fast?200:620,easing:'cubic-bezier(.3,.8,.3,1)',fill:'forwards'});
+  await w2(560);cd.classList.add('flip');try{sfx('lock')}catch(e){}await w2(820);
+  cd.animate([{opacity:1},{opacity:0,transform:`translate(${W/2-ex}px,${H*.4-ey}px) scale(1.25)`,filter:'blur(6px)'}],{duration:260,fill:'forwards'});setTimeout(()=>cd.remove(),300);await w2(200);
+  if(name==='행동-처형 집행'){const n=Math.max(1,Math.min(5,(C.mk&&C.mk.lv)||1)),cx=W/2,cy=H*.44,R=Math.min(W,H);
+    const pp=$('#ppanel'),pc=pp?stXY(pp):{x:W*.2,y:H*.8},scars=[];fx.scars=scars;
+    /* 표식 수만큼 베기 — 매번 각도가 달라지고, 갈수록 빨라짐 */
+    let prev=rnd()<.5?1:-1;
+    for(let i=0;i<n;i++){prev=-prev;const ang=prev*(18+rnd()*52)+(rnd()<.25?90:0),ox=(rnd()-.5)*R*.22,oy=(rnd()-.5)*R*.18;
+      const sl=bladeArc(cx+ox,cy+oy,R*(.62+rnd()*.25),R*(.035+i*.004),ang,prev,fast?60:120);scars.push(sl);
+      sparks(cx+ox,cy+oy,ang,7+i*2);try{sfx('slashEx',i)}catch(e){}shake(.55+i*.14);fxEl('cutflash',0,0,{},240);
+      const g=fxEl('mkbreak',pc.x+(i-(n-1)/2)*30,pc.y-60,{},900);g.textContent=ROMAN[i+1];
+      await w2(Math.max(90,250-i*38))}
+    await w2(240);
+    fx.impact=async()=>{stage.classList.add('fuhush');await wait(fast?60:240);stage.classList.remove('fuhush');
+      const y=cy+R*.04*(rnd()-.5);scars.push(bladeArc(cx,y,W*1.25,R*.075,(rnd()-.5)*4,1,fast?70:150,'big'));try{sfx('cleave')}catch(e){}
+      const seam=fxEl('fuseam',0,y,{},1100);sparks(cx,y,0,26,W*.5);await wait(80);stage.classList.add('usplit');shake(2);await wait(fast?140:320);stage.classList.remove('usplit');
+      for(const sc of scars)sc.classList.add('burst')}}
+  else if(name==='명령 이행-처단'){const en=$('#enemy'),scars=fx.scars=[];en.classList.add('inq-raise');try{sfx('rise')}catch(e){}await w2(720);
+    fx.impact=async()=>{en.classList.remove('inq-raise');en.classList.add('inq-cut');await wait(70);
+      /* 머리 위에서 발밑까지 한 번에 내려 베는 궤적, 땅을 치는 충격 */
+      const R=Math.min(W,H),x0=o.ex-R*.05;scars.push(bladeArc(x0,H*.47,H*.95,R*.09,86,-1,fast?70:130,'gold'));try{sfx('ultHit')}catch(e){}
+      await wait(90);fxEl('fuquake',W/2,H*.86,{},900);sparks(W/2,H*.86,0,22,W*.35,'gold');stage.classList.add('udrop');shake(1.9);await wait(fast?120:300);stage.classList.remove('udrop')}}
+  done()}
+async function foeUltEnd(E,name){const C=S.C;if(!C)return;const fx=C.ultFx;C.ultFx=null;E.ulting=false;const en=$('#enemy');
+  if(name==='명령 이행-처단'&&en&&en.classList.contains('inq-cut')){await wait(250);en.classList.remove('inq-cut');setTimeout(()=>{try{sfx('clank')}catch(e){}},420);await wait(650)}
+  if(en)en.classList.remove('inq-raise','inq-cut');if(fx&&fx.scars)for(const sc of fx.scars){sc.classList.add('gone');setTimeout(()=>sc.remove(),900)}ultCheck()}
 async function hitStop(tier,ex=0){if((tier<2&&!ex)||REDUCED)return;const en=$('#enemy');en.classList.add('hstop');await wait((tier>=3?60:tier>=2?30:0)+ex);en.classList.remove('hstop')}
 function toast(title,msg){
   const t=$('#toast');const el=document.createElement('div');el.className='tmsg';el.innerHTML=(title?`<b>${title}</b>`:'')+(msg||'');
@@ -6674,10 +6744,11 @@ function openGameMenu(){if(!inGame())return;
       <div class="choices"><button class="choice" id="gmCont"><b>계속하기</b><span>훈련으로 돌아간다</span></button>
       <button class="choice" id="gmAgain"><b>다시 시작</b><span>같은 덱과 상대로 처음부터</span></button>
       <button class="choice" id="gmPick"><b>카드 고르기</b><span>훈련장으로</span></button>
+      <button class="choice" id="gmFx"><b>연출 보기</b><span>궁극기·제압·표식 연출을 바로 본다</span></button>
       <button class="choice" id="gmSet"><b>설정</b><span>UI 크기 · 효과음 · 화면 흔들림 · 패치 내역</span></button>
       <button class="choice" id="gmQuit"><b>처음으로</b><span>시작 화면으로</span></button></div></div>`;
     const stop=()=>{closeModal();if(S.C)S.C.over=true;hideCombatUI()};
-    $('#gmCont').onclick=closeModal;$('#gmAgain').onclick=()=>{stop();trStart()};$('#gmPick').onclick=()=>{stop();trLeave(openTrain)};
+    $('#gmCont').onclick=closeModal;$('#gmFx').onclick=()=>{closeModal();trFxPanel()};$('#gmAgain').onclick=()=>{stop();trStart()};$('#gmPick').onclick=()=>{stop();trLeave(openTrain)};
     $('#gmSet').onclick=()=>{S.setBack=openGameMenu;openSettings()};$('#gmQuit').onclick=()=>{stop();trLeave()};return}
   if(S.run&&S.run.tutB){const m=$('#modal');m.hidden=false;S.setBack=null;if(S.tb){S.tb.paused=true;tbDraw()}
     m.innerHTML=`<div class="panel" style="width:min(560px,100%)"><div class="maphead"><div><div class="psub">튜토리얼</div><div class="ptitle">메뉴</div></div></div>
@@ -6825,6 +6896,61 @@ addEventListener('keydown',e=>{if(e.key!=='Escape'||!inGame())return;const m=$('
 @keyframes finW{0%{opacity:0;transform:scale(1.15);letter-spacing:.6em}30%{opacity:1;transform:scale(1);letter-spacing:.3em}80%{opacity:1}100%{opacity:0}}
 /* 튜토리얼 진행 묻기 */
 .tbyn{min-width:140px;font-size:21px;padding:12px 26px;border:2px solid var(--brass);color:var(--brass-hi)}
+/* 적 궁극기 연출 V2.35.74.20 */
+#eart svg{overflow:visible}
+#eart svg .inq-armL{transform-box:fill-box;transform-origin:70% 4%;transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
+#eart svg .inq-armR{transform-box:fill-box;transform-origin:30% 4%;transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
+#enemy.inq-raise #eart svg .inq-armL{transform:rotate(152deg)}
+#enemy.inq-raise #eart svg .inq-armR{transform:rotate(-152deg)}
+#enemy.inq-raise #eart svg .inq-sword{transform:translate(-76px,-168px) rotate(-14deg)!important;transition:transform .55s cubic-bezier(.3,1.2,.5,1)}
+#enemy.inq-cut #eart svg .inq-armL{transform:rotate(28deg);transition:transform .09s ease-in}
+#enemy.inq-cut #eart svg .inq-armR{transform:rotate(-28deg);transition:transform .09s ease-in}
+#enemy.inq-cut #eart svg .inq-sword{transform:translate(-78px,96px) rotate(-178deg) scale(1.08)!important;transition:transform .09s cubic-bezier(.7,0,1,.6)}
+#enemy.inq-raise #eart,#enemy.inq-cut #eart{filter:none}
+.fucard{position:absolute;width:170px;height:238px;margin:-119px 0 0 -85px;z-index:13;perspective:900px;pointer-events:none}
+.fucard .fu-in{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(180deg);transition:transform .5s cubic-bezier(.3,1.3,.5,1)}
+.fucard.flip .fu-in{transform:rotateY(0)}
+.fucard .fu-f{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;border:3px solid #e3b75a;box-shadow:0 0 26px 6px #c0392baa,0 0 60px #e3b75a55}
+.fucard .fu-back{transform:rotateY(180deg);background:radial-gradient(circle at 50% 45%,#5a1414,#1a0a0a 70%)}
+.fucard .fu-back::after{content:'';position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border:3px solid #e3b75a;transform:rotate(45deg);opacity:.8}
+.fucard .fu-front{background:linear-gradient(#2a1414,#120909);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;text-align:center}
+.fucard .fu-front small{font-size:14px;color:#d9c39a;margin-bottom:-6px}
+.fucard .fu-front b{font-family:var(--f-serif);font-size:30px;color:#ffe3a6;text-shadow:0 0 12px #c0392b}
+.fucard .fu-front em{font-style:normal;font-size:14px;color:#e3b75a;letter-spacing:.3em}
+.fucard .fu-front i{font-style:normal;font-size:14px;color:#efe3cf;line-height:1.45}
+.cutflash{position:absolute;left:0!important;top:0!important;width:100%;height:100%;z-index:12;pointer-events:none;background:radial-gradient(ellipse at center,#ff2a2a00 40%,#ff2a2a66);animation:cutFl .22s ease-out forwards}
+@keyframes cutFl{from{opacity:1}to{opacity:0}}
+.fublade{position:absolute;z-index:12;pointer-events:none;transform-origin:50% 50%}
+.fublade svg{width:100%;height:100%;overflow:visible;clip-path:inset(0 100% 0 0);transition:clip-path var(--dur) cubic-bezier(.2,.7,.2,1)}
+.fublade.go svg{clip-path:inset(0 0 0 0)}
+.fublade .glow{fill:#e01b1b;opacity:.85;filter:blur(7px)}
+.fublade .core{opacity:1}
+.fublade .scar{fill:none;stroke:#ff4a3a;stroke-width:3;stroke-linecap:round;opacity:0;filter:drop-shadow(0 0 5px #ff2a1a)}
+.fublade.rest .glow{transition:opacity .5s;opacity:.12}
+.fublade.rest .core{transition:opacity .35s;opacity:0}
+.fublade.rest .scar{transition:opacity .25s;opacity:.95}
+.fublade.burst .scar{transition:opacity .4s,stroke-width .4s;stroke-width:8;opacity:0}
+.fublade.gone{transition:opacity .7s;opacity:0}
+.fublade.big .glow{fill:#ff2020;filter:blur(10px)}
+.fublade.gold .glow{fill:#e8c27a;filter:blur(9px)}
+.fublade.gold .scar{stroke:#ffe6b0;filter:drop-shadow(0 0 6px #e8c27a)}
+.fuspark{position:absolute;width:14px;height:2px;margin:-1px 0 0 -7px;z-index:13;pointer-events:none;background:linear-gradient(90deg,#fff,#ff5a3a);border-radius:2px;transform:rotate(var(--r));animation:fuSp var(--t) ease-out forwards}
+.fuspark.gold{background:linear-gradient(90deg,#fff,#e8c27a)}
+@keyframes fuSp{from{opacity:1;transform:translate(0,0) rotate(var(--r)) scaleX(1.4)}to{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scaleX(.3)}}
+.fuseam{position:absolute;left:0!important;width:100%;height:0;z-index:12;pointer-events:none;background:#050303;box-shadow:0 -2px 10px #ff3a2a,0 2px 10px #ff3a2a;animation:fuSeam 1s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes fuSeam{0%{height:0;margin-top:0}25%{height:34px;margin-top:-17px}60%{height:20px;margin-top:-10px;opacity:1}100%{height:0;margin-top:0;opacity:0}}
+#stage.fuhush #scene,#stage.fuhush #bg,#stage.fuhush #cui,#stage.fuhush #hand{filter:brightness(.45) saturate(.4);transition:filter .12s}
+.fuquake{position:absolute;width:40px;height:14px;margin:-7px 0 0 -20px;z-index:12;pointer-events:none;border-radius:50%;border:3px solid #e8c27a;box-shadow:0 0 20px #e8c27a;animation:fuQk .8s ease-out forwards}
+@keyframes fuQk{from{transform:scale(1);opacity:1}to{transform:scale(18,5);opacity:0}}
+#stage.udrop #scene,#stage.udrop #bg,#stage.udrop #cui,#stage.udrop #hand{transform:translateY(14px)!important;transition:transform .05s}
+.mkbreak{position:absolute;margin:-18px 0 0 -18px;width:36px;height:36px;display:grid;place-items:center;font-family:var(--f-serif);font-size:30px;font-weight:700;color:#ff8f7a;text-shadow:0 0 12px #d81e1e;animation:mkBr .85s ease-out forwards;pointer-events:none}
+@keyframes mkBr{0%{transform:scale(1.5);opacity:0}20%{transform:scale(1);opacity:1}45%{transform:scale(1) rotate(0);opacity:1;filter:none}100%{transform:translateY(26px) scale(.7) rotate(24deg);opacity:0;filter:blur(3px)}}
+#stage.usplit #scene,#stage.usplit #bg{transform:translate(-12px,-10px)!important;transition:transform .05s}
+#stage.usplit #cui,#stage.usplit #hand{transform:translate(12px,10px);transition:transform .05s}
+#trFxBtn{position:absolute;left:14px;top:96px;z-index:9;padding:8px 16px;border-radius:10px;border:2px solid var(--brass);background:#1d2127e6;color:var(--brass-hi);font-size:17px}
+.port #trFxBtn{top:150px}
+.trfxg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.trfxg .cfb{padding:12px;font-size:16px}
 /* 훈련장 */
 .trn .trrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0}
 .trn .trlb{min-width:64px;color:var(--brass-hi);font-size:15px}
