@@ -17,10 +17,10 @@ function slotFree(){const a=slotAll();const i=a.findIndex(x=>!x);return i<0?null
 function slotCount(){return slotAll().filter(Boolean).length}
 /* 이전 버전의 저장 1개씩을 저장 기록으로 옮김 */
 (function slotMigrate(){try{
-  const c=localStorage.getItem(SAVE_KEY);if(c){const i=slotFree();if(i!=null){const d=JSON.parse(c);d.slot=i;slotWrite(i,'climb',d)}localStorage.removeItem(SAVE_KEY)}
+  const c=localStorage.getItem(SAVE_KEY);if(c){const i=slotFree();if(i!=null){const d=JSON.parse(c);d.slot=i;if(slotWrite(i,'climb',d))localStorage.removeItem(SAVE_KEY)}}
   for(let i=0;i<SLOT_MAX;i++){const x=slotRead(i);if(x&&x.kind!=='climb')slotDel(i)}
 }catch(e){}})();
-save=function(){const r=S.run;if(!r||r.tutB||r.train)return;if(autoSlotFor(r)==null)return;slotWrite(r.slot,'climb',r)};
+save=function(){const r=S.run;if(!r||r.tutB||r.train)return false;if(autoSlotFor(r)==null)return false;return slotWrite(r.slot,'climb',r)};
 loadSave=function(){const r=S.run;if(r&&r.slot!=null){const x=slotRead(r.slot);return x&&x.kind==='climb'?x.data:null}return null};
 clearSave=function(){const r=S.run;if(r&&r.slot!=null){const x=slotRead(r.slot);if(x&&x.kind==='climb'&&!x.manual)slotDel(r.slot)}};
 function slotDesc(x){const d=x.data||{};
@@ -61,7 +61,7 @@ function inGame(){return(!!S.run&&!['title','over','victory'].includes(S.screen)
 function leaveToTitle(){S.setBack=null;closeModal();
   transition(()=>{S.busy=false;if(S.C){S.C.over=true}S.C=null;showTitle({menu:true})})}
 function openGameMenu(){if(!inGame())return;
-  if(S.busy){toast('메뉴','행동이 끝난 뒤에 열 수 있다');return}
+  if(S.busy||(S.screen==='combat'&&S.C?.over)){toast('메뉴','행동이 끝난 뒤에 열 수 있다');return}
   if(S.run&&S.run.train){const m=$('#modal');m.hidden=false;S.setBack=null;
     m.innerHTML=`<div class="panel" style="width:min(560px,100%)"><div class="maphead"><div><div class="psub">훈련장</div><div class="ptitle">메뉴</div></div></div>
       <div class="choices"><button class="choice" id="gmCont"><b>계속하기</b><span>훈련으로 돌아간다</span></button>
@@ -95,7 +95,7 @@ function openGameMenu(){if(!inGame())return;
   $('#gmCont').onclick=closeModal;
   $('#gmSet').onclick=()=>{S.setBack=openGameMenu;openSettings()};$('#gmVault').onclick=()=>openVault(openGameMenu);
   $('#gmSv').onclick=()=>{save();openSlots('save',openGameMenu)};
-  $('#gmSave').onclick=()=>{save();toast('저장','저장 기록에 저장했다');leaveToTitle()};
+  $('#gmSave').onclick=()=>{if(save()){toast('저장','저장 기록에 저장했다');leaveToTitle()}};
   const q=$('#gmQuit');let armd=false;q.onclick=()=>{if(!armd){armd=true;q.querySelector('b').textContent='한 번 더 누르면 중단';q.querySelector('span').textContent='자동 저장 기록이 지워지고 되돌릴 수 없다 (직접 저장한 칸은 남음)';return}
     clearSave();leaveToTitle()};
 }
