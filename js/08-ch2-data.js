@@ -465,7 +465,7 @@ function runFx(list,done,notes=[]){
   next();
 }
 function showEventKey(k){
-  const r=S.run;if(!GEV[k]){k=pickEvent();r.at={kind:'event',ev:k};save()}
+  const r=S.run;if(!GEV[k]){k=pickEvent();if(!k)return showMap();r.at={kind:'event',ev:k};save()}
   S.screen='event';renderTop();viewFor('map');const ev=GEV[k];ev._rr=0;setTimeout(()=>palEv('event'),350);
   const sc=openScreen('',{dim:true});
   sc.innerHTML=`<div class="panel evpanel" style="width:min(800px,100%)"><div><div class="psub">사건 · ${PLACE[ev.place]}${ev.zone?` · ${ev.zone==='C'?'공통':DIR2[ev.zone].n}`:''}</div><div class="ptitle">${ev.title}</div></div>
