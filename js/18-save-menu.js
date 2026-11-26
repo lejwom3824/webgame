@@ -95,7 +95,7 @@ function openGameMenu(){if(!inGame())return;
   $('#gmCont').onclick=closeModal;
   $('#gmSet').onclick=()=>{S.setBack=openGameMenu;openSettings()};$('#gmVault').onclick=()=>openVault(openGameMenu);
   $('#gmSv').onclick=()=>{save();openSlots('save',openGameMenu)};
-  $('#gmSave').onclick=()=>{if(save()){toast('저장','저장 기록에 저장했다');leaveToTitle()}};
+  $('#gmSave').onclick=()=>{if(save()){toast('저장','저장 기록에 저장했다');leaveToTitle()}else toast('저장 실패','빈 저장 칸이 없거나 저장할 수 없다')};
   const q=$('#gmQuit');let armd=false;q.onclick=()=>{if(!armd){armd=true;q.querySelector('b').textContent='한 번 더 누르면 중단';q.querySelector('span').textContent='자동 저장 기록이 지워지고 되돌릴 수 없다 (직접 저장한 칸은 남음)';return}
     clearSave();leaveToTitle()};
 }
