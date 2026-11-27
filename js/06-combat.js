@@ -399,7 +399,7 @@ function fuseOpenWindow(){const box=$('#modal');return new Promise(res=>{box.hid
 /* 카드 1장 사용 → 적 행동 포인트 -1. 0이 되면 곧바로 행동하고 다시 채워져 횟수 제한 없이 계속 행동. 턴 종료 시 1 이상이면 0으로 만들고 다음 행동 1회 후 초기화 */
 async function apTick(n=1){
   const C=S.C,r=S.run;if(!C||C.over||C.dead||C.phase!=='player')return;
-  const ready=[];for(const E of liveFoes()){if(E.noAct)continue;E.ap-=n;while(E.ap<=0){ready.push(E);E.ap+=Math.max(1,E.apMax)}}
+  const ready=[];for(const E of liveFoes()){if(E.noAct)continue;const hs=ENEMY[E.key]&&ENEMY[E.key].hasty;let m=n;if(hs&&Math.random()<hs){m++;fxAt('enemy','성급함','info');clog(`${E.name} · 성급함: 행동 포인트 1 추가 소모`,'e')}E.ap-=m;while(E.ap<=0){ready.push(E);E.ap+=Math.max(1,E.apMax)}}
   renderCombat();if(!ready.length)return;
   S.busy=true;C.phase='enemy';
   if(S.tb){const k=ready.map(E=>E.ap);ready.forEach(E=>E.ap=0);renderCombat();await tbHold('ap0');ready.forEach((E,i)=>E.ap=k[i]);renderCombat()}
@@ -577,6 +577,7 @@ const FOE_DRAW=new Set(['숨 고르기','망치 돌리기']);const foeDrawOk=(E,
 function foePick(E){if(E.key==='bishop')return bishopPick(E);const h=E.hand,c=E.c,isU=n=>!!(ACT[n]&&ACT[n].ult),ok=i=>(actCost(h[i])<=c||isU(h[i])&&c>0&&c>=Math.min(actCost(h[i]),E.cMax||0))&&actReady(E,h[i])&&foeDrawOk(E,h[i]);const idx=h.map((_,i)=>i).filter(ok);if(!idx.length)return-1;
   /* V2.35.74.20 카드 내는 순서: 예고한 궁극기 → 나에게 거는 카드 → 이로운 카드(낸 뒤 공격 한 장 낼 코스트가 남을 때) → 공격 → 방어, 같은 종류는 코스트 큰 것부터, 같으면 패 왼쪽부터 */
   {const u=idx.find(i=>isU(h[i]));if(u!=null)return u}
+  {const eg=ENEMY[E.key]&&ENEMY[E.key].eager;if(eg&&S.C&&S.C.apBurst){const j=idx.find(i=>h[i]===eg);if(j!=null)return j}}
   const T=i=>actType(h[i]),big=a=>a.sort((x,y)=>actCost(h[y])-actCost(h[x])||x-y);
   if(has(E,'침착함')&&E.turn<=1){const d=big(idx.filter(i=>T(i)==='def'))[0];if(d!=null)return d}
   const neg=big(idx.filter(i=>T(i)!=='def'&&actNeg(h[i])));if(neg.length)return neg[0];
@@ -694,11 +695,12 @@ async function execAct(name){
   a2PreAct(E,name);let hit=false;
   if(a.k==='atk'){
     if(a.mercy){if(await enemyStrike(null,{mercy:true}))hit=true;if(r.hp>0&&!C.over){say(BOSS_LINES.survived)}}
-    else for(const x of a.d){if(await enemyStrike(x,{gim:a.gim,purge:a.purge,expo:a.expo,shatter:a.shatter,exec:a.exec,fracX:a.fracX})!==false)hit=true;if(r.hp<=0||C.over){E.actX=1;return}}
+    else for(const x of a.d){if(await enemyStrike(x,{gim:a.gim,purge:a.purge,expo:a.expo,shatter:a.shatter,exec:a.exec,fracX:a.fracX,accAdd:a.acc||0})!==false)hit=true;if(r.hp<=0||C.over){E.actX=1;return}}
     if(a.exec){C.mk.lv=0;C.mk.lock=-9;clog('처형 집행: 표식을 전부 소모','e')}
     if(a.frac&&hit){C.fracS=C.turn;C.fracEnd=C.turn+2;fxAt('player','골절','info');clog('골절: 2턴 동안 턴 시작 코스트 -1','e')}
     if(a.forceMark&&hit)forceMark();
     if(a.wkHunt){E.wkT=C.turn;E.wkN=3}
+    if(a.selfVuln){applyEnemyStatus('vuln',a.selfVuln);fxAt('enemy',`취약 ${a.selfVuln}`,'info')}
     E.firstAtk=false;E.revenge=0;E.frost=false;
     if(a.vuln){if(hit){C.pVuln=Math.min(10,C.pVuln+a.vuln);fxAt('player',`취약 ${a.vuln}`,'info');badFx();clog(`적중 · 취약 ${a.vuln}`,'e')}else clog('빗나가 취약이 붙지 않음','e')}
   }
@@ -722,7 +724,7 @@ async function enemyStrike(die,o={}){
   if(C.palShield){C.palShield=false;await wait(500);fxAt('player','대신 맞음','info');clog('부상당한 노르드교 단원이 대신 맞고 쓰러졌다','e');return 0}
   if(palUp()&&!o.mercy&&rnd()<.25)return palHurt(die);
   if(E.key!=='bishop'&&!REDUCED&&!C.ultFx){const en=$('#enemy');en.classList.remove('lunge');void en.offsetWidth;en.classList.add('lunge');await wait(150);setTimeout(()=>en.classList.remove('lunge'),200)}
-  const gm=o.gim&&GIM[o.gim];let ch=hitChance(enemyAcc(),pEva());const roll=E.tut?1:ri(1,100);
+  const gm=o.gim&&GIM[o.gim];let ch=hitChance(enemyAcc()+(o.accAdd||0),pEva());const roll=E.tut?1:ri(1,100);
   if(gm&&o.gim==='read')ch=gm.ok()?0:100;
   const her=!!(S.run.flags&&S.run.flags.heresy);if(o.exec||(o.purge&&her))ch=100;
   const r0=o.mercy?0:rollDie(die),v=o.mercy?0:eAdj(r0);
