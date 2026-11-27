@@ -269,16 +269,54 @@ function costHTML(c){
 const CARD_ART={};
 const CARD_FRONT={"어설픈 베기":"어설프게 베어 피해를 입힙니다","막기":"공격을 막습니다","숨 고르기":"카드를 뽑습니다","찌르기":"적을 가볍게 타격합니다","연속 베기":"적을 2회 타격합니다","내려찍기":"적을 강하게 타격합니다","방패 세우기":"공격을 단단히 막습니다","빈틈 노리기":"적을 타격하고 취약하게 만듭니다","레미 공방의 건빵":"체력을 조금 회복합니다","노른교의 기도":"공격을 막고 카드를 뽑습니다","몸 낮추기":"공격을 피할 준비를 하고 조금 막습니다","흘려 베기":"공격을 피할 준비를 하고 적을 타격합니다","정리":"카드를 버리고 그만큼 새로 뽑습니다","스타인러 공방의 증기 장치":"다음 턴 코스트를 늘립니다","크리밀라 공방의 모조 무구":"적을 강하게 타격하고 특수무기 카드를 가져옵니다","아쉬부티 공방의 파편 장식":"다음 카드의 코스트를 줄입니다","등반가의 갈고리":"적을 타격합니다","단련":"이번 전투 동안 공격 카드가 강해집니다","글레이프니르의 실":"적의 다음 행동을 취소합니다","드라우프니르의 파편":"패의 카드를 복제합니다","결계의 기억":"매 턴 방어도를 얻습니다","미미르의 한 모금":"카드를 많이 뽑는 대신 최대 체력을 잃습니다","베기":"깔끔하게 베어 피해를 입힙니다","갈라내기":"세게 갈라 큰 피해를 입힙니다","일섬":"순식간에 베어 피해를 입힙니다","검도-정석":"베면서 몸을 지킵니다","검도-변화":"베고, 다시 벱니다","피륙":"살을 찢어 큰 피해를 입힙니다","도려내기":"깊게 도려내 큰 피해를 입힙니다","대절단":"크게 베어 압도적인 피해를 입힙니다","더러운 참격":"체력을 써서 적을 타격합니다","동족 포식":"체력을 써서 적을 타격하고 섭취합니다","거인 베기":"체력을 써서 적을 타격합니다","탐식":"체력을 써서 3회 타격하고 체력을 회복합니다","바스라지는 날":"체력이 낮을 때만 쓸 수 있는 강한 타격입니다","굶주린 칼":"체력을 써서 타격합니다","투척-명중":"적을 맞혀 궁니르-명중을 부여합니다","투척-관통":"적을 꿰뚫습니다","미미르의 샘":"카드와 코스트를 얻는 대신 회피가 줄어듭니다","궁니르-회수":"적을 타격하고 투척 카드를 돌려받습니다","궁니르-파쇄":"궁니르-명중을 터뜨려 5회 타격합니다","파편":"적을 가볍게 타격합니다","휘두르기":"적을 타격하고 코스트를 돌려받습니다","주먹 휘두르기":"적을 타격하고 카드를 뽑습니다","던지기":"묠니르를 던져 타격합니다","회수":"던진 묠니르를 되찾으며 타격합니다","사냥":"적을 타격합니다","전격":"쌓인 전격을 터뜨려 피해를 줍니다","천둥":"전격이 쌓인 만큼 여러 번 타격합니다","점화":"카드를 뽑고 적을 불태웁니다","연소":"적의 소각을 터뜨리고 절반을 나에게 옮깁니다","레바테인-추격":"적을 타격하고 불태웁니다","레바테인-타격":"적을 강하게 타격하고 불태웁니다","고치":"다음 턴을 쉬고 그다음 턴에 크게 강해집니다","라그나로크":"적을 크게 불태우고 카드를 뽑습니다","후긴의 눈":"적 전체에 궁니르-명중을 부여합니다","무닌의 기억":"버린 투척 카드를 되찾고 카드를 뽑습니다","아홉 밤의 매달림":"체력을 바쳐 궁니르-명중 한도를 늘립니다","슬레이프니르":"8회 타격하며 궁니르-명중을 쌓습니다","메긴기요르드":"빗나갈수록 다음 공격이 강해집니다","야른그레이프르":"묠니르를 바로 되찾고 코스트와 카드를 얻습니다","염소 구이":"유희만큼 체력을 회복합니다","뇌우":"적 전체의 전격을 2배로 만듭니다","무스펠의 숨":"적 전체와 나를 불태웁니다","재가 된 이름":"적의 소각을 전부 터뜨립니다","흉내 낸 칼날":"처치한 적의 공격을 따라 합니다","꺼지지 않는 불씨":"매 턴 적을 불태웁니다","뽑힌 칼은":"체력을 써서 강하게 타격합니다","아물지 않는 상처":"체력을 써서 타격하고 적의 회복을 막습니다","신념의 균열":"체력이 낮을 때 이번 턴 체력 소모를 없앱니다","거인의 식탁":"체력을 써서 강하게 타격합니다","압력 배출":"증기를 없애고 그만큼 방어도를 얻습니다","과열 가동":"증기를 얻고 카드를 뽑습니다","냉각수 밸브":"적을 식히고 증기를 줄이며 코스트를 얻습니다","수동 피스톤":"적을 3회 타격합니다","냉기 분사":"적을 식히고 카드를 뽑습니다","온기 주머니":"냉기를 없애고 카드와 코스트를 얻습니다","체온 유지":"매 턴 냉매를 줄이고 방어도를 얻습니다","얼음 깨기":"적을 강하게 타격합니다","진열대":"예술적 감각을 얻고 카드를 뽑습니다","해설":"다음 카드 2장의 코스트를 줄이고 카드를 뽑습니다","감정서":"패의 카드에 특수능력을 붙입니다","유물 모사화":"특수무기 카드의 효과를 발동합니다","고기 수프":"체력을 회복하고 배를 채웁니다","진한 차":"코스트를 얻고 배를 조금 채웁니다","보존식":"체력을 회복하고 배를 채웁니다","레미 정식":"배를 크게 채우고 이번 전투 동안 강해집니다","모조 전격":"적을 타격하고 전격을 부여합니다","모조 소각":"적을 크게 불태웁니다","시제품":"적에게 무작위 나쁜 효과를 3개 겁니다","모조 필중":"방어도를 무시하고 반드시 맞힙니다","작품 준비":"언젠가 작품으로 완성됩니다","작품-완성":"패에 있으면 공격이 크게 강해집니다","꼬마 드워프의 망치질":"적을 타격하고 증기를 얻습니다","증기 밸브 잠금":"공격을 막고 증기를 얻습니다","압력계 확인":"공격을 막습니다","증기 장막":"공격을 피할 준비를 하고 증기를 얻습니다","응급 용접":"체력을 회복하고 증기를 얻습니다","증기 분사기":"적에게 증기를 뿜습니다","수동 크랭크":"코스트를 얻고 증기도 얻습니다","배기관 청소":"증기를 줄이고 카드를 뽑습니다","마스터의 한 수":"적을 강하게 타격합니다","마이티의 망치":"열기를 모두 써서 적을 매우 강하게 타격합니다","증기 갑주":"턴이 끝날 때 증기만큼 방어도를 얻습니다","연막 배출":"공격을 잘 피할 준비를 하고 증기를 줄입니다","장인의 휴식":"체력을 크게 회복하고 증기를 얻습니다","엘더의 조언":"카드를 많이 뽑고 증기를 얻습니다","장인의 고집":"열기 한도를 늘리고 열기가 줄지 않습니다","고드름 던지기":"적을 타격합니다","눈벽 쌓기":"공격을 막고 적을 식힙니다","냉각관 연결":"공격을 막고 적을 식힙니다","눈보라 속으로":"공격을 피할 준비를 하고 적을 식힙니다","얼음 찜질":"체력을 회복하고 냉매를 줄입니다","연차 수당":"3턴째부터 코스트와 카드를 얻습니다","따뜻한 한마디":"냉매를 줄이고 체력을 조금 회복합니다","화가 난 고참":"적을 강하게 타격합니다","눈사태":"깨짐을 모두 써서 적을 매우 강하게 타격합니다","얼음판":"공격을 잘 피할 준비를 하고 적의 다음 공격을 빗나가게 합니다","뜨거운 국물":"체력을 크게 회복하고 냉매를 없앱니다","고참의 경고":"적을 깨뜨리고 다음 공격을 빗나가게 합니다","24시간 냉각기":"매 턴 적을 식힙니다","살아남은 자":"전투가 길어질수록 공격 카드가 강해집니다","납치 권유":"적을 타격하고 다음 공격을 빗나가게 합니다","아카데미 교재":"공격을 막습니다","특색 있는 의상":"공격을 피할 준비를 하고 조금 막습니다","치유의 실":"체력을 회복합니다","곡해 주입":"적을 약화시키고 취약하게 만듭니다","억지 해석":"예술적 감각을 얻고 카드를 버립니다","실 한 가닥":"카드를 뽑습니다","고증 완료":"적을 강하게 타격합니다","실 위로 걷기":"공격을 잘 피할 준비를 하고 카드를 뽑습니다","봉합":"체력을 크게 회복하고 약화와 취약을 없앱니다","전시 개막":"예술적 감각을 크게 얻습니다","강제 강의":"적의 행동을 늦추고 취약하게 만듭니다","선택받은 실":"매 턴 카드를 더 뽑습니다","비누":"나쁜 효과를 전부 씻어내고 카드를 뽑습니다","국자 들기":"적을 타격합니다","식감 찍어내기":"공격을 막고 배를 조금 채웁니다","미끄러운 기름":"공격을 피할 준비를 하고 배를 조금 채웁니다","퇴비 수프":"체력을 회복하고 배를 채웁니다","진흙 경단":"체력을 조금 회복하고 배를 조금 채웁니다","불량 식품":"배를 채우는 대신 다음 턴 코스트가 줄어듭니다","야간 교대":"체력을 써서 카드를 뽑습니다","공방 없는 노동":"적을 3회 타격합니다","무쇠 솥":"공격을 단단히 막습니다","몸 낮춘 노동":"공격을 잘 피할 준비를 하고 체력을 회복합니다","경험 찍어내기":"체력을 회복하고 배를 채우며 카드를 뽑습니다","과식":"체력을 써서 배를 크게 채웁니다","쉬지 않는 노동":"매 턴 배를 채웁니다","기도":"공격을 막습니다","냉각통 내려놓기":"공격을 막습니다","시식":"공격을 막습니다","실 걸기":"공격을 막습니다","원전 대조":"공격을 막습니다","움츠리기":"공격을 막습니다","지팡이":"적을 타격합니다","증기 분사":"적을 타격합니다","압력 렌치":"적을 타격합니다","냉매 투척":"적을 타격합니다","국자 내려치기":"적을 타격합니다","북 던지기":"적을 타격합니다","액자 휘두르기":"적을 타격합니다","복원 망치":"적을 타격합니다","시제품 시험":"적을 타격합니다","실패작 던지기":"적을 타격합니다","주먹질":"적을 타격합니다","불씨":"적을 가볍게 타격합니다","기습":"적을 2회 타격합니다"};
 const frontOf=d=>CARD_FRONT[d.name]||d.front||(d.type==='atk'?'적을 타격합니다':d.type==='def'?'공격을 막습니다':'효과를 발휘합니다');
-/* 카드 뒷면 글 — 줄마다 묶고 범위 수치를 따로 표시, 패에서 힘·약화가 걸리면 공격 위력이 바뀐 값으로 보임 */
-function cardLines(d,inst){const C=S.C,live=inst&&C&&!C.over&&S.screen==='combat'&&C.hand&&C.hand.includes(inst),adj=live?(C.pStr||0)-(C.pWkF||0):0;
-  return d.text.split('\n').map(l=>`<span class="ln">${l.replace(/(공격 )?(\d+)~(\d+)/g,(m,p,a,b)=>p&&adj?`${p}<span class="rng ${adj<0?'dn':'up'}">${Math.max(0,+a+adj)}~${Math.max(0,+b+adj)}</span>`:`${p||''}<span class="rng">${a}~${b}</span>`)}</span>`).join('<br>')}
+/* 카드 기준 적 — 마지막으로 상태창을 본 적, 본 적이 없거나 그 적이 쓰러졌으면 첫 번째 적 */
+function refFoe(){const C=S.C;if(!C)return null;const r=C.refFoe;if(r&&alive(r)&&foes().includes(r))return r;return liveFoes()[0]||C.E}
+function atRef(fn){const C=S.C,prev=C.E,f=refFoe();if(f)C.E=f;try{return fn()}finally{C.E=prev}}
+const liveCard=inst=>!!(inst&&S.C&&!S.C.over&&S.screen==='combat'&&S.C.hand&&S.C.hand.includes(inst));
+/* 위력 — 내 버프·디버프와 기준 적의 조건을 모두 적용한 값 (공격레벨·적 방어 감소는 제외) */
+function cardPower(c,x){const o=cardStrikeOpts(c),[a,b]=pDieRange(x),sc=atkScale()*(o.scale||1),ms=masterOn()?3:1,oo={...o,nul:nulled(c)};
+  const m=Math.max(0,1+pTraits(o).reduce((s,t)=>s+t.v,0))*(o.x||1),f=v=>Math.max(0,Math.round((Math.round(pAdj(v,oo,b)*sc*ms)+o.flat)*m));return[f(a),f(b)]}
+/* 카드 앞면 수치 — 전투 중 패에 있으면 적용된 값, 그 밖에는 기본 값 */
+function frontVals(id,inst){const live=liveCard(inst),dice=((live?cdef(inst):CARDS[id]).d)||[];if(!dice.length)return'';
+  const g=[];for(const x of dice){const l=g[g.length-1];if(l&&l.t===x.t&&l.a===x.a&&l.b===x.b)l.n++;else g.push({...x,n:1})}
+  if(live&&id==='s2_piston'&&(S.C.heat||0)>0)g.forEach(x=>{if(x.t==='atk')x.n=5});
+  return g.map(x=>{let lo=x.a,hi=x.b,cls='';
+    if(live){if(x.t==='atk')[lo,hi]=atRef(()=>cardPower(inst,x));else if(x.t==='def'){const f=v=>Math.round(v*(pt('defUp')?1.25:1)*(pt('defDown')?.75:1));lo=f(x.a);hi=f(x.b)}
+      cls=lo+hi>x.a+x.b?' up':lo+hi<x.a+x.b?' dn':''}
+    return`<span class="cv ${x.t}${cls}">${x.t==='atk'?'위력':x.t==='def'?'방어':'회피'} <em>${lo===hi?lo:`${lo}~${hi}`}</em>${x.n>1?` × ${x.n}`:''}</span>`}).join('')}
+/* 카드 조건 — 지금 켜진 조건은 뒷면에서 빛남 (결과로 정해지는 조건은 미리 켜지지 않음) */
+const otherSame=(c,C)=>C.hand.some(x=>x.id===c.id&&x.uid!==c.uid);
+const CARD_COND=[
+  [/방어 카드로 방어도를 얻었으면/,(c,C)=>!!C.blockGot],
+  [/패에 (같은 카드|파편|다른 실 한 가닥)(이|가) 있으면/,otherSame],
+  [/^없으면 모든 카드/,(c,C)=>!otherSame(c,C)],
+  [/약점 노출 대상에게/,(c,C,E)=>pExpo(E)],
+  [/표식이 있으면/,(c,C,E)=>!!(E.pmk&&E.pmk.lv>0)],
+  [/노르드교에게/,(c,C,E)=>!!E.nord],
+  [/대상의 현재 체력이 더 높으면/,(c,C,E,r)=>E.hp>r.hp],
+  [/체력 25% 이하일 때/,(c,C,E,r)=>r.hp<=r.maxHp*.25],
+  [/열기가 있으면/,(c,C)=>(C.heat||0)>0],
+  [/대상이 냉동이면/,(c,C,E)=>!!(E.frozen||E.frozeSkip)],
+  [/(\d+)턴째부터/,(c,C,E,r,m)=>C.turn>=+m[1]],
+  [/세 번째 사용시/,(c,C)=>((C.useN&&C.useN[c.id])||0)===2],
+  [/작품-완성이나 작품-준비가 있으면/,(c,C)=>C.hand.some(x=>x.id==='art_wip'||x.id==='art_done')],
+  [/작품-준비가 있으면/,(c,C)=>C.hand.some(x=>x.id==='art_wip')],
+  [/작품-완성이 있으면/,(c,C)=>C.hand.some(x=>x.id==='art_done')],
+  [/^패에 있으면/,()=>true],
+  [/적중 시|적중 실패 시|치명타 시|회피 성공 시|처치 시|이상이면/,()=>false]];
+function condOn(p,inst){const k=CARD_COND.find(([re])=>re.test(p));if(!k)return null;if(!liveCard(inst))return false;const m=p.match(k[0]);try{return!!atRef(()=>k[1](inst,S.C,S.C.E,S.run,m))}catch(e){return false}}
+/* 카드 뒷면 글 — 기본 수치와 조건 */
+function cardLines(d,inst){
+  return d.text.split('\n').map(l=>`<span class="ln">${l.split(', ').map(p=>{const on=condOn(p,inst);
+    const t=p.replace(/공격 (\d+)~(\d+)/g,'위력 $1~$2').replace(/(\d+)~(\d+)/g,'<span class="rng">$1~$2</span>');
+    return on==null?t:`<span class="cd${on?' on':''}">${t}</span>`}).join(', ')}</span>`).join('<br>')}
 function facesHTML(id,costBlock,inst,n=1){
   const d=CARDS[id],nm=cardName(id,inst)+(n>1?` ×${n}`:'');const long=false;
   const rd=inst&&S.C&&S.screen==='combat'&&S.C.redef&&S.C.redef[inst.uid];
   const txt=(rd?`<span class="modline">재정의${rd.dc?` · 코스트 ${rd.dc>0?'+1':'-1'}`:''}${rd.swap?' · 공격↔방어':''}</span><br>`:'')+(inst&&S.C&&S.C.nullKinds&&S.screen==='combat'&&S.C.hand&&S.C.hand.includes(inst)&&nulled(inst)?'<span class="modline">무효로 정의됨 — 주사위 값 0</span><br>':'')+cardLines(d,inst);const dense=false;
   const tl=(d.rar==='special'?`특수무기 · ${TYPE_LABEL[d.type]}`:RAR_LABEL[d.rar]?`${RAR_LABEL[d.rar]} · ${TYPE_LABEL[d.type]}`:TYPE_LABEL[d.type]);
   return`<div class="lift"><div class="inner">
-    <div class="face front r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}">${costBlock}<div class="cname${long?' long':''}"><span>${nm}</span></div><div class="art">${CARD_ART[id]?`<img src="${CARD_ART[id]}" alt="">`:''}</div><div class="ctext"><div>${frontOf(d)}</div></div><div class="ctype">${tl}</div><div class="marks"></div></div>
+    <div class="face front r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}">${costBlock}<div class="cname${long?' long':''}"><span>${nm}</span></div><div class="art">${CARD_ART[id]?`<img src="${CARD_ART[id]}" alt="">`:''}</div>${(fv=>`<div class="ctext${fv?' hasv':''}"><div><div class="cfx">${frontOf(d)}</div>${fv?`<div class="cvals">${fv}</div>`:''}</div></div>`)(frontVals(id,inst))}<div class="ctype">${tl}</div><div class="marks"></div></div>
     <div class="face back r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}"><div class="bname">${nm}</div><div class="btext${dense?' dense':''}"><div>${txt}</div></div></div>
   </div></div>`;
 }
@@ -304,7 +342,9 @@ function staticCard(id,showBack,inst){
   return`<div class="scard${showBack?' flipped':''}" tabindex="0" role="button" aria-label="${cardName(id,inst)}: ${d.text.replace(/\n/g,' ')}">${facesHTML(id,cb,inst)}</div>`;
 }
 function flipCard(el){if(REDUCED){el.classList.toggle('flipped');return}if(el.classList.contains('turning'))return;el.classList.add('turning');setTimeout(()=>el.classList.toggle('flipped'),150);setTimeout(()=>el.classList.remove('turning'),310)}
-function bindStatic(root){root.querySelectorAll('.scard').forEach(el=>{const f=()=>flipCard(el);el.addEventListener('click',f);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}})})}
+/* 앞면 글이 넘치면 효과 문장을 한 줄로 줄임 */
+function fitFront(root){if(!root)return;root.querySelectorAll('.ctext.hasv').forEach(t=>{if(!t.clientHeight)return;t.classList.remove('fit','fit2');if(t.scrollHeight>t.clientHeight+1){t.classList.add('fit');if(t.scrollHeight>t.clientHeight+1)t.classList.add('fit2')}})}
+function bindStatic(root){fitFront(root);root.querySelectorAll('.scard').forEach(el=>{const f=()=>flipCard(el);el.addEventListener('click',f);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}})})}
 /* 같은 카드는 한 뭉치로 묶음 (찌르기 ×2) — 뭉치는 한 번에 모두 사용, 행동 포인트도 장수만큼 줄어듦 */
 function stackKey(c){const C=S.C;return[c.id,(c.mods||[]).join(','),c.temp?'t':'',C.seal&&C.seal[c.uid]?'s'+C.seal[c.uid]:'',C.brand&&C.brand.includes(c.uid)?'b':'',c.w||''].join('|')}
 /* 뭉치 합성 (임시) — 같은 카드 3장이 패에 모이면 합성 카드로 바뀜 */
@@ -321,13 +361,13 @@ function renderHand(){
   const C=S.C,hand=$('#hand'),st=handStacks(),keys=new Set(st.map(x=>x.key));
   for(const[k,el]of handEls)if(!keys.has(k)){el.remove();handEls.delete(k)}
   st.forEach(({key,cards,fuse})=>{
-    const c=cards[0],n=cards.length,sig=(fuse||c.id)+'|'+n+'|'+(C.pStr||0)+'|'+(C.pWkF||0);
+    const c=cards[0],n=cards.length,html=fuse?facesHTML(fuse,`<div class="cost"><b>${CARDS[fuse].cost}</b></div>`,null,1):facesHTML(c.id,costHTML(c),c,n),sig=html;
     let el=handEls.get(key);
     if(!el){el=document.createElement('div');el.className='card';el.dataset.key=key;el._sig='';
       const o=L[S.orient];el.style.transform=`translate(${o.W-120}px,${o.H+40}px) rotate(10deg)`;
       hand.appendChild(el);handEls.set(key,el);bindCard(el,key);}
     el._uids=cards.map(x=>x.uid);el._fuse=fuse||null;
-    if(el._sig!==sig){el._sig=sig;el.innerHTML=fuse?facesHTML(fuse,`<div class="cost"><b>${CARDS[fuse].cost}</b></div>`,null,1):facesHTML(c.id,costHTML(c),c,n)}
+    if(el._sig!==sig){el._sig=sig;el.innerHTML=html}
     else if(!fuse){const cb=el.querySelector('.cost');const tmp=document.createElement('div');tmp.innerHTML=costHTML(c);cb.replaceWith(tmp.firstChild);
       const dr=el.querySelector('.dicerow');if(dr)dr.innerHTML=diceRowHTML(c.id,c)}
     el.classList.toggle('stack',n>1);el.classList.toggle('fused',!!fuse);el.dataset.n=n;el.classList.toggle('wk',!fuse&&cdef(c).type==='atk'&&(C.pWkF||0)>(C.pStr||0));
@@ -343,7 +383,7 @@ function renderHand(){
     el.querySelector('.marks').innerHTML=marks.join('');
     el.classList.toggle('sealed',!!C.seal[c.uid]);
   });
-  requestAnimationFrame(layoutHand);
+  fitFront(hand);requestAnimationFrame(layoutHand);
 }
 function handPos(i,n){
   const o=L[S.orient],cw=16.8*o.cfs,ch=23.6*o.cfs,mid=(n-1)/2,off=i-mid;
@@ -492,9 +532,9 @@ function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';m.classLi
 /* 적 상태창 (V2.31.55.14) — 적을 누르면 림버스처럼 적이 옆으로 비켜서고 상태창이 열림 */
 function foeOrbs(f){if(f.noAct)return'';const pip=(n,m,cls)=>`<div class="or ${cls}">${[...Array(Math.max(0,m||0))].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}<b>${Math.max(0,n||0)} / ${m||0}</b></div>`;return`<div class="forbs">${pip(f.c,f.cMax,'c')}${pip(f.ap,f.apMax,'a')}</div>`}
 const FK_COL={atk:'#a8473b',def:'#3c6a96',sup:'#4c8442'};
-function openFoePanel(f){const C=S.C;if(!C||drag||!f||!alive(f))return;const d=ENEMY[f.key];
+function openFoePanel(f){const C=S.C;if(!C||drag||!f||!alive(f))return;const d=ENEMY[f.key];if(C.refFoe!==f){C.refFoe=f;if(C.hand)renderHand()}
   document.querySelectorAll('.aside').forEach(x=>x.classList.remove('aside'));
-  const all=foes(),i=all.indexOf(f),fig=f===C.E?$('#enemy'):document.querySelector(`#foefigs .ufoe[data-foe="${i}"]`);if(fig)fig.classList.add('aside');
+  const all=figFoes(),i=all.indexOf(f),fig=f===C.E?$('#enemy'):document.querySelector(`#foefigs .ufoe[data-foe="${i}"]`);if(fig)fig.classList.add('aside');
   if(!f.kinds){f.kinds=[...new Set(foeActs(f))]}
   const deckAll=[...(f.fdeck||[]),...(f.fdisc||[]),...(f.hand||[])],cnt=n=>deckAll.filter(x=>x===n).length;
   const m=$('#modal');m.hidden=false;m.classList.add('side');

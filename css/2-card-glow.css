@@ -11,3 +11,13 @@
 .hppvt{margin-top:4px;font-size:14px;color:var(--bone);text-shadow:0 1px 3px #000;white-space:nowrap;font-variant-numeric:tabular-nums}
 .hppvt b{font-family:var(--f-display);font-weight:400;font-size:19px;color:#ffd98f}.hppvt em{font-style:normal;font-weight:700;color:#f29a8a}
 .port .hppvt{font-size:17px}.port .hppvt b{font-size:23px}
+/* 카드 앞면 적용 수치 · 뒷면 조건 */
+.ctext.hasv .cfx{font-size:.66em;line-height:1.18;font-weight:600;color:var(--bone-dim)}
+.ctext .cvals{display:flex;flex-wrap:wrap;gap:0 .55em;margin-top:.12em;font-size:.86em;line-height:1.16;font-weight:700;color:var(--bone)}
+.ctext .cv em{font-style:normal;color:var(--brass-hi)}
+.ctext .cv.up em{color:#9ad883}.ctext .cv.dn em{color:#ec7a68}
+.btext .cd{color:inherit;opacity:.72;transition:color .2s,opacity .2s,text-shadow .2s}
+.btext .cd.on{opacity:1;color:#ffd77a;text-shadow:0 0 .35em rgba(255,196,80,.85),0 0 .9em rgba(255,170,40,.45)}
+.ctext.hasv.fit .cfx{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.ctext.hasv.fit .cvals{font-size:.78em;gap:0 .4em}
+.ctext.hasv.fit2 .cfx{display:none}

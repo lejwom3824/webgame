@@ -28,3 +28,4 @@ function fitBox(box){
 function fitCards(root=document){}
 let fitQ=0;const fitSoon=()=>{if(fitQ)return;fitQ=requestAnimationFrame(()=>{fitQ=0;try{fitCards()}catch(e){}})};
 try{new MutationObserver(fitSoon).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});addEventListener('resize',fitSoon)}catch(e){}
+document.fonts&&document.fonts.ready.then(()=>{if(S.C&&S.screen==="combat")fitFront($("#hand"))});
