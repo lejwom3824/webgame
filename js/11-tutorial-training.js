@@ -262,7 +262,7 @@ function guideShow(){
 /* 4-1. 세계수 등반 준비 */
 function showClimbPrep(){
   S.screen='climbPrep';S.run=null;S.C=null;hideCombatUI();closeModal();renderTop();viewFor('title');
-  const h=S.hero=S.hero||rollHero(lastDiff());const D=CDIFF[h.diff||'easy'],dk=pickedDeck(),FR=h.fate==='random';
+  const h=S.hero=S.hero||rollHero(lastDiff());h.traits=(h.traits||[]).filter(k=>PTRAIT[k]);const D=CDIFF[h.diff||'easy'],dk=pickedDeck(),FR=h.fate==='random';
   const left=heroTalentLeft(h),tb=Math.max(0,left),hp1=Math.round(h.base1*hpMulOf(h.traits)*(1+.05*tb));
   const acc=h.acc+(h.traits.includes('accUp')?10:0)-(h.traits.includes('accDown')?10:0),eva=h.eva+(h.traits.includes('evaUp')?10:0)-(h.traits.includes('evaDown')?10:0);
   const blocked=k=>PT_CONFLICT.some(p=>p.includes(k)&&p.some(q=>q!==k&&h.traits.includes(q)));

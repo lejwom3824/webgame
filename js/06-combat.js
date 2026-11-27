@@ -31,13 +31,13 @@ function makeEnemy(key){
 /* 은빛 기사가 살아 있으면 보스가 받는 피해를 기사가 대신 받음 (전투 시작 때 적을 복사하므로 여기서 연결) */
 function bossGuard(E){let _hp=E.hp;Object.defineProperty(E,'hp',{enumerable:true,configurable:true,get(){return _hp},set(v){if(v<_hp&&knAlive(E).length){_hp-=knightTake(_hp-v);return}_hp=v}})}
 function startCombat(E0){try{ultReset()}catch(e){}
-  const r=S.run;
+  const r=S.run;heavySync(r);
   const draw=shuffle(r.deck.map(c=>({uid:c.uid,id:c.id})));
   const foeList=Array.isArray(E0)?E0:[typeof E0==='string'?makeEnemy(E0):E0];
   const C={E:foeList[0],foes:foeList,draw,hand:[],disc:[],exh:[],powers:[],
     energy:0,maxE:3,drawN:5,nextEnergy:0,block:0,evaB:0,pWeak:0,pVuln:0,pEl:0,pBurn:0,temper:0,discount:false,
     pend:[],eat:0,healAcc:0,seal:{},brand:[],turn:0,mk:{lv:0,setT:-9,expT:-9,hitT:-9,lock:-9},fracS:-9,fracEnd:-9,pWkF:0,phase:'player',over:false,select:null,recoil:0,hold:false,ashBonus:0,
-    blockDebt:pt('blockDebt')?5:0,yu:0,yuT:0,hitsTurn:0,log:[],
+    blockDebt:pt('blockDebt')?5:0,yu:0,yuT:0,freshN:0,sameN:0,noHurtN:0,lastCid:null,hurtR:false,bashPend:0,bashNow:0,hitsTurn:0,log:[],
     evaMod:(r.next&&r.next.eva)||0,costMod:(r.next&&r.next.cost)||0,cost1:(r.next&&r.next.cost1)||0};
   if(C.E.tut){C.E.intent=null}
   for(const f of C.foes){if(f.apMax==null){f.apMax=f.boss?10:f.tier==='elite'?6:5}f.ap=f.apMax;f.early=false}
@@ -73,6 +73,11 @@ function formula(die,flat,atk,traits,def,o={}){
   return{fin,raw,text};
 }
 const pt=k=>!!(S.run&&S.run.traits&&S.run.traits.includes(k));
+/* V2.37.78.22: 특성의 % 효과는 최종 결과에 곱함 */
+const leechOn=()=>pt('leech')&&S.run.hp<=S.run.maxHp*.5;
+const trMul=()=>(pt('smite')?1.25:1)*(pt('dmgDown')?.8:1)*(pt('pacifist')?.5:1)*(leechOn()?1.1:1);
+/* 특성으로 오르는 공격 위력 — 새로운/똑같은 카드 중첩, 아픈건 싫어서, 선택과 집중, 실드로 패기 */
+const trPow=()=>{const C=S.C;if(!C)return 0;return((C.freshN||0)+(C.sameN||0)+(C.noHurtN||0))*2+(C.focusT===C.turn?(C.focusP||0):0)+(C.bashNow||0)};
 const berserk=()=>S.run.mode==='dain'&&S.run.hp<=S.run.maxHp*.25;
 /* 다인 육참골단: 방어레벨(장비 포함)이 전부 공격레벨로 */
 /* V2.33.65.16: 무기 — 노르드교 조잡한 단검 (모든 데미지 흡혈 +5% · 공격레벨 +2 · 무기 특수 효과 표식 · 노르드교 전용 카드) */
@@ -90,12 +95,12 @@ const pEva=()=>S.run.eva+(pt('evaUp')?10:0)-(pt('evaDown')?10:0)+gs('eva')+(S.C&
 function rollDie(d,player){
   if(S.run&&S.run.tutB)return Math.round((d.a+d.b)/2);
   let a=d.a,b=d.b;
-  if(player&&d.t==='atk'){if(pt('dieMin'))a=Math.min(b,a+1);if(pt('dieMax'))b+=2;if(gs('dieWild')){a=Math.max(1,Math.round(a/2));b*=2}}
+  if(player&&d.t==='atk'){if(gs('dieWild')){a=Math.max(1,Math.round(a/2));b*=2}}
   let v=ri(a,b);if(player&&d.t==='atk'&&pt('badRoll'))v=Math.min(v,ri(a,b));
   if(S.C&&S.C.spinNow&&S.C.phase==='player'&&v<(a+b)/2){const v2=ri(a,b);clog(`운명의 실패: 주사위 ${v} → ${v2} (다시 굴림)`);v=v2}
   return v;
 }
-function pDieRange(d){let a=d.a,b=d.b;if(d.t==='atk'){if(pt('dieMin'))a=Math.min(b,a+1);if(pt('dieMax'))b+=2;if(gs('dieWild')){a=Math.max(1,Math.round(a/2));b*=2}}return[a,b]}
+function pDieRange(d){let a=d.a,b=d.b;if(d.t==='atk'){if(gs('dieWild')){a=Math.max(1,Math.round(a/2));b*=2}}return[a,b]}
 const atkScale=()=>(pt('atkUp')?1.2:1)*(pt('atkDown')?.8:1);
 function pTraits(o={}){
   const C=S.C,E=C.E,t=[];
@@ -106,9 +111,6 @@ function pTraits(o={}){
   if(o.wb)t.push({n:`가중치 ${o.wb}`,v:+(.1*o.wb).toFixed(2)});
   if(berserk())t.push({n:'광전사-강화',v:.5});
   if(C.yu)t.push({n:'유희',v:+(.2*C.yu).toFixed(2)});
-  if(pt('smite'))t.push({n:PTRAIT.smite.n,v:.25});
-  if(pt('dmgDown'))t.push({n:'피해 감소',v:-.2});
-  if(pt('pacifist'))t.push({n:PTRAIT.pacifist.n,v:-.5});
   if(o.giant)t.push({n:'거인 베기',v:.5});
   return t;
 }
@@ -130,8 +132,8 @@ function pPreview(c,d){
   const C=S.C,E=C.E,r=S.run,o=cardStrikeOpts(c);
   const[a,b]=pDieRange(d),sc=atkScale()*(o.scale||1);
   const nul=nulled(c),ms=masterOn()?3:1,oo={...o,nul};
-  const lo=formula(Math.round(pAdj(a,oo,b)*sc*ms),o.flat,o.atk,pTraits(o),E.def,{ignoreDef:pt('pierceDef')||!!CARDS[c.id].pierce,x:o.x}).fin;
-  const hi=formula(Math.round(pAdj(b,oo,b)*sc*ms),o.flat,o.atk,pTraits(o),E.def,{ignoreDef:pt('pierceDef')||!!CARDS[c.id].pierce,x:o.x}).fin;
+  const lo=formula(Math.round(pAdj(a,oo,b)*sc*ms),o.flat,o.atk,pTraits(o),E.def,{ignoreDef:pt('pierceDef')||!!CARDS[c.id].pierce,x:(o.x||1)*trMul()}).fin;
+  const hi=formula(Math.round(pAdj(b,oo,b)*sc*ms),o.flat,o.atk,pTraits(o),E.def,{ignoreDef:pt('pierceDef')||!!CARDS[c.id].pierce,x:(o.x||1)*trMul()}).fin;
   return{lo,hi,ch:CARDS[c.id].sure?100:hitChance(pAcc()+(CARDS[c.id].acc||0),E.eva+E.evaB)};
 }
 function ePreview(d){
@@ -153,9 +155,11 @@ function clog(t,cls){const C=S.C;if(!C||!C.log)return;C.log.push([cls||'',t]);if
 async function startPlayerTurn(){
   const C=S.C,r=S.run;if(C.over)return;
   C.tossTurn=0;
+  if(pt('noHurt')&&C.turn>=1){if(!C.hurtR&&(C.noHurtN||0)<10){C.noHurtN=(C.noHurtN||0)+1;clog(`${PTRAIT.noHurt.n}: 공격 위력 +${C.noHurtN*2}`)}}C.hurtR=false;
+  C.bashNow=0;C.bashPend=0;if(pt('bash')){const b=Math.floor((C.block||0)*.5);if(b>0){C.bashPend=b;clog(`${PTRAIT.bash.n}: 이번 턴 첫 공격 카드 공격 위력 +${b}`)}}
   C.turn++;C.phase='player';C.block=C.hold?C.block:Math.floor(C.block/2);C.hold=false;C.blockGot=false;C.recoil=0;C.freeAP=0;C.discount=false;C.evaB=C.evaNext||0;C.evaNext=0;C.hitsTurn=0;C.atkRow=0;
   /* 코스트·드로우 증가는 전투 안에서만 — 전투가 끝나면 기본값으로 */
-  r.turns=(r.turns||0)+1;const gr=growth(C.turn);C.maxE=gr.e;C.drawN=gr.d;if(r.mode==='odin'){C.maxE+=2;C.drawN+=3}/* 올파더 */
+  r.turns=(r.turns||0)+1;const gr=growth(C.turn);C.maxE=gr.e;C.drawN=gr.d;if(pt('light')&&r.deck.length<=10)C.drawN++;if(r.mode==='odin'){C.maxE+=2;C.drawN+=3}/* 올파더 */
   clog(`${C.turn}턴 · 코스트 ${C.maxE} · 드로우 ${C.drawN}`,'h');markTick();pMarkTick();C.parryN=0;
   C.ultDark=null;for(const f of liveFoes()){f.ultArmed=null;foeRefill(f);if(!f.noAct)clog(`${f.name} · 코스트 ${f.c} / ${f.cMax} · 행동 포인트 ${f.apMax}`,'h')}
   a2TurnStart();
@@ -255,7 +259,7 @@ function removeHandEl(uid){const el=stackOf(uid);if(!el)return;el._uids=el._uids
 /* 카드 한 장의 공격 주사위에 공통으로 붙는 값 */
 function cardStrikeOpts(c){
   const C=S.C,E=C.E,r=S.run,d=CARDS[c.id];
-  const flat=C.temper*25+(pt('sharp')?3:0)+(d.type==='atk'?(C.ashBonus||0):0)+(d.flatFn?d.flatFn(C,E):0)+(d.type==='atk'&&C.lateDmg?C.lateDmg*5*C.turn:0)
+  const flat=C.temper*25+(d.type==='atk'?(C.ashBonus||0):0)+(d.flatFn?d.flatFn(C,E):0)+(d.type==='atk'&&C.lateDmg?C.lateDmg*5*C.turn:0)
     +(c.id==='d_cannibal'?Math.floor(Math.max(0,E.hp)*.1):0)+(c.id==='d_hungry'?C.eat*5:0)+(d.type==='atk'?gs('flat')+((r.flags.actF&&r.flags.actF.atkFlat)||0):0)+(C.sat?Math.round(E.maxHp*.02*C.sat):0);
   return{flat,atk:pAtk(),pierce:!!d.pierce||r.mode==='odin',leech:false,x:((c.id==='hook'&&C.blockGot)?2:1)*(d.xFn?d.xFn(C,E):1)*(gs('dmg2')?2:1),giant:c.id==='d_giant'&&E.hp>r.hp,scale:1};
 }
@@ -267,7 +271,6 @@ async function playCardRaw(uid,o={}){
   const why=canPlay(c);if(why){toast('',why);layoutHand();return}
   S.busy=true;
   const d=cdef(c),k=costOf(c),ctx={killed:false},U=!o.reuse;/* U: 사용시 효과는 카드를 낼 때 한 번만, 재사용은 타격시 효과만 */
-  if(pt('randTgt')&&d.type==='atk'&&liveFoes().length>1){C.E=pick(liveFoes());clog(`근시: 대상이 「${C.E.name}」(으)로 정해짐`)}
   if(C.flaskArm&&!c.free&&((k.hp!=null&&k.hp>0)||(k.hp==null&&k.e>0))){C.flaskArm=false;
     if(k.hp!=null){C.flaskHp=(C.flaskHp||0)+k.hp*2;clog(`미미르의 물병: 체력 소모 없이 사용 — 다음 턴 체력 ${k.hp*2} 지불`)}
     else{C.flaskDebt=(C.flaskDebt||0)+k.e*2;clog(`미미르의 물병: 코스트 없이 사용 — 다음 턴 코스트 ${k.e*2} 지불`)}fxAt('player','미미르의 물병','info')}
@@ -278,8 +281,11 @@ async function playCardRaw(uid,o={}){
   if(U&&c.id!=='ornament')C.discount=false;
   if(U&&C.brand.includes(c.uid)){r.hp-=3;fxAt('player','낙인 -3','self')}
   if(U&&pt('brand')){r.hp-=3;fxAt('player','낙인 -3','self')}
-  if(U&&pt('hpCost')){const l=Math.ceil(r.maxHp*.05);r.hp-=l;fxAt('player',`${PTRAIT.hpCost.n} -${l}`,'self')}
+  if(U&&pt('hpCost')){const l=Math.ceil(r.maxHp*.02);r.hp-=l;fxAt('player',`${PTRAIT.hpCost.n} -${l}`,'self')}
   C.hand.splice(C.hand.indexOf(c),1);removeHandEl(uid);
+  if(U){const pid=C.lastCid;if(pid!=null){if(pt('fresh'))C.freshN=pid!==c.id?Math.min(10,(C.freshN||0)+1):0;if(pt('same'))C.sameN=pid===c.id?Math.min(10,(C.sameN||0)+1):0}C.lastCid=c.id}
+  if(U&&d.type==='atk'&&C.bashPend>0){C.bashNow=C.bashPend;C.bashPend=0}
+  const dblOn=U&&pt('dbl')&&d.type==='def'&&liveFoes().some(f=>!f.noAct&&f.ap===1);if(dblOn)clog(`${PTRAIT.dbl.n}: 방어도 2배`);
   C.fxCard=d.type==='atk'||(d.d||[]).some(x=>x.t==='atk')?c.id:null;if(o.reuse)C.fxRe=(C.fxRe||0)+1;else{C.fxN=0;C.fxRe=0}if(!C.fxCard&&(d.type==='def'||d.type==='skill'||d.type==='power'))castFx(d.type==='def'?'def':'skill');
   clog(`▸ ${cardName(c.id,c)}${k.hp!=null?` (체력 ${k.hp})`:` (코스트 ${k.e})`}`,'h');C.curSpecial=d.rar==='special';
   renderCombat();
@@ -292,7 +298,6 @@ async function playCardRaw(uid,o={}){
   if(c.id==='s2_piston'&&(C.heat||0)>0){dice=[...dice,{...dice[0]},{...dice[0]}];clog('수동 피스톤: 열기가 있어 × 5')}
   if(d.moreHits){const n=d.moreHits(C);for(let i=0;i<n;i++)dice.push({...dice[0]})}
   const nul=nulled(c);if(nul){C.nullCount=(C.nullCount||0)+1;clog('기록: 무효로 정의된 카드 — 주사위 값 0','e')}
-  if(first&&d.type==='atk'){if(pt('extra'))dice.push({...first,lb:PTRAIT.extra.n,sc:.5});if(pt('combo'))dice.push({...first,lb:PTRAIT.combo.n,sc:.25})}
   if(c.id==='c_whirl'){const n=await pickToss(3,'잿빛 회오리');const x=dice[0];for(let i=0;i<n;i++)dice.push({...x,lb:'재사용'})}
   let hadAtk=false,hitAny=false,gained=0;C.cardDmg=0;
   const ultFx=U&&d.rar==='ult'&&!nul;if(ultFx)await ultDash(c.id);
@@ -306,7 +311,7 @@ async function playCardRaw(uid,o={}){
         if(await pStrike(x,{...so,scale:(so.scale||1)*(x.sc||1)*(crit?1.5:1),label:x.lb,onHit:oh,wb:W.wb,nul,sure:!!d.sure||!!(d.sureFn&&d.sureFn(C,f)),accAdd:d.acc||0}))hitAny=true;
         if(f.dead||f.hp<=0){ctx.killed=true;if(gs('killEat')&&!C.over)foodGain(null,gs('killEat'),true);if(r.mode==='thor'){C.yu=Math.min(5,C.yu+1);toast('전투 중독','유희 +1')}}
         if(!C.over&&alive(prev))C.E=prev}}
-    else if(x.t==='def')gained+=gainBlock(nul?0:(d.defFn?d.defFn(C,rollDie(x)):rollDie(x)),0,'방어 주사위');
+    else if(x.t==='def')gained+=gainBlock((nul?0:(d.defFn?d.defFn(C,rollDie(x)):rollDie(x)))*(dblOn?2:1),0,'방어 주사위');
     else{const v=nul?0:rollDie(x),add=Math.min(v,Math.max(0,EVA_DICE_CAP-C.evaB));C.evaB+=add;
       clog(`회피 주사위 ${v} → 회피 +${add}${add<v?' (한 턴 최대 +30)':''} · 적의 적중률 ${hitChance(enemyAcc(),pEva())}%`);fxAt('player',`회피 +${add}`,'info');renderCombat()}
   }
@@ -316,7 +321,6 @@ async function playCardRaw(uid,o={}){
     const ok=!hadAtk||hitAny;
     const st=[['weak',d.weak],['vuln',d.vuln]].filter(x=>x[1]);
     if(ok)st.forEach(([k,n])=>applyEnemyStatus(k,n));else if(st.length)clog('공격 주사위가 모두 빗나가 적중 시 효과가 발동하지 않음');
-    if(hitAny&&pt('refund')){C.energy++;fxAt('player','코스트 +1','info');clog(`${PTRAIT.refund.n}: 코스트 +1`)}
     if(U)if(d.hold)C.hold=true;
     if(U)if(d.heal)heal(d.heal*((d.ws2==='remi'&&eqW('kr_b'))?2:1)*((c.id==='hardtack'&&gs('lunch'))?2:1));
     if(c.id==='k2_break'&&hitAny&&!C.over){const T=C.E;if(T.frozen||T.frozeSkip||T.crack){T.crack=Math.min(3,(T.crack||0)+2);T.crackT=C.turn}}
@@ -342,13 +346,11 @@ async function playCardRaw(uid,o={}){
     if(U)await a2CardFx(c,ctx);
     if(U)switch(c.id){
     }
-    /* 즐거움: 공격 카드를 연달아 3번 쓰면 유희 +1 (다른 종류 카드가 끼면 처음부터, 턴이 바뀌면 처음부터) */
-    if(U){if(d.type==='atk'){C.atkRow=(C.atkRow||0)+1;if(pt('yuOn')&&C.atkRow>=3){C.atkRow=0;C.yu=Math.min(5,C.yu+1);toast(PTRAIT.yuOn.n,'유희 +1')}}else C.atkRow=0}
   }
   /* 카드가 가는 곳: 지속 → 지속 더미 / 소멸 → 소멸 더미 / 그 외 → 버린 카드 더미 */
+  C.bashNow=0;
   const exhaust=d.exhaust||c.temp||pt('exhAll');
   if(d.type==='power')C.powers.push(c);
-  else if(pt('destroy')&&!c.temp){const i=r.deck.findIndex(x=>x.uid===c.uid);if(i>=0)r.deck.splice(i,1);C.exh.push(c);clog(`${PTRAIT.destroy.n}: 「${CARDS[c.id].name}」 영구 소멸`)}
   else if(exhaust){C.exh.push(c);clog(`「${CARDS[c.id].name}」 소멸`);tutEvent('exh');}
   else{C.disc.push(c);if(pt('seal')){C.seal[c.uid]=2}}
   // 유산의 수호
@@ -399,7 +401,8 @@ function fuseOpenWindow(){const box=$('#modal');return new Promise(res=>{box.hid
 /* 카드 1장 사용 → 적 행동 포인트 -1. 0이 되면 곧바로 행동하고 다시 채워져 횟수 제한 없이 계속 행동. 턴 종료 시 1 이상이면 0으로 만들고 다음 행동 1회 후 초기화 */
 async function apTick(n=1){
   const C=S.C,r=S.run;if(!C||C.over||C.dead||C.phase!=='player')return;
-  const ready=[];for(const E of liveFoes()){if(E.noAct)continue;E.ap-=n;while(E.ap<=0){ready.push(E);E.ap+=Math.max(1,E.apMax)}}
+  if(pt('offbeat')&&C.offT!==C.turn){C.offT=C.turn;clog(`${PTRAIT.offbeat.n}: 이번 카드는 적 행동 포인트를 깎지 않음`);renderCombat();return}
+  const ready=[];for(const E of liveFoes()){if(E.noAct)continue;const hs=ENEMY[E.key]&&ENEMY[E.key].hasty;let m=n;if(hs&&Math.random()<hs){m++;fxAt('enemy','성급함','info');clog(`${E.name} · 성급함: 행동 포인트 1 추가 소모`,'e')}E.ap-=m;while(E.ap<=0){ready.push(E);E.ap+=Math.max(1,E.apMax)}}
   renderCombat();if(!ready.length)return;
   S.busy=true;C.phase='enemy';
   if(S.tb){const k=ready.map(E=>E.ap);ready.forEach(E=>E.ap=0);renderCombat();await tbHold('ap0');ready.forEach((E,i)=>E.ap=k[i]);renderCombat()}
@@ -433,10 +436,10 @@ async function diceFocus(o){
 }
 async function pStrike(die,o={}){
   const C=S.C,E=C.E,r=S.run;if(C.over)return false;
-  const tf=tutForce(),ms=masterOn(),r0=ms?pDieRange(die)[1]:rollDie(die,true),ht=C.heat||0,gp=gapP(o.atk!=null?o.atk:pAtk(),E.def),sw=(C.pStr||0)-(C.pWkF||0),v0=o.nul?0:Math.max(0,r0+ht+gp+sw),v=Math.round(v0*atkScale()*(o.scale||1)*(ms?3:1));
-  const vs=(o.nul?`${r0}→0 [무효]`:`${r0}${ht?` + 열기 ${ht}`:''}${gp?` + 공방렙 차이 ${gp}`:''}${C.pStr?` + 힘 ${C.pStr}`:''}${C.pWkF?` − 약화 ${C.pWkF}`:''}${ms?' [작품-완성 최대치 ×3]':''}`)+(v!==v0&&!o.nul?` → ${v}`:'');
+  const tf=tutForce(),ms=masterOn(),r0=ms?pDieRange(die)[1]:rollDie(die,true),ht=C.heat||0,gp=gapP(o.atk!=null?o.atk:pAtk(),E.def),sw=(C.pStr||0)-(C.pWkF||0)+trPow(),v0=o.nul?0:Math.max(0,r0+ht+gp+sw),v=Math.round(v0*atkScale()*(o.scale||1)*(ms?3:1));
+  const vs=(o.nul?`${r0}→0 [무효]`:`${r0}${ht?` + 열기 ${ht}`:''}${gp?` + 공방렙 차이 ${gp}`:''}${C.pStr?` + 힘 ${C.pStr}`:''}${C.pWkF?` − 약화 ${C.pWkF}`:''}${trPow()?` + 특성 ${trPow()}`:''}${ms?' [작품-완성 최대치 ×3]':''}`)+(v!==v0&&!o.nul?` → ${v}`:'');
   const ch=o.sure?100:hitChance(pAcc()+(o.accAdd||0),E.eva+E.evaB),roll=ri(1,100),lb=o.label||'공격';
-  const hit=tf?tf.hit:r.tutB?true:roll<=ch,f=hit?formula(v,o.flat||0,o.atk!=null?o.atk:pAtk(),pTraits(o),E.def,{ignoreDef:pt('pierceDef'),x:(o.x||1)*pMarkMul(E)}):null,bl=hit?(o.pierce?0:Math.min(E.block,f.fin)):0,loss=hit?f.fin-bl:0;
+  const lz=leechOn(),hit=tf?tf.hit:r.tutB?true:roll<=ch,f=hit?formula(v,o.flat||0,o.atk!=null?o.atk:pAtk(),pTraits(o),E.def,{ignoreDef:pt('pierceDef'),x:(o.x||1)*pMarkMul(E)*trMul()}):null,bl=hit?(o.pierce?0:Math.min(E.block,f.fin)):0,loss=hit?f.fin-bl:0;
   {const rg=pDieRange(die);await diceFocus({lb:`${lb} 주사위 → ${E.name}`,a:rg[0],b:rg[1],r0,pow:v,hit,ch,dmg:loss,bl})}
   if(C.over)return false;
   const CK=await cardCut(hit),hp0=E.hp/Math.max(1,E.maxHp);if(C.over)return false;
@@ -450,7 +453,7 @@ async function pStrike(die,o={}){
   if(o.leech&&loss>0)heal(loss*.2);
   if(dagger()){if(loss>0)heal(loss*.05);pMarkHit(E)}
   if(loss>0)C.pPurge=(C.pPurge||0)+1;
-  if(pt('leech')&&loss>0)heal(loss*.1);
+  if(lz&&loss>0){const ex=Math.round(f.fin-f.fin/1.1),h=Math.min(ex,loss);if(h>0){heal(h);clog(`${PTRAIT.leech.n}: 추가 피해 ${h} 회복`)}}
   if(gs('leech10')&&loss>0)heal(loss*.1);
   if(gs('coolHit'))a2Hit('cool',1);
   if(gs('drawHit')&&rnd()<.25)drawN(1);
@@ -499,6 +502,7 @@ async function endTurn(){
   clog('턴 종료','h');tutEvent('end');
   if(E&&(E.boss||E.key==='clerk')&&E.pendPhase)await bossPhaseCut();
   if(eqW('st_b')&&C.energy>0&&r.mode!=='dain'){C.steinBlock=C.energy*3;clog(`스타인러 공방: 남은 코스트 ${C.energy} → 다음 턴 방어 ${C.steinBlock}`)}
+  if(pt('empty')&&!C.hand.length){C.nextEnergy+=1;clog(`${PTRAIT.empty.n}: 다음 턴 코스트 +1`)}
   const keepF=x=>!!CARDS[x.id].keep;
   const kept=C.hand.filter(keepF);C.disc.push(...C.hand.filter(x=>!keepF(x)));C.hand=kept;
   buffBreak('player');C.pWeak=0;C.pVuln=0;C.pStr=0;C.pWkF=0;
@@ -577,6 +581,7 @@ const FOE_DRAW=new Set(['숨 고르기','망치 돌리기']);const foeDrawOk=(E,
 function foePick(E){if(E.key==='bishop')return bishopPick(E);const h=E.hand,c=E.c,isU=n=>!!(ACT[n]&&ACT[n].ult),ok=i=>(actCost(h[i])<=c||isU(h[i])&&c>0&&c>=Math.min(actCost(h[i]),E.cMax||0))&&actReady(E,h[i])&&foeDrawOk(E,h[i]);const idx=h.map((_,i)=>i).filter(ok);if(!idx.length)return-1;
   /* V2.35.74.20 카드 내는 순서: 예고한 궁극기 → 나에게 거는 카드 → 이로운 카드(낸 뒤 공격 한 장 낼 코스트가 남을 때) → 공격 → 방어, 같은 종류는 코스트 큰 것부터, 같으면 패 왼쪽부터 */
   {const u=idx.find(i=>isU(h[i]));if(u!=null)return u}
+  {const eg=ENEMY[E.key]&&ENEMY[E.key].eager;if(eg&&S.C&&S.C.apBurst){const j=idx.find(i=>h[i]===eg);if(j!=null)return j}}
   const T=i=>actType(h[i]),big=a=>a.sort((x,y)=>actCost(h[y])-actCost(h[x])||x-y);
   if(has(E,'침착함')&&E.turn<=1){const d=big(idx.filter(i=>T(i)==='def'))[0];if(d!=null)return d}
   const neg=big(idx.filter(i=>T(i)!=='def'&&actNeg(h[i])));if(neg.length)return neg[0];
@@ -694,11 +699,12 @@ async function execAct(name){
   a2PreAct(E,name);let hit=false;
   if(a.k==='atk'){
     if(a.mercy){if(await enemyStrike(null,{mercy:true}))hit=true;if(r.hp>0&&!C.over){say(BOSS_LINES.survived)}}
-    else for(const x of a.d){if(await enemyStrike(x,{gim:a.gim,purge:a.purge,expo:a.expo,shatter:a.shatter,exec:a.exec,fracX:a.fracX})!==false)hit=true;if(r.hp<=0||C.over){E.actX=1;return}}
+    else for(const x of a.d){if(await enemyStrike(x,{gim:a.gim,purge:a.purge,expo:a.expo,shatter:a.shatter,exec:a.exec,fracX:a.fracX,accAdd:a.acc||0})!==false)hit=true;if(r.hp<=0||C.over){E.actX=1;return}}
     if(a.exec){C.mk.lv=0;C.mk.lock=-9;clog('처형 집행: 표식을 전부 소모','e')}
     if(a.frac&&hit){C.fracS=C.turn;C.fracEnd=C.turn+2;fxAt('player','골절','info');clog('골절: 2턴 동안 턴 시작 코스트 -1','e')}
     if(a.forceMark&&hit)forceMark();
     if(a.wkHunt){E.wkT=C.turn;E.wkN=3}
+    if(a.selfVuln){applyEnemyStatus('vuln',a.selfVuln);fxAt('enemy',`취약 ${a.selfVuln}`,'info')}
     E.firstAtk=false;E.revenge=0;E.frost=false;
     if(a.vuln){if(hit){C.pVuln=Math.min(10,C.pVuln+a.vuln);fxAt('player',`취약 ${a.vuln}`,'info');badFx();clog(`적중 · 취약 ${a.vuln}`,'e')}else clog('빗나가 취약이 붙지 않음','e')}
   }
@@ -722,7 +728,7 @@ async function enemyStrike(die,o={}){
   if(C.palShield){C.palShield=false;await wait(500);fxAt('player','대신 맞음','info');clog('부상당한 노르드교 단원이 대신 맞고 쓰러졌다','e');return 0}
   if(palUp()&&!o.mercy&&rnd()<.25)return palHurt(die);
   if(E.key!=='bishop'&&!REDUCED&&!C.ultFx){const en=$('#enemy');en.classList.remove('lunge');void en.offsetWidth;en.classList.add('lunge');await wait(150);setTimeout(()=>en.classList.remove('lunge'),200)}
-  const gm=o.gim&&GIM[o.gim];let ch=hitChance(enemyAcc(),pEva());const roll=E.tut?1:ri(1,100);
+  const gm=o.gim&&GIM[o.gim];let ch=hitChance(enemyAcc()+(o.accAdd||0),pEva());const roll=E.tut?1:ri(1,100);
   if(gm&&o.gim==='read')ch=gm.ok()?0:100;
   const her=!!(S.run.flags&&S.run.flags.heresy);if(o.exec||(o.purge&&her))ch=100;
   const r0=o.mercy?0:rollDie(die),v=o.mercy?0:eAdj(r0);
@@ -739,7 +745,7 @@ async function enemyStrike(die,o={}){
     if(M!==1){dmg=Math.round(dmg*M);txt=`[${tg.join(' · ')}] `+txt}}
   {const hit=roll<=ch,bb=Math.min(C.block,dmg);await diceFocus({foe:true,lb:o.mercy?`${E.name} · 안 아프게 빨리`:`${E.name} · 공격 주사위${gm?` · ${gm.n} ${gm.ok()?'성공':'실패'}`:''}`,a:o.mercy?0:die.a,b:o.mercy?0:die.b,r0:o.mercy?'—':r0,pow:o.mercy?'남은 체력':v,hit,ch,dmg:hit?dmg-bb:0,bl:hit?bb:0})}
   if(C.ultFx&&!C.ultFx.hitDone){C.ultFx.hitDone=true;try{await C.ultFx.impact()}catch(e){}}
-  if(roll>ch){fxAt('player','빗나감','miss');sfx('miss');swayFx();clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);if(C.parryN>0&&!C.over&&alive(E)){C.parryN--;clog('흘려 베기: 회피 성공 → 반격');C.fxCard='parry';await pStrike(A(90,120),{atk:pAtk(),label:'흘려 베기 반격'})}return false}
+  if(roll>ch){if(pt('dodgeE')&&!o.mercy&&C.dodgeFor!==C.turn+1){C.dodgeFor=C.turn+1;C.nextEnergy=(C.nextEnergy||0)+1;clog(`${PTRAIT.dodgeE.n}: 다음 턴 코스트 +1`)}fxAt('player','빗나감','miss');sfx('miss');swayFx();clog(`${o.mercy?'안 아프게 빨리':`공격 주사위 ${v}`} · 적중률 ${ch}% · 판정 ${roll} → 빗나감`,'miss e');palEv('dodge');await wait(240);if(C.parryN>0&&!C.over&&alive(E)){C.parryN--;clog('흘려 베기: 회피 성공 → 반격');C.fxCard='parry';await pStrike(A(90,120),{atk:pAtk(),label:'흘려 베기 반격'})}return false}
   if(!o.mercy&&dmg>0&&dmg<5&&eq('shell')){clog(`${txt} · 적중 → 막의 껍질이 튕겨냄 (5 미만)`,'e');fxAt('player','튕겨냄','block');await wait(200);return 0}
   if(E.nord)markHit();
   if(o.shatter&&C.block>0){const d2=dmg*2,b2=Math.min(C.block,d2);C.block-=b2;clog(`${txt} · 적중 → 파쇄: 방어도에만 2배 데미지 ${d2} · 방어도 ${b2} 깎임 (체력 피해 없음)`,'e');fxAt('player',`방어도 -${b2}`,'block');sfx('block');guardFx();renderCombat();await wait(260);return 0}
