@@ -183,6 +183,12 @@ function renderPlayer(){
   if(C.pWeak)chips.push(`<span class="chip bad">허약 ${C.pWeak}</span>`);
   if(C.pWkF)chips.push(`<span class="chip bad">약화 ${C.pWkF} · 위력 -${C.pWkF}</span>`);
   if(C.pStr)chips.push(`<span class="chip good">힘 ${C.pStr} · 위력 +${C.pStr}</span>`);
+  if(C.freshN)chips.push(`<span class="chip good">${PTRAIT.fresh.n} ${C.freshN} · 위력 +${C.freshN*2}</span>`);
+  if(C.sameN)chips.push(`<span class="chip good">${PTRAIT.same.n} ${C.sameN} · 위력 +${C.sameN*2}</span>`);
+  if(C.noHurtN)chips.push(`<span class="chip good">${PTRAIT.noHurt.n} ${C.noHurtN} · 위력 +${C.noHurtN*2}</span>`);
+  if(C.focusT===C.turn&&C.focusP)chips.push(`<span class="chip good">${PTRAIT.focus.n} · 위력 +${C.focusP}</span>`);
+  if(C.bashPend)chips.push(`<span class="chip good">${PTRAIT.bash.n} · 첫 공격 위력 +${C.bashPend}</span>`);
+  if(leechOn())chips.push(`<span class="chip good">${PTRAIT.leech.n}</span>`);
   if(C.parryN)chips.push(`<span class="chip good">흘려 베기 · 반격 ${C.parryN}</span>`);
   if(r.ults&&r.ults.includes('u_purge')&&C.pPurge)chips.push(`<span class="chip brass">처단 ${Math.min(3,C.pPurge)}/3</span>`);
   if(dagger())chips.push(`<span class="chip brass">노르드교 조잡한 단검</span>`);
@@ -255,7 +261,9 @@ function openLog(){
     <div class="logl" id="logl">${C.log.map(([c,t])=>`<div class="${c}">${t}</div>`).join('')}</div></div>`;
   $('#mClose').onclick=closeModal;const l=$('#logl');l.scrollTop=l.scrollHeight;
 }
-function renderCombat(){if(!S.C||S.screen!=='combat')return;setTimeout(ultReadyMark,0);settleHand();renderEnemy();ultCheck();renderPlayer();renderHand();renderTop();showSelectPrompt();dainCheck()}
+/* 아픈건 싫어서: 어떤 방식이든 체력이 줄면 0 */
+function hurtWatch(){const C=S.C,r=S.run;if(!C||!r)return;if(C.hpSeen!=null&&r.hp<C.hpSeen){C.hurtR=true;if(C.noHurtN){C.noHurtN=0;clog(`${PTRAIT.noHurt.n}: 체력이 줄어 0`)}}C.hpSeen=r.hp}
+function renderCombat(){if(!S.C||S.screen!=='combat')return;hurtWatch();setTimeout(ultReadyMark,0);settleHand();renderEnemy();ultCheck();renderPlayer();renderHand();renderTop();showSelectPrompt();dainCheck()}
 
 /* ================= hand ================= */
 const handEls=new Map();
@@ -275,7 +283,7 @@ function atRef(fn){const C=S.C,prev=C.E,f=refFoe();if(f)C.E=f;try{return fn()}fi
 const liveCard=inst=>!!(inst&&S.C&&!S.C.over&&S.screen==='combat'&&S.C.hand&&S.C.hand.includes(inst));
 /* 위력 — 내 버프·디버프와 기준 적의 조건을 모두 적용한 값 (공격레벨·적 방어 감소는 제외) */
 function cardPower(c,x){const o=cardStrikeOpts(c),[a,b]=pDieRange(x),sc=atkScale()*(o.scale||1),ms=masterOn()?3:1,oo={...o,nul:nulled(c)};
-  const m=Math.max(0,1+pTraits(o).reduce((s,t)=>s+t.v,0))*(o.x||1),f=v=>Math.max(0,Math.round((Math.round(pAdj(v,oo,b)*sc*ms)+o.flat)*m));return[f(a),f(b)]}
+  const m=Math.max(0,1+pTraits(o).reduce((s,t)=>s+t.v,0))*(o.x||1)*trMul(),f=v=>Math.max(0,Math.round((Math.round(pAdj(v,oo,b)*sc*ms)+o.flat)*m));return[f(a),f(b)]}
 /* 카드 앞면 수치 — 전투 중 패에 있으면 적용된 값, 그 밖에는 기본 값 */
 function frontVals(id,inst){const live=liveCard(inst),dice=((live?cdef(inst):CARDS[id]).d)||[];if(!dice.length)return'';
   const g=[];for(const x of dice){const l=g[g.length-1];if(l&&l.t===x.t&&l.a===x.a&&l.b===x.b)l.n++;else g.push({...x,n:1})}
@@ -493,7 +501,7 @@ function zoomCard(el,on){
   else{el.classList.remove('zoom');layoutHand()}
 }
 /* 버리기 — 카드 효과로 버린 장수는 이번 턴·이번 전투 동안 셈 */
-function tossCards(list){const C=S.C;for(const c of list){const i=C.hand.indexOf(c);if(i<0)continue;C.hand.splice(i,1);C.disc.push(c);C.tossed=(C.tossed||0)+1;C.tossTurn=(C.tossTurn||0)+1}renderCombat()}
+function tossCards(list){const C=S.C;for(const c of list){const i=C.hand.indexOf(c);if(i<0)continue;C.hand.splice(i,1);C.disc.push(c);C.tossed=(C.tossed||0)+1;C.tossTurn=(C.tossTurn||0)+1;if(pt('focus')){if(C.focusT!==C.turn){C.focusT=C.turn;C.focusP=0}C.focusP+=5}}renderCombat()}
 function pickToss(max,label){const C=S.C;if(!C.hand.length)return Promise.resolve(0);
   return new Promise(res=>{C.select={type:'toss',max:Math.min(max,C.hand.length),n:0,label,done:res};S.busy=false;renderCombat()}).then(n=>{S.busy=true;return n})}
 function finishToss(){const C=S.C,s=C&&C.select;if(!s||s.type!=='toss')return;const list=C.hand.filter(x=>(s.pick||[]).includes(x.uid));C.select=null;$('#prompt').hidden=true;tossCards(list);s.n=list.length;clog(`${s.label}: ${s.n}장 버림`);renderCombat();s.done(s.n)}

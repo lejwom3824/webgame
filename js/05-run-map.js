@@ -21,8 +21,12 @@ function purgeDeleted(r){if(!r)return r;const okc=c=>c&&CARDS[c.id],LG={"g_lhood
   if(r.m2&&Array.isArray(r.m2.nodes))for(const n of r.m2.nodes)if(n.shop){if(Array.isArray(n.shop.gear))n.shop.gear=n.shop.gear.filter(it=>it&&(GEAR[it.k]||EQUIP[it.k]));if(Array.isArray(n.shop.cards))n.shop.cards=n.shop.cards.filter(it=>it&&CARDS[it.id])}
   if(r.jm&&Array.isArray(r.jm.list))r.jm.list=r.jm.list.filter(x=>!(x.k==='noBuy'&&x.t==='gear')&&x.k!=='gearLock');
   return r}
+/* V2.37.78.22 헤비급: 카드 보관함 10장당 최대 체력 +5%, 최대 +25% — 지금 붙어 있는 몫(heavyB)을 뺀 값을 기준으로 다시 맞춤 */
+function heavySync(r){if(!r||r.mode!=='human')return;const n=pt('heavy')?Math.min(5,Math.floor((r.store||[]).length/10)):0,b0=r.heavyB||0,base=r.maxHp-b0,want=Math.round(base*.05*n),d=want-b0;if(!d)return;r.heavyB=want;r.maxHp=Math.max(1,r.maxHp+d);if(d>0)r.hp+=d;r.hp=Math.min(r.hp,r.maxHp)}
 function migrateRun(r){
   if(!r)return r;r.store=r.store||[];purgeDeleted(r);
+  /* V2.37.78.22: 삭제된 특성 튼튼함으로 오른 체력은 되돌림 */
+  if(Array.isArray(r.traits)&&r.traits.includes('hpUp')){if(r.base1)r.base1/=1.1;r.maxHp=Math.max(1,Math.round(r.maxHp/1.1));r.hp=Math.min(r.hp,r.maxHp)}
   /* V2.32.61.14: 문서에서 빠진 특성(고지능·최상의 질병 5위·약화 부여 효과·장기기억증)은 저장 기록에서도 지움 */
   if(r.traits)r.traits=r.traits.filter(k=>PTRAIT[k]);ensureGear(r);if(r.mode==='human'&&!r.weapon)r.weapon='n_dagger';r.ults=r.ults||[];if(r.pal&&r.pal.k==='nord')r.pal=null;r.flags=r.flags||{events:[]};r.flags.events=r.flags.events||[];
   /* V2.29.48.12: 공방 동료(제바르크·오토·견습생) 롤백 — 건넨 카드·장비는 보관함으로, 리테만 남김 */
@@ -103,7 +107,7 @@ function genOpts(r,row){
 function newMap(r){const m={v:3,row:0,path:[],opts:[],shops:0,bossDone:false};r.map=m;m.opts=genOpts(r,1);return m}
 function showMap(){if(S.run&&S.run.act===2)return showA1End();
   if(S.run&&storyMap())return;
-  S.screen='map';viewFor('map');hideCombatUI();closeModal();if(S.run.at)S.run.at=null;renderTop();save();setTimeout(tutShow,0);
+  S.screen='map';viewFor('map');hideCombatUI();closeModal();if(S.run.at)S.run.at=null;heavySync(S.run);renderTop();save();setTimeout(tutShow,0);
   const r=S.run,M=r.map;if(!M.opts||(!M.opts.length&&M.row<BOSS_ROW))M.opts=genOpts(r,M.row+1);
   const VW=640,rowH=86,top=130,VH=top+ROWS*rowH+20;
   const Y=row=>VH-50-(row-1)*rowH,X=(i,n)=>n===1?VW/2:[170,320,470][i];

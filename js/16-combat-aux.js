@@ -6,7 +6,7 @@ function a2PreAct(E,name){const r=S.run;let x=1;
   E.actX=x;E.actFlat=(name==='무쇠 팬'&&E.sat)?Math.round(r.maxHp*.02*E.sat):0}
 /* 공방렙 차이: 내 공격레벨 − 상대 방어레벨이 3 남을 때마다 공격 위력 +1 (낮아도 위력은 줄지 않음) — 적이 플레이어를 공격할 때도 같음 */
 const gapP=(atk,def)=>Math.max(0,Math.floor((atk-def)/3));
-function pAdj(v,o,hi){const C=S.C,E=C.E;if(o&&o.nul)return 0;const base=masterOn()?hi:v;return Math.max(0,base+(C.heat||0)+gapP(o&&o.atk!=null?o.atk:pAtk(),E.def)+(C.pStr||0)-(C.pWkF||0))}
+function pAdj(v,o,hi){const C=S.C,E=C.E;if(o&&o.nul)return 0;const base=masterOn()?hi:v;return Math.max(0,base+(C.heat||0)+gapP(o&&o.atk!=null?o.atk:pAtk(),E.def)+(C.pStr||0)-(C.pWkF||0)+trPow())}
 function eAdj(v){const C=S.C,E=C.E;return Math.round((v+(E.heat||0)+gapP(E.atk,pDef()))*(E.done?3:1)*(C.fleeX||1)*(E.actX||1))}
 /* 적이 여럿일 때 — 위쪽에 적 목록, 누르거나 카드를 끌어 놓으면 대상이 바뀜 */
 /* 여러 적 — 대상은 가운데 큰 그림(#enemy)이 그 자리로 가고, 나머지는 옆자리에 따로 섬 (V26) */

@@ -138,7 +138,7 @@ function m2Bearing(n){const a=(Math.atan2(n.x,-n.y)*180/Math.PI+382.5)%360;retur
 function m2MiniHalf(){const r=S.run,M=r.m2;let pts;if(M.inside){const nd=innerNodes(M.inside.diag);pts=[nd[M.inside.cur],nd[Math.min(5,M.inside.cur+1)]]}else{const c=m2Node(M.cur);pts=[c,...c.adj.map(j=>M.nodes[j])]}
   const c=pts[0];let m=60;for(const p of pts)m=Math.max(m,Math.hypot(p.x-c.x,p.y-c.y));return m+85}
 function m2MiniBox(){const M=S.run.m2,half=m2MiniHalf(),c=M.inside?innerNodes(M.inside.diag)[M.inside.cur]:m2Node(M.cur);return`${c.x-half} ${c.y-half} ${half*2} ${half*2}`}
-function showMap2(full){const r0=S.run;if(r0.m2)r0.m2.wsNeed=null;/* V2.30.51.14: 공방을 먼저 들를 필요 없음 — 문은 20시간이 넘으면 열림 */
+function showMap2(full){const r0=S.run;heavySync(r0);if(r0.m2)r0.m2.wsNeed=null;/* V2.30.51.14: 공방을 먼저 들를 필요 없음 — 문은 20시간이 넘으면 열림 */
   if(r0.m2&&r0.m2.v===2&&!r0.m2.fixDone)m2AssignFix(r0.m2);
   if(r0.artNext){const a=r0.artNext;r0.artNext=null;save();return m2Arrive(a.id,a.first)}
   if(r0.flags&&r0.flags.cadetJoin===1){r0.flags.cadetJoin=2;save();return cadetJoinScene()}
