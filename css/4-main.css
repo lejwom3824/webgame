@@ -786,3 +786,16 @@ svg .pt{transform-box:view-box}
 [data-duid]{cursor:grab;-webkit-touch-callout:none;user-select:none}
 .rtag{display:inline-block;font-size:12px;color:#a9d6a0;border:1px solid #6c8a6a;border-radius:6px;padding:1px 6px;margin-top:4px}
 .dzhint{font-size:13px;color:var(--brass-hi);opacity:.8;margin-left:8px;font-weight:400}
+/* 키워드 아이콘 (V2.37.80.22) */
+.kwi{width:1.3em;height:1.3em;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.28em}
+.kwi .f{fill:currentColor;stroke:none}
+.chip.kw{display:inline-flex;align-items:center;gap:3px;color:var(--bone,#e8dcc4);padding:2px 6px}
+.chip.kw b{font-weight:700}
+.chip.kw .mkw{width:1.55em;height:1.4em}
+.chip.mk5{border-color:#ff4b3e88;box-shadow:0 0 8px #ff4b3e55}
+.kwsw{animation:kwSw .45s cubic-bezier(.2,.8,.3,1.1) both}
+.kwsw.new{animation-name:kwSwNew;animation-delay:.18s}
+@keyframes kwSw{from{transform:translateX(var(--x0)) rotate(var(--r0))}to{transform:translateX(var(--x1)) rotate(var(--r1))}}
+@keyframes kwSwNew{from{opacity:0;transform:translateX(var(--x1)) translateY(-7px) rotate(var(--r1))}to{opacity:1;transform:translateX(var(--x1)) rotate(var(--r1))}}
+.kwt .kwi{width:1.15em;height:1.15em;margin-right:1px;vertical-align:-.2em;stroke-width:2}
+#stsheet b .kwi{width:1.25em;height:1.25em;margin-right:4px;vertical-align:-.25em}

@@ -146,21 +146,21 @@ function renderEnemy(){
   bishopFace();
   $('#intent').innerHTML='';
   const chips=[];
-  if(E.block)chips.push(`<span class="chip">방어도 ${E.block}</span>`);
+  if(E.block)chips.push(kwChip('block',E.block,`방어도 ${E.block}`));
   if(E.evaB)chips.push(`<span class="chip">회피 +${E.evaB}</span>`);
-  if(E.weak)chips.push(`<span class="chip bad">허약 ${E.weak}</span>`);
-  if(E.vuln)chips.push(`<span class="chip bad">취약 ${E.vuln}</span>`);
-  if(E.pmk&&E.pmk.lv)chips.push(`<span class="chip bad">표식${ROMAN[E.pmk.lv]} · 받는 데미지 +${E.pmk.lv*10}%${E.pmk.lock>=S.C.turn?' · 유지':''}</span>`);if(pExpo(E))chips.push(`<span class="chip bad">약점 노출</span>`);
-  if(E.el)chips.push(`<span class="chip bad">전격 ${E.el}</span>`);
-  if(E.burn)chips.push(`<span class="chip bad">소각 ${E.burn}</span>`);
-  if(E.frost)chips.push(`<span class="chip bad">냉매 · 명중 -20</span>`);
+  if(E.weak)chips.push(kwChip('frail',E.weak,`허약 ${E.weak}`));
+  if(E.vuln)chips.push(kwChip('vuln',E.vuln,`취약 ${E.vuln}`));
+  if(E.pmk&&E.pmk.lv)chips.push(kwMark('foe:'+foes().indexOf(E),E.pmk.lv,`표식${ROMAN[E.pmk.lv]} · 받는 데미지 +${E.pmk.lv*10}%${E.pmk.lock>=S.C.turn?' · 유지':''}`));if(pExpo(E))chips.push(kwChip('expose','','약점 노출'));
+  if(E.el)chips.push(kwChip('shock',E.el,`전격 ${E.el}`));
+  if(E.burn)chips.push(kwChip('burn',E.burn,`소각 ${E.burn}`));
+  if(E.frost)chips.push(kwChip('cool','','냉매 · 명중 -20'));
   if(E.revenge)chips.push(`<span class="chip">복수심 +${E.revenge}</span>`);
-  if(E.steam)chips.push(`<span class="chip bad">증기 ${E.steam}</span>`);if(E.heat)chips.push(`<span class="chip brass">열기 ${E.heat}</span>`);
-  if(E.cool)chips.push(`<span class="chip bad">냉매 ${E.cool}</span>`);if(E.frozen||E.frozeSkip)chips.push(`<span class="chip bad">냉동 — 다음 행동 불가</span>`);if(E.crack)chips.push(`<span class="chip bad">깨짐 ${E.crack}단계</span>`);
+  if(E.steam)chips.push(kwChip('steam',E.steam,`증기 ${E.steam}`));if(E.heat)chips.push(kwChip('heat',E.heat,`열기 ${E.heat}`));
+  if(E.cool)chips.push(kwChip('cool',E.cool,`냉매 ${E.cool}`));if(E.frozen||E.frozeSkip)chips.push(kwChip('freeze','','냉동 — 다음 행동 불가'));if(E.crack)chips.push(kwChip('crack',E.crack,`깨짐 ${E.crack}단계`));
   if(E.food)chips.push(`<span class="chip brass">먹기 ${E.food}${E.full?' · 배부름':''}${E.sat?` · 포화 ${E.sat}`:''}</span>`);
-  if(E.art)chips.push(`<span class="chip brass">예술적 감각 ${E.art}</span>`);if(E.wipT!=null)chips.push(`<span class="chip brass">작품 준비 </span>`);if(E.done)chips.push(`<span class="chip bad">작품 완성 · 위력 +200%</span>`);if(E.stun)chips.push(`<span class="chip good">말문이 막힘 · 다음 행동 취소</span>`);if(E.rage)chips.push(`<span class="chip bad">분노 · 위력 +${Math.round((E.rage-1)*100)}%</span>`);
+  if(E.art)chips.push(kwChip('art',E.art,`예술적 감각 ${E.art}`));if(E.wipT!=null)chips.push(kwChip('workPrep','','작품 준비'));if(E.done)chips.push(kwChip('work','','작품-완성 · 위력 +200%'));if(E.stun)chips.push(`<span class="chip good">말문이 막힘 · 다음 행동 취소</span>`);if(E.rage)chips.push(`<span class="chip bad">분노 · 위력 +${Math.round((E.rage-1)*100)}%</span>`);
   if(E.mark)chips.push(`<span class="chip bad">궁니르-명중 ${E.mark}</span>`);
-  if(E.charged)chips.push(`<span class="chip bad">송출 대기</span>`);if(E.para)chips.push(`<span class="chip bad">마비 · 명중 -10</span>`);
+  if(E.charged)chips.push(`<span class="chip bad">송출 대기</span>`);if(E.para)chips.push(kwChip('numb','','마비 · 명중 -10'));
   if(E.key==='clerk'&&E.phase===2)chips.push(`<span class="chip brass">페이즈 2</span>`);
   if(E.knight&&E.hurtT===C.turn)chips.push(`<span class="chip bad">원호 방어만</span>`);
   if(E.boss){chips.push(`<span class="chip brass">페이즈 ${E.phase} · ${['','정화','단죄','번제화'][E.phase]}</span>`);
@@ -180,9 +180,9 @@ function renderPlayer(){
   const C=S.C,r=S.run,dain=r.mode==='dain';
   const chips=[];
   if(C.evaB)chips.push(`<span class="chip good">회피 +${C.evaB}</span>`);
-  if(C.pWeak)chips.push(`<span class="chip bad">허약 ${C.pWeak}</span>`);
-  if(C.pWkF)chips.push(`<span class="chip bad">약화 ${C.pWkF} · 위력 -${C.pWkF}</span>`);
-  if(C.pStr)chips.push(`<span class="chip good">힘 ${C.pStr} · 위력 +${C.pStr}</span>`);
+  if(C.pWeak)chips.push(kwChip('frail',C.pWeak,`허약 ${C.pWeak}`));
+  if(C.pWkF)chips.push(kwChip('weak',C.pWkF,`약화 ${C.pWkF} · 위력 -${C.pWkF}`));
+  if(C.pStr)chips.push(kwChip('str',C.pStr,`힘 ${C.pStr} · 위력 +${C.pStr}`));
   if(C.freshN)chips.push(`<span class="chip good">${PTRAIT.fresh.n} ${C.freshN} · 위력 +${C.freshN*2}</span>`);
   if(C.sameN)chips.push(`<span class="chip good">${PTRAIT.same.n} ${C.sameN} · 위력 +${C.sameN*2}</span>`);
   if(C.noHurtN)chips.push(`<span class="chip good">${PTRAIT.noHurt.n} ${C.noHurtN} · 위력 +${C.noHurtN*2}</span>`);
@@ -192,14 +192,14 @@ function renderPlayer(){
   if(C.parryN)chips.push(`<span class="chip good">흘려 베기 · 반격 ${C.parryN}</span>`);
   if(r.ults&&r.ults.includes('u_purge')&&C.pPurge)chips.push(`<span class="chip brass">처단 ${Math.min(3,C.pPurge)}/3</span>`);
   if(dagger())chips.push(`<span class="chip brass">노르드교 조잡한 단검</span>`);
-  if(C.mk&&C.mk.lv)chips.push(`<span class="chip bad">표식${ROMAN[C.mk.lv]} · 받는 데미지 +${C.mk.lv*10}%${C.mk.lock>=C.turn?' · 유지':''}</span>`);
-  if(expoOn())chips.push(`<span class="chip bad">약점 노출</span>`);
-  if(fracOn())chips.push(`<span class="chip bad">골절 · 턴 시작 코스트 -1 (${C.fracEnd-C.turn+(C.turn>C.fracS?1:0)}턴)</span>`);
+  if(C.mk&&C.mk.lv)chips.push(kwMark('me',C.mk.lv,`표식${ROMAN[C.mk.lv]} · 받는 데미지 +${C.mk.lv*10}%${C.mk.lock>=C.turn?' · 유지':''}`));
+  if(expoOn())chips.push(kwChip('expose','','약점 노출'));
+  if(fracOn())chips.push(kwChip('fracture',C.fracEnd-C.turn+(C.turn>C.fracS?1:0),`골절 · 턴 시작 코스트 -1 (${C.fracEnd-C.turn+(C.turn>C.fracS?1:0)}턴)`));
   if(S.run.flags&&S.run.flags.heresy&&(S.run.act||1)===1)chips.push(`<span class="chip bad">이단 표식</span>`);
-  if(C.pVuln)chips.push(`<span class="chip bad">취약 ${C.pVuln}</span>`);
-  if(C.pEl)chips.push(`<span class="chip bad">전격 ${C.pEl}</span>`);
-  if(C.pBurn)chips.push(`<span class="chip bad">소각 ${C.pBurn}</span>`);
-  if(C.yu)chips.push(`<span class="chip good">유희 ${C.yu} · +${C.yu*20}%</span>`);
+  if(C.pVuln)chips.push(kwChip('vuln',C.pVuln,`취약 ${C.pVuln}`));
+  if(C.pEl)chips.push(kwChip('shock',C.pEl,`전격 ${C.pEl}`));
+  if(C.pBurn)chips.push(kwChip('burn',C.pBurn,`소각 ${C.pBurn}`));
+  if(C.yu)chips.push(kwChip('play',C.yu,`유희 ${C.yu} · +${C.yu*20}%`));
   if(C.temper)chips.push(`<span class="chip good">단련 +${C.temper*25}</span>`);
   if(C.recoil)chips.push(`<span class="chip good">반동 ${C.recoil}</span>`);
   if(C.hold)chips.push(`<span class="chip good">버팀</span>`);
@@ -207,9 +207,9 @@ function renderPlayer(){
   if(C.nextEnergy)chips.push(`<span class="chip good">다음 턴 코스트 +${C.nextEnergy}</span>`);if(C.nextDraw)chips.push(`<span class="chip good">다음 턴 드로우 +${C.nextDraw}</span>`);if(C.lockDisc&&C.lockDisc.length)chips.push(`<span class="chip">대절단 재료 ${C.lockDisc[0].t-C.turn}턴 뒤 복귀</span>`);
   if(C.discount)chips.push(`<span class="chip good">파편 장식 · 다음 카드 -1</span>`);
   if(C.blockDebt)chips.push(`<span class="chip bad">방어도 감소 -${C.blockDebt}</span>`);
-  if(C.pSteam)chips.push(`<span class="chip bad">증기 ${C.pSteam}</span>`);if(C.heat)chips.push(`<span class="chip good">열기 ${C.heat}</span>`);
-  if(C.pCool)chips.push(`<span class="chip bad">냉매 ${C.pCool} · 코스트 -${C.pCool}</span>`);if(C.pFrozen)chips.push(`<span class="chip bad">냉동</span>`);if(C.pCrack)chips.push(`<span class="chip bad">깨짐 ${C.pCrack}단계</span>`);
-  if(C.art)chips.push(`<span class="chip good">예술적 감각 ${C.art}</span>`);if(masterOn())chips.push(`<span class="chip good">작품-완성</span>`);
+  if(C.pSteam)chips.push(kwChip('steam',C.pSteam,`증기 ${C.pSteam}`));if(C.heat)chips.push(kwChip('heat',C.heat,`열기 ${C.heat}`));
+  if(C.pCool)chips.push(kwChip('cool',C.pCool,`냉매 ${C.pCool} · 코스트 -${C.pCool}`));if(C.pFrozen)chips.push(kwChip('freeze','','냉동'));if(C.pCrack)chips.push(kwChip('crack',C.pCrack,`깨짐 ${C.pCrack}단계`));
+  if(C.art)chips.push(kwChip('art',C.art,`예술적 감각 ${C.art}`));if(masterOn())chips.push(kwChip('work','','작품-완성'));
   if(C.food)chips.push(`<span class="chip good">먹기 ${C.food}${C.full?' · 배부름':''}${C.sat?` · 포화 ${C.sat}`:''}</span>`);
   if(C.nullKinds&&C.nullKinds.length)chips.push(`<span class="chip bad">무효: ${C.nullKinds.map(k=>KIND_N[k]).join('·')}</span>`);
   if(C.talkDisc)chips.push(`<span class="chip good">해설 · 다음 카드 ${C.talkDisc}장 -1</span>`);if(C.thrown)chips.push(`<span class="chip brass">묠니르 던짐</span>`);
@@ -321,10 +321,10 @@ function cardLines(d,inst){
 function facesHTML(id,costBlock,inst,n=1){
   const d=CARDS[id],nm=cardName(id,inst)+(n>1?` ×${n}`:'');const long=false;
   const rd=inst&&S.C&&S.screen==='combat'&&S.C.redef&&S.C.redef[inst.uid];
-  const txt=(rd?`<span class="modline">재정의${rd.dc?` · 코스트 ${rd.dc>0?'+1':'-1'}`:''}${rd.swap?' · 공격↔방어':''}</span><br>`:'')+(inst&&S.C&&S.C.nullKinds&&S.screen==='combat'&&S.C.hand&&S.C.hand.includes(inst)&&nulled(inst)?'<span class="modline">무효로 정의됨 — 주사위 값 0</span><br>':'')+cardLines(d,inst);const dense=false;
+  const txt=(rd?`<span class="modline">재정의${rd.dc?` · 코스트 ${rd.dc>0?'+1':'-1'}`:''}${rd.swap?' · 공격↔방어':''}</span><br>`:'')+(inst&&S.C&&S.C.nullKinds&&S.screen==='combat'&&S.C.hand&&S.C.hand.includes(inst)&&nulled(inst)?'<span class="modline">무효로 정의됨 — 주사위 값 0</span><br>':'')+kwDeco(cardLines(d,inst));const dense=false;
   const tl=(d.rar==='special'?`특수무기 · ${TYPE_LABEL[d.type]}`:RAR_LABEL[d.rar]?`${RAR_LABEL[d.rar]} · ${TYPE_LABEL[d.type]}`:TYPE_LABEL[d.type]);
   return`<div class="lift"><div class="inner">
-    <div class="face front r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}">${costBlock}<div class="cname${long?' long':''}"><span>${nm}</span></div><div class="art">${CARD_ART[id]?`<img src="${CARD_ART[id]}" alt="">`:''}</div>${(fv=>`<div class="ctext${fv?' hasv':''}"><div><div class="cfx">${frontOf(d)}</div>${fv?`<div class="cvals">${fv}</div>`:''}</div></div>`)(frontVals(id,inst))}<div class="ctype">${tl}</div><div class="marks"></div></div>
+    <div class="face front r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}">${costBlock}<div class="cname${long?' long':''}"><span>${nm}</span></div><div class="art">${CARD_ART[id]?`<img src="${CARD_ART[id]}" alt="">`:''}</div>${(fv=>`<div class="ctext${fv?' hasv':''}"><div><div class="cfx">${kwDeco(frontOf(d))}</div>${fv?`<div class="cvals">${fv}</div>`:''}</div></div>`)(frontVals(id,inst))}<div class="ctype">${tl}</div><div class="marks"></div></div>
     <div class="face back r-${d.rar} gr-${cardGrade(id)||'none'} t-${d.type}"><div class="bname">${nm}</div><div class="btext${dense?' dense':''}"><div>${txt}</div></div></div>
   </div></div>`;
 }

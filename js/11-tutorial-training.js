@@ -21,7 +21,7 @@ const TH={
   ln:(id,re)=>{const el=TH.card(id);return el&&[...el.querySelectorAll('.face.back .ln')].find(x=>re.test(x.textContent))},
   mp:k=>document.querySelector(`#modal [data-st="${k}"]`),
   pas:k=>document.querySelector(`#modal [data-pas="${k}"]`),
-  chip:re=>[...document.querySelectorAll('#ppanel .chip')].find(x=>re.test(x.textContent.trim())),
+  chip:re=>[...document.querySelectorAll('#ppanel .chip')].find(x=>re.test(chipText(x))),
   orbs:()=>$('#ppanel .eorbs')||$('#ppanel .orb'),
 };
 function tbRect(el){const o=stage.getBoundingClientRect(),a=el.getBoundingClientRect(),sc=S.scale||1;return{x:(a.left-o.left)/sc,y:(a.top-o.top)/sc,w:a.width/sc,h:a.height/sc}}
@@ -130,7 +130,7 @@ const TB1=[
   {m:'play',pre:()=>{S.tb.q=[{hit:false}]},hl:()=>[TH.card('gap'),$('#enemy')],id:'gap',w:'played'},
   {m:'say',pre:()=>wait(200),hl:()=>$('#enemy'),t:'빗나가서 취약이 붙지 않았습니다.'},
   {m:'play',pre:()=>{S.tb.q=[{hit:true}]},hl:()=>[TH.card('gap'),$('#enemy')],id:'gap',w:'played'},
-  {m:'say',pre:async()=>{await wait(300);await tbAim('slash')},hl:()=>[...document.querySelectorAll('#echips .chip')].find(x=>/^취약/.test(x.textContent))||$('#eplate .ebar'),post:tbUnaim},
+  {m:'say',pre:async()=>{await wait(300);await tbAim('slash')},hl:()=>[...document.querySelectorAll('#echips .chip')].find(x=>/^취약/.test(chipText(x)))||$('#eplate .ebar'),post:tbUnaim},
   {m:'say',pre:()=>wait(300),hl:()=>TH.card('c_stance'),t:'이 카드를 사용하면 힘을 얻습니다.'},
   {m:'play',hl:()=>TH.card('c_stance'),id:'c_stance',w:'played'},
   {m:'click',pre:()=>wait(300),hl:()=>TH.chip(/^힘/),w:'sheet'},
