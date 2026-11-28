@@ -83,6 +83,7 @@ function drawBG(t){
   if(S.bg==='tree')return drawTree(t);
   if(S.bg==='black'){g.fillStyle='#000';g.fillRect(0,0,cv.width,cv.height);return}
   if(S.bg==='nida')return drawNida(g,t);
+  if(S.bg==='scene'&&drawScene(g,t))return;
   if(!staticBG)return;
   g.drawImage(staticBG,0,0);drawAsh(g,t);
 }
@@ -147,6 +148,20 @@ function panTo(pos,animate){
   if(REDUCED)drawBG(performance.now());
 }
 function setBG(m){S.bg=m;if(REDUCED)drawBG(performance.now())}
+/* 1장 막별 배경 — 1~11막 마을 길 · 12~13막 탑 입구 앞 광장 · 14막 탑 꼭대기 테라스 · 15막 탑 안 회랑 */
+const SCENE_IMG={road:'img/bg/road.webp',plaza:'img/bg/plaza.webp',terrace:'img/bg/terrace.webp',inside:'img/bg/inside.webp'};
+const SCENE_ASH={road:1,plaza:1,terrace:1,inside:0};
+const SCI={};for(const k in SCENE_IMG){const im=new Image();im.onload=()=>{if(S.bg==='scene')drawBG(performance.now())};im.src=SCENE_IMG[k];SCI[k]=im}
+const sceneKey=()=>{const f=(S.run&&S.run.floor)||0;return f>=15?'inside':f===14?'terrace':f>=12?'plaza':'road'};
+function drawScene(g,t){const im=SCI[sceneKey()];if(!im||!im.complete||!im.naturalWidth)return false;
+  const{W,H,efeet}=L[S.orient],port=S.orient==='port',iw=im.naturalWidth,ih=im.naturalHeight;
+  /* 적 발끝이 그림 높이의 62% 바닥에 오도록 — 세로 모드는 위쪽만 채움 */
+  const Hs=port?Math.round(efeet/.62):H,sc=Math.max(W/iw,Hs/ih),dw=iw*sc,dh=ih*sc;
+  g.fillStyle='#0b0a09';g.fillRect(0,0,W,H);g.drawImage(im,(W-dw)/2,Hs-dh,dw,dh);
+  if(port){const fg=g.createLinearGradient(0,Hs-H*.12,0,Hs);fg.addColorStop(0,'rgba(11,10,9,0)');fg.addColorStop(1,'rgba(11,10,9,1)');g.fillStyle=fg;g.fillRect(0,Hs-H*.12,W,H*.12)}
+  else{const fg=g.createLinearGradient(0,H*.62,0,H);fg.addColorStop(0,'rgba(8,7,6,0)');fg.addColorStop(1,'rgba(8,7,6,.78)');g.fillStyle=fg;g.fillRect(0,H*.62,W,H*.38)}
+  const vg=g.createRadialGradient(W/2,Hs*.45,Math.min(W,Hs)*.35,W/2,Hs*.5,Math.max(W,Hs)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');g.fillStyle=vg;g.fillRect(0,0,W,Hs);
+  if(SCENE_ASH[sceneKey()])drawAsh(g,t);return true}
 /* ================= 그림 배경 — 다가갈수록 안쪽이 보임 (막이 오를수록 확대) ================= */
 const BGI={};for(const k in BGIMG){const im=new Image();im.onload=()=>{if(S.bg==='view')drawBG(performance.now())};im.src=BGIMG[k];BGI[k]=im}
 /* fx, fy: 다가가는 곳(소실점) · ash: 재 · glow: 세계수 꼭대기 불빛 위치 */
@@ -423,7 +438,7 @@ const climbZ=(lo,hi)=>{const f=S.run?clamp((S.run.floor||0)/29,0,1):0;return lo+
 function viewFor(kind){
   if(kind==='title'){setBG('tree');return}
   if(S.run&&S.run.act===2){S.bg='nida';if(REDUCED)drawBG(performance.now());return}
-  setBG('midgard');return;
+  setBG(S.run?'scene':'midgard');return;
   if(kind==='combat'){const E=S.C&&S.C.E,port=S.orient==='port',o=port?{region:860}:{lift:999};/* 가로: 그림 아랫단을 화면 아랫단에 맞춰 바닥선을 패 위로 올림 */
     if(E&&E.boss)return setView('inside',port?1.06:1.26,{from:port?1.14:1.34,dur:1600,...o});return setView('front',port?climbZ(1.02,1.24):climbZ(1.25,1.42),o)}
   if(kind==='rest')return setView('rest',1.04,{from:1,dur:2400});

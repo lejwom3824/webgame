@@ -25,6 +25,8 @@ function purgeDeleted(r){if(!r)return r;const okc=c=>c&&CARDS[c.id],LG={"g_lhood
 function heavySync(r){if(!r||r.mode!=='human')return;const n=pt('heavy')?Math.min(5,Math.floor((r.store||[]).length/10)):0,b0=r.heavyB||0,base=r.maxHp-b0,want=Math.round(base*.05*n),d=want-b0;if(!d)return;r.heavyB=want;r.maxHp=Math.max(1,r.maxHp+d);if(d>0)r.hp+=d;r.hp=Math.min(r.hp,r.maxHp)}
 function migrateRun(r){
   if(!r)return r;r.store=r.store||[];purgeDeleted(r);
+  /* V2.38.81.22: 아랫지형 송출관 삭제 — 저장된 전투에서도 뺌 */
+  if(r.at&&Array.isArray(r.at.enemies)){r.at.enemies=r.at.enemies.filter(e=>e&&e.key!=='sender');if(!r.at.enemies.length)r.at=null}
   /* V2.37.78.22: 삭제된 특성 튼튼함으로 오른 체력은 되돌림 */
   if(Array.isArray(r.traits)&&r.traits.includes('hpUp')){if(r.base1)r.base1/=1.1;r.maxHp=Math.max(1,Math.round(r.maxHp/1.1));r.hp=Math.min(r.hp,r.maxHp)}
   /* V2.32.61.14: 문서에서 빠진 특성(고지능·최상의 질병 5위·약화 부여 효과·장기기억증)은 저장 기록에서도 지움 */
@@ -86,12 +88,21 @@ function nodeIcon(t,x,y,s){if(t==='rift')t='elite';
 /* 지도 (웹게임 문서: 런 진행 · 지도)
    전투·휴식·사건·상점은 하나로 묶고 갈래로 나뉨 · 갈래는 항상 3개, 고른 갈래만 남고 다시 3개로 나뉨
    정예는 모든 갈래가 하나로 이어지는 5막째·10막째, 15막째는 보스 · 정예와 보스 바로 앞 막에는 휴식 갈래가 꼭 하나 이상 · 상점 막은 15막 중 최대 3번
-   다인모드에서는 모든 막이 전투 또는 정예 */
+   다인모드에서는 모든 막이 전투 또는 정예
+   12~15막은 한 길: 12 전투 · 13 휴식 · 14 전투 · 15 보스 (다인모드 제외) */
 const ROWS=15,ELITE_ROWS=[5,10],BOSS_ROW=15,SHOP_MAX=3;
+const FIX_ROWS={12:'battle',13:'rest',14:'battle'};
+const fixRow=(r,row)=>r.mode!=='dain'&&(!r.act||r.act===1)&&FIX_ROWS[row];
+/* 12·14막 적: 성직자 셋(말뿐인 저주 대신 내려찍기) · 성직자+에인헤랴르 · 에인헤랴르 둘 중 하나 — 보상은 일반 전투 */
+const PRIEST3_DECK={'막기':3,'내려찍기':3,'훈계':3,'파문 선고':1};
+function tower12(){const ein=()=>{const e=makeEnemy('inquisitor');e.name='에인헤랴르';e.sub='';e.rwNormal=1;return e},
+  pr=o=>{const e=makeEnemy('priest');if(o)e.deckO=PRIEST3_DECK;return e};
+  const k=ri(0,2);return k===0?[pr(1),pr(1),pr(1)]:k===1?[pr(),ein()]:[ein(),ein()]}
 function genOpts(r,row){
   if(row>BOSS_ROW)return[];
   if(row===BOSS_ROW)return['boss'];
   if(ELITE_ROWS.includes(row))return['elite'];
+  if(fixRow(r,row))return[fixRow(r,row)];
   if(r.mode==='human'&&(!r.act||r.act===1)&&row===11)return['rift'];
   if(r.mode==='dain')return[0,1,2].map(()=>rnd()<.25?'elite':'battle');
   if(row===1)return['battle','battle','battle'];
@@ -120,8 +131,8 @@ function showMap(){if(S.run&&S.run.act===2)return showA1End();
   const nr=M.row+1,opts=M.row<BOSS_ROW?M.opts:[];
   opts.forEach((t,i)=>{edges+=`<path class="medge" d="M${cx} ${cy} L${X(i,opts.length)} ${Y(nr)}"/>`});
   /* 앞으로 정해진 막 (정예 · 보스) */
-  for(const row of[...ELITE_ROWS,BOSS_ROW]){if(row<=nr)continue;const big=row===BOSS_ROW;
-    nodes+=`<g class="mnode t-${big?'boss':'elite'} ahead"><circle class="ring" cx="${VW/2}" cy="${Y(row)}" r="${big?40:28}"/>${nodeIcon(big?'boss':'elite',VW/2,Y(row),big?1.05:.74)}</g>`}
+  for(const row of[...ELITE_ROWS,...Object.keys(FIX_ROWS).map(Number).filter(n=>fixRow(r,n)),BOSS_ROW]){if(row<=nr)continue;const big=row===BOSS_ROW,t=big?'boss':fixRow(r,row)||'elite';
+    nodes+=`<g class="mnode t-${t} ahead"><circle class="ring" cx="${VW/2}" cy="${Y(row)}" r="${big?40:28}"/>${nodeIcon(t,VW/2,Y(row),big?1.05:.74)}</g>`}
   M.path.forEach((p,k)=>{const x=X(p.i,p.n),y=Y(k+1),isCur=k===M.path.length-1;const big=p.t==='boss';
     nodes+=`<g class="mnode t-${p.t} visited${isCur?' cur':''}"><circle class="ring" cx="${x}" cy="${y}" r="${big?40:30}"/>${nodeIcon(p.t,x,y,big?1.05:.82)}</g>`});
   opts.forEach((t,i)=>{const x=X(i,opts.length),y=Y(nr),big=t==='boss';
@@ -147,7 +158,8 @@ function enterNode(i){
   stockTick();const row=M.row+1;M._prevOpts=M.opts.slice();M.path.push({t,i,n:M.opts.length});M.row=row;r.floor=row;if(t==='shop')M.shops++;
   M.opts=genOpts(r,row+1);
   let at;
-  if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(r.pal&&r.pal.k==='nord'?'priest':row<5?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
+  if(t==='battle'&&fixRow(r,row)){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemies:tower12()}}
+  else if(t==='battle'){r.mapUndo={row:row-1,opts:M._prevOpts,shops:M.shops,floor:row-1};at={kind:'combat',enemy:makeEnemy(r.pal&&r.pal.k==='nord'?'priest':row<5?pick(['priest','priest','cultist']):pick(['priest','cultist','cultist']))}}
   else if(t==='rift'){const e=makeEnemy('nordJudge');e.rift=true;at={kind:'combat',enemy:e}}
   else if(t==='elite')at={kind:'combat',enemy:makeEnemy('inquisitor')};
   else if(t==='boss')at={kind:'combat',enemy:makeEnemy('bishop')};

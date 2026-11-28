@@ -2,10 +2,11 @@
 /* ================= combat setup ================= */
 function has(E,t){return E.traits.includes(t)}
 function makeEnemy(key){
-  const d=ENEMY[key];const lv=Array.isArray(d.lv)?ri(d.lv[0],d.lv[1]):d.lv;const HPR2={mech:[750,952],porter:[727,923],server:[840,1067],appr:[637,807],poor:[615,778]},HPF2={sender:1418,examiner:1422,craftsman:1619,collab:1619,docent:1619,chef:1619,guard:1794,clerk:4300};
+  const d=ENEMY[key];const lv=Array.isArray(d.lv)?ri(d.lv[0],d.lv[1]):d.lv;const HPR2={mech:[750,952],porter:[727,923],server:[840,1067],appr:[637,807],poor:[615,778]},HPF2={examiner:1422,craftsman:1619,collab:1619,docent:1619,chef:1619,guard:1794,clerk:4300};
   if(!d.hpR&&HPR2[key])d.hpR=HPR2[key];
   /* 문서에 체력 범위가 따로 적힌 적은 그 범위를 레벨에 맞춰 나눔 (이단심문관 308~422) */
   let maxHp=HPF2[key]||(d.hpR?Math.round(d.hpR[0]+(d.hpR[1]-d.hpR[0])*(lv-d.lv[0])/(d.lv[1]-d.lv[0])):hpAt(d.st?ri(d.st.hp[0],d.st.hp[1]):d.hp1,lv));
+  if(d.hpMul)maxHp=Math.round(maxHp*d.hpMul);
   const E={key,name:d.names?pick(d.names):d.name,sub:d.sub||'',tier:d.tier,lv,maxHp,hp:0,atk:d.st?ri(d.st.atk[0],d.st.atk[1])+lvAB(lv):d.atkFix||lvAB(lv)+(d.ab||0),def:d.st?ri(d.st.def[0],d.st.def[1])+lvAB(lv):d.atkFix||lvAB(lv)+(d.ab||0),acc:d.acc,eva:d.eva,nord:!!d.nord,block:0,evaB:0,weak:0,vuln:0,el:0,burn:0,traits:[],
     frost:false,revenge:0,firstAtk:true,turn:0,prosth:false,coward:false,fled:false,intent:null,idx:0,last:[],boss:key==='bishop',steam:0,heat:0,cool:0,crack:0,food:0};
   const nT=d.tier==='normal'?ri(0,1):d.tier==='elite'?ri(1,2):0;
@@ -532,7 +533,7 @@ async function endTurn(){
 /* ================= 적 카드 (V2.31.55.14) — 적도 플레이어와 같은 규칙: 덱·5장 드로우·코스트 3(3턴마다 +1)·턴이 넘어가야 다시 참
    행동 포인트(속도)는 몹마다 범위 안에서 턴마다 무작위, 카드 1장마다 -1, 0이 되면 남은 코스트로 몰아서 냄
    고르는 순서: 부정적 키워드를 거는 카드 → (코스트가 넉넉하면) 자신에게 이로운 카드 → 공격 → 방어는 맨 마지막 */
-const FOE_FIN=new Set(['처단','삭제','승강기 레버']);
+const FOE_FIN=new Set(['처단','삭제']);
 const FOE_NEG=new Set(['고해 강요','백색의 불꽃','미스틸테인','증기 분사','냉매 투척','냉각통 내려놓기','시제품 시험','실패작 던지기','반려 서류','냉매 살포','해설','곡해','레바테인-타격','점화','정의 집행','낙인']);
 function actCost(n){const a=ACT[n];if(!a)return 1;if(a.cost!=null)return a.cost;if(FOE_FIN.has(n))return 3;if(a.gim)return 2;return 1}
 function actType(n){const a=ACT[n];if(!a)return'atk';if(a.k==='cmd')return a.rally?'sup':ACT[a.cmd]&&ACT[a.cmd].k==='def'?'def':'atk';if(a.neg)return'atk';if(a.k==='def')return'def';if(a.k==='atk'||FOE_NEG.has(n)||n==='정정')return'atk';return'sup'}
@@ -552,7 +553,7 @@ function ultCheck(){const C=S.C;if(!C||C.over)return;let any=false;
     else if(!u&&E.ultArmed)E.ultArmed=null;if(E.ultArmed)any=true}
   const E=C.E,el=$('#enemy'),dark=any&&C.ultDark===C.turn;
   $('#ultShade').classList.toggle('on',dark);el.classList.toggle('ult',!!(E&&(E.ultArmed||E.ulting)));el.classList.toggle('ultdark',dark&&!!(E&&E.ultArmed));$('#hand').classList.toggle('ult-burn',any);
-  const art=E&&ENEMY[E.key]&&ENEMY_SVG[ENEMY[E.key].art]?ENEMY[E.key].art:null,ey=art&&ULT_EYES[art];
+  const art=E&&ENEMY[E.key]&&ENEMY_SVG[ENEMY[E.key].art]?ENEMY[E.key].art:null,ey=E&&ENEMY_IMG[E.key]?IMG_EYES[E.key]:art&&ULT_EYES[art];
   el.querySelectorAll('.ult-eye').forEach((x,i)=>{if(!ey||!(E.ultArmed||E.ulting)||i>0){x.hidden=true;return}x.style.setProperty('--ec',ey[3]);const a=$('#eart'),W=a.offsetWidth,H=a.offsetHeight,sc=Math.min(W/ey[0],H/ey[1]),ox=(W-ey[0]*sc)/2,oy=H-ey[1]*sc,pt=ey[2][i];x.hidden=false;x.style.left=(ox+pt[0]*sc)+'px';x.style.top=(oy+pt[1]*sc)+'px'})}
 function actText(n){const a=ACT[n];if(!a)return'';const p=[];if(a.d&&a.d.length)p.push(a.d.map(x=>`${DIE_NAME[x.t]} ${x.a===x.b?x.a:`${x.a}~${x.b}`}`).join(', '));
   if(a.vuln)p.push(`적중 시 취약 ${a.vuln}`);if(a.strip)p.push('방어도와 지속 효과 제거');if(a.gim&&GIM[a.gim])p.push(`${GIM[a.gim].n}: ${GIM[a.gim].t}`);if(a.tag)p.push(a.tag);if(a.desc)p.push(a.desc);if(a.mercy)p.push('남은 체력만큼');return p.join(' · ')}
@@ -561,6 +562,7 @@ function foeSee(n){if(FOE_SEEN[n])return;FOE_SEEN[n]=1;try{localStorage.setItem(
 const deckList=o=>{const out=[];for(const k in o)for(let i=0;i<o[k];i++)out.push(k);return out};
 function foeActs(E){const d=ENEMY[E.key],r=S.run;
   if(E.tbDeck)return E.tbDeck.slice();
+  if(E.deckO)return deckList(E.deckO);
   if(E.key==='bishop')return deckList(E.phase>=2?d.deck2:d.deck1);
   if(d.deck)return deckList(d.deck);
   if(d.order){let o=(E.phase===2&&d.order2?d.order2:d.order).slice();if(E.key==='priest'&&r&&r.flags&&r.flags.noTithe)o=o.filter(a=>a!=='공양 요구');if(has(E,'무모함')){const o2=o.filter(a=>ACT[a].k!=='def');if(o2.length)o=o2}return o}
@@ -829,11 +831,11 @@ function winCombatGo(res){
     if(pt('killHeal')){const h=Math.min(r.maxHp-r.hp,Math.round(r.maxHp*.05));if(h>0){r.hp+=h;lines.push([PTRAIT.killHeal.n,`체력 +${h}`])}}
   }
   if(killed.length&&eqW('re_a')&&r.hp>0){const h=Math.min(3,r.maxHp-r.hp);if(h>0){r.hp+=h;lines.push(['레미 공방',`체력 +${h}`])}}
-  if(killed.length&&top.tier==='elite'&&eq('u_basket')){const h=Math.min(r.maxHp-r.hp,Math.round(r.maxHp*.2));if(h>0){r.hp+=h;lines.push(['야식 바구니',`체력 +${h}`])}}
+  if(killed.length&&top.tier==='elite'&&!top.rwNormal&&eq('u_basket')){const h=Math.min(r.maxHp-r.hp,Math.round(r.maxHp*.2));if(h>0){r.hp+=h;lines.push(['야식 바구니',`체력 +${h}`])}}
   /* 전투 보상: 1장 일반 100~300 · 정예 500~1500 · 보스 3000 / 2장 일반 2000~5000 · 정예 10000~50000 · 보스 30~100단화(임시 해석) */
   let gold=0;
   if(spared.length)lines.push(['견해',`${spared.map(f=>f.name).join(', ')} — 처치하지 않고 끝남 · 실링만 받음 (경험치 없음)`]);
-  if(killed.length||spared.length){const a2=r.act===2,T=a2?TUNE.gold2:TUNE.gold,tr=top.tier==='boss'?'boss':top.tier==='elite'?'elite':'normal';
+  if(killed.length||spared.length){const a2=r.act===2,T=a2?TUNE.gold2:TUNE.gold,tr=top.tier==='boss'?'boss':top.tier==='elite'&&!top.rwNormal?'elite':'normal';
     gold=Array.isArray(T[tr])?ri(...T[tr]):T[tr];
     const gk=killed.length?killed:spared;
     if(gk.every(f=>f.key==='poor')&&a2)gold=Math.round(gold*.5);

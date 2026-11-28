@@ -12,7 +12,7 @@ function weightTargets(c){const C=S.C,w=cardWeight(c);if(!w)return{tg:[C.E],wb:0
   const others=liveFoes().filter(f=>f!==C.E),tg=[C.E,...others.slice(0,w)];return{tg,wb:Math.max(0,w-others.length)}}
 /* 적 그림 — 2장 공방 사람 · 경비원 · 공무원 (임시 실루엣) */
 function a2SVG(art){
-  const col={w_stein:'#b9703f',w_kriv:'#7fb0d6',w_remi:'#c9a35c',w_krim:'#a57fc9',w_ash:'#d6c27a',poor:'#7a746a',e_sender:'#8f8f8f',e_exam:'#b8b0a0',e_guard:'#5d7389',clerk:'#9a8a6a',surt:'#e0582c'}[art]||'#888';
+  const col={w_stein:'#b9703f',w_kriv:'#7fb0d6',w_remi:'#c9a35c',w_krim:'#a57fc9',w_ash:'#d6c27a',poor:'#7a746a',e_exam:'#b8b0a0',e_guard:'#5d7389',clerk:'#9a8a6a',surt:'#e0582c'}[art]||'#888';
   if(art==='clerk')return`<svg viewBox="0 0 240 360" preserveAspectRatio="xMidYMax meet"><ellipse class="pt-shadow" cx="120" cy="350" rx="100" ry="10" fill="#000" opacity=".5"/>
     <g class="pt pt-body" style="transform-origin:120px 348px"><g class="pt pt-armL" style="transform-origin:70px 120px"><path d="M70 120C40 110 20 70 30 40" stroke="#8a6a3a" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="30" cy="38" r="12" fill="#a07a44"/></g><g class="pt pt-armR" style="transform-origin:170px 120px"><path d="M170 120c30-10 50-50 40-80" stroke="#8a6a3a" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="210" cy="38" r="12" fill="#a07a44"/></g><path d="M120 40c-26 0-36 24-34 52-20 30-26 120-34 256h136c-8-136-14-226-34-256 2-28-8-52-34-52z" fill="${col}"/><g class="pt pt-head" style="transform-origin:120px 100px"><path d="M120 60c-17 0-23 18-21 36 3 15 39 15 42 0 2-18-4-36-21-36z" fill="#0b0b0d"/></g><g class="pt pt-item" style="transform-origin:120px 180px"><rect x="96" y="150" width="48" height="60" rx="4" fill="#e8dfca" opacity=".8"/><path d="M104 165h32M104 178h32M104 191h24" stroke="#5b4f3a" stroke-width="3"/></g></g></svg>`;
   const hat=art==='e_guard'?'<path d="M82 52h76l-8-20H90z" fill="#2b3644"/>':art==='e_exam'?'<rect x="92" y="34" width="56" height="14" rx="3" fill="#3e3a33"/>':art.startsWith('w_')?'<path d="M86 60c4-24 64-24 68 0z" fill="#3a3530"/>':'';
@@ -100,17 +100,9 @@ function a2CombatStart(C){
     if(r.next.art){C.artOn=true;artAdd(r.next.art)}if(r.next.food)foodGain(null,r.next.food,true)}
   if(gs('lunch')){for(let i=0;i<2;i++)C.hand.push({uid:UID++,id:'hardtack',temp:true});clog('도시락 통: 패에 레미 공방의 건빵 2장')}
   if(gs('beltNeg')){for(const E of liveFoes())for(let i=0;i<gs('beltNeg');i++){const[k,nm,v]=pick(NEGS);a2Hit(k,v,E);clog(`견습생의 공구띠: ${E.name}에게 ${nm} ${v}`)}}
-  /* 송출관 — 강등 */
-  for(const E of liveFoes())if(E.key==='sender')demote(C);
   /* 특허 · 계약 파기 */
   C.patent={};C.patentFree=r.flags.patentFree||null;
 }
-function demote(C){const rk={rare:3,uncommon:2,common:1,start:0};const all=[...C.draw];if(!all.length)return;
-  let best=null;for(const c of all){const v=rk[CARDS[c.id].rar];if(v==null)continue;if(!best||v>rk[CARDS[best.id].rar])best=c}if(!best||rk[CARDS[best.id].rar]===0)return;
-  const d=CARDS[best.id],lower={rare:'uncommon',uncommon:'common',common:'start'}[d.rar],kind=d.type==='atk'?'atk':d.type==='def'?'def':'skill';
-  let pool=Object.keys(CARDS).filter(id=>CARDS[id].rar===lower&&!CARDS[id].unplayable&&!CARDS[id].gen&&(CARDS[id].type===kind||(kind==='skill'&&!['atk','def'].includes(CARDS[id].type))));
-  if(lower==='start')pool=[kind==='atk'?'slash':kind==='def'?'guard':'breath'];if(!pool.length)return;
-  const to=pick(pool);clog(`강등: 「${d.name}」 → 「${CARDS[to].name}」 (이번 전투 동안)`,'e');toast('강등',`「${d.name}」이(가) 「${CARDS[to].name}」(으)로 바뀌었다`);best.id=to;best.mods=[]}
 function a2EnergyMod(){const C=S.C;let e=C.threadDraw||0;if(C.pCool)e-=C.pCool;if(C.art)e+=C.art;if(masterOn())e+=2;if(C.turn===1&&eq('u_boiler'))e+=2;return e}
 function a2AfterDraw(){const C=S.C,r=S.run;
   {const cd=liveFoes().find(f=>f.key==='cadet');if(cd&&cd.hp<=cd.maxHp*.7&&!C.hand.some(c=>c.id==='persuade'||c.id==='opinion')){const id=(C.art||0)>0?'opinion':'persuade';C.hand.push({uid:UID++,id,temp:true});clog(`견습생이 흔들린다 — 패에 ${CARDS[id].name}`,'h')}}

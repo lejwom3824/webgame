@@ -21,7 +21,13 @@ def build():
         c=c[len(STRICT):]
       out+=c
     return '<script>'+out+'</script>'
-  return re.sub(r'(?:<script src="js/[^"]+"></script>)+',js,s)
+  s=re.sub(r'(?:<script src="js/[^"]+"></script>)+',js,s)
+  # 그림 파일(img/…webp)은 data: 주소로 넣어 파일 하나로도 돌아가게 함
+  import base64
+  def img(m):
+    b=open(os.path.join(ROOT,m.group(2)),'rb').read()
+    return m.group(1)+'data:image/webp;base64,'+base64.b64encode(b).decode()+m.group(1)
+  return re.sub(r"(['\"])(img/[\w/.-]+\.webp)\1",img,s)
 if __name__=='__main__':
   out=sys.argv[1] if len(sys.argv)>1 else os.path.join(ROOT,'dist','midgard.html')
   os.makedirs(os.path.dirname(out) or '.',exist_ok=True)

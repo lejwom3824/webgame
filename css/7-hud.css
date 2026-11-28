@@ -1,0 +1,105 @@
+/* 전투 화면 V2.38 — 깎은 모서리 판, 코스트 보석, 행동 포인트 눈금, 방패 방어도, 키워드 캡슐 */
+:root{--hb1:#e4c48e;--hb2:#7a5c30;--hin1:#1c2128;--hin2:#12151a;--hbone:#f1e6cc;--hdim:#a9a194}
+/* 깎은 모서리 판 — 바깥은 놋쇠 테, 안쪽은 어두운 판 */
+#ppanel,#endTurn,.pile,#dockL.fight .plate-btn.big,#piles .pilex .plate-btn,#topbar .tb-chip,#topbar #menuBtn,#dockR .plate-btn{
+  isolation:isolate;border:0!important;border-radius:0!important;background:linear-gradient(var(--hb1),var(--hb2))!important;box-shadow:none!important;
+  clip-path:polygon(var(--ch,8px) 0,calc(100% - var(--ch,8px)) 0,100% var(--ch,8px),100% calc(100% - var(--ch,8px)),calc(100% - var(--ch,8px)) 100%,var(--ch,8px) 100%,0 calc(100% - var(--ch,8px)),0 var(--ch,8px))}
+#ppanel::before,#endTurn::before,.pile::before,#dockL.fight .plate-btn.big::before,#piles .pilex .plate-btn::before,#topbar .tb-chip::before,#topbar #menuBtn::before,#dockR .plate-btn::before{
+  content:'';position:absolute;inset:1px;z-index:-1;background:linear-gradient(#1c2128f4,#12151af4);
+  clip-path:polygon(var(--ch,8px) 0,calc(100% - var(--ch,8px)) 0,100% var(--ch,8px),100% calc(100% - var(--ch,8px)),calc(100% - var(--ch,8px)) 100%,var(--ch,8px) 100%,0 calc(100% - var(--ch,8px)),0 var(--ch,8px))}
+#topbar .tb-chip,#topbar #menuBtn,#piles .pilex .plate-btn,#dockR .plate-btn{position:relative;--ch:6px;background:linear-gradient(#b8925a99,#6a5a4499)!important}
+#dockR .plate-btn.auto.on{background:linear-gradient(#8fd6c2,#3e7c6c)!important}
+
+/* 위 막대 */
+#topbar .tb-chip{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;color:#e7e0d2}
+#topbar .tb-chip b{color:var(--hbone)}
+.port #topbar .tb-chip{height:38px}
+#topbar .tb-ch b{font-family:var(--f-display);font-weight:400;color:var(--hb1);font-size:1.08em}
+.tb-ticks{display:inline-flex;gap:3px;margin-right:2px}.tb-ticks i{width:6px;height:12px;background:#3b434d}.tb-ticks i.on{background:var(--hb1)}.tb-ticks i.now{background:var(--hbone);box-shadow:0 0 6px var(--hb1)}
+.tb-ticks i.boss{background:#8f2c22}.tb-ticks i.boss.on,.tb-ticks i.boss.now{background:#e06a5a}
+.port .tb-ticks{display:none}
+.tb-mid{font-family:var(--f-display);color:var(--hbone)!important;letter-spacing:.2em;font-size:1.25em!important}
+.tb-mid::before,.tb-mid::after{content:'◆';color:var(--hb1);font-size:.5em;vertical-align:.35em;margin:0 .5em}
+#topbar #menuBtn{height:30px;padding:0 14px;color:#e7e0d2}.port #topbar #menuBtn{height:38px}
+
+/* 코스트 보석 · 행동 포인트 눈금 (적) */
+.forbs{flex-direction:row!important;justify-content:center;gap:18px!important;margin-top:8px!important}
+.forbs .or{gap:7px!important}
+.forbs i{border:0!important;border-radius:0!important;box-shadow:none}
+.forbs .c i{width:13px!important;height:13px!important;transform:rotate(45deg);background:#2a2f36!important;box-shadow:inset 0 0 0 1px #6a5a44!important;margin:0 1px}
+.forbs .c i.on{background:linear-gradient(135deg,#ffe3a8,#e48a46 55%,#8a4a18)!important;box-shadow:0 0 8px #e48a4699,inset 0 0 0 1px #fff3!important}
+.forbs .a{gap:3px!important}
+.forbs .a i{width:7px!important;height:16px!important;background:#2a2f36!important;clip-path:polygon(0 3px,50% 0,100% 3px,100% calc(100% - 3px),50% 100%,0 calc(100% - 3px))}
+.forbs .a i.on{background:linear-gradient(#c9b6f0,#7a5aa8)!important}
+.forbs b{font-size:12px!important;color:var(--hdim)!important;margin-left:6px!important}
+.port .forbs .c i{width:16px!important;height:16px!important}.port .forbs .a i{width:9px!important;height:20px!important}
+
+/* 적 이름표 — 체력 막대, 방패 방어도 */
+.ename{color:var(--hbone)}
+.ebar,.pbar,.uf-plate .fhp{border-radius:0!important;background:#0b0d10!important;box-shadow:inset 0 0 0 1px #6a5a44,0 2px 6px #0008!important;
+  clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px)}
+.ebar i,.pbar i,.uf-plate .fhp i{background:linear-gradient(#d0584a,#8f2c22)!important}
+.ebar u.hplag,.ebar u{background:#f0c8b8!important}
+.ebar.low i,.pbar.low i{animation:hpLow 1.4s ease-in-out infinite}@keyframes hpLow{50%{filter:brightness(1.5)}}
+#eplate{overflow:visible}
+#eplate .ebar{overflow:visible;clip-path:none;margin-left:40px}
+#eplate .ebar::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px #6a5a44}
+.ebar b.blk{left:-42px!important;top:-11px!important;width:34px!important;height:38px!important;font-size:15px!important;color:#e8f2fb!important;
+  background:linear-gradient(#5d7389,#2a3644)!important;clip-path:path("M17 0L34 6V18C34 28 26 35 17 38C8 35 0 28 0 18V6Z")!important;z-index:4}
+#eplate:not(:has(.blk)) .ebar{margin-left:0}
+
+/* 키워드 캡슐 */
+.chip.kw{height:24px;padding:0 9px 0 6px!important;border-radius:12px!important;background:#0d1014e6!important;border:1px solid #3b434d!important;font-weight:700;color:#e7e0d2}
+.port .chip.kw{height:30px}
+
+/* 내 상태창 */
+#ppanel{--ch:10px;width:340px;padding:14px 18px 16px;gap:11px}
+.port #ppanel{width:auto}
+.pp-name{color:var(--hbone)!important;font-size:21px}
+.port .pp-name{font-size:24px}
+.pp-row{gap:16px}
+.orb.eorbs{gap:11px!important;padding-left:4px!important}
+.orb.eorbs i{width:20px!important;height:20px!important;border:0!important;border-radius:0!important;transform:rotate(45deg);background:#2a2f36!important;box-shadow:inset 0 0 0 1px #6a5a44!important}
+.orb.eorbs i.on{background:linear-gradient(135deg,#ffe3a8,#e48a46 55%,#8a4a18)!important;box-shadow:0 0 9px #e48a46aa,inset 0 0 0 1px #fff3!important}
+.orb.eorbs i.ex{background:linear-gradient(135deg,#fff3c8,#ffd27a 55%,#b8862a)!important}
+.port .orb.eorbs i{width:26px!important;height:26px!important}
+.shield b{width:34px!important;height:38px!important;font-size:15px!important;color:#e8f2fb!important;background:linear-gradient(#5d7389,#2a3644)!important;
+  clip-path:path("M17 0L34 6V18C34 28 26 35 17 38C8 35 0 28 0 18V6Z")!important}
+.shield.zero b{background:#2a2f36!important;color:#6a737c!important}
+.port .shield b{transform:scale(1.2)}
+.shield{color:var(--hdim)}
+
+/* 덱 · 보관함 */
+#dockL.fight .plate-btn.big{position:relative;--ch:8px;display:inline-flex;align-items:center;gap:8px;color:#e7e0d2!important;font-size:17px;min-height:42px;padding:6px 16px}
+#dockL .hic{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:var(--hb1);stroke-width:1.5}
+.port #dockL.fight .plate-btn.big{font-size:20px;min-height:48px}
+
+/* 더미 · 턴 종료 */
+.pile{position:relative;--ch:7px;color:var(--hdim)}
+.pile b{color:var(--hbone)!important}
+#piles .pilex .plate-btn{color:#e7e0d2}
+#endTurn{position:relative;--ch:10px;color:var(--hbone)!important;letter-spacing:.18em;width:212px!important;height:84px!important;font-size:28px!important}
+#endTurn::before{background:linear-gradient(#3a2a18f4,#1a130cf4)}
+#endTurn:not(:disabled){filter:drop-shadow(0 0 12px #e48a4666)}
+#endTurn:not(:disabled):hover::before{background:linear-gradient(#4a3520f4,#22180ef4)}
+.port #endTurn{width:230px!important;height:96px!important;font-size:34px!important}
+
+/* 적 상태창 */
+#modal.side>.fpanel{border:1px solid var(--hb2);background:linear-gradient(#1c2128f8,#12151af8)!important}
+.fp-grid div[data-st="hit"]{background:#2a1a12!important;border:1px solid #e48a4688!important;display:flex;align-items:baseline;justify-content:space-between}
+.fp-grid div[data-st="hit"] span{color:var(--hb1)!important;font-size:14px}
+.fp-grid div[data-st="hit"] b{font-size:26px!important;color:#ffd8a0!important}
+.fp-hand>div{gap:8px!important}
+.fh{width:70px;height:96px;border-radius:7px!important;flex-direction:column;align-items:flex-start!important;justify-content:flex-start;gap:0!important;padding:30px 7px 0!important;
+  position:relative;text-align:left;font-size:12px!important;font-weight:700;line-height:1.3;color:#e7e0d2!important;background:linear-gradient(#232831,#14171c)!important;
+  box-shadow:inset 0 0 0 1.5px var(--fk,#b0473b)}
+.fh i{position:absolute;left:8px;top:8px;width:16px!important;height:16px!important;transform:rotate(45deg);background:linear-gradient(135deg,#ffe3a8,#e48a46 55%,#8a4a18)!important;
+  border-radius:0!important;color:#2a1608!important;font-size:0!important}
+.fh i::after{content:attr(data-c);position:absolute;inset:0;transform:rotate(-45deg);display:grid;place-items:center;font-size:11px;font-weight:700;color:#2a1608}
+
+/* 내 키워드 설명 시트 */
+#stsheet{border-radius:0!important;border:1px solid var(--hb2)!important;background:linear-gradient(#1c2128fa,#12151afa)!important}
+#stsheet div{flex-direction:row!important;align-items:flex-start;gap:12px!important;padding:8px 0;border-bottom:1px solid #2a2f36}
+#stsheet div:last-child{border-bottom:0}
+#stsheet b{flex:0 0 auto;min-width:64px;display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 6px;border-radius:12px;background:#0d1014e6;border:1px solid #3b434d;color:var(--hbone)!important;font-size:14px!important}
+#stsheet span{font-size:14px!important;color:#cfc8ba!important;line-height:1.55}

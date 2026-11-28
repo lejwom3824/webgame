@@ -8,6 +8,7 @@ function rerender(){
   if(S.screen==='map')return showMap();
   if(S.screen==='shop')return S.run&&S.run.act===2?showShop2():showShop();
 }
+const HIC={deck:'<svg class="hic" viewBox="0 0 18 18" aria-hidden="true"><rect x="5" y="1.5" width="11" height="14" rx="2"/><rect x="2" y="3.5" width="11" height="13" rx="2" fill="#12151a"/></svg>',store:'<svg class="hic" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 7h14v9H2zM2 7l2-4.5h10L16 7M7 10.5h4"/></svg>'};
 function dockEl(id){let e=$('#'+id);if(!e){e=document.createElement('div');e.id=id;$('#stage').appendChild(e)}return e}
 function renderTop(){
   stage.classList.toggle('a2',!!(S.run&&S.run.act===2));
@@ -15,13 +16,13 @@ function renderTop(){
   const tb=$('#topbar');
   const r=S.run;if(!r){tb.hidden=true;return}tb.hidden=false;
   const need=expNeed(r.lvl),pct=Math.round(r.exp/need*100);
-  tb.innerHTML=`<div class="tb-l"><span class="logo">재의 미드가르드</span>${r.act===2?`<span class="tb-chip">2장 · <b>니다벨리르</b></span><span class="tb-chip">${r.dir?DIR2[r.dir].n+' · ':''}<b>${r.floor||0}</b>막</span>${r.hostile?'<span class="tb-chip" style="color:#ef9a8c">적대</span>':''}`:`<span class="tb-chip">1장 · <b>미드가르드</b></span><span class="tb-chip"><b>${r.floor}</b> / ${ROWS}막</span>`}</div>
+  tb.innerHTML=`<div class="tb-l"><span class="logo">재의 미드가르드</span>${r.act===2?`<span class="tb-chip">2장 · <b>니다벨리르</b></span><span class="tb-chip">${r.dir?DIR2[r.dir].n+' · ':''}<b>${r.floor||0}</b>막</span>${r.hostile?'<span class="tb-chip" style="color:#ef9a8c">적대</span>':''}`:`<span class="tb-chip tb-ch"><b>1장 · 미드가르드</b></span><span class="tb-chip"><span class="tb-ticks" aria-hidden="true">${Array.from({length:ROWS},(_,i)=>`<i class="${i+1<r.floor?'on':i+1===r.floor?'now':''}${i+1===BOSS_ROW?' boss':''}"></i>`).join('')}</span><b>${r.floor}</b> / ${ROWS}막</span>`}</div>
    <div class="tb-r"><span class="tb-chip">체력 <b>${Math.max(0,r.hp)}</b>/${r.maxHp}</span><span class="tb-chip"><b>${money(r.gold)}</b></span>
    <span class="tb-chip">${r.mode==='dain'?'<b style="color:#ef9a8c">다인모드</b>':`${r.mode==='thor'?'<b style="color:#a9cdea">묠니르</b> · ':r.mode==='odin'?'<b style="color:#a9c2d6">궁니르</b> · ':''}Lv <b>${r.lvl}</b><i class="xp" title="경험치 ${r.exp} / ${need}"><i style="width:${pct}%"></i></i>`}</span>
    ${['over','victory'].includes(S.screen)?'':'<button class="plate-btn" id="menuBtn" aria-label="메뉴">메뉴</button>'}</div>${S.screen==='combat'&&S.C?`<span class="tb-mid">${S.C.turn||1}턴</span>`:''}`;
   {const fight=S.screen==='combat',dl=dockEl('dockL'),dr=dockEl('dockR'),show=!['over','victory'].includes(S.screen);
     dl.className=dr.className=fight?'dock fight':'dock';dl.hidden=false;
-    dl.innerHTML=`<button class="plate-btn big" id="deckBtn">덱 ${r.deck.length}</button>${S.screen==='map'||fight?`<button class="plate-btn big" id="prepBtn">보관함 ${(r.store||[]).length}</button>`:''}${jmOn()?`<button class="plate-btn big${jmS().noteNew?' jm-new':''}" id="noteBtn">노트</button>`:''}`;
+    dl.innerHTML=`<button class="plate-btn big" id="deckBtn">${fight?HIC.deck:''}덱 ${r.deck.length}</button>${S.screen==='map'||fight?`<button class="plate-btn big" id="prepBtn">${fight?HIC.store:''}보관함 ${(r.store||[]).length}</button>`:''}${jmOn()?`<button class="plate-btn big${jmS().noteNew?' jm-new':''}" id="noteBtn">노트</button>`:''}`;
     dr.hidden=!show;dr.innerHTML=`${r.traits&&r.traits.length?`<button class="plate-btn" id="trBtn">특성 ${r.traits.length}</button>`:''}${show?`<button class="plate-btn auto${SET.auto?' on':''}" id="autoBtn" title="자동 전투 — 오른쪽 카드부터 쓸 수 있는 카드를 전부 쓰고 턴을 끝낸다" aria-pressed="${!!SET.auto}">AUTO${SET.auto?' · 켬':''}</button>`:''}`}
   $('#deckBtn').onclick=()=>openList('덱',[...r.deck].sort(deckSort));if($('#menuBtn'))$('#menuBtn').onclick=openGameMenu;if($('#autoBtn'))$('#autoBtn').onclick=autoToggle;if($('#prepBtn'))$('#prepBtn').onclick=openPrep;if($('#noteBtn'))$('#noteBtn').onclick=openNote;
   if($('#trBtn'))$('#trBtn').onclick=()=>{const m=$('#modal');m.hidden=false;
@@ -160,7 +161,7 @@ function renderEnemy(){
   if(E.food)chips.push(`<span class="chip brass">먹기 ${E.food}${E.full?' · 배부름':''}${E.sat?` · 포화 ${E.sat}`:''}</span>`);
   if(E.art)chips.push(kwChip('art',E.art,`예술적 감각 ${E.art}`));if(E.wipT!=null)chips.push(kwChip('workPrep','','작품 준비'));if(E.done)chips.push(kwChip('work','','작품-완성 · 위력 +200%'));if(E.stun)chips.push(`<span class="chip good">말문이 막힘 · 다음 행동 취소</span>`);if(E.rage)chips.push(`<span class="chip bad">분노 · 위력 +${Math.round((E.rage-1)*100)}%</span>`);
   if(E.mark)chips.push(`<span class="chip bad">궁니르-명중 ${E.mark}</span>`);
-  if(E.charged)chips.push(`<span class="chip bad">송출 대기</span>`);if(E.para)chips.push(kwChip('numb','','마비 · 명중 -10'));
+  if(E.para)chips.push(kwChip('numb','','마비 · 명중 -10'));
   if(E.key==='clerk'&&E.phase===2)chips.push(`<span class="chip brass">페이즈 2</span>`);
   if(E.knight&&E.hurtT===C.turn)chips.push(`<span class="chip bad">원호 방어만</span>`);
   if(E.boss){chips.push(`<span class="chip brass">페이즈 ${E.phase} · ${['','정화','단죄','번제화'][E.phase]}</span>`);
@@ -171,7 +172,7 @@ function renderEnemy(){
   E.traits.forEach(t=>chips.push(`<span class="chip trait">${t}</span>`));
   const pct=clamp(E.hp/E.maxHp*100,0,100);
   const ep=$('#eplate');ep.innerHTML=`<div class="ename">${E.name}${E.sub?`<small>${E.sub}</small>`:''}<small>Lv ${E.lv}</small></div>
-    <div class="ebar"><i style="width:${pct}%"></i><span>${Math.max(0,E.hp)} / ${E.maxHp}</span>${E.block?`<b class="blk">${E.block}</b>`:''}</div>
+    <div class="ebar${pct<=25?' low':''}"><i style="width:${pct}%"></i><span>${Math.max(0,E.hp)} / ${E.maxHp}</span>${E.block?`<b class="blk">${E.block}</b>`:''}</div>
     ${foeOrbs(E)}`;if($('#echips'))$('#echips').innerHTML=chips.join('');
   requestAnimationFrame(()=>{const en=$('#enemy');if(en)en.style.setProperty('--ph',(ep.offsetHeight+14)+'px')});
   renderFoeBar();
@@ -216,7 +217,7 @@ function renderPlayer(){
   if(dain){chips.push(`<span class="chip brass">섭취 ${C.eat}</span>`);if(berserk())chips.push(`<span class="chip bad">광전사-강화</span>`)}
   const pct=clamp(r.hp/r.maxHp*100,0,100);
   $('#ppanel').innerHTML=`<div class="pp-name">${dain?'다인슬레이프':r.mode==='thor'?'묠니르 (토르)':r.mode==='odin'?'궁니르 (오딘)':'일반인'}<small>${dain?'Lv 1 고정':`Lv ${r.lvl}`}</small></div>
-    <div class="pp-hp"><div class="pbar"><i style="width:${pct}%"></i><span>${Math.max(0,r.hp)} / ${r.maxHp}</span></div></div>
+    <div class="pp-hp"><div class="pbar${pct<=25?' low':''}"><i style="width:${pct}%"></i><span>${Math.max(0,r.hp)} / ${r.maxHp}</span></div></div>
     <div class="pp-row">${dain?`<div class="orb blood" title="코스트 대신 체력을 소모해 카드를 사용함">포식</div>`:(C.maxE<=8?`<div class="orb eorbs" title="코스트 ${C.energy} / ${C.maxE}">${Array.from({length:Math.max(C.maxE,C.energy)},(_,k)=>`<i class="${k<C.energy?(k>=C.maxE?'on ex':'on'):''}"></i>`).join('')}</div>`:`<div class="orb" title="코스트">${C.energy}<small>/${C.maxE}</small></div>`)}
       <div class="shield${C.block?'':' zero'}"><b>${C.block}</b>방어도</div></div>
     ${chips.length?`<div class="chips">${chips.join('')}</div>`:''}`;
@@ -553,7 +554,7 @@ function openFoePanel(f){const C=S.C;if(!C||drag||!f||!alive(f))return;const d=E
       <div data-st="atk"><span>공격레벨</span><b>${f.atk}</b></div><div data-st="def"><span>방어레벨</span><b>${f.def}</b></div>
       <div data-st="acc"><span>명중률</span><b>${f.acc}%</b></div><div data-st="eva"><span>회피</span><b>${f.eva+(f.evaB||0)}%</b></div>
       <div data-st="hit" class="wide"><span>내 적중률</span><b>${hitChance(pAcc(),f.eva+(f.evaB||0))}%</b></div></div>
-    ${f.noAct?'':`<div class="fp-hand" data-st="hand"><span>패</span><div>${(f.hand||[]).map(n=>`<button class="fh" data-n="${n}" style="background:${FK_COL[actType(n)]}"><i>${actCost(n)}</i>${n}</button>`).join('')||'<em>없음</em>'}</div></div>`}
+    ${f.noAct?'':`<div class="fp-hand" data-st="hand"><span>패</span><div>${(f.hand||[]).map(n=>`<button class="fh" data-n="${n}" style="--fk:${FK_COL[actType(n)]}"><i data-c="${actCost(n)}">${actCost(n)}</i>${n}</button>`).join('')||'<em>없음</em>'}</div></div>`}
     ${f.ultArmed?`<div class="ult-prev"><small>궁극기 준비</small><b>${f.ultArmed}</b><span>코스트 ${actCost(f.ultArmed)} · ${actText(f.ultArmed)}</span></div>`:''}
     <div class="plist">${(d.passives||[]).map(([n,t])=>`<div data-pas="${n}"><b>${n}</b>${t}</div>`).join('')}${(f.traits||[]).map(t=>`<div><b>특성 · ${t}</b>${TRAITS[t]?TRAITS[t].text:''}</div>`).join('')}</div>
     <div class="fks">${f.kinds.map(n=>{const sn=!!FOE_SEEN[n];return`<button class="fk${sn?' on':''}${ACT[n]&&ACT[n].ult?' ult':''}" data-n="${n}" style="${sn?`background:${FK_COL[actType(n)]}`:''}" aria-label="${sn?n:'아직 보지 못한 카드'}">${sn?'':'?'}<span class="fl">×${sn?cnt(n):'?'}</span><span class="fr">${sn?actCost(n):'?'}</span><small>${sn?n:'?'}</small></button>`}).join('')}</div>

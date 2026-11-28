@@ -209,7 +209,7 @@ function m2Arrive(id,first){const r=S.run,M=r.m2,n=m2Node(id);
     const t=m2Type(n);let at=null;
   if((t==='combat'||t==='elite')&&!r.hostile&&r.mode==='human'){n.cleared=true;save();showMap();return confirmBox('적대','이곳의 사람들은 적대하지 않으면 싸우지 않는다. 적대하면 모든 공방이 플레이어를 적대한다.','적대한다',()=>{r.hostile=true;n.cleared=false;toast('적대','모든 공방이 플레이어를 적대한다');r.at={kind:'combat',enemies:a2Group(null),node:id};save();transition(resumeAt)})}
   if(t==='combat')at={kind:'combat',enemies:a2Group(n.v===0||n.shop?(n.shop?n.shop.ws:regWS(n.reg)):null),node:id};
-  else if(t==='elite')at={kind:'combat',enemies:[makeEnemy(pick(['sender','examiner']))],node:id};
+  else if(t==='elite')at={kind:'combat',enemies:[makeEnemy('examiner')],node:id};
   else if(t==='shop'||t==='event'){
     if(first)r.quiet=(r.quiet||0)+1;
     if(t==='shop'){
@@ -406,8 +406,10 @@ function becomeOdin(){const r=S.run;const ratio=r.hp/r.maxHp;
   r.deck=[];for(const[id,n]of MYTH_DECK.odin)for(let i=0;i<n;i++)addToDeck(id);r.flags.gungnir=true;save();toast('궁니르','신화 빌드 · 필중과 관통')}
 /* 정예 러시 — 정예 → 정예 → 정예 → 정예 → 보스, 정예 사이에 회복 없음 */
 for(const k in GEAR)if(GEAR[k].s==='arm')GEAR[k].s='rh';
-const RUSH=['sender','examiner','contract','guard','clerk'];
+/* 첫 자리는 삭제된 아랫지형 송출관 — 싸움 없이 지나감 */
+const RUSH=[null,'examiner','contract','guard','clerk'];
 function startRush(){const r=S.run,i=r.at.i||0;let key=RUSH[i];
+  if(!key){if(r.m2&&r.m2.inside)r.m2.inside.cur=i+1;r.at=null;save();return showMap()}
   if(key==='contract'){const ws=pick(Object.keys(CONTRACT_P));r.rushWs=ws;key=CONTRACT_P[ws];
     if(isFriend(ws)||r.guild===ws){const h=Math.round(r.maxHp*.15);r.hp=Math.min(r.maxHp,r.hp+h);toast('공방의 사람',`${WS2[ws].n} 사람이 길을 비켜 주었다 · 체력 +${h}`);if(r.m2&&r.m2.inside)r.m2.inside.cur=i+1;r.at=null;save();return showMap()}}
   const E=makeEnemy(key);r.at={kind:'combat',enemies:[E],rush:i};save();resumeAt()}
@@ -693,7 +695,7 @@ function palWatch(){const C=S.C,r=S.run;if(!C||!r||!r.pal||C.over)return;if(isMa
   if(C.pCool)palBark('cool','차가워요... 몸이 잘 안 움직여요.','냉매');if(C.pFrozen)palBark('frozen','얼었어요! 움직일 수가 없어요!','냉동');if(C.pCrack)palBark('crack','언 부분을 맞았더니 엄청 아파요..!','깨짐');
   if(C.art)palBark('art','방금 그거, 왠지 멋있었어요. 왜인지는 모르겠어요.','예술적');if(C.hand.some(c=>c.id==='art_wip'))palBark('wip','뭔가 만들어지고 있어요.');if(typeof masterOn==='function'&&masterOn())palBark('done','다 됐어요! 잘은 모르겠는데 대단해요!','작품');
   if(C.food)palBark('food','뭔가 엄청난 맛! 맛있어요!','먹기');if(C.full)palBark('full','배불러요, 이제 열심히 해 볼게요!','배부름');if(C.sat)palBark('sat','뭔가 더 강하게 내려칠 수 있을 것 같아요! 하지만.. 이제 조금 속이 안 좋네요.','포화');
-  if(E){const g=gimOf(E);if(g==='guard')palBark('g_guard','위험해 보여요!','행동');if(g==='read')palBark('g_read','저 사람, 어디를 칠지 보고 있어요!','행동');if(g==='stagger')palBark('g_stag','뭔가 더 아플 것 같아요!','행동');if(E.charged)palBark('charged','뭔가 큰 게 와요!','송출');if(E.intent==='빚 독촉')palBark('debt','돈이 없으면 더 아파요... 저는 알아요.','행동')}}
+  if(E){const g=gimOf(E);if(g==='guard')palBark('g_guard','위험해 보여요!','행동');if(g==='read')palBark('g_read','저 사람, 어디를 칠지 보고 있어요!','행동');if(g==='stagger')palBark('g_stag','뭔가 더 아플 것 같아요!','행동');}}
 async function palHit(){const r=S.run,C=S.C,p=r.pal;if(!palUp())return;const E=C.E;if(!E||!alive(E))return;const Q=MATE[p.k]||MATE.girl;
   const atkC=(p.cards||[]).filter(c=>(CARDS[c.id].d||[]).some(x=>x.t==='atk'));if(!atkC.length&&!Q.die)return;
   const c=atkC.length?pick(atkC):null,die=c?CARDS[c.id].d.find(x=>x.t==='atk'):Q.die,cn=c?CARDS[c.id].name:Q.dn,st=palStats(),nm=mateN(p);

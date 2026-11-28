@@ -44,6 +44,7 @@ const ACT={
   '말뿐인 저주':{k:'atk',d:[A(6,10)],cost:1},
   '훈계':{k:'debuff',neg:1,cost:1,desc:'약화 10',fx:async()=>{pWkAdd(10)}},
   '파문 선고':{k:'debuff',neg:1,cost:2,desc:'대상의 패에서 가장 많은 카드 뭉치에 낙인',fx:async()=>{excommunicate()}},
+  '내려찍기':{k:'atk',d:[A(130,190)],cost:2},
   '어설픈 베기':{k:'atk',d:[A(60,90)],cost:1},
   '숨 고르기':{k:'sup',cost:0,desc:'드로우 1',fx:async()=>{foeDraw(S.C.E,1)}},
   '무리한 돌격':{k:'atk',d:[A(120,180)],cost:1,acc:-30,selfVuln:3,desc:'명중률 -30%, 사용 후 자신에게 취약 3'},
@@ -78,7 +79,7 @@ const ENEMY={
   inquisitor:{name:'이단심문관',sub:'에인헤랴르',tier:'elite',lv:[20,30],hp1:200,st:{hp:[150,250],atk:[40,65],def:[40,65]},acc:100,eva:0,ap:[7,9],art:'inquisitor',
     deck:{'명령 이행-베기':3,'명령 이행-내려찍기':2,'명령 이행-처단':1},
     passives:[['새겨진 본능-단죄','이단을 심문할 때만 발동 — 이단 표식이 있는 대상에게 데미지 +25%, 명중률 +10%'],['새겨진 본능-보호','순수유물주의자를 보호할 때만 발동']]},
-  bishop:{name:'순수유물주의자',sub:'주교',tier:'boss',lv:45,hp1:160,acc:80,eva:45,art:'bishop',
+  bishop:{name:'순수유물주의자',sub:'주교',tier:'boss',lv:45,hp1:160,hpMul:1.5,acc:80,eva:45,art:'bishop',
     deck1:{'뼈와 살의 해체학':1,'으스러트리기':2,'박 살':2,'뜯어지는 강타':3,'망치 돌리기':2},
     deck2:{'명령-베기':3,'명령-내려찍기':2,'명령-방패 세우기':2,'명령-빈틈 노리기':2,'명령-전열 정리':1},
     passives:[['페이즈 1 · 정화','망치로 직접 공격. 상대의 패를 읽지 않고 정해진 순서로 냄 — 망치 돌리기 → 대상이 골절이면 박 살 → 해체학을 낼 코스트가 있으면 해체학 → 골절이 아니면 으스러트리기 → 남은 코스트로 뜯어지는 강타'],
@@ -133,7 +134,10 @@ function knightCheck(){return;
 }
 
 /* 적 그림 — 에셋이 생기면 ENEMY_IMG에 이미지 주소(또는 data: URI)를 넣으면 그 그림으로 바뀜 */
-const ENEMY_IMG={/* priest:'data:image/png;base64,...' */};
+const ENEMY_IMG={priest:'img/foe/priest.webp',cultist:'img/foe/cultist.webp',nordJudge:'img/foe/cultist.webp',inquisitor:'img/foe/knight.webp',einherjar:'img/foe/knight.webp',bishop:'img/foe/bishop.webp',
+  mech:'img/foe/mech.webp',porter:'img/foe/porter.webp',server:'img/foe/server.webp',appr:'img/foe/appr.webp',poor:'img/foe/poor.webp',craftsman:'img/foe/craftsman.webp',collab:'img/foe/collab.webp',clerk:'img/foe/clerk.webp'};
+/* 그림 적의 궁극기 눈 위치 — [그림 폭, 높이, [[눈 x,y]…], 색] */
+const IMG_EYES={cultist:[512,768,[[251,140],[269,140]],'#a8564e'],nordJudge:[512,768,[[251,140],[269,140]],'#a8564e'],inquisitor:[512,768,[[227,78],[257,78]],'#d6c9a4'],einherjar:[512,768,[[227,78],[257,78]],'#d6c9a4']};
 /* 순수유물주의자 에셋 (사용자 제공 시트) — 몸은 그대로, 얼굴(표정 모음 8종)만 바뀜 */
 const BISHOP_BODY='';
 /* 표정 패치: 몸 그림 얼굴 위치(146,64)~(222,128)에 겹침 */

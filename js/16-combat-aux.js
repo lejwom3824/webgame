@@ -1,8 +1,6 @@
 "use strict";
 /* ================= 전투 보조 — 행동 위력, 예상 피해, 적 목록, 보상 뒤 진행 ================= */
 function a2PreAct(E,name){const r=S.run;let x=1;
-  if(E.charged){x*=1.5;E.charged=false;clog('송출 대기: 이번 행동 위력 +50%','e')}
-  if(name==='빚 독촉'&&r.gold<100000){x*=2;clog('빚 독촉: 실링 100000 미만 — 피해 2배','e')}
   E.actX=x;E.actFlat=(name==='무쇠 팬'&&E.sat)?Math.round(r.maxHp*.02*E.sat):0}
 /* 공방렙 차이: 내 공격레벨 − 상대 방어레벨이 3 남을 때마다 공격 위력 +1 (낮아도 위력은 줄지 않음) — 적이 플레이어를 공격할 때도 같음 */
 const gapP=(atk,def)=>Math.max(0,Math.floor((atk-def)/3));
