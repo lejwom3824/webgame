@@ -66,7 +66,7 @@ const ACT={
   '명령-내려찍기':{k:'cmd',cost:3,cmd:'명령 이행-내려찍기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-내려찍기를 실행함'},
   '명령-방패 세우기':{k:'cmd',cost:3,cmd:'명령 이행-방패 세우기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-방패 세우기를 실행함, 방어도는 각 에인헤랴르가 얻음'},
   '명령-빈틈 노리기':{k:'cmd',cost:3,cmd:'명령 이행-빈틈 노리기',desc:'살아 있는 모든 에인헤랴르가 명령 이행-빈틈 노리기를 실행함'},
-  '명령-전열 정리':{k:'cmd',cost:3,rally:1,desc:'피해를 받은 에인헤랴르가 다시 명령을 따르고, 에인헤랴르 1명을 더 부름'},
+  '명령-전열 정리':{k:'cmd',cost:3,rally:1,desc:'턴 종료 시 무조건 사용, 피해를 받은 에인헤랴르가 다시 명령을 따르고, 에인헤랴르 2명을 더 부름'},
 };
 /* hp1 = 1레벨 체력. 같은 체력 공식으로 레벨에 따라 오름 — 문서의 체력 범위에서 거꾸로 구한 값 */
 const ENEMY={
@@ -80,12 +80,12 @@ const ENEMY={
     passives:[['새겨진 본능-단죄','이단을 심문할 때만 발동 — 이단 표식이 있는 대상에게 데미지 +25%, 명중률 +10%'],['새겨진 본능-보호','순수유물주의자를 보호할 때만 발동']]},
   bishop:{name:'순수유물주의자',sub:'주교',tier:'boss',lv:45,hp1:160,acc:80,eva:45,art:'bishop',
     deck1:{'뼈와 살의 해체학':1,'으스러트리기':2,'박 살':2,'뜯어지는 강타':3,'망치 돌리기':2},
-    deck2:{'명령-베기':3,'명령-내려찍기':2,'명령-방패 세우기':2,'명령-빈틈 노리기':2,'명령-전열 정리':1},
+    deck2:{'명령-베기':3,'명령-내려찍기':2,'명령-방패 세우기':2,'명령-빈틈 노리기':2},/* 명령-전열 정리 1장은 덱에서 뽑지 않고 턴 종료 시 무조건 사용 */
     passives:[['페이즈 1 · 정화','망치로 직접 공격. 상대의 패를 읽지 않고 정해진 순서로 냄 — 망치 돌리기 → 대상이 골절이면 박 살 → 해체학을 낼 코스트가 있으면 해체학 → 골절이 아니면 으스러트리기 → 남은 코스트로 뜯어지는 강타'],
       ['페이즈 2 · 단죄','에인헤랴르를 지휘함. 행동 포인트 3, 모든 카드 3코스트, 명령은 살아 있는 모든 에인헤랴르에게 적용'],
       ['보존','페이즈 2: 자신의 총 드로우와 총 코스트가 변경되지 않음, 턴이 지나도 영향받지 않음'],
       ['간절한 기도','페이즈 2: 자신의 행동 포인트가 전부 소모되면 즉시 자신의 코스트를 최대로 회복함'],
-      ['행동 예측','페이즈 2: 상대방의 패를 읽음 — 피해를 받은 에인헤랴르가 있으면 명령-전열 정리, 상대가 낼 수 있는 공격 카드를 들고 있으면 방어도 없는 에인헤랴르가 있을 때 명령-방패 세우기 · 아니면 명령-빈틈 노리기, 그 밖에는 공격 명령'],
+      ['행동 예측','페이즈 2: 상대방의 패를 읽음 — 상대가 낼 수 있는 공격 카드를 들고 있으면 방어도 없는 에인헤랴르가 있을 때 명령-방패 세우기 · 아니면 명령-빈틈 노리기, 그 밖에는 공격 명령'],
       ['새겨진 본능-보호','페이즈 2: 살아 있는 무작위 에인헤랴르가 보스가 받을 데미지를 50% 확률로 대신 맞거나 50% 확률로 75%만 대신 맞음, 에인헤랴르가 전부 쓰러지면 보스가 데미지를 입음']]},
   einherjar:{name:'에인헤랴르',sub:'명령-보호',tier:'elite',lv:[20,30],hp1:200,st:{hp:[150,250],atk:[40,65],def:[40,65]},acc:100,eva:0,art:'inquisitor',knight:1,deck:{},
     passives:[['새겨진 본능-보호','순수유물주의자가 받을 데미지를 대신 받음'],['명령','행동 포인트와 카드가 없음, 순수유물주의자가 명령한 카드만 에인헤랴르 본연의 스탯으로 사용'],['원호 방어','피해를 받은 턴에는 어떤 명령을 받아도 명령 이행-방패 세우기만 함'],['퇴각과 교대','턴 종료 시 체력이 50% 이하인 처음 2명은 퇴각함, 수복으로 채운 에인헤랴르도 포함, 늘어난 에인헤랴르는 처치되지 않으면 퇴각하지 않음']]},
@@ -105,13 +105,14 @@ function summonKnights(){for(let i=0;i<2;i++)addKnight(false);fxAt('enemy','에�
 function knightTake(d){const C=S.C,ks=knAlive();if(!ks.length||d<=0)return d;const k=pick(ks),take=rnd()<.5?d:Math.ceil(d*.75),bl=Math.min(k.block||0,take),part=Math.min(k.hp,take-bl),rest=d-bl-part;
   if(bl)k.block-=bl;k.hp=Math.max(0,k.hp-part);fxAt('enemy',`에인헤랴르 -${part}`,'info');clog(`새겨진 본능-보호: 에인헤랴르가 대신 받음 ${take}${bl?` (방어도 ${bl})`:''} · 체력 -${part} (남은 체력 ${k.hp})${rest?` · 보스 -${rest}`:''}`,'e');
   if(k.hp<=0){k.dead=true;clog('에인헤랴르가 쓰러졌다','e')}renderCombat();return rest}
-/* 턴 종료: 퇴각과 교대 → 수복(2명까지) → 에인헤랴르 +1명 (최대 7명) */
+/* 턴 종료: 퇴각 → 명령-전열 정리 (V2.37.79.22: 수복·에인헤랴르 증가 삭제) */
 function knightUpkeep(){const C=S.C;if(!C||C.over)return;let out=0;
   if(!C.foes)return;
-  C.foes=C.foes.filter(f=>{if(!f.knight)return true;if(!alive(f)){out++;return false}if(!f.extra&&f.hp<=f.maxHp*.5){clog(`${f.name} 퇴각 (체력 50% 이하)`,'e');out++;return false}return true});
+  C.foes=C.foes.filter(f=>{if(!f.knight)return true;if(!alive(f)){out++;return false}if(f.hp<=f.maxHp*.5){clog(`${f.name} 퇴각 (체력 50% 이하)`,'e');out++;return false}return true});
   if(!alive(C.E)||!C.foes.includes(C.E))C.E=C.foes.find(f=>f.boss)||liveFoes()[0];
-  let n=knAlive().filter(k=>!k.extra).length;while(n<2){if(!addKnight(false))break;n++}
-  addKnight(true);toast('에인헤랴르',`${knAlive().length}명`);renderCombat()}
+  knRally();renderCombat()}
+/* 명령-전열 정리 — 피해를 받은 에인헤랴르가 다시 명령을 따르고 2명 추가 소환 (최대 7명) */
+function knRally(){const ks=knAlive();ks.forEach(k=>k.hurtT=-1);let n=0;for(let i=0;i<2;i++)if(addKnight(true))n++;toast('명령-전열 정리',n?`에인헤랴르 ${n}명 추가`:'에인헤랴르가 다시 명령을 따른다');clog(`명령-전열 정리: 피해를 받은 에인헤랴르가 다시 명령을 따름${n?` · ${n}명 추가 소환`:' (이미 7명)'}`,'e')}
 /* V32 페이즈 전환: 체력이 1 이하로 떨어지면 턴 종료 후 특수 대사(컷신)를 보여 주고 다시 재개 */
 async function bossPhaseCut(){
   const C=S.C,E=C.E,p=E.pendPhase;E.pendPhase=0;if(!p||C.over)return;
