@@ -638,7 +638,7 @@ function excommunicate(){const C=S.C,cnt={},src=C.hand.length?C.hand:C.draw.leng
   const id=ids[0];cnt[id].forEach(c=>{if(!C.brand.includes(c.uid))C.brand.push(c.uid)});toast('파문 선고',`「${CARDS[id].name}」 ${cnt[id].length}장에 낙인`);clog(`파문 선고: 「${CARDS[id].name}」 ${cnt[id].length}장에 낙인 (사용할 때마다 체력 -3)`,'e')}
 /* 명령 — 살아 있는 모든 에인헤랴르가 명령 이행 카드를 실행, 피해를 받은 턴의 에인헤랴르는 원호 방어(명령 이행-방패 세우기)만 */
 async function doCommand(B,name,a){const C=S.C,r=S.run,ks=knAlive();
-  if(a.rally){ks.forEach(k=>k.hurtT=-1);const k=addKnight(true);toast('명령-전열 정리',k?'에인헤랴르 1명 추가':'에인헤랴르가 다시 명령을 따른다');clog(`명령-전열 정리: 피해를 받은 에인헤랴르가 다시 명령을 따름${k?' · 1명 추가 소환':' (이미 7명)'}`,'e');renderCombat();return}
+  if(a.rally){knRally();renderCombat();return}
   if(!ks.length){clog(`${name}: 명령을 받을 에인헤랴르가 없다`,'e');return}
   for(const k of ks){if(C.over||r.hp<=0)return;if(!alive(k))continue;const act=k.hurtT===C.turn?'명령 이행-방패 세우기':a.cmd;
     await withFoe(k,()=>execAct(act));if(C.over||r.hp<=0)return}}
@@ -648,8 +648,6 @@ function bishopPick(E){const C=S.C,h=E.hand,c=E.c,idx=h.map((_,i)=>i).filter(i=>
     if((i=f('망치 돌리기'))>=0)return i;if(fracOn()&&(i=f('박 살'))>=0)return i;if((i=f('뼈와 살의 해체학'))>=0)return i;
     if(!fracOn()&&(i=f('으스러트리기'))>=0)return i;if((i=f('뜯어지는 강타'))>=0)return i;return idx[0]}
   const ks=knAlive();
-  if(ks.some(k=>k.hurtT===C.turn)&&(i=f('명령-전열 정리'))>=0)return i;
-  if(!ks.length)return f('명령-전열 정리');
   const pE=C.phase==='player'?C.energy:C.maxE,aff=x=>{const o=costOf(x);return o&&!o.none&&(o.e==null||o.e<=pE)};
   const canAtk=C.hand.some(x=>CARDS[x.id]&&CARDS[x.id].type==='atk'&&aff(x));
   if(canAtk){const pref=ks.some(k=>!k.block)?['명령-방패 세우기','명령-빈틈 노리기']:['명령-빈틈 노리기','명령-방패 세우기'];for(const n of pref)if((i=f(n))>=0)return i}
