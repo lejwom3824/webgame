@@ -5,4 +5,7 @@
 .slotinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.slotinfo b{font-family:var(--f-display);font-weight:400;font-size:20px}
 .slotinfo span{font-size:14px;color:var(--bone)}.slotinfo i{font-style:normal;font-size:12px;color:var(--bone-dim)}
 .slotbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.port .slotinfo b{font-size:24px}.port .slotinfo span{font-size:18px}.port .slotinfo i{font-size:15px}.port .slotrow{flex-wrap:wrap}
+.port .slotinfo b{font-size:24px}.port .slotinfo span{font-size:18px}.port .slotinfo i{font-size:15px}.port .slotrow{flex-wrap:wrap}.wlblk{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:10px;border:1px solid #4a4338;background:rgba(0,0,0,.18)}
+.wlhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 6px}.wlhead b{font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--brass-hi)}
+.slotbtns>i{font-style:normal;font-size:13px;color:var(--bone-dim)}
+.port .wlhead b{font-size:26px}

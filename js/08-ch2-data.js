@@ -493,12 +493,12 @@ function rollLuck(ev,c){
 function mythCarry(r,atk0,def0,hp0){const g=gs('hp');return{atk:Math.max(atk0,r.atk),def:Math.max(def0,r.def),maxHp:Math.max(hp0,(r.maxHp||0)-g)+g}}
 /* 사건으로 죽었을 때 — 기본 게임 오버 화면 */
 function eventDeath(text){
-  const r=S.run;clearSave();S.screen='over';renderTop();
+  const r=S.run;deathSave();S.screen='over';renderTop();
   const sc=openScreen('',{dim:true});
   sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center"><div class="psub">세계수 등반</div><div class="ptitle">쓰러졌다</div><div class="ptext">${text}</div>
     <div class="lines" style="min-width:min(420px,100%)"><div><span>도달한 막</span><b>${r.floor} / ${ROWS}</b></div><div><span>처치</span><b>${r.kills}</b></div><div><span>레벨</span><b>${r.lvl}</b></div></div>
-    <button class="btn-main" id="goT">처음으로</button></div>`;
-  $('#goT').onclick=()=>showTitle({menu:true});
+    ${deathBtns()}</div>`;
+  deathBind();
 }
 function eventPanel(title,sub,text,choices){
   const sc=openScreen('',{dim:true});

@@ -20,7 +20,7 @@ function showTitle(o={}){setTimeout(guideShow,0);
   viewFor('title');startTitleScene();
   const sc=openScreen(`<div class="ttl${menu?' menu':''}" id="ttl" ${menu?'':'tabindex="0" role="button" aria-label="시작"'}>
     ${menu?`<div class="ttl-menu" style="${o.animate&&!REDUCED?'animation-delay:.25s':''}">
-      ${slotCount()?`<button class="mbtn" id="mCont">이어하기<small>저장 기록 ${slotCount()} / ${SLOT_MAX}</small></button>`:''}
+      ${slotCount()?`<button class="mbtn" id="mCont">이어하기<small>세계선 ${slotCount()} / ${SLOT_MAX}</small></button>`:''}
       ${false&&cs?`<button class="mbtn" id="mContC">이어하기 · 세계수 등반<small>${(CDIFF[cs.diff]||CDIFF.easy).n} · ${cs.act===2?`2장 니다벨리르 · ${cs.floor||0}막`:`${cs.floor} / ${ROWS}막`} · ${cs.mode==='dain'?'다인모드':`Lv ${cs.lvl}`}</small></button>`:''}
       <button class="mbtn" id="mClimb">세계수 등반<small>일반인으로 시작해 세계수를 오른다</small></button>
       <button class="mbtn" id="mTrain">훈련장<small>모든 카드를 써 볼 수 있다 · 본 게임과 별개</small></button>

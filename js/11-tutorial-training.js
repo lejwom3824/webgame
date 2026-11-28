@@ -318,7 +318,7 @@ function gameOver(){
   if(C&&C.atInfo&&C.atInfo.shopFight&&!C.over){C.over=true;C.phase='over';S.busy=false;const r=S.run;r.hp=1;const lost=Math.min(r.gold,5000);r.gold-=lost;a2CombatEnd(C);hideCombatUI();toast('패배',lost>=5000?'체력 1 · 5000실링을 잃고 상점에서 쫓겨났다':'체력 1 · 가진 돈을 전부 잃고 상점에서 쫓겨났다');r.at=null;r.next=null;save();showMap();setTimeout(()=>shopBark('kick'),500);return}
   if(C&&C.atInfo&&C.atInfo.spar&&!C.over){C.over=true;C.phase='over';S.busy=false;const r=S.run;r.hp=1;a2CombatEnd(C);hideCombatUI();toast('대련','졌다 — 체력 1로 대련장을 나왔다');r.at=null;r.next=null;save();return showMap()}
   if(C&&C.atInfo&&C.atInfo.evb){C.over=true;C.phase='over';S.busy=false;const r=S.run;r.hp=1;a2CombatEnd(C);hideCombatUI();toast('패배','체력 1로 쫓겨났다');r.at=null;r.next=null;save();return showMap()}
- if(C){C.dead=true;C.over=true}S.busy=false;clearSave();
+ if(C){C.dead=true;C.over=true}S.busy=false;deathSave();
   const r=S.run,dain=r.mode==='dain',killer=C&&C.E?C.E.key:null;
   const title=dain?'쓰러졌다':killer==='priest'?pick(CLERIC_DEATH):'쓰러졌다';
   if(dain)redout();
@@ -327,8 +327,8 @@ function gameOver(){
     const sc=openScreen('',{dim:true});
     sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center"><div class="psub">세계수 등반${dain?' · 다인모드':''}</div><div class="ptitle">${title}</div>
       <div class="lines" style="min-width:min(420px,100%)"><div><span>도달한 막</span><b>${r.act===2?`2장 · ${r.floor||0}막`:`${r.floor} / ${ROWS}`}</b></div><div><span>처치</span><b>${r.kills}</b></div><div><span>${r.mode==='dain'?'다인모드':'레벨'}</span><b>${r.mode==='dain'?`공 ${r.atk} · 방 ${r.def}`:r.lvl}</b></div></div>
-      <button class="btn-main" id="goT">처음으로</button></div>`;
-    $('#goT').onclick=()=>showTitle({menu:true});},REDUCED?100:dain?1900:700);
+      ${deathBtns()}</div>`;
+    deathBind();},REDUCED?100:dain?1900:700);
 }
 function showVictory(gold,lines,loot){
   S.screen='victory';renderTop();

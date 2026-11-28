@@ -85,7 +85,7 @@ try {
     await send('Page.navigate', {url});
     await withDeadline(loaded, 'Page load');
     for (let i = 0; i < 100; i++) {
-      if (await evaluate('location.href === ' + JSON.stringify(url) + ' && typeof slotRead === "function" && !!document.querySelector("#ttlTap")')) return;
+      if (await evaluate('location.href === ' + JSON.stringify(url) + ' && typeof wlGet === "function" && !!document.querySelector("#ttlTap")')) return;
       await delay(100);
     }
     throw Error(path + ' did not boot');
@@ -105,27 +105,26 @@ try {
   await open('/index.html');
   const results = await evaluate('(' + scenarios.toString() + ')()', true);
   for (const result of results) console.log(result);
-  await evaluate(`localStorage.clear(); S.run = newRun(rollHero('easy'));
-    localStorage.setItem(SAVE_KEY, JSON.stringify(S.run));
-    for (let i = 0; i < SLOT_MAX; i++) manualSave(i);
-  `);
-  await open('/index.html');
-  const keptWhenFull = await evaluate('!!localStorage.getItem(SAVE_KEY) && slotCount() === SLOT_MAX');
-  await evaluate(`slotDel(0); localStorage.setItem(SAVE_KEY, JSON.stringify(newRun(rollHero('easy'))));`);
+  const legacy = `localStorage.clear();
+    const mk = (rid, floor, manual) => JSON.stringify({kind: 'climb', t: Date.now() - floor, manual, data: {...newRun(rollHero('easy')), rid, floor, slot: 0}});
+    localStorage.setItem('ash-midgard-slot-0', mk('A', 3, false));
+    localStorage.setItem('ash-midgard-slot-1', mk('A', 2, true));
+    localStorage.setItem('ash-midgard-slot-7', mk('B', 5, false));
+    localStorage.setItem(SAVE_KEY, JSON.stringify(newRun(rollHero('easy'))));`;
+  await evaluate(legacy);
   const {identifier} = await send('Page.addScriptToEvaluateOnNewDocument', {source: `
     const realStorageSet = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key === 'ash-midgard-slot-0') throw new DOMException('Test quota', 'QuotaExceededError');
+      if (/^ash-midgard-wl-.+-a$/.test(key)) throw new DOMException('Test quota', 'QuotaExceededError');
       return realStorageSet.call(this, key, value);
     };
   `});
   await open('/index.html');
-  const keptOnError = await evaluate('!!localStorage.getItem(SAVE_KEY) && !slotRead(0)');
+  const keptOnError = await evaluate("!!localStorage.getItem(SAVE_KEY) && !!localStorage.getItem('ash-midgard-slot-0') && !!localStorage.getItem('ash-midgard-slot-7')");
   await send('Page.removeScriptToEvaluateOnNewDocument', {identifier});
-  await evaluate('if (!localStorage.getItem(SAVE_KEY)) localStorage.setItem(SAVE_KEY, JSON.stringify(newRun(rollHero("easy"))))');
   await open('/index.html');
-  const moved = await evaluate('!localStorage.getItem(SAVE_KEY) && slotRead(0)?.data.slot === 0');
-  for (const [ok, title] of [[keptWhenFull, 'Legacy save kept with full slots'], [keptOnError, 'Legacy save kept on write error'], [moved, 'Legacy save moved after successful write']]) {
+  const moved = await evaluate("!localStorage.getItem(SAVE_KEY) && !localStorage.getItem('ash-midgard-slot-0') && slotCount() === 3 && wlGet(WL_A('A')).data.floor === 3 && wlGet(WL_M('A', 1)).data.floor === 2 && wlGet(WL_A('B')).data.floor === 5 && wlGet(WL_A('A')).data.slot === undefined");
+  for (const [ok, title] of [[keptOnError, 'Legacy saves kept on write error'], [moved, 'Legacy saves grouped into world lines']]) {
     results.push((ok ? 'PASS ' : 'FAIL ') + title);
     console.log(results.at(-1));
   }
@@ -158,7 +157,7 @@ async function scenarios() {
     $('#toast').replaceChildren();
     S.busy = false;
     S.C = null;
-    S.pendingSlot = null;
+    S.runDead = null;
     S.tb = null;
     S.hero = null;
     showTitle({menu: true});
@@ -250,7 +249,7 @@ async function scenarios() {
     click('#gmSave');
     check(S.screen === 'title', 'Successful save returns to title');
     click('#mCont');
-    click('[data-go="' + r.slot + '"]');
+    click('[data-go="' + r.rid + '"]:not([data-k])');
     check(S.screen === 'map' && S.run.gold === before && S.run !== r, 'Restored map and gold');
   });
 
@@ -260,41 +259,68 @@ async function scenarios() {
     save();
     showTitle({menu: true});
     click('#mCont');
-    click('[data-go="' + r.slot + '"]');
-    check(S.screen === 'map' && !S.run.at && !slotRead(r.slot).data.at, 'Removed event recovered and autosaved');
+    click('[data-go="' + r.rid + '"]:not([data-k])');
+    check(S.screen === 'map' && !S.run.at && !wlGet(WL_A(r.rid)).data.at, 'Removed event recovered and autosaved');
   });
 
   await test('Save and exit storage failure retains the current run', () => {
     const r = run(1);
     showMap();
-    const existing = localStorage.getItem(SLOT_KEY(r.slot));
+    const existing = localStorage.getItem(WL_A(r.rid));
     const set = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key === SLOT_KEY(r.slot)) throw new DOMException('Test quota', 'QuotaExceededError');
+      if (key === WL_A(r.rid)) throw new DOMException('Test quota', 'QuotaExceededError');
       return set.call(this, key, value);
     };
     try {
       openGameMenu();
       click('#gmSave');
       check(S.run === r && S.screen === 'map' && !$('#modal').hidden, 'Save failed but player left the run');
-      check(localStorage.getItem(SLOT_KEY(r.slot)) === existing, 'Existing save preserved');
+      check(localStorage.getItem(WL_A(r.rid)) === existing, 'Existing save preserved');
     check(!$('#toast').textContent.includes('저장 기록에 저장했다'), 'No success toast after storage failure');
     } finally {
       Storage.prototype.setItem = set;
     }
   });
 
-  await test('Save and exit with all slots reserved retains a manually loaded run', () => {
+  await test('World line: manual saves, loading, death rollback and deletion', async () => {
     const r = run(1);
-    for (let i = 0; i < SLOT_MAX; i++) check(manualSave(i), 'Create manual slot');
+    showMap();
+    const id = r.rid;
+    check(wlGet(WL_A(id)) && wlGet(WL_P(id)) && slotCount() === 1, 'Autosave and map checkpoint');
+    for (let k = 1; k <= WL_MAN; k++) check(manualSave(k), 'Create manual slot ' + k);
+    select('battle');
+    check(S.screen === 'combat' && wlGet(WL_A(id)).data.at && !wlGet(WL_P(id)).data.at, 'Checkpoint stays before the node');
+    S.run.hp = 0;
+    gameOver();
+    await until(() => $('#goBack'), 'Death screen');
+    check(!wlGet(WL_A(id)).data.at && save() === false, 'Autosave rolled back and frozen');
+    click('#goBack');
+    check(S.screen === 'map' && S.run.floor === 0 && S.run.rid === id && S.run.hp > 0, 'Back before the node');
+    openGameMenu();
+    click('#gmQuit');
+    check(S.screen === 'title' && slotCount() === 1, 'Quit keeps the world line');
+    click('#mCont');
+    click('[data-go="' + id + '"][data-k="2"]');
+    check(S.screen === 'map' && S.run.rid === id && slotCount() === 1, 'Manual save loads into the same world line');
     showTitle({menu: true});
     click('#mCont');
-    click('[data-go="0"]');
-    check(S.run.slot == null && slotCount() === SLOT_MAX, 'No automatic slot');
-    const loaded = S.run;
-    openGameMenu();
-    click('#gmSave');
-    check(S.run === loaded && !$('#modal').hidden, 'No free slot but player left the run');
+    click('[data-wdel="' + id + '"]');
+    check(slotCount() === 1 && /진짜로/.test($('[data-wdel]').textContent), 'First press asks again');
+    click('[data-wdel="' + id + '"]');
+    check(slotCount() === 0 && !wlGet(WL_A(id)) && !wlGet(WL_M(id, 1)), 'Second press deletes the world line');
+  });
+
+  await test('Ten world lines: new climb asks to delete one first', () => {
+    for (let i = 0; i < WL_MAX; i++) { const id = 'T' + i; wlPut(WL_A(id), {t: i, data: {...newRun(rollHero('easy')), rid: id}}); wlAdd(id); }
+    let started = 0;
+    slotStart(() => started++);
+    check(!started && /가득/.test($('#modal .ptitle').textContent), 'Full world lines');
+    click('[data-wdel="T0"]');
+    check(!started, 'One press does not delete');
+    click('[data-wdel="T0"]');
+    check(started === 1 && slotCount() === WL_MAX - 1, 'Deleted one and started');
+    for (const id of wlIds()) wlDel(id);
   });
 
   await test('Menu cannot save the already credited combat before reward is persisted', async () => {
@@ -305,7 +331,7 @@ async function scenarios() {
     openGameMenu();
     const offered = !$('#modal').hidden && !!$('#gmSave');
     await until(() => S.screen === 'reward', 'Reward persisted');
-    check(!offered && slotRead(r.slot).data.at.kind === 'reward', 'Save and exit offered during reward settlement');
+    check(!offered && wlGet(WL_A(r.rid)).data.at.kind === 'reward', 'Save and exit offered during reward settlement');
     openGameMenu();
     check(!$('#modal').hidden && !!$('#gmSave'), 'Menu available on the reward screen');
   });
@@ -376,7 +402,8 @@ async function scenarios() {
   });
 
   await test('Chapter 2 target selection, card damage, multiple enemy turns and C.E restoration', async () => {
-    run(2);
+    const r = run(2);
+    r.maxHp = r.hp = 10000;
     const [first, chosen] = battle(['porter', 'mech']);
     setTarget(chosen);
     const card = S.C.hand[0];
@@ -413,7 +440,7 @@ async function scenarios() {
       check(r.at.killDone && !$('#rwKill'), 'Choice only available once');
       check(choice === 'Kill' ? r.flags.slain && (r.lvl > 1 || r.exp > 0) :
         !r.flags.slain && r.lvl === 1 && r.exp === 0, 'Expected growth and first-kill flag');
-      const saved = slotRead(r.slot).data;
+      const saved = wlGet(WL_A(r.rid)).data;
       check(saved.at.killDone && saved.lvl === r.lvl && saved.exp === r.exp, 'Choice persisted');
     });
   }
@@ -430,7 +457,7 @@ async function scenarios() {
     clerk.block = 0;
     fixedDmg(clerk.hp, 'test');
     await until(() => S.screen === 'victory', 'Chapter 2 ending');
-    check($('#goT') && !slotRead(r.slot), 'Victory and completed autosave cleared');
+    check($('#goT') && !!wlGet(WL_A(r.rid)), 'Victory screen and world line kept');
   });
 
   await test('Chapter 2 damage over time gives no kill experience', async () => {

@@ -1011,7 +1011,7 @@ function showInn(){const r=S.run;S.screen='shop';viewFor('shop');renderTop();hid
   $('#iRest').onclick=()=>{if(r.gold<INN_COST||r.hp>=r.maxHp)return;r.gold-=INN_COST;r.hp=Math.min(r.maxHp,r.hp+amt);for(let i=0;i<INN_HOURS;i++)stockTick();jmAct();save();renderTop();showInn()};
   $('#iLeave').onclick=()=>{r.at=null;save();showMap()}}
 /* 2장 승리 — 업데이트 대기 */
-function showAct2Victory(gold,lines,loot){S.screen='victory';renderTop();const r=S.run,sc=openScreen('',{dim:true});lines=lines||[];clearSave();
+function showAct2Victory(gold,lines,loot){S.screen='victory';renderTop();const r=S.run,sc=openScreen('',{dim:true});lines=lines||[];
   sc.innerHTML=`<div class="panel" style="align-items:center;text-align:center;max-width:720px"><div class="psub">2장 · 니다벨리르</div><div class="ptitle">기록하는 공무원을 쓰러뜨렸다</div>
     <div class="lines" style="min-width:min(420px,100%)">${gold?`<div><span>실링</span><b>+${money(gold)} · 보유 ${money(r.gold)}</b></div>`:''}${lines.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')}${loot?`<div><span>장비 탈취</span><b>${GEAR[loot].n}</b></div>`:''}<div><span>처치</span><b>${r.kills}</b></div><div><span>남은 체력</span><b>${r.hp} / ${r.maxHp}</b></div><div><span>레벨</span><b>${r.lvl}</b></div></div>
     <div class="hint">노트에 찍혀 있던 도장이 전부 떨어져 나갔다.</div><div class="hint">3장은 아직 준비 중입니다 (업데이트 대기).</div><button class="btn-main" id="goT">처음으로</button></div>`;

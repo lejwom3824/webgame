@@ -6,4 +6,4 @@
 ## 코드 지도
 index.html은 일반 script를 번호 순으로 로드한다. 01-utils 공용 도구, 02-cards 카드/장비, 03-enemies 적, 04-scene 화면, 05-run-map 1장, 06-combat 전투/공식/보상, 07-rest-shop-event 상점/사건, 08-ch2-data 2장 데이터, 09-title 시작/종료, 10-patch-notes 패치, 11-tutorial-training 튜토리얼/훈련장, 12-render UI, 13-fx 연출, 14-combat-ext 다중 적/공방, 15-ch2 지도/경제/동료/서사, 16-combat-aux 보조, 17-boot 시작, 18-save-menu 저장/메뉴. css/에 스타일. python3 tools/bundle.py 로 단일 HTML 생성.
 ## 기술적 주의
-S.run, S.C, S.screen 전역 상태 및 스크립트 순서 의존. C.E 임시 변경을 사용하는 다중 적 처리. localStorage 최대 20개 저장 슬롯. 15-ch2.js에 다수 기능 집중. 기존 코드 전체를 한꺼번에 분리하지 않는다.
+S.run, S.C, S.screen 전역 상태 및 스크립트 순서 의존. C.E 임시 변경을 사용하는 다중 적 처리. localStorage 세계선 최대 10개(세계선마다 자동 저장·되돌아갈 지점·직접 저장 5칸). 15-ch2.js에 다수 기능 집중. 기존 코드 전체를 한꺼번에 분리하지 않는다.
